@@ -4,7 +4,7 @@ reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulka
 
 
 ![alt text](problem1.jpg)
-![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/problem2.jpg)
-![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/problem3.jpg)
-![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/problem4.jpg)
-![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/problem5.jpg)
+![alt text](problem2.jpg)
+![alt text](problem3.jpg)
+![alt text](problem4.jpg)
+![alt text](problem5.jpg)
