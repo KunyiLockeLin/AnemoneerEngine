@@ -2,7 +2,7 @@
 
 reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulkan
 
-I meet a problem. I loaded a 3d model and put an texture on the model. The model is a plane, just 2 triangle. And the texture is 256x256 32bit bmp file. But the result always lose the right-bottom corner.
+I meet a problem. I load a 3d model and put an texture on the model. The model is a plane, just 2 triangle. And the texture is 256x256 32bit bmp file. But the result always lose the right-bottom corner.
 ![alt text](problem1.jpg)
 
 I change to draw wireframe. It happens the same problem.
