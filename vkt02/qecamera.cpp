@@ -89,7 +89,8 @@ void QeCamera::reset() {
 	fov = 45.0f;
 	fnear = 0.1f;
 	ffar = 1000.0f;
-	bFirstPerson = !bFirstPerson;
+	//bFirstPerson = !bFirstPerson;
+	bFirstPerson = true;
 }
 
 void QeCamera::update() {
