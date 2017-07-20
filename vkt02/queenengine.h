@@ -27,11 +27,6 @@ public:
 private:
 public:
 
-
-	const std::string SHADER_VERT_PATH = "../data/shaders/vert.spv";
-	const std::string SHADER_FRAG_PATH = "../data/shaders/frag.spv";
-
-
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_LUNARG_standard_validation"
 	};

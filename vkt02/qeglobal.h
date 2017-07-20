@@ -23,10 +23,6 @@ public:
 	QueenEngine*		engine;
 	QeMath*				math;
 	QeAsset*			asset;
-
-	std::string title = "VulkanTest";
-	std::string engineName = "QueenEngine";
-
 };
 
 #define GLB		QeGlobal::getInstance()

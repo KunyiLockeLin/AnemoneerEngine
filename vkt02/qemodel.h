@@ -18,22 +18,11 @@ public:
 	float up;
 	QeVector3f size;
 
-	const std::string MODEL_PATH = "../data/models/plane.obj";
-	//const std::string MODEL_PATH = "../data/models/tri.obj";
-	//const std::string MODEL_PATH = "../data/models/box.obj";
-	//const std::string MODEL_PATH = "../data/models/table.obj";
-	//const std::string TEXTURE_PATH = "../data/textures/table.bmp";
-	//const std::string MODEL_PATH = "../data/models/billboard.obj";
-	//const std::string TEXTURE_PATH = "../data/textures/billboard.bmp";
-	//const std::string MODEL_PATH = "../data/models/chalet.obj";
-	//const std::string TEXTURE_PATH = "../data/textures/chalet.bmp";
-
 	QeAssetModel* modelData;
 
 	VkBuffer uniformBuffer;
 	VkDeviceMemory uniformBufferMemory;
 
-	void loadModel();
 	void createUniformBuffer();
 	void updateDescriptorSet();
 	void updateUniformBuffer();
@@ -42,7 +31,7 @@ public:
 public: 
 	QeModel() {}
 	~QeModel() {}
-	void init();
+	void init(const char* _filename);
 	void cleanup();
 	void setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size);
 	void move(QeVector3f _pos);

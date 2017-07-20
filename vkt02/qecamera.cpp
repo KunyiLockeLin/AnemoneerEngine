@@ -75,7 +75,7 @@ void QeCamera::move(QeVector3f _dir) {
 	v4 = mat*v4;
 	pos = v4;
 
-	if (bFirstPerson) {
+	if (type == eCameraThirdPerson) {
 		v4 = target;
 		v4 = mat*v4;
 		target = v4;
@@ -83,14 +83,13 @@ void QeCamera::move(QeVector3f _dir) {
 }
 
 void QeCamera::reset() {
-	pos = QeVector3f(0, 3, 0);
+	pos = QeVector3f(5, 5, 5);
 	target = QeVector3f(0, 0, 0);
 	up = QeVector3f(0, 0, 1);
 	fov = 45.0f;
 	fnear = 0.1f;
 	ffar = 1000.0f;
-	//bFirstPerson = !bFirstPerson;
-	bFirstPerson = true;
+	type = eCameraThirdPerson;
 }
 
 void QeCamera::update() {
@@ -104,8 +103,8 @@ void QeCamera::update() {
 	//rotatePos(timec,  QeVector3f(0,0,1) );
 }
 
-void QeCamera::setFirstPerson(bool _bFirstPerson) {
-	bFirstPerson = _bFirstPerson;
+void QeCamera::switchType(QeCameraType _type) {
+	type = _type;
 }
 
 QeMatrix4x4f QeCamera::getMatView() {

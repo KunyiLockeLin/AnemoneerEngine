@@ -80,9 +80,9 @@ QeMatrix4x4f QeModel::getMatModel() {
 }
 
 
-void QeModel::init() {
+void QeModel::init(const char* _filename) {
 
-	loadModel();
+	modelData = AST->loadModelOBJ(_filename);
 	createUniformBuffer();
 	updateDescriptorSet();
 
@@ -90,13 +90,6 @@ void QeModel::init() {
 	face = 0.0f;
 	up = 0.0f;
 	size = QeVector3f(1, 1, 1);
-}
-
-
-void QeModel::loadModel() {
-
-	modelData = AST->loadModelOBJ(MODEL_PATH.c_str());
-	//imageData = AST->loadImageBMP32(TEXTURE_PATH.c_str());
 }
 
 void QeModel::createUniformBuffer() {

@@ -1,6 +1,13 @@
 #pragma once
 #include "qeheader.h"
 
+enum QeLightType {
+	eLightPoint,
+	eLightDirection,
+	eLightSPot,
+};
+
+
 class QeLight
 {
 public:
@@ -9,6 +16,7 @@ public:
 
 	QeVector3f pos;
 	QeVector3f color;
+	QeLightType type;
 	float intensity;
 
 	void update() {}

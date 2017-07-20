@@ -23,6 +23,7 @@ void QueenEngine::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugRepo
 
 
 void QueenEngine::run() {
+	AST->loadConfig();
 	initWindow();
 	initVulkan();
 	initSwapchain();
@@ -66,7 +67,7 @@ void QueenEngine::prepare() {
 	light = new QeLight();
 	light->intensity = 100;
 	model = new QeModel();
-	model->init();
+	model->init(AST->getString("model") );
 
 	//model1 = new QeModel();
 	//model1->init();
@@ -149,9 +150,9 @@ void QueenEngine::createInstance() {
 
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = GLB.title.c_str();
+	appInfo.pApplicationName = AST->getString("title");
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = GLB.engineName.c_str();
+	appInfo.pEngineName = AST->getString("engine");
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 
@@ -408,11 +409,11 @@ void QueenEngine::createDescriptorSetLayout() {
 }
 
 void QueenEngine::createGraphicsPipeline() {
-	auto vertShaderCode = AST->loadFile(SHADER_VERT_PATH.c_str());
-	auto fragShaderCode = AST->loadFile(SHADER_FRAG_PATH.c_str());
+	auto vertShaderCode = AST->loadShader(AST->getString("shadervert"));
+	auto fragShaderCode = AST->loadShader(AST->getString("shaderfarg"));
 
-	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+	VkShaderModule vertShaderModule = createShaderModule(*vertShaderCode);
+	VkShaderModule fragShaderModule = createShaderModule(*fragShaderCode);
 
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

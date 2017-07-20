@@ -51,24 +51,32 @@ struct QeAssetImage {
 struct QeAssetShader {
 };
 
+
+enum QeAssetType {
+	eAssetModel,
+	eAssetMaterial,
+	eAssetShader,
+	eAssetTexture,
+};
+
 class QeAsset
 {
 public:
+	const std::string CONFIG_PATH = "../data/config.ini";
 
-	const std::string MODEL_PATH = "../data/models/";
-	const std::string MTL_PATH = "../data/models/";
-	const std::string IMAGE_PATH = "../data/textures/";
-	const std::string SHADER_PATH = "../data/shaders/";
-
-	std::map<const char*, void*> asset;
+	std::map<std::string, void*> asset;
+	std::map<std::string, std::string> assetString;
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset() {}
 
 	std::vector<char>  loadFile(const char* _filename);
+	bool loadConfig();
+	const char* getString(const char* _nodeName);
+	std::string combinePath(const char* _filename, QeAssetType dataType );
 	QeAssetModel* loadModelOBJ(const char* _filename);
-	QeAssetMaterial* loadModelMTL(const char* _filename);
+	QeAssetMaterial* loadMateialMTL(const char* _filename);
 	QeAssetImage* loadImageBMP32(const char* _filename);
-	void loadShader(const char* _filename) {}
+	std::vector<char>* loadShader(const char* _filename);
 
 	void createVertexBuffer(QeAssetModel& model, std::vector<QeVertex>& vertices);
 	void createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indices);

@@ -94,7 +94,7 @@ void QeWindow::init() {
 	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wndClass.lpszMenuName = NULL;
-	wndClass.lpszClassName = convert(GLB.title);
+	wndClass.lpszClassName = convert(AST->getString("title"));
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
 	if (!RegisterClassEx(&wndClass))
@@ -149,7 +149,7 @@ void QeWindow::init() {
 
 	std::string windowTitle = getWindowTitle();
 	window = CreateWindowEx(0,
-		convert(GLB.title),
+		convert(AST->getString("title")),
 		convert(windowTitle),
 		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		0,
@@ -183,7 +183,7 @@ std::string QeWindow::getWindowTitle()
 {
 	//std::string device(QE->deviceProperties.deviceName);
 	std::string windowTitle;
-	windowTitle = GLB.title;
+	windowTitle = AST->getString("title");
 	//windowTitle.append(" - ");
 	//windowTitle.append(device);
 	//windowTitle.append(" - ");

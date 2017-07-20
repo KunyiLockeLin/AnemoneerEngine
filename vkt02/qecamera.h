@@ -2,6 +2,11 @@
 
 #include "qeheader.h"
 
+enum QeCameraType {
+	eCameraThirdPerson,
+	eCameraFirstPerson,
+};
+
 class QeCamera
 {
 private:
@@ -14,12 +19,12 @@ private:
 	float ffar;
 	float rotateSpeed = 0.5f;
 	float moveSpeed = 1.0f;
-	bool bFirstPerson;
+	QeCameraType type;
 
 public:
 	QeCamera() {}
 	~QeCamera() {}
-	void setFirstPerson(bool _bFirstPerson);
+	void switchType(QeCameraType _type);
 	void setCamera(QeVector3f _pos, QeVector3f _target, QeVector3f _up, float _fov, float _near, float _far );
 	void rotatePos(float _angle, QeVector3f _axis);
 	void rotateTarget(float _angle, QeVector3f _axis);
