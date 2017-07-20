@@ -39,7 +39,7 @@ float QeMath::fastSqrt(float _number) {
 
 QeMatrix4x4f QeMath::lookAt(QeVector3f _pos, QeVector3f _target, QeVector3f _up) {
 
-	QeMatrix4x4f _rtn(1);
+	QeMatrix4x4f _rtn;
 	QeVector3f _face = normalize(_target - _pos);
 	QeVector3f _surface = normalize(cross(_face, _up));
 	QeVector3f _up1 = cross(_surface, _face);
