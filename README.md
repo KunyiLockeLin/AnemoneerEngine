@@ -2,6 +2,9 @@
 
 reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulkan
 
+The problem has been sloved.
+My view matrix is wrong. My initial matrix should be identity matrix.
+--------------------------
 I meet a problem. I load a 3d model and put an texture on the model. The model is a plane, just 2 triangle. And the texture is 256x256 32bit bmp file. But the result always loses the right-bottom corner.
 ![alt text](problem1.jpg)
 
