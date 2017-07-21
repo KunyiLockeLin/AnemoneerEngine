@@ -362,14 +362,20 @@ const char* QeAsset::getString(const char* _nodeName) {
 	return nullptr;
 }
 
-std::vector<char>* QeAsset::loadShader(const char* _filename) {
+QeAssetShader* QeAsset::loadShader(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetShader);
+	std::map<std::string, void*>::iterator it = asset.find(_filePath.c_str());
+	if (it != asset.end())	return static_cast<QeAssetShader*>(it->second);
+
 	std::vector<char> data = loadFile(_filePath.c_str());
-	std::vector<char>* pData = new std::vector<char>();
-	pData->assign(data.begin(), data.end());
-	asset[_filename] = pData;
-	return pData;
+	//std::vector<char>* pData = new std::vector<char>();
+	//pData->assign(data.begin(), data.end());
+
+	QeAssetShader* shader = new QeAssetShader();
+	createShaderModule( *shader, data);
+	asset[_filename] = shader;
+	return shader;
 }
 
 std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
@@ -393,4 +399,16 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 		break;
 	}
 	return rtn.append(_filename).c_str();
+}
+
+
+void QeAsset::createShaderModule(QeAssetShader& shader, const std::vector<char>& code) {
+	VkShaderModuleCreateInfo createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+	createInfo.codeSize = code.size();
+	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+	if (vkCreateShaderModule(QE->device, &createInfo, nullptr, &shader.shader) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create shader module!");
+	}
 }

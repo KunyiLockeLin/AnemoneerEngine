@@ -49,6 +49,7 @@ struct QeAssetImage {
 };
 
 struct QeAssetShader {
+	VkShaderModule shader;
 };
 
 
@@ -76,7 +77,7 @@ public:
 	QeAssetModel* loadModelOBJ(const char* _filename);
 	QeAssetMaterial* loadMateialMTL(const char* _filename);
 	QeAssetImage* loadImageBMP32(const char* _filename);
-	std::vector<char>* loadShader(const char* _filename);
+	QeAssetShader* loadShader(const char* _filename);
 
 	void createVertexBuffer(QeAssetModel& model, std::vector<QeVertex>& vertices);
 	void createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indices);
@@ -84,5 +85,6 @@ public:
 	void createTextureImage(QeAssetImage& image, std::vector<char>& data, int width, int height, int imageSize);
 	void createTextureImageView(QeAssetImage& image);
 	void createTextureSampler(QeAssetImage& image);
+	void createShaderModule(QeAssetShader& shader, const std::vector<char>& code);
 };
 

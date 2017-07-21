@@ -20,9 +20,11 @@ public:
 
 	QeAssetModel* modelData;
 
+	VkDescriptorSet descriptorSet;
 	VkBuffer uniformBuffer;
 	VkDeviceMemory uniformBufferMemory;
 
+	void createDescriptorSet();
 	void createUniformBuffer();
 	void updateDescriptorSet();
 	void updateUniformBuffer();

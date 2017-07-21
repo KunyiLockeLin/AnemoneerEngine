@@ -44,7 +44,7 @@ public:
 
 	QeWindow*	window;
 	QeModel*	model;
-	//QeModel*	model1;
+	QeModel*	model1;
 	QeCamera*	camera;
 	QeLight*	light;
 
@@ -79,7 +79,6 @@ public:
 	VkImageView depthImageView;
 
 	VkDescriptorPool descriptorPool;
-	VkDescriptorSet descriptorSet;
 
 	std::vector<VkCommandBuffer> commandBuffers;
 
@@ -117,17 +116,17 @@ public:
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
 	void createDescriptorPool();
-	void createDescriptorSet();
+
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-	void createCommandBuffers(QeAssetModel& model);
+	void createCommandBuffers(QeModel& model);
 	void createSemaphores();
 	
 	void drawFrame();
-	VkShaderModule createShaderModule(const std::vector<char>& code);
+
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);

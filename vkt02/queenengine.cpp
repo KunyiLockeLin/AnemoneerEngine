@@ -55,7 +55,7 @@ void QueenEngine::initVulkan() {
 	createFramebuffers();
 
 	createDescriptorPool();
-	createDescriptorSet();
+	//createDescriptorSet();
 	createSemaphores();
 }
 
@@ -66,15 +66,16 @@ void QueenEngine::prepare() {
 	camera->reset();
 	light = new QeLight();
 	light->intensity = 100;
+
 	model = new QeModel();
 	model->init(AST->getString("model") );
+	model->setPosition( QeVector3f(3,3,0) );
+	createCommandBuffers(*model);
 
-	//model1 = new QeModel();
-	//model1->init();
-	//model1->setPosFaceUpSize(QeVector3f(-1, 0, 0), 180.0f, 180.0f, QeVector3f(1, 1, 1));
-
-	createCommandBuffers(*model->modelData);
-	//createCommandBuffers(model1->modelData);
+	model1 = new QeModel();
+	model1->init(AST->getString("model"));
+	model1->setPosition(QeVector3f(-3, -3, 0));
+	createCommandBuffers(*model1);
 }
 
 void QueenEngine::mainLoop() {
@@ -84,6 +85,7 @@ void QueenEngine::mainLoop() {
 		camera->update();
 		light->update();
 		model->update();
+		model1->update();
 
 		drawFrame();
 	}
@@ -139,8 +141,8 @@ void QueenEngine::recreateSwapChain() {
 	createGraphicsPipeline();
 	createDepthResources();
 	createFramebuffers();
-	createCommandBuffers(*model->modelData);
-	//createCommandBuffers(model1->modelData);
+	createCommandBuffers(*model);
+	createCommandBuffers(*model1);
 }
 
 void QueenEngine::createInstance() {
@@ -409,22 +411,20 @@ void QueenEngine::createDescriptorSetLayout() {
 }
 
 void QueenEngine::createGraphicsPipeline() {
-	auto vertShaderCode = AST->loadShader(AST->getString("shadervert"));
-	auto fragShaderCode = AST->loadShader(AST->getString("shaderfarg"));
 
-	VkShaderModule vertShaderModule = createShaderModule(*vertShaderCode);
-	VkShaderModule fragShaderModule = createShaderModule(*fragShaderCode);
+	QeAssetShader* vertShaderModule = AST->loadShader(AST->getString("shadervert"));
+	QeAssetShader* fragShaderModule = AST->loadShader(AST->getString("shaderfarg"));
 
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-	vertShaderStageInfo.module = vertShaderModule;
+	vertShaderStageInfo.module = vertShaderModule->shader;
 	vertShaderStageInfo.pName = "main";
 
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	fragShaderStageInfo.module = fragShaderModule;
+	fragShaderStageInfo.module = fragShaderModule->shader;
 	fragShaderStageInfo.pName = "main";
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
@@ -532,8 +532,8 @@ void QueenEngine::createGraphicsPipeline() {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
-	vkDestroyShaderModule(device, fragShaderModule, nullptr);
-	vkDestroyShaderModule(device, vertShaderModule, nullptr);
+	//vkDestroyShaderModule(device, fragShaderModule, nullptr);
+	//vkDestroyShaderModule(device, vertShaderModule, nullptr);
 
 	/*VkDynamicState dynamicStates[] = {
 	VK_DYNAMIC_STATE_VIEWPORT,
@@ -755,31 +755,18 @@ void QueenEngine::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 void QueenEngine::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = 1;
+	poolSizes[0].descriptorCount = 2;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = 1;
+	poolSizes[1].descriptorCount = 2;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = 1;
+	poolInfo.maxSets = 2;
 
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
-	}
-}
-
-void QueenEngine::createDescriptorSet() {
-	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
-	VkDescriptorSetAllocateInfo allocInfo = {};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = descriptorPool;
-	allocInfo.descriptorSetCount = 1;
-	allocInfo.pSetLayouts = layouts;
-
-	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor set!");
 	}
 }
 
@@ -865,7 +852,7 @@ uint32_t QueenEngine::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags 
 	throw std::runtime_error("failed to find suitable memory type!");
 }
 
-void QueenEngine::createCommandBuffers(QeAssetModel& model) {
+void QueenEngine::createCommandBuffers(QeModel& model) {
 	commandBuffers.resize(swapChainFramebuffers.size());
 
 	VkCommandBufferAllocateInfo allocInfo = {};
@@ -903,15 +890,15 @@ void QueenEngine::createCommandBuffers(QeAssetModel& model) {
 
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-		VkBuffer vertexBuffers[] = { model.vertexBuffer };
+		VkBuffer vertexBuffers[] = {  model.modelData->vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
 
-		vkCmdBindIndexBuffer(commandBuffers[i], model.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(commandBuffers[i], model.modelData->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
-		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(model.indexSize), 1, 0, 0, 0);
+		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
 		//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 		vkCmdEndRenderPass(commandBuffers[i]);
 
@@ -986,20 +973,6 @@ void QueenEngine::drawFrame() {
 	}
 
 	vkQueueWaitIdle(presentQueue);
-}
-
-VkShaderModule QueenEngine::createShaderModule(const std::vector<char>& code) {
-	VkShaderModuleCreateInfo createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-	VkShaderModule shaderModule;
-	if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create shader module!");
-	}
-
-	return shaderModule;
 }
 
 VkSurfaceFormatKHR QueenEngine::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {

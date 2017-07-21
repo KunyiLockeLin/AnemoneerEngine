@@ -71,12 +71,12 @@ QeMatrix4x4f QeModel::getMatModel() {
 
 	QeMatrix4x4f mat;
 
-	mat = MATH->translate(pos);
+	mat *= MATH->scale(size);
 	mat *= MATH->rotateY(up);
 	//mat *= MATH->rotate(up, QeVector3f(0.0f, 1.0f, 0.0f));
 	mat *= MATH->rotateZ(face);
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
-	mat *= MATH->scale(size);
+	mat *= MATH->translate(pos);
 	
 	return mat;
 }
@@ -85,6 +85,7 @@ QeMatrix4x4f QeModel::getMatModel() {
 void QeModel::init(const char* _filename) {
 
 	modelData = AST->loadModelOBJ(_filename);
+	createDescriptorSet();
 	createUniformBuffer();
 	updateDescriptorSet();
 
@@ -92,6 +93,19 @@ void QeModel::init(const char* _filename) {
 	face = 0.0f;
 	up = 0.0f;
 	size = QeVector3f(1, 1, 1);
+}
+
+void QeModel::createDescriptorSet() {
+	VkDescriptorSetLayout layouts[] = { QE->descriptorSetLayout };
+	VkDescriptorSetAllocateInfo allocInfo = {};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = QE->descriptorPool;
+	allocInfo.descriptorSetCount = 1;
+	allocInfo.pSetLayouts = layouts;
+
+	if (vkAllocateDescriptorSets(QE->device, &allocInfo, &descriptorSet) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate descriptor set!");
+	}
 }
 
 void QeModel::createUniformBuffer() {
@@ -114,7 +128,7 @@ void QeModel::updateDescriptorSet() {
 	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
 
 	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[0].dstSet = QE->descriptorSet;
+	descriptorWrites[0].dstSet = descriptorSet;
 	descriptorWrites[0].dstBinding = 0;
 	descriptorWrites[0].dstArrayElement = 0;
 	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -122,7 +136,7 @@ void QeModel::updateDescriptorSet() {
 	descriptorWrites[0].pBufferInfo = &bufferInfo;
 
 	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[1].dstSet = QE->descriptorSet;
+	descriptorWrites[1].dstSet = descriptorSet;
 	descriptorWrites[1].dstBinding = 1;
 	descriptorWrites[1].dstArrayElement = 0;
 	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
