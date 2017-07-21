@@ -18,7 +18,7 @@ private:
 	float fnear;
 	float ffar;
 	float rotateSpeed = 0.5f;
-	float moveSpeed = 1.0f;
+	float moveSpeed = 0.5f;
 	QeCameraType type;
 
 public:

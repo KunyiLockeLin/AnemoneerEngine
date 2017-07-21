@@ -64,7 +64,7 @@ QeMatrix4x4f QeMath::lookAt(QeVector3f _pos, QeVector3f _target, QeVector3f _up)
 
 QeMatrix4x4f QeMath::perspective(float _fov, float _aspect, float _near, float _far) {
 
-	QeMatrix4x4f _rtn(0);
+	QeMatrix4x4f _rtn;
 	float _fovR = _fov*DEGREES_TO_RADIANS;
 	float tanHalfFov = tan(_fovR / 2);
 	_rtn._00 = 1.0f / (tanHalfFov*_aspect);
@@ -80,9 +80,9 @@ QeMatrix4x4f QeMath::perspective(float _fov, float _aspect, float _near, float _
 QeMatrix4x4f QeMath::translate(QeVector3f _pos) {
 
 	QeMatrix4x4f _rtn;
-	_rtn._03 = _pos.x;
-	_rtn._13 = _pos.y;
-	_rtn._23 = _pos.z;
+	_rtn._30 = _pos.x;
+	_rtn._31 = _pos.y;
+	_rtn._32 = _pos.z;
 	return _rtn;
 }
 
@@ -117,8 +117,8 @@ QeMatrix4x4f QeMath::rotateX(float _angle) {
 	float _cosA = cos(_radian);
 	float _sinA = sin(_radian);
 	_rtn._11 = _cosA;
-	_rtn._12 = -_sinA;
-	_rtn._21 = _sinA;
+	_rtn._12 = _sinA;
+	_rtn._21 = -_sinA;
 	_rtn._22 = _cosA;
 	return _rtn;
 
@@ -131,8 +131,8 @@ QeMatrix4x4f QeMath::rotateY(float _angle) {
 	float _cosA = cos(_radian);
 	float _sinA = sin(_radian);
 	_rtn._00 = _cosA;
-	_rtn._02 = _sinA;
-	_rtn._20 = -_sinA;
+	_rtn._02 = -_sinA;
+	_rtn._20 = _sinA;
 	_rtn._22 = _cosA;
 	return _rtn;
 }
@@ -144,8 +144,8 @@ QeMatrix4x4f QeMath::rotateZ(float _angle) {
 	float _cosA = cos(_radian);
 	float _sinA = sin(_radian);
 	_rtn._00 = _cosA;
-	_rtn._01 = -_sinA;
-	_rtn._10 = _sinA;
+	_rtn._01 = _sinA;
+	_rtn._10 = -_sinA;
 	_rtn._11 = _cosA;
 	return _rtn;
 }
@@ -358,29 +358,21 @@ QeMatrix4x4f::QeMatrix4x4f(float _num) :_00(_num), _01(_num), _02(_num), _03(_nu
 		_30(_num), _31(_num), _32(_num), _33(_num) {}
 QeMatrix4x4f& QeMatrix4x4f::operator*=(const QeMatrix4x4f& other) {
 
-	float num = 0;
-	for (int i = 0; i<4; i++)
-		for (int j = 0; j < 4; j++) {
-			num = 0;
-			for (int k = 0; k < 4; k++)
-				num += (((float *)this)[i * 4 + k] * ((float *)&other)[k * 4 + j]);
-
-			((float *)this)[i * 4 + j] = num;
-		}
+	*this = *this*other;
 	return *this;
 }
 QeMatrix4x4f QeMatrix4x4f::operator*(const QeMatrix4x4f& other) {
-	QeMatrix4x4f _new;
+	QeMatrix4x4f _new(0);
 	for (int i = 0; i<4; i++)
 		for (int j = 0; j<4; j++)
-			for (int k = 0; k<4; k++)
+			for (int k = 0; k < 4; k++) 
 				((float *)&_new)[i * 4 + j] += (((float *)this)[i * 4 + k] * ((float *)&other)[k * 4 + j]);
 	return _new;
 }
 QeVector4f QeMatrix4x4f::operator*(const QeVector4f& other) {
 	QeVector4f _new;
 	for (int i = 0; i<4; i++)
-		for (int j = 0; j<4; j++)
-			((float *)&_new)[i] += (((float *)this)[i * 4 + j] * ((float *)&other)[j]);
+		for (int j = 0; j < 4; j++) ((float *)&_new)[i] += (((float *)this)[j * 4 + i] * ((float *)&other)[j]);
+
 	return _new;
 }

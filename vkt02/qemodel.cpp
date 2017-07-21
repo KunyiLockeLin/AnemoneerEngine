@@ -72,8 +72,10 @@ QeMatrix4x4f QeModel::getMatModel() {
 	QeMatrix4x4f mat;
 
 	mat = MATH->translate(pos);
-	mat *= MATH->rotate(up, QeVector3f(0.0f, 1.0f, 0.0f));
-	mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
+	mat *= MATH->rotateY(up);
+	//mat *= MATH->rotate(up, QeVector3f(0.0f, 1.0f, 0.0f));
+	mat *= MATH->rotateZ(face);
+	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	mat *= MATH->scale(size);
 	
 	return mat;
@@ -135,11 +137,11 @@ void QeModel::update() {
 	//static auto startTime = std::chrono::high_resolution_clock::now();
 	//auto currentTime = std::chrono::high_resolution_clock::now();
 	//float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() / 1000.0f;
-	//static float timem = 0;
-	//timem += 0.01f;
+	static float timem = 0;
+	timem += 0.01f;
 	//setPosition(QeVector3f(timem, 0.0f, 0.0f));
 	//setSize(QeVector3f(1.0f + timem, 1.0f + timem, 1.0f + timem ));
-	//setFace(timem);
+	setFace(timem);
 	//setUp(timem);
 
 	updateUniformBuffer();
