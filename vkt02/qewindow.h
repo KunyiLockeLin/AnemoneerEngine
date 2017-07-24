@@ -11,14 +11,9 @@ public:
 	const int WIDTH = 800;
 	const int HEIGHT = 600;
 
-	float fpsTimer = 0.0f;
-	uint32_t frameCounter = 0;
-	uint32_t lastFPS = 0;
-	float frameTimer = 1.0f;
-
 	bool isWinodowShouldClose();
 	void getWindowSize(int& width, int& height);
-	void update();
+	void update(float time);
 	HWND window;
 	HINSTANCE windowInstance;
 	VkSurfaceKHR surface;

@@ -43,10 +43,13 @@ public:
 
 
 	QeWindow*	window;
+	QeViewport*	viewport;
 	QeModel*	model;
 	QeModel*	model1;
 	QeCamera*	camera;
 	QeLight*	light;
+	int currentFPS;
+	std::chrono::steady_clock::time_point lastTime;
 
 	VkDevice device;
 	VkInstance instance;
@@ -54,8 +57,6 @@ public:
 
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkPhysicalDeviceProperties deviceProperties;
-	//VkPhysicalDeviceFeatures deviceFeatures;
-	//VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
 
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
@@ -70,7 +71,6 @@ public:
 	VkRenderPass renderPass;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
 
 	VkCommandPool commandPool;
 
@@ -79,8 +79,6 @@ public:
 	VkImageView depthImageView;
 
 	VkDescriptorPool descriptorPool;
-
-	std::vector<VkCommandBuffer> commandBuffers;
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
@@ -102,7 +100,7 @@ public:
 	void createImageViews();
 	void createRenderPass();
 	void createDescriptorSetLayout();
-	void createGraphicsPipeline();
+	void createPipeline();
 	void createFramebuffers();
 	void createCommandPool();
 	void createDepthResources();
@@ -114,18 +112,13 @@ public:
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-
 	void createDescriptorPool();
-
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-	void createCommandBuffers(QeModel& model);
 	void createSemaphores();
-	
-	void drawFrame();
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);

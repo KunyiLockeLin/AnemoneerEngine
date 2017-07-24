@@ -97,14 +97,8 @@ void QeCamera::reset() {
 	//type = eCameraThirdPerson;
 }
 
-void QeCamera::update() {
+void QeCamera::update(float time) {
 
-	//static auto startTimec = std::chrono::high_resolution_clock::now();
-	//auto currentTime = std::chrono::high_resolution_clock::now();
-	//float timec = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTimec).count() / 1000.0f;
-	//startTimec = currentTime;
-	//static float timec = 0;
-	//timec = 0.01f;
 	//rotatePos(timec,  QeVector3f(0,0,1) );
 	//rotateTarget(timec, QeVector3f(0, 0, 1));
 }

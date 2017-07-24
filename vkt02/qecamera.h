@@ -34,7 +34,7 @@ public:
 	void move(QeVector3f _dir);
 	QeMatrix4x4f getMatView();
 	QeMatrix4x4f getMatProjection();
-	void update();
+	void update(float time);
 	void reset();
 };
 

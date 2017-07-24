@@ -50,6 +50,7 @@ class QeLight;
 class QeGlobalKey;
 class QeGlobal;
 class QeWindow;
+class QeViewport;
 class QueenEngine;
 
 
@@ -145,5 +146,6 @@ struct QeMatrix4x4f {
 #include "qecamera.h"
 #include "qelight.h"
 #include "qewindow.h"
+#include "qeviewport.h"
 #include "queenengine.h"
 #include "qeglobal.h"

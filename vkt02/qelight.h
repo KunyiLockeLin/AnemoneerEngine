@@ -19,7 +19,7 @@ public:
 	QeLightType type;
 	float intensity;
 
-	void update() {}
+	void update(float time) {}
 
 };
 

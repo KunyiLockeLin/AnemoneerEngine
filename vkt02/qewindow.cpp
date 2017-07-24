@@ -147,10 +147,9 @@ void QeWindow::init() {
 
 	AdjustWindowRectEx(&windowRect, dwStyle, FALSE, dwExStyle);
 
-	std::string windowTitle = getWindowTitle();
 	window = CreateWindowEx(0,
 		convert(AST->getString("title")),
-		convert(windowTitle),
+		convert(AST->getString("title")),
 		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		0,
 		0,
@@ -181,14 +180,14 @@ void QeWindow::init() {
 
 std::string QeWindow::getWindowTitle()
 {
-	//std::string device(QE->deviceProperties.deviceName);
+	std::string device(QE->deviceProperties.deviceName);
 	std::string windowTitle;
 	windowTitle = AST->getString("title");
-	//windowTitle.append(" - ");
-	//windowTitle.append(device);
-	//windowTitle.append(" - ");
-	//windowTitle.append(std::to_string(frameCounter));
-	//windowTitle.append(" fps");
+	windowTitle.append(" - ");
+	windowTitle.append(device);
+	windowTitle.append(" - ");
+	windowTitle.append(std::to_string(QE->currentFPS));
+	windowTitle.append(" fps");
 
 	return windowTitle;
 }
@@ -215,10 +214,11 @@ void QeWindow::cleanup() {
 }
 
 
-void QeWindow::update() {
+void QeWindow::update(float time) {
 
 	MSG msg;
-
+	std::string windowTitle = getWindowTitle();
+	SetWindowText(window, convert(windowTitle));
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

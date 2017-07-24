@@ -20,15 +20,23 @@ public:
 
 	QeAssetModel* modelData;
 
+	VkPipelineLayout pipelineLayout;
 	VkDescriptorSet descriptorSet;
 	VkBuffer uniformBuffer;
 	VkDeviceMemory uniformBufferMemory;
+	std::vector<VkCommandBuffer> commandBuffers;
 
+	VkPipeline graphicsPipeline;
+
+	void drawFrame();
+	void recreate();
+	void createCommandBuffers();
 	void createDescriptorSet();
 	void createUniformBuffer();
 	void updateDescriptorSet();
 	void updateUniformBuffer();
-	void update();
+	void createGraphicsPipeline();
+	void update(float time);
 	
 public: 
 	QeModel() {}
