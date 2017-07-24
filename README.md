@@ -5,7 +5,8 @@ reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulka
 --------------------------
 I meet a problem. I try to draw two same boxes in different position. To be honest, I don't certainly know how to do that. 
 
-So the two boxes use the same
+-------------------------
+The two boxes use the same
 
 VkBuffer vertexBuffer;
 
@@ -25,9 +26,7 @@ VkSampler textureSampler;
 
 VkShaderModule shader;
 
-
-
-
+---------------------
 And they have their own 
 
 VkPipelineLayout pipelineLayout;
