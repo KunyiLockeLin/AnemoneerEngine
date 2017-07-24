@@ -90,7 +90,7 @@ void QueenEngine::mainLoop() {
 		std::chrono::steady_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0f;
 
-		//if (time >= 1.0f / std::stoi(AST->getString("FPS"))) {
+		if (time >= 1.0f / std::stoi(AST->getString("FPS"))) {
 
 			lastTime = currentTime;
 			currentFPS = int(1 / time);
@@ -102,7 +102,7 @@ void QueenEngine::mainLoop() {
 			model1->update(time);
 
 			drawFrame();
-		//}
+		}
 	}
 
 	vkDeviceWaitIdle(device);
