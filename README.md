@@ -1,6 +1,6 @@
 # Vulkan
 
-reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulkan & https://renderdoc.org/
+reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulkan & https://renderdoc.org/ & https://github.com/PacktPublishing/Vulkan-Cookbook
 
 The problem has been solved.
 My view matrix is wrong. The initial matrix should be identity matrix.
