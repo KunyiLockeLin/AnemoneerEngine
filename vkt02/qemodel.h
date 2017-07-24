@@ -30,7 +30,6 @@ public:
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 
-	void drawFrame();
 	void recreate();
 	void createCommandBuffers();
 	void createDescriptorSet();

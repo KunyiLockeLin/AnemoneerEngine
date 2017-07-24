@@ -82,7 +82,7 @@ public:
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
 	VkSemaphore textOverlayComplete;
-
+	void drawFrame();
 	void initWindow();
 	void initVulkan();
 	void mainLoop();

@@ -77,8 +77,8 @@ void QueenEngine::prepare() {
 
 	model = new QeModel();
 	model->init(AST->getString("model") );
-	model->setPosition( QeVector3f(3,3,0) );
-	//createCommandBuffers(*model);
+	model->setPosition( QeVector3f(2,2,0) );
+
 	model1 = new QeModel();
 	model1->init(AST->getString("model"));
 	model1->setPosition(QeVector3f(-3, -3, 0));
@@ -90,7 +90,7 @@ void QueenEngine::mainLoop() {
 		std::chrono::steady_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0f;
 
-		//if ( time >= 1.0f/std::stoi(AST->getString("FPS")) ) {
+		//if (time >= 1.0f / std::stoi(AST->getString("FPS"))) {
 
 			lastTime = currentTime;
 			currentFPS = int(1 / time);
@@ -101,11 +101,85 @@ void QueenEngine::mainLoop() {
 			model->update(time);
 			model1->update(time);
 
-			//vkQueueWaitIdle(QE->presentQueue);
+			drawFrame();
 		//}
 	}
 
 	vkDeviceWaitIdle(device);
+}
+
+void QueenEngine::drawFrame() {
+
+	uint32_t imageIndex;
+	VkResult result = vkAcquireNextImageKHR(device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		recreateSwapChain();
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("failed to acquire swap chain image!");
+	}
+
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+	VkCommandBuffer commandBuffers[] = { model->commandBuffers[imageIndex] ,model1->commandBuffers[imageIndex] };
+	submitInfo.commandBufferCount = 2;
+	submitInfo.pCommandBuffers = commandBuffers;
+	//submitInfo.pCommandBuffers = &model->commandBuffers[imageIndex];
+
+	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = waitSemaphores;
+	submitInfo.pWaitDstStageMask = waitStages;
+
+	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = signalSemaphores;
+
+	VkSubmitInfo submitInfo1 = {};
+	submitInfo1.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+	submitInfo1.commandBufferCount = 1;
+	submitInfo1.pCommandBuffers = &model1->commandBuffers[imageIndex];
+
+	submitInfo1.waitSemaphoreCount = 1;
+	submitInfo1.pWaitSemaphores = waitSemaphores;
+	submitInfo1.pWaitDstStageMask = waitStages;
+
+	submitInfo1.signalSemaphoreCount = 1;
+	submitInfo1.pSignalSemaphores = signalSemaphores;
+
+	VkSubmitInfo submitInfos[] = { submitInfo1,submitInfo1};
+
+	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+		throw std::runtime_error("failed to submit draw command buffer!");
+	}
+
+	VkPresentInfoKHR presentInfo = {};
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.pWaitSemaphores = signalSemaphores;
+
+	VkSwapchainKHR swapChains[] = { swapChain };
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = swapChains;
+
+	presentInfo.pImageIndices = &imageIndex;
+
+	result = vkQueuePresentKHR(presentQueue, &presentInfo);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+		recreateSwapChain();
+	}
+	else if (result != VK_SUCCESS) {
+		throw std::runtime_error("failed to present swap chain image!");
+	}
+
+	vkQueueWaitIdle(presentQueue);
 }
 
 void QueenEngine::cleanupSwapChain() {
