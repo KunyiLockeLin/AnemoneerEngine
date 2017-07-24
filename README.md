@@ -3,8 +3,10 @@
 reference: https://vulkan-tutorial.com/ & https://github.com/SaschaWillems/Vulkan & https://renderdoc.org/ & https://github.com/PacktPublishing/Vulkan-Cookbook
 
 --------------------------
-I meet a problem. I try to draw two same boxes in different position. To be honest, I don't certainly know how to do that. 
+I meet a problem. I try to draw two same boxes in different position. But the two boxes keep flashing. The screen cannot show the two boxes at the same time.  
 
+--------------------------
+class QeModel;
 -------------------------
 The two boxes use the same
 
@@ -45,6 +47,5 @@ VkDescriptorSetLayout descriptorSetLayout;
 
 VkDescriptorPool descriptorPool;
 
-As a result, the two boxes keep flashing. The screen cannot show the two boxes at the same time. 
 ![alt text](problem1.png)
 ![alt text](problem2.png)
