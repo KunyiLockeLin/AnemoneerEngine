@@ -25,6 +25,9 @@ VkSampler textureSampler;
 
 VkShaderModule shader;
 
+
+
+
 And they have their own 
 
 VkPipelineLayout pipelineLayout;
