@@ -53,14 +53,14 @@ void QueenEngine::initVulkan() {
 
 	createImageViews();
 	createRenderPass();
-	createDescriptorSetLayout();
+	//createDescriptorSetLayout();
 	//createPipeline();
 	//createGraphicsPipeline();
 	createCommandPool();
 	createDepthResources();
 	createFramebuffers();
 
-	createDescriptorPool();
+	//createDescriptorPool();
 	//createDescriptorSet();
 	//createUniformBuffer();
 	//updateDescriptorSet();
@@ -90,7 +90,8 @@ void QueenEngine::mainLoop() {
 		std::chrono::steady_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0f;
 
-		if ( time >= 1.0f/std::stoi(AST->getString("FPS")) ) {
+		//if ( time >= 1.0f/std::stoi(AST->getString("FPS")) ) {
+
 			lastTime = currentTime;
 			currentFPS = int(1 / time);
 			window->update(time);
@@ -101,7 +102,7 @@ void QueenEngine::mainLoop() {
 			model1->update(time);
 
 			//vkQueueWaitIdle(QE->presentQueue);
-		}
+		//}
 	}
 
 	vkDeviceWaitIdle(device);
@@ -130,8 +131,8 @@ void QueenEngine::cleanupSwapChain() {
 void QueenEngine::cleanup() {
 	cleanupSwapChain();
 
-	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-	vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+	//vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+	//vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 	vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
 	vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 	vkDestroyCommandPool(device, commandPool, nullptr);
@@ -396,7 +397,7 @@ void QueenEngine::createRenderPass() {
 	}
 }
 
-void QueenEngine::createDescriptorSetLayout() {
+/*void QueenEngine::createDescriptorSetLayout() {
 	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 	uboLayoutBinding.binding = 0;
 	uboLayoutBinding.descriptorCount = 1;
@@ -432,7 +433,7 @@ void QueenEngine::createPipeline() {
 	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 	throw std::runtime_error("failed to create pipeline layout!");
 	}
-}
+}*/
 
 void QueenEngine::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
@@ -640,23 +641,23 @@ void QueenEngine::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 	endSingleTimeCommands(commandBuffer);
 }
 
-void QueenEngine::createDescriptorPool() {
+/*void QueenEngine::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = 2;
+	poolSizes[0].descriptorCount = 1;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = 2;
+	poolSizes[1].descriptorCount = 1;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = 2;
+	poolInfo.maxSets = 1;
 
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
-}
+}*/
 
 void QueenEngine::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	VkBufferCreateInfo bufferInfo = {};

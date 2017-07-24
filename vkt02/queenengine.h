@@ -41,7 +41,6 @@ public:
 	const bool enableValidationLayers = true;
 #endif
 
-
 	QeWindow*	window;
 	QeViewport*	viewport;
 	QeModel*	model;
@@ -69,8 +68,8 @@ public:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
 	VkRenderPass renderPass;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkPipelineLayout pipelineLayout;
+	//VkDescriptorSetLayout descriptorSetLayout;
+	//VkPipelineLayout pipelineLayout;
 
 	VkCommandPool commandPool;
 
@@ -78,7 +77,7 @@ public:
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
 
-	VkDescriptorPool descriptorPool;
+	//VkDescriptorPool descriptorPool;
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
@@ -99,8 +98,8 @@ public:
 	void createSwapChain();
 	void createImageViews();
 	void createRenderPass();
-	void createDescriptorSetLayout();
-	void createPipeline();
+	//void createDescriptorSetLayout();
+	//void createPipeline();
 	void createFramebuffers();
 	void createCommandPool();
 	void createDepthResources();
@@ -112,7 +111,7 @@ public:
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-	void createDescriptorPool();
+	//void createDescriptorPool();
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);

@@ -27,6 +27,8 @@ public:
 	std::vector<VkCommandBuffer> commandBuffers;
 
 	VkPipeline graphicsPipeline;
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkDescriptorPool descriptorPool;
 
 	void drawFrame();
 	void recreate();
@@ -37,7 +39,9 @@ public:
 	void updateUniformBuffer();
 	void createGraphicsPipeline();
 	void update(float time);
-	
+	void createDescriptorSetLayout();
+	void createDescriptorPool();
+
 public: 
 	QeModel() {}
 	~QeModel() {}
