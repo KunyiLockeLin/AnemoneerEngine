@@ -37,7 +37,8 @@ struct QeAssetMaterial {
 	float alpha;
 
 	QeAssetImage* pDiffuseMap;
-	QeAssetShader* pShader;
+	QeAssetShader* pShaderVert;
+	QeAssetShader* pShaderFarg;
 };
 
 struct QeAssetImage {

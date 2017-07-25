@@ -204,6 +204,9 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	if (strlen(diffuseMapPath) != 0)
 		mtl->pDiffuseMap = getImageBMP32(diffuseMapPath);
 
+	mtl->pShaderVert = getShader(getString("defaultshadervert"));
+	mtl->pShaderFarg = getShader(getString("defaultshaderfarg"));
+
 	return mtl;
 }
 

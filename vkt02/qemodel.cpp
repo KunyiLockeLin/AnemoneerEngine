@@ -170,19 +170,16 @@ void QeModel::updateUniformBuffer() {
 
 void QeModel::createGraphicsPipeline() {
 
-	QeAssetShader* vertShaderModule = AST->getShader(AST->getString("shadervert"));
-	QeAssetShader* fragShaderModule = AST->getShader(AST->getString("shaderfarg"));
-
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-	vertShaderStageInfo.module = vertShaderModule->shader;
+	vertShaderStageInfo.module = modelData->pMaterial->pShaderVert->shader;
 	vertShaderStageInfo.pName = "main";
 
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	fragShaderStageInfo.module = fragShaderModule->shader;
+	fragShaderStageInfo.module = modelData->pMaterial->pShaderFarg->shader;
 	fragShaderStageInfo.pName = "main";
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
