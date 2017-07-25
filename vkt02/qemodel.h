@@ -24,14 +24,11 @@ public:
 	VkDescriptorSet descriptorSet;
 	VkBuffer uniformBuffer;
 	VkDeviceMemory uniformBufferMemory;
-	std::vector<VkCommandBuffer> commandBuffers;
-
+	
 	VkPipeline graphicsPipeline;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 
-	void recreate();
-	void createCommandBuffers();
 	void createDescriptorSet();
 	void createUniformBuffer();
 	void updateDescriptorSet();

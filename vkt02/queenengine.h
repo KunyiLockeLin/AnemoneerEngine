@@ -82,6 +82,8 @@ public:
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
 	VkSemaphore textOverlayComplete;
+	std::vector<VkCommandBuffer> drawCommandBuffers;
+
 	void drawFrame();
 	void initWindow();
 	void initVulkan();
@@ -106,7 +108,9 @@ public:
 	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
-	
+	void createDrawCommandBuffers();
+	void updateDrawCommandBuffers();
+
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
@@ -133,7 +137,8 @@ public:
 	VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback);
 	void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator);
 
-	void initSwapchain();
+	//void initSwapchain();
 	void prepare();
+	void updateDrawCommandBuffersModel(VkCommandBuffer& drawCommandBuffer, QeModel& model);
 };
 

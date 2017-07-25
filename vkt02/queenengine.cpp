@@ -27,7 +27,7 @@ void QueenEngine::run() {
 	lastTime = std::chrono::high_resolution_clock::now();
 	initWindow();
 	initVulkan();
-	initSwapchain();
+	//initSwapchain();
 	prepare();
 	mainLoop();
 	cleanup();
@@ -65,9 +65,10 @@ void QueenEngine::initVulkan() {
 	//createUniformBuffer();
 	//updateDescriptorSet();
 	createSemaphores();
+	createDrawCommandBuffers();
 }
 
-void QueenEngine::initSwapchain() {}
+//void QueenEngine::initSwapchain() {}
 void QueenEngine::prepare() {
 
 	camera = new QeCamera();
@@ -82,6 +83,8 @@ void QueenEngine::prepare() {
 	model1 = new QeModel();
 	model1->init(AST->getString("model"));
 	model1->setPosition(QeVector3f(-3, -3, 0));
+
+	updateDrawCommandBuffers();
 }
 
 void QueenEngine::mainLoop() {
@@ -124,10 +127,11 @@ void QueenEngine::drawFrame() {
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkCommandBuffer commandBuffers[] = { model->commandBuffers[imageIndex] ,model1->commandBuffers[imageIndex] };
-	submitInfo.commandBufferCount = 2;
-	submitInfo.pCommandBuffers = commandBuffers;
+	//VkCommandBuffer commandBuffers[] = { model->commandBuffers[imageIndex] ,model1->commandBuffers[imageIndex] };
+	submitInfo.commandBufferCount = 1;
+	//submitInfo.pCommandBuffers = commandBuffers;
 	//submitInfo.pCommandBuffers = &model->commandBuffers[imageIndex];
+	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
 
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -138,21 +142,6 @@ void QueenEngine::drawFrame() {
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
-
-	VkSubmitInfo submitInfo1 = {};
-	submitInfo1.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-	submitInfo1.commandBufferCount = 1;
-	submitInfo1.pCommandBuffers = &model1->commandBuffers[imageIndex];
-
-	submitInfo1.waitSemaphoreCount = 1;
-	submitInfo1.pWaitSemaphores = waitSemaphores;
-	submitInfo1.pWaitDstStageMask = waitStages;
-
-	submitInfo1.signalSemaphoreCount = 1;
-	submitInfo1.pSignalSemaphores = signalSemaphores;
-
-	VkSubmitInfo submitInfos[] = { submitInfo1,submitInfo1};
 
 	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
@@ -417,7 +406,9 @@ void QueenEngine::createRenderPass() {
 	VkAttachmentDescription colorAttachment = {};
 	colorAttachment.format = swapChainImageFormat;
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	//colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	//colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -1004,4 +995,72 @@ VKAPI_ATTR VkBool32 VKAPI_CALL QueenEngine::debugCallback(VkDebugReportFlagsEXT 
 	std::cerr << "validation layer: " << msg << std::endl;
 
 	return VK_FALSE;
+}
+
+void QueenEngine::createDrawCommandBuffers() {
+	drawCommandBuffers.resize(QE->swapChainFramebuffers.size());
+
+	VkCommandBufferAllocateInfo allocInfo = {};
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.commandPool = QE->commandPool;
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo.commandBufferCount = (uint32_t)drawCommandBuffers.size();
+
+	if (vkAllocateCommandBuffers(QE->device, &allocInfo, drawCommandBuffers.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate command buffers!");
+	}
+}
+
+
+void QueenEngine::updateDrawCommandBuffers() {
+
+	for (size_t i = 0; i < drawCommandBuffers.size(); i++) {
+		VkCommandBufferBeginInfo beginInfo = {};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+
+		vkBeginCommandBuffer(drawCommandBuffers[i], &beginInfo);
+
+		std::array<VkClearValue, 2> clearValues = {};
+		clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+
+		VkRenderPassBeginInfo renderPassInfo = {};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = QE->renderPass;
+		renderPassInfo.framebuffer = QE->swapChainFramebuffers[i];
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = QE->swapChainExtent;
+
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
+
+		vkCmdBeginRenderPass(drawCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		updateDrawCommandBuffersModel(drawCommandBuffers[i],*model);
+		updateDrawCommandBuffersModel(drawCommandBuffers[i],*model1);
+
+		vkCmdEndRenderPass(drawCommandBuffers[i]);
+
+		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to record command buffer!");
+		}
+	}
+}
+
+
+void QueenEngine::updateDrawCommandBuffersModel(VkCommandBuffer& drawCommandBuffer, QeModel& model ) {
+
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.graphicsPipeline);
+
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &model.modelData->vertexBuffer, offsets);
+
+	vkCmdBindIndexBuffer(drawCommandBuffer, model.modelData->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
+
+	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
+	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 }
