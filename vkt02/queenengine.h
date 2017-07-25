@@ -24,8 +24,6 @@ public:
 	QueenEngine(QeGlobalKey& _key) {}
 	~QueenEngine() {}
 	void run();
-private:
-public:
 
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_LUNARG_standard_validation"
@@ -68,16 +66,14 @@ public:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
 	VkRenderPass renderPass;
-	//VkDescriptorSetLayout descriptorSetLayout;
-	//VkPipelineLayout pipelineLayout;
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkPipelineLayout pipelineLayout;
 
 	VkCommandPool commandPool;
 
 	VkImage depthImage;
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
-
-	//VkDescriptorPool descriptorPool;
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
@@ -100,8 +96,8 @@ public:
 	void createSwapChain();
 	void createImageViews();
 	void createRenderPass();
-	//void createDescriptorSetLayout();
-	//void createPipeline();
+	void createDescriptorSetLayout();
+	void createPipeline();
 	void createFramebuffers();
 	void createCommandPool();
 	void createDepthResources();
@@ -109,13 +105,12 @@ public:
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
 	void createDrawCommandBuffers();
-	void updateDrawCommandBuffers();
+	void updateDrawCommandBuffers(std::vector<QeModel*> & models);
 
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-	//void createDescriptorPool();
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
@@ -137,8 +132,8 @@ public:
 	VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback);
 	void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator);
 
-	//void initSwapchain();
+	void initSwapchain();
 	void prepare();
-	void updateDrawCommandBuffersModel(VkCommandBuffer& drawCommandBuffer, QeModel& model);
+	void updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model);
 };
 

@@ -84,15 +84,13 @@ QeMatrix4x4f QeModel::getMatModel() {
 
 void QeModel::init(const char* _filename) {
 
-	modelData = AST->loadModelOBJ(_filename);
+	modelData = AST->getModelOBJ(_filename);
 	createDescriptorPool();
-	createDescriptorSetLayout();
 	createDescriptorSet();
 	createUniformBuffer();
 	updateDescriptorSet();
 	createGraphicsPipeline();
-	//createCommandBuffers();
-
+	
 	pos = QeVector3f(0, 0, 0);
 	face = 0.0f;
 	up = 0.0f;
@@ -100,7 +98,7 @@ void QeModel::init(const char* _filename) {
 }
 
 void QeModel::createDescriptorSet() {
-	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
+	VkDescriptorSetLayout layouts[] = { QE->descriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
@@ -172,17 +170,8 @@ void QeModel::updateUniformBuffer() {
 
 void QeModel::createGraphicsPipeline() {
 
-	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
-	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 1;
-	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
-
-	if (vkCreatePipelineLayout(QE->device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create pipeline layout!");
-	}
-
-	QeAssetShader* vertShaderModule = AST->loadShader(AST->getString("shadervert"));
-	QeAssetShader* fragShaderModule = AST->loadShader(AST->getString("shaderfarg"));
+	QeAssetShader* vertShaderModule = AST->getShader(AST->getString("shadervert"));
+	QeAssetShader* fragShaderModule = AST->getShader(AST->getString("shaderfarg"));
 
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -264,7 +253,7 @@ void QeModel::createGraphicsPipeline() {
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
-	pipelineInfo.layout = pipelineLayout;
+	pipelineInfo.layout = QE->pipelineLayout;
 	pipelineInfo.renderPass = QE->renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -285,33 +274,6 @@ void QeModel::createGraphicsPipeline() {
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	dynamicState.dynamicStateCount = 2;
 	dynamicState.pDynamicStates = dynamicStates;*/
-}
-
-
-void QeModel::createDescriptorSetLayout() {
-	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
-	uboLayoutBinding.binding = 0;
-	uboLayoutBinding.descriptorCount = 1;
-	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	uboLayoutBinding.pImmutableSamplers = nullptr;
-	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-	VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
-	samplerLayoutBinding.binding = 1;
-	samplerLayoutBinding.descriptorCount = 1;
-	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	samplerLayoutBinding.pImmutableSamplers = nullptr;
-	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
-	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-	layoutInfo.pBindings = bindings.data();
-
-	if (vkCreateDescriptorSetLayout(QE->device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-	throw std::runtime_error("failed to create descriptor set layout!");
-	}
 }
 
 void QeModel::createDescriptorPool() {

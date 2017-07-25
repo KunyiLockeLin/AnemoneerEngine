@@ -65,19 +65,22 @@ class QeAsset
 public:
 	const std::string CONFIG_PATH = "../data/config.ini";
 
-	std::map<std::string, void*> asset;
-	std::map<std::string, std::string> assetString;
+	std::map<std::string, QeAssetModel*> astModels;
+	std::map<std::string, QeAssetMaterial*> astMaterials;
+	std::map<std::string, QeAssetShader*> astShaders;
+	std::map<std::string, QeAssetImage*> astTextures;
+	std::map<std::string, std::vector<std::string>> astString;
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset() {}
 
 	std::vector<char>  loadFile(const char* _filename);
 	bool loadConfig();
-	const char* getString(const char* _nodeName);
+	const char* getString(const char* _nodeName, int _index=0);
 	std::string combinePath(const char* _filename, QeAssetType dataType );
-	QeAssetModel* loadModelOBJ(const char* _filename);
-	QeAssetMaterial* loadMateialMTL(const char* _filename);
-	QeAssetImage* loadImageBMP32(const char* _filename);
-	QeAssetShader* loadShader(const char* _filename);
+	QeAssetModel* getModelOBJ(const char* _filename);
+	QeAssetMaterial* getMateialMTL(const char* _filename);
+	QeAssetImage* getImageBMP32(const char* _filename);
+	QeAssetShader* getShader(const char* _filename);
 
 	void createVertexBuffer(QeAssetModel& model, std::vector<QeVertex>& vertices);
 	void createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indices);

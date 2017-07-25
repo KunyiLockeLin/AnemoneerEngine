@@ -59,12 +59,12 @@ std::vector<char> QeAsset::loadFile(const char* _filename) {
 	return buffer;
 }
 
-QeAssetModel* QeAsset::loadModelOBJ(const char* _filename) {
+QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetModel);
-	std::map<std::string, void*>::iterator it = asset.find(_filePath);
+	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
 
-	if (it != asset.end())	return static_cast<QeAssetModel*>(it->second);
+	if (it != astModels.end())	return it->second;
 
 	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
 	if (!file.is_open()) return nullptr;
@@ -147,20 +147,20 @@ QeAssetModel* QeAsset::loadModelOBJ(const char* _filename) {
 	createIndexBuffer(*model, indices);
 	model->indexSize = indices.size();
 
-	asset[_filePath] = model;
+	astModels[_filePath] = model;
 
 	if (strlen(mtlPath) != 0)
-		model->pMaterial = loadMateialMTL(mtlPath);
+		model->pMaterial = getMateialMTL(mtlPath);
 
 	return model;
 }
 
-QeAssetMaterial* QeAsset::loadMateialMTL(const char* _filename) {
+QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetMaterial);
-	std::map<std::string, void*>::iterator it = asset.find(_filePath.c_str());
+	std::map<std::string, QeAssetMaterial*>::iterator it = astMaterials.find(_filePath.c_str());
 
-	if (it != asset.end())	return static_cast<QeAssetMaterial*>(it->second);
+	if (it != astMaterials.end())	return it->second;
 
 	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
 	if (!file.is_open()) return nullptr;
@@ -199,19 +199,19 @@ QeAssetMaterial* QeAsset::loadMateialMTL(const char* _filename) {
 
 	file.close();
 
-	asset[_filePath] = mtl;
+	astMaterials[_filePath] = mtl;
 
 	if (strlen(diffuseMapPath) != 0)
-		mtl->pDiffuseMap = loadImageBMP32(diffuseMapPath);
+		mtl->pDiffuseMap = getImageBMP32(diffuseMapPath);
 
 	return mtl;
 }
 
-QeAssetImage* QeAsset::loadImageBMP32(const char* _filename) {
+QeAssetImage* QeAsset::getImageBMP32(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetTexture);
-	std::map<std::string, void*>::iterator it = asset.find(_filePath.c_str());
-	if (it != asset.end())	return static_cast<QeAssetImage*>(it->second);
+	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
+	if (it != astTextures.end())	return it->second;
 
 	std::ifstream _file(_filePath.c_str(), std::ios::ate | std::ios::binary);
 	if (!_file.is_open()) return nullptr;
@@ -246,7 +246,7 @@ QeAssetImage* QeAsset::loadImageBMP32(const char* _filename) {
 	createTextureImage(*image, data, width, height, imageSize);
 	createTextureImageView(*image);
 	createTextureSampler(*image);
-	asset[_filePath] = image;
+	astTextures[_filePath] = image;
 	return image;
 }
 
@@ -349,32 +349,41 @@ bool QeAsset::loadConfig() {
 		char node[100];
 		char value[400];
 		sscanf_s(line, "%s %s", node, (unsigned int)sizeof(node), value, (unsigned int)sizeof(value));
-		assetString[node] = value;
+
+		std::map<std::string, std::vector<std::string>>::iterator it = astString.find(node);
+		
+		if (it != astString.end() && !it->second.empty()) {
+			it->second.push_back( value );
+		}
+		else {
+			std::vector<std::string> s;
+			s.push_back( value );
+			astString[node] = s;
+		}
 	}
 	file.close();
 	return true;
 }
 
-const char* QeAsset::getString(const char* _nodeName) {
-	std::map<std::string, std::string>::iterator it = assetString.find(_nodeName);
-	if (it != assetString.end())	return it->second.c_str();
+const char* QeAsset::getString(const char* _nodeName, int _index ) {
+	std::map<std::string, std::vector<std::string>>::iterator it = astString.find(_nodeName);
+	if (it != astString.end() && !it->second.empty() ) 
+		return it->second.at(_index).c_str();
 
 	return nullptr;
 }
 
-QeAssetShader* QeAsset::loadShader(const char* _filename) {
+QeAssetShader* QeAsset::getShader(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetShader);
-	std::map<std::string, void*>::iterator it = asset.find(_filePath.c_str());
-	if (it != asset.end())	return static_cast<QeAssetShader*>(it->second);
+	std::map<std::string, QeAssetShader*>::iterator it = astShaders.find(_filePath.c_str());
+	if (it != astShaders.end())	return it->second;
 
 	std::vector<char> data = loadFile(_filePath.c_str());
-	//std::vector<char>* pData = new std::vector<char>();
-	//pData->assign(data.begin(), data.end());
 
 	QeAssetShader* shader = new QeAssetShader();
 	createShaderModule( *shader, data);
-	asset[_filename] = shader;
+	astShaders[_filename] = shader;
 	return shader;
 }
 

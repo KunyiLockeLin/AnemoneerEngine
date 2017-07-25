@@ -27,7 +27,7 @@ void QueenEngine::run() {
 	lastTime = std::chrono::high_resolution_clock::now();
 	initWindow();
 	initVulkan();
-	//initSwapchain();
+	initSwapchain();
 	prepare();
 	mainLoop();
 	cleanup();
@@ -53,38 +53,28 @@ void QueenEngine::initVulkan() {
 
 	createImageViews();
 	createRenderPass();
-	//createDescriptorSetLayout();
-	//createPipeline();
-	//createGraphicsPipeline();
+	createDescriptorSetLayout();
+	createPipeline();
 	createCommandPool();
 	createDepthResources();
 	createFramebuffers();
-
-	//createDescriptorPool();
-	//createDescriptorSet();
-	//createUniformBuffer();
-	//updateDescriptorSet();
 	createSemaphores();
 	createDrawCommandBuffers();
 }
 
-//void QueenEngine::initSwapchain() {}
+void QueenEngine::initSwapchain() {}
 void QueenEngine::prepare() {
 
-	camera = new QeCamera();
+	camera = OBJMGR->getCamera();
 	camera->reset();
-	light = new QeLight();
+	light = OBJMGR->getLight();
 	light->intensity = 100;
 
-	model = new QeModel();
-	model->init(AST->getString("model") );
+	model = OBJMGR->getModel("model",0);
 	model->setPosition( QeVector3f(2,2,0) );
 
-	model1 = new QeModel();
-	model1->init(AST->getString("model"));
+	model1 = OBJMGR->getModel("model",1);
 	model1->setPosition(QeVector3f(-3, -3, 0));
-
-	updateDrawCommandBuffers();
 }
 
 void QueenEngine::mainLoop() {
@@ -99,11 +89,11 @@ void QueenEngine::mainLoop() {
 			currentFPS = int(1 / time);
 			window->update(time);
 			viewport->update(time);
-			camera->update(time);
-			light->update(time);
-			model->update(time);
-			model1->update(time);
-
+			//camera->update(time);
+			//light->update(time);
+			//model->update(time);
+			//model1->update(time);
+			OBJMGR->update(time);
 			drawFrame();
 		}
 	}
@@ -127,10 +117,7 @@ void QueenEngine::drawFrame() {
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	//VkCommandBuffer commandBuffers[] = { model->commandBuffers[imageIndex] ,model1->commandBuffers[imageIndex] };
 	submitInfo.commandBufferCount = 1;
-	//submitInfo.pCommandBuffers = commandBuffers;
-	//submitInfo.pCommandBuffers = &model->commandBuffers[imageIndex];
 	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
 
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
@@ -406,9 +393,7 @@ void QueenEngine::createRenderPass() {
 	VkAttachmentDescription colorAttachment = {};
 	colorAttachment.format = swapChainImageFormat;
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	//colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	//colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -462,7 +447,7 @@ void QueenEngine::createRenderPass() {
 	}
 }
 
-/*void QueenEngine::createDescriptorSetLayout() {
+void QueenEngine::createDescriptorSetLayout() {
 	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 	uboLayoutBinding.binding = 0;
 	uboLayoutBinding.descriptorCount = 1;
@@ -498,7 +483,7 @@ void QueenEngine::createPipeline() {
 	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 	throw std::runtime_error("failed to create pipeline layout!");
 	}
-}*/
+}
 
 void QueenEngine::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
@@ -705,24 +690,6 @@ void QueenEngine::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 
 	endSingleTimeCommands(commandBuffer);
 }
-
-/*void QueenEngine::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
-	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = 1;
-	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = 1;
-
-	VkDescriptorPoolCreateInfo poolInfo = {};
-	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = 1;
-
-	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor pool!");
-	}
-}*/
 
 void QueenEngine::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	VkBufferCreateInfo bufferInfo = {};
@@ -1012,7 +979,7 @@ void QueenEngine::createDrawCommandBuffers() {
 }
 
 
-void QueenEngine::updateDrawCommandBuffers() {
+void QueenEngine::updateDrawCommandBuffers(std::vector<QeModel*> & models) {
 
 	for (size_t i = 0; i < drawCommandBuffers.size(); i++) {
 		VkCommandBufferBeginInfo beginInfo = {};
@@ -1038,9 +1005,12 @@ void QueenEngine::updateDrawCommandBuffers() {
 
 		vkCmdBeginRenderPass(drawCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		updateDrawCommandBuffersModel(drawCommandBuffers[i],*model);
-		updateDrawCommandBuffersModel(drawCommandBuffers[i],*model1);
+		std::vector<QeModel*>::iterator it = models.begin();
 
+		while (it != models.end()) {
+			updateDrawCommandBufferModel(drawCommandBuffers[i], **it);
+			++it;
+		}
 		vkCmdEndRenderPass(drawCommandBuffers[i]);
 
 		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS) {
@@ -1050,7 +1020,7 @@ void QueenEngine::updateDrawCommandBuffers() {
 }
 
 
-void QueenEngine::updateDrawCommandBuffersModel(VkCommandBuffer& drawCommandBuffer, QeModel& model ) {
+void QueenEngine::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model ) {
 
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.graphicsPipeline);
 
@@ -1059,7 +1029,7 @@ void QueenEngine::updateDrawCommandBuffersModel(VkCommandBuffer& drawCommandBuff
 
 	vkCmdBindIndexBuffer(drawCommandBuffer, model.modelData->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);

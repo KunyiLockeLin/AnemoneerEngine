@@ -48,6 +48,9 @@
     <ClCompile Include="queenengine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qeobjectmanger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="queenengine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qeobjectmanger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

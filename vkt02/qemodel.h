@@ -11,8 +11,8 @@ struct UniformBufferObject {
 
 class QeModel
 {
-private:
 public:
+
 	QeVector3f pos;
 	float face;
 	float up;
@@ -20,13 +20,11 @@ public:
 
 	QeAssetModel* modelData;
 
-	VkPipelineLayout pipelineLayout;
 	VkDescriptorSet descriptorSet;
 	VkBuffer uniformBuffer;
 	VkDeviceMemory uniformBufferMemory;
 	
 	VkPipeline graphicsPipeline;
-	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 
 	void createDescriptorSet();
@@ -35,12 +33,11 @@ public:
 	void updateUniformBuffer();
 	void createGraphicsPipeline();
 	void update(float time);
-	void createDescriptorSetLayout();
 	void createDescriptorPool();
 
-public: 
-	QeModel() {}
+	QeModel(QeObjectMangerKey& _key) {}
 	~QeModel() {}
+
 	void init(const char* _filename);
 	void cleanup();
 	void setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size);

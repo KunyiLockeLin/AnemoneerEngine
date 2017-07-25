@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="qeasset.cpp" />
     <ClCompile Include="qecamera.cpp" />
+    <ClCompile Include="qeobjectmanger.cpp" />
     <ClCompile Include="queenengine.cpp" />
     <ClCompile Include="qemath.cpp" />
     <ClCompile Include="qemodel.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="qeasset.h" />
     <ClInclude Include="qecamera.h" />
+    <ClInclude Include="qeobjectmanger.h" />
     <ClInclude Include="queenengine.h" />
     <ClInclude Include="qeheader.h" />
     <ClInclude Include="qemath.h" />

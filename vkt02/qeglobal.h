@@ -23,9 +23,11 @@ public:
 	QueenEngine*		engine;
 	QeMath*				math;
 	QeAsset*			asset;
+	QeObjectManger*		objMgr;
 };
 
 #define GLB		QeGlobal::getInstance()
 #define QE		GLB.engine
 #define MATH	GLB.math
 #define AST		GLB.asset
+#define OBJMGR	GLB.objMgr
