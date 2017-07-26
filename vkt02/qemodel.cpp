@@ -87,7 +87,7 @@ void QeModel::init(const char* _filename) {
 	modelData = AST->getModelOBJ(_filename);
 	createDescriptorPool();
 	createDescriptorSet();
-	createUniformBuffer();
+	createDescriptorBuffer();
 	updateDescriptorSet();
 	createGraphicsPipeline();
 	
@@ -110,24 +110,36 @@ void QeModel::createDescriptorSet() {
 	}
 }
 
-void QeModel::createUniformBuffer() {
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffer, uniformBufferMemory);
+void QeModel::createDescriptorBuffer() {
+	VkDeviceSize bufferSize = sizeof(QeDataMVP);
+	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mvpBuffer, mvpBufferMemory);
+	bufferSize = sizeof(QeDataLight);
+	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, lightBuffer, lightBufferMemory);
 }
 
 void QeModel::updateDescriptorSet() {
 
-	VkDescriptorBufferInfo bufferInfo = {};
-	bufferInfo.buffer = uniformBuffer;
-	bufferInfo.offset = 0;
-	bufferInfo.range = sizeof(UniformBufferObject);
+	VkDescriptorBufferInfo mvpInfo = {};
+	mvpInfo.buffer = mvpBuffer;
+	mvpInfo.offset = 0;
+	mvpInfo.range = sizeof(QeDataMVP);
+
+	VkDescriptorBufferInfo lightInfo = {};
+	lightInfo.buffer = lightBuffer;
+	lightInfo.offset = 0;
+	lightInfo.range = sizeof(QeDataLight);
+
+	VkDescriptorBufferInfo materialInfo = {};
+	materialInfo.buffer = modelData->pMaterial->materialBuffer;
+	materialInfo.offset = 0;
+	materialInfo.range = sizeof(QeDataMaterial);
 
 	VkDescriptorImageInfo imageInfo = {};
 	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 	imageInfo.imageView = modelData->pMaterial->pDiffuseMap->textureImageView;
 	imageInfo.sampler = modelData->pMaterial->pDiffuseMap->textureSampler;
 
-	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
+	std::array<VkWriteDescriptorSet, 4> descriptorWrites = {};
 
 	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 	descriptorWrites[0].dstSet = descriptorSet;
@@ -135,7 +147,7 @@ void QeModel::updateDescriptorSet() {
 	descriptorWrites[0].dstArrayElement = 0;
 	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	descriptorWrites[0].descriptorCount = 1;
-	descriptorWrites[0].pBufferInfo = &bufferInfo;
+	descriptorWrites[0].pBufferInfo = &mvpInfo;
 
 	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 	descriptorWrites[1].dstSet = descriptorSet;
@@ -144,6 +156,22 @@ void QeModel::updateDescriptorSet() {
 	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	descriptorWrites[1].descriptorCount = 1;
 	descriptorWrites[1].pImageInfo = &imageInfo;
+
+	descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[2].dstSet = descriptorSet;
+	descriptorWrites[2].dstBinding = 2;
+	descriptorWrites[2].dstArrayElement = 0;
+	descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorWrites[2].descriptorCount = 1;
+	descriptorWrites[2].pBufferInfo = &lightInfo;
+
+	descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[3].dstSet = descriptorSet;
+	descriptorWrites[3].dstBinding = 3;
+	descriptorWrites[3].dstArrayElement = 0;
+	descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorWrites[3].descriptorCount = 1;
+	descriptorWrites[3].pBufferInfo = &materialInfo;
 
 	vkUpdateDescriptorSets(QE->device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
@@ -156,15 +184,26 @@ void QeModel::update(float time) {
 
 void QeModel::updateUniformBuffer() {
 
-	UniformBufferObject ubo = {};
-	ubo.model = getMatModel();
-	ubo.view = QE->camera->getMatView();
-	ubo.proj = QE->camera->getMatProjection();
+	QeDataMVP mvp = {};
+	mvp.model = getMatModel();
+	mvp.view = QE->camera->getMatView();
+	mvp.proj = QE->camera->getMatProjection();
+
+	QeMatrix4x4f mat = mvp.view*mvp.model;
+	MATH->inverse(mat, mat);
+	mvp.normal = MATH->transpose(mat);
 
 	void* data;
-	vkMapMemory(QE->device, uniformBufferMemory, 0, sizeof(ubo), 0, &data);
-	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(QE->device, uniformBufferMemory);
+	vkMapMemory(QE->device, mvpBufferMemory, 0, sizeof(mvp), 0, &data);
+		memcpy(data, &mvp, sizeof(mvp));
+	vkUnmapMemory(QE->device, mvpBufferMemory);
+
+	QeDataLight light = OBJMGR->getLight()->data;
+
+	data = nullptr;
+	vkMapMemory(QE->device, lightBufferMemory, 0, sizeof(light), 0, &data);
+		memcpy(data, &light, sizeof(light));
+	vkUnmapMemory(QE->device, lightBufferMemory);
 }
 
 
@@ -274,11 +313,15 @@ void QeModel::createGraphicsPipeline() {
 }
 
 void QeModel::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
+	std::array<VkDescriptorPoolSize, 4> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = 1;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	poolSizes[1].descriptorCount = 1;
+	poolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSizes[2].descriptorCount = 1;
+	poolSizes[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSizes[3].descriptorCount = 1;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

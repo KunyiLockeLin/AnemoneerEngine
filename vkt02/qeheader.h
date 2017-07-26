@@ -29,7 +29,6 @@
 #define KEY_R 0x52
 #define KEY_S 0x53
 #define KEY_W 0x57
-#define FAST_SQRT_QUAKE3
 
 struct QeVector2i;
 struct QeVector2f;
@@ -40,8 +39,11 @@ struct QeMatrix4x4f;
 struct QeVertex;
 struct QeAssetModel;
 struct QeAssetMaterial;
+struct QeDataMaterial;
 struct QeAssetImage;
 struct QeAssetShader;
+struct QeDataMVP;
+struct QeDataLight;
 class QeMath;
 class QeAsset;
 class QeModel;
@@ -126,6 +128,19 @@ struct QeVector4f {
 	QeVector4f& operator=(const QeVector3f& other);
 };
 
+struct QeMatrix3x3f {
+	float _00, _01, _02;
+	float _10, _11, _12;
+	float _20, _21, _22;
+
+	QeMatrix3x3f();
+	QeMatrix3x3f(float _num);
+	QeMatrix3x3f& operator=(const QeMatrix4x4f& other);
+	QeMatrix3x3f& operator*=(const QeMatrix3x3f& other);
+	QeMatrix3x3f operator*(const QeMatrix3x3f& other);
+	QeVector3f operator*(const QeVector3f& other);
+	QeMatrix3x3f& operator/=(const float& other);
+};
 
 struct QeMatrix4x4f {
 	float _00, _01, _02, _03;
@@ -139,6 +154,7 @@ struct QeMatrix4x4f {
 	QeMatrix4x4f& operator*=(const QeMatrix4x4f& other);
 	QeMatrix4x4f operator*(const QeMatrix4x4f& other);
 	QeVector4f operator*(const QeVector4f& other);
+	QeMatrix4x4f& operator/=(const float& other);
 };
 
 

@@ -6,6 +6,7 @@ QeCamera* QeObjectManger::getCamera(const char* _name) {
 	if (it != mgrCameras.end())	return it->second;
 
 	QeCamera* newCamera = new QeCamera(key);
+	newCamera->init();
 	mgrCameras[_name] = newCamera;
 
 	return newCamera;
@@ -16,6 +17,7 @@ QeLight* QeObjectManger::getLight(const char* _name) {
 	if (it != mgrLights.end())	return it->second;
 
 	QeLight* newLight = new QeLight(key);
+	newLight->init();
 	mgrLights[_name] = newLight;
 
 	return newLight;

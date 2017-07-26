@@ -19,7 +19,7 @@ float QeMath::length(QeVector3f _vec) { return fastSqrt(dot(_vec, _vec)); }
 
 float QeMath::fastSqrt(float _number) {
 
-#ifdef FAST_SQRT_QUAKE3
+//#ifdef FAST_SQRT_QUAKE3
 	long i;
 	float x2, y;
 	const float threehalfs = 1.5F;
@@ -31,9 +31,9 @@ float QeMath::fastSqrt(float _number) {
 	y = *(float *)&i;
 	y = y * (threehalfs - (x2 * y * y));
 	return 1.0f/y;
-#else
-	return sqrtf(_number);
-#endif
+//#else
+//	return sqrtf(_number);
+//#endif
 }
 
 
@@ -348,6 +348,44 @@ QeVector4f& QeVector4f::operator=(const QeVector3f& other) {
 	return *this;
 }
 
+QeMatrix3x3f::QeMatrix3x3f() :_00(1.0f), _01(0.0f), _02(0.0f),
+		_10(0.0f), _11(1.0f), _12(0.0f),
+		_20(0.0f), _21(0.0f), _22(1.0f) {}
+QeMatrix3x3f::QeMatrix3x3f(float _num) :_00(_num), _01(_num), _02(_num),
+		_10(_num), _11(_num), _12(_num),
+		_20(_num), _21(_num), _22(_num) {}
+
+QeMatrix3x3f& QeMatrix3x3f::operator=(const QeMatrix4x4f& other) {
+	for (int i = 0; i<3; i++)
+		for (int j = 0; j<3; j++)
+				(((float *)this)[i * 3 + j] = ((float *)&other)[i * 3 + j]);
+	return *this;
+}
+
+QeMatrix3x3f& QeMatrix3x3f::operator*=(const QeMatrix3x3f& other) {
+	*this = *this*other;
+	return *this;
+}
+QeMatrix3x3f QeMatrix3x3f::operator*(const QeMatrix3x3f& other) {
+	QeMatrix3x3f _new(0);
+	for (int i = 0; i<3; i++)
+		for (int j = 0; j<3; j++)
+			for (int k = 0; k < 3; k++) 
+				((float *)&_new)[i * 3 + j] += (((float *)this)[i * 3 + k] * ((float *)&other)[k * 3 + j]);
+	return _new;
+}
+QeVector3f QeMatrix3x3f::operator*(const QeVector3f& other) {
+	QeVector3f _new;
+	for (int i = 0; i<3; i++)
+		for (int j = 0; j < 3; j++) ((float *)&_new)[i] += (((float *)this)[j * 3 + i] * ((float *)&other)[j]);
+
+	return _new;
+}
+QeMatrix3x3f& QeMatrix3x3f::operator/=(const float& other) {
+	for (int i = 0; i<9; i++)	((float *)this)[i] /= other;
+	return *this;
+}
+
 QeMatrix4x4f::QeMatrix4x4f() :_00(1.0f), _01(0.0f), _02(0.0f), _03(0.0f),
 		_10(0.0f), _11(1.0f), _12(0.0f), _13(0.0f),
 		_20(0.0f), _21(0.0f), _22(1.0f), _23(0.0f),
@@ -374,5 +412,159 @@ QeVector4f QeMatrix4x4f::operator*(const QeVector4f& other) {
 	for (int i = 0; i<4; i++)
 		for (int j = 0; j < 4; j++) ((float *)&_new)[i] += (((float *)this)[j * 4 + i] * ((float *)&other)[j]);
 
+	return _new;
+}
+QeMatrix4x4f& QeMatrix4x4f::operator/=(const float& other) {
+
+	for (int i = 0; i<16; i++)	((float *)this)[i] /= other;
+	return *this;
+}
+bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
+
+	QeMatrix4x4f _new(0);
+
+	_new._00 =  _inMat._11 * _inMat._22 * _inMat._33 -
+				_inMat._11 * _inMat._23 * _inMat._32 -
+				_inMat._21 * _inMat._12 * _inMat._33 +
+				_inMat._21 * _inMat._13 * _inMat._23 +
+				_inMat._31 * _inMat._12 * _inMat._23 -
+				_inMat._31 * _inMat._13 * _inMat._22;
+
+	_new._10 = -_inMat._10 * _inMat._22 * _inMat._33 +
+				_inMat._10 * _inMat._23 * _inMat._32 +
+				_inMat._20 * _inMat._12 * _inMat._33 -
+				_inMat._20 * _inMat._13 * _inMat._32 -
+				_inMat._30 * _inMat._12 * _inMat._23 +
+				_inMat._30 * _inMat._13 * _inMat._22;
+
+	_new._20 =  _inMat._10 * _inMat._21 * _inMat._33 -
+				_inMat._10 * _inMat._23 * _inMat._31 -
+				_inMat._20 * _inMat._11 * _inMat._33 +
+				_inMat._20 * _inMat._13 * _inMat._31 +
+				_inMat._30 * _inMat._11 * _inMat._23 -
+				_inMat._30 * _inMat._13 * _inMat._21;
+
+	_new._30 = -_inMat._10 * _inMat._21 * _inMat._32 +
+				_inMat._10 * _inMat._22 * _inMat._31 +
+				_inMat._20 * _inMat._11 * _inMat._32 -
+				_inMat._20 * _inMat._12 * _inMat._31 -
+				_inMat._30 * _inMat._11 * _inMat._22 +
+				_inMat._30 * _inMat._12 * _inMat._21;
+
+	_new._01 = -_inMat._01 * _inMat._22 * _inMat._33 +
+				_inMat._01 * _inMat._23 * _inMat._32 +
+				_inMat._21 * _inMat._02 * _inMat._33 -
+				_inMat._21 * _inMat._03 * _inMat._32 -
+				_inMat._31 * _inMat._02 * _inMat._23 +
+				_inMat._31 * _inMat._03 * _inMat._22;
+
+	_new._11 =  _inMat._00 * _inMat._22 * _inMat._33 -
+				_inMat._00 * _inMat._23 * _inMat._32 -
+				_inMat._20 * _inMat._02 * _inMat._33 +
+				_inMat._20 * _inMat._03 * _inMat._32 +
+				_inMat._30 * _inMat._02 * _inMat._23 -
+				_inMat._30 * _inMat._03 * _inMat._22;
+
+	_new._21 = -_inMat._00 * _inMat._21 * _inMat._33 +
+				_inMat._00 * _inMat._23 * _inMat._31 +
+				_inMat._20 * _inMat._01 * _inMat._33 -
+				_inMat._20 * _inMat._03 * _inMat._31 -
+				_inMat._30 * _inMat._01 * _inMat._23 +
+				_inMat._30 * _inMat._03 * _inMat._21;
+
+	_new._31 =  _inMat._00 * _inMat._21 * _inMat._32 -
+				_inMat._00 * _inMat._22 * _inMat._31 -
+				_inMat._20 * _inMat._01 * _inMat._32 +
+				_inMat._20 * _inMat._02 * _inMat._31 +
+				_inMat._30 * _inMat._01 * _inMat._22 -
+				_inMat._30 * _inMat._02 * _inMat._21;
+
+	_new._02 =  _inMat._01 * _inMat._12 * _inMat._33 -
+				_inMat._01 * _inMat._13 * _inMat._32 -
+				_inMat._11 * _inMat._02 * _inMat._33 +
+				_inMat._11 * _inMat._03 * _inMat._32 +
+				_inMat._31 * _inMat._02 * _inMat._13 -
+				_inMat._31 * _inMat._03 * _inMat._12;
+
+	_new._12 = -_inMat._00 * _inMat._12 * _inMat._33 +
+				_inMat._00 * _inMat._13 * _inMat._32 +
+				_inMat._10 * _inMat._02 * _inMat._33 -
+				_inMat._10 * _inMat._03 * _inMat._32 -
+				_inMat._30 * _inMat._02 * _inMat._13 +
+				_inMat._30 * _inMat._03 * _inMat._12;
+
+	_new._22 =  _inMat._00 * _inMat._11 * _inMat._33 -
+				_inMat._00 * _inMat._13 * _inMat._31 -
+				_inMat._10 * _inMat._01 * _inMat._33 +
+				_inMat._10 * _inMat._03 * _inMat._31 +
+				_inMat._30 * _inMat._01 * _inMat._13 -
+				_inMat._30 * _inMat._03 * _inMat._11;
+
+	_new._32 = -_inMat._00 * _inMat._11 * _inMat._32 +
+				_inMat._00 * _inMat._12 * _inMat._31 +
+				_inMat._10 * _inMat._01 * _inMat._32 -
+				_inMat._10 * _inMat._02 * _inMat._31 -
+				_inMat._30 * _inMat._01 * _inMat._12 +
+				_inMat._30 * _inMat._02 * _inMat._11;
+
+	_new._03 = -_inMat._01 * _inMat._12 * _inMat._23 +
+				_inMat._01 * _inMat._13 * _inMat._22 +
+				_inMat._11 * _inMat._02 * _inMat._23 -
+				_inMat._11 * _inMat._03 * _inMat._22 -
+				_inMat._21 * _inMat._02 * _inMat._13 +
+				_inMat._21 * _inMat._03 * _inMat._12;
+
+	_new._13 = _inMat._00 * _inMat._12 * _inMat._23 -
+				_inMat._00 * _inMat._13 * _inMat._22 -
+				_inMat._10 * _inMat._02 * _inMat._23 +
+				_inMat._10 * _inMat._03 * _inMat._22 +
+				_inMat._20 * _inMat._02 * _inMat._13 -
+				_inMat._20 * _inMat._03 * _inMat._12;
+
+	_new._23 = -_inMat._00 * _inMat._11 * _inMat._23 +
+				_inMat._00 * _inMat._13 * _inMat._21 +
+				_inMat._10 * _inMat._01 * _inMat._23 -
+				_inMat._10 * _inMat._03 * _inMat._21 -
+				_inMat._20 * _inMat._01 * _inMat._13 +
+				_inMat._20 * _inMat._03 * _inMat._11;
+
+	_new._33 = _inMat._00 * _inMat._11 * _inMat._22 -
+				_inMat._00 * _inMat._12 * _inMat._21 -
+				_inMat._10 * _inMat._01 * _inMat._22 +
+				_inMat._10 * _inMat._02 * _inMat._21 +
+				_inMat._20 * _inMat._01 * _inMat._12 -
+				_inMat._20 * _inMat._02 * _inMat._11;
+
+	float _det = _inMat._00 * _new._00 + _inMat._01 * _new._10 + _inMat._02 * _new._20 + _inMat._03 * _new._30;
+
+	if (_det == 0)	return false;
+
+	_new /= _det;
+	_outMat = _new;
+	return true;
+}
+
+QeMatrix4x4f QeMath::transpose(QeMatrix4x4f _mat) {
+	
+	QeMatrix4x4f _new(0);
+	_new._00 = _mat._00;
+	_new._01 = _mat._10;
+	_new._02 = _mat._20;
+	_new._03 = _mat._30;
+
+	_new._10 = _mat._01;
+	_new._11 = _mat._11;
+	_new._12 = _mat._21;
+	_new._13 = _mat._31;
+
+	_new._20 = _mat._02;
+	_new._21 = _mat._12;
+	_new._22 = _mat._22;
+	_new._23 = _mat._32;
+
+	_new._30 = _mat._03;
+	_new._31 = _mat._13;
+	_new._32 = _mat._23;
+	_new._33 = _mat._33;
 	return _new;
 }

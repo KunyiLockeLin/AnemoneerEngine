@@ -27,4 +27,6 @@ public:
 	float dot(QeVector3f _vec1, QeVector3f _vec2);
 	QeVector3f cross(QeVector3f _vec1, QeVector3f _vec2);
 	float fastSqrt(float _number);
+	bool inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat);
+	QeMatrix4x4f transpose(QeMatrix4x4f _mat);
 };

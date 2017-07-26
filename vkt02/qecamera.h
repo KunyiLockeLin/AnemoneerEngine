@@ -24,6 +24,7 @@ private:
 public:
 	QeCamera(QeObjectMangerKey& _key) {}
 	~QeCamera() {}
+	void init();
 	void switchType(QeCameraType _type);
 	void setCamera(QeVector3f _pos, QeVector3f _target, QeVector3f _up, float _fov, float _near, float _far );
 	void rotatePos(float _angle, QeVector3f _axis);
@@ -35,6 +36,6 @@ public:
 	QeMatrix4x4f getMatView();
 	QeMatrix4x4f getMatProjection();
 	void update(float time);
-	void reset();
+
 };
 

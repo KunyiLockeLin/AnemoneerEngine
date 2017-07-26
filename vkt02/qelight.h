@@ -7,6 +7,14 @@ enum QeLightType {
 	eLightSPot,
 };
 
+struct QeDataLight {
+	QeVector3f pos;
+	QeVector3f dir;
+	QeVector3f color;
+	QeLightType type;
+	float intensity;
+	float radius;
+};
 
 class QeLight
 {
@@ -14,12 +22,8 @@ public:
 	QeLight(QeObjectMangerKey& _key) {}
 	~QeLight() {}
 
-	QeVector3f pos;
-	QeVector3f color;
-	QeLightType type;
-	float intensity;
-	float radius;
-
+	QeDataLight data;
+	void init();
 	void update(float time) {}
 
 };

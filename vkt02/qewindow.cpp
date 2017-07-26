@@ -56,7 +56,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			QE->camera->move(QeVector3f(0, -1, 0));
 			break;
 		case KEY_R:
-			QE->camera->reset();
+			QE->camera->init();
 			break;
 		}
 		break;

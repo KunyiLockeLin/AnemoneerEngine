@@ -26,8 +26,7 @@ struct QeAssetModel {
 	QeAssetMaterial* pMaterial;
 };
 
-struct QeAssetMaterial {
-
+struct QeDataMaterial {
 	QeVector3f ambient;
 	QeVector3f diffuse;
 	QeVector3f specular;
@@ -35,7 +34,13 @@ struct QeAssetMaterial {
 	float refraction;
 	float specularExponent;
 	float alpha;
+};
 
+struct QeAssetMaterial {
+
+	//QeDataMaterial* pMaterial;
+	VkBuffer materialBuffer;
+	VkDeviceMemory materialBufferMemory;
 	QeAssetImage* pDiffuseMap;
 	QeAssetShader* pShaderVert;
 	QeAssetShader* pShaderFarg;

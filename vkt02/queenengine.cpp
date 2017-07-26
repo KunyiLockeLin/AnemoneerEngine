@@ -66,9 +66,7 @@ void QueenEngine::initSwapchain() {}
 void QueenEngine::prepare() {
 
 	camera = OBJMGR->getCamera();
-	camera->reset();
 	light = OBJMGR->getLight();
-	light->intensity = 100;
 
 	model = OBJMGR->getModel("model",0);
 	model->setPosition( QeVector3f(2,2,0) );
@@ -448,12 +446,12 @@ void QueenEngine::createRenderPass() {
 }
 
 void QueenEngine::createDescriptorSetLayout() {
-	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
-	uboLayoutBinding.binding = 0;
-	uboLayoutBinding.descriptorCount = 1;
-	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	uboLayoutBinding.pImmutableSamplers = nullptr;
-	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	VkDescriptorSetLayoutBinding mvpLayoutBinding = {};
+	mvpLayoutBinding.binding = 0;
+	mvpLayoutBinding.descriptorCount = 1;
+	mvpLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	mvpLayoutBinding.pImmutableSamplers = nullptr;
+	mvpLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 	VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
 	samplerLayoutBinding.binding = 1;
@@ -462,7 +460,21 @@ void QueenEngine::createDescriptorSetLayout() {
 	samplerLayoutBinding.pImmutableSamplers = nullptr;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
+	VkDescriptorSetLayoutBinding lightLayoutBinding = {};
+	lightLayoutBinding.binding = 2;
+	lightLayoutBinding.descriptorCount = 1;
+	lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	lightLayoutBinding.pImmutableSamplers = nullptr;
+	lightLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+	VkDescriptorSetLayoutBinding materialLayoutBinding = {};
+	materialLayoutBinding.binding = 3;
+	materialLayoutBinding.descriptorCount = 1;
+	materialLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	materialLayoutBinding.pImmutableSamplers = nullptr;
+	materialLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+	std::array<VkDescriptorSetLayoutBinding, 4> bindings = { mvpLayoutBinding, samplerLayoutBinding, lightLayoutBinding, materialLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());

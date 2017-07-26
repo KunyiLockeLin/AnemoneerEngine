@@ -3,10 +3,11 @@
 #include "qeheader.h"
 
 
-struct UniformBufferObject {
+struct QeDataMVP {
 	QeMatrix4x4f model;
 	QeMatrix4x4f view;
 	QeMatrix4x4f proj;
+	QeMatrix3x3f normal;
 };
 
 class QeModel
@@ -21,14 +22,16 @@ public:
 	QeAssetModel* modelData;
 
 	VkDescriptorSet descriptorSet;
-	VkBuffer uniformBuffer;
-	VkDeviceMemory uniformBufferMemory;
-	
+	VkBuffer mvpBuffer;
+	VkDeviceMemory mvpBufferMemory;
+	VkBuffer lightBuffer;
+	VkDeviceMemory lightBufferMemory;
+
 	VkPipeline graphicsPipeline;
 	VkDescriptorPool descriptorPool;
 
 	void createDescriptorSet();
-	void createUniformBuffer();
+	void createDescriptorBuffer();
 	void updateDescriptorSet();
 	void updateUniformBuffer();
 	void createGraphicsPipeline();

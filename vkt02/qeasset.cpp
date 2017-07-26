@@ -169,6 +169,7 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	QeAssetMaterial* mtl = new QeAssetMaterial();
 	char line[500];
 	char diffuseMapPath[500];
+	QeDataMaterial mtl1;
 
 	while (file.getline(line, sizeof(line))) {
 
@@ -176,28 +177,35 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 			sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
 	
 		else if (line[0] == 'N' && line[1] == 's') 
-			sscanf_s(line, "Ns %f", &mtl->specularExponent);
+			sscanf_s(line, "Ns %f", &mtl1.specularExponent);
 		
 		else if (line[0] == 'K' && line[1] == 'a') 
-			sscanf_s(line, "Ka %f %f %f", &(mtl->ambient.x), &(mtl->ambient.y), &(mtl->ambient.z));
+			sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
 
 		else if (line[0] == 'K' && line[1] == 'd') 
-			sscanf_s(line, "Kd %f %f %f", &(mtl->diffuse.x), &(mtl->diffuse.y), &(mtl->diffuse.z));
+			sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
 
 		else if (line[0] == 'K' && line[1] == 's') 
-			sscanf_s(line, "Ks %f %f %f", &(mtl->specular.x), &(mtl->specular.y), &(mtl->specular.z));
+			sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
 	
 		else if (line[0] == 'K' && line[1] == 'e') 
-			sscanf_s(line, "Ke %f %f %f", &(mtl->emissive.x), &(mtl->emissive.y), &(mtl->emissive.z));
+			sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
 
 		else if (line[0] == 'N' && line[1] == 'i') 
-			sscanf_s(line, "Ni %f", &(mtl->refraction));
+			sscanf_s(line, "Ni %f", &(mtl1.refraction));
 	
 		else if (line[0] == 'd' && line[1] == ' ') 
-			sscanf_s(line, "d %f", &(mtl->alpha));
+			sscanf_s(line, "d %f", &(mtl1.alpha));
 	}
 
 	file.close();
+
+	VkDeviceSize bufferSize = sizeof(QeDataMaterial);
+	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mtl->materialBuffer, mtl->materialBufferMemory);
+	void* data;
+	vkMapMemory(QE->device, mtl->materialBufferMemory, 0, sizeof(mtl1), 0, &data);
+		memcpy(data, &mtl1, sizeof(mtl1));
+	vkUnmapMemory(QE->device, mtl->materialBufferMemory);
 
 	astMaterials[_filePath] = mtl;
 

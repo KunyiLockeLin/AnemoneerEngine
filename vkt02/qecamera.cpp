@@ -86,7 +86,7 @@ void QeCamera::move(QeVector3f _dir) {
 	}
 }
 
-void QeCamera::reset() {
+void QeCamera::init() {
 	pos = QeVector3f(5, 5, 5);
 	target = QeVector3f(0, 0, 0);
 	up = QeVector3f(0, 0, 1);
