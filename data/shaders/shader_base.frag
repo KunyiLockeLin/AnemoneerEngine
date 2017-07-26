@@ -4,19 +4,19 @@
 layout( binding = 1) uniform sampler2D texSampler;
 
 layout( binding = 2) uniform QeDataLight {
-    vec3 pos;
-    vec3 dir;
-	vec3 color;
+    vec4 pos;
+    vec4 dir;
+	vec4 color;
 	int type;
 	float intensity;
 	float radius;
 } light;
 
 layout( binding = 3) uniform QeDataMaterial {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-	vec3 emissive;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+	vec4 emissive;
 	float refraction;
 	float specularExponent;
 	float alpha;
@@ -34,8 +34,7 @@ void main() {
 	
 	float fDist = length(fragLighttoVertex); 
     vec3 vLighttoVertex = normalize(fragLighttoVertex);
-	float lightIntensity = max(dot(fragNormal,vLighttoVertex), 0.0)*max(1.0-fDist/light.intensity,0.0 );
-
-	//outColor = texture(texSampler, fragTexCoord)*vec4(light.color,1.0)*lightIntensity;
-	outColor = vec4(light.color,0);
+	float lightIntensity = clamp(dot(fragNormal,vLighttoVertex), 0, 1);//*max(1.0-fDist/light.intensity,0.0 );
+	//outColor = texture(texSampler, fragTexCoord)*light.color*lightIntensity;
+	outColor =vec4(fragNormal,1);
 }

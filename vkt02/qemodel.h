@@ -7,7 +7,7 @@ struct QeDataMVP {
 	QeMatrix4x4f model;
 	QeMatrix4x4f view;
 	QeMatrix4x4f proj;
-	QeMatrix3x3f normal;
+	QeMatrix4x4f normal;
 };
 
 class QeModel

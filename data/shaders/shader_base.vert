@@ -6,13 +6,13 @@ layout( binding = 0) uniform QeDataMVP {
 	mat4 model;
     mat4 view;
     mat4 proj;
-	mat3 normal;
+	mat4 normal;
 } mvp;
 
 layout( binding = 2) uniform QeDataLight {
-	vec3 pos;
-    vec3 dir;
-	vec3 color;
+	vec4 pos;
+    vec4 dir;
+	vec4 color;
 	int type;
 	float intensity;
 	float radius;
@@ -37,7 +37,9 @@ void main() {
 	vec4 pos = mvp.view * mvp.model * vec4(inPosition, 1.0);
     fragColor = inColor;
     fragTexCoord = inTexCoord;
-	fragNormal = normalize(mvp.normal * inNormal);
-	fragLighttoVertex = vec3(vec4(light.pos, 1.0) - pos);
+	//fragNormal = normalize( mvp.normal * inNormal);
+	mat3 normalMatrix = mat3(transpose(inverse(mvp.view * mvp.model)));
+	fragNormal = normalize( normalMatrix *inNormal);
+	fragLighttoVertex = vec3(light.pos - pos);
 	gl_Position = mvp.proj * pos;
 }

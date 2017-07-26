@@ -27,10 +27,10 @@ struct QeAssetModel {
 };
 
 struct QeDataMaterial {
-	QeVector3f ambient;
-	QeVector3f diffuse;
-	QeVector3f specular;
-	QeVector3f emissive;
+	QeVector4f ambient;
+	QeVector4f diffuse;
+	QeVector4f specular;
+	QeVector4f emissive;
 	float refraction;
 	float specularExponent;
 	float alpha;

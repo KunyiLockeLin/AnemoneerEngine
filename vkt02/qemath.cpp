@@ -426,7 +426,7 @@ bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
 	_new._00 =  _inMat._11 * _inMat._22 * _inMat._33 -
 				_inMat._11 * _inMat._23 * _inMat._32 -
 				_inMat._21 * _inMat._12 * _inMat._33 +
-				_inMat._21 * _inMat._13 * _inMat._23 +
+				_inMat._21 * _inMat._13 * _inMat._32 +
 				_inMat._31 * _inMat._12 * _inMat._23 -
 				_inMat._31 * _inMat._13 * _inMat._22;
 
@@ -472,7 +472,7 @@ bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
 				_inMat._30 * _inMat._01 * _inMat._23 +
 				_inMat._30 * _inMat._03 * _inMat._21;
 
-	_new._31 =  _inMat._00 * _inMat._21 * _inMat._32 -
+	_new._31 =	_inMat._00 * _inMat._21 * _inMat._32 -
 				_inMat._00 * _inMat._22 * _inMat._31 -
 				_inMat._20 * _inMat._01 * _inMat._32 +
 				_inMat._20 * _inMat._02 * _inMat._31 +
@@ -514,7 +514,7 @@ bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
 				_inMat._21 * _inMat._02 * _inMat._13 +
 				_inMat._21 * _inMat._03 * _inMat._12;
 
-	_new._13 = _inMat._00 * _inMat._12 * _inMat._23 -
+	_new._13 =  _inMat._00 * _inMat._12 * _inMat._23 -
 				_inMat._00 * _inMat._13 * _inMat._22 -
 				_inMat._10 * _inMat._02 * _inMat._23 +
 				_inMat._10 * _inMat._03 * _inMat._22 +
@@ -528,7 +528,7 @@ bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
 				_inMat._20 * _inMat._01 * _inMat._13 +
 				_inMat._20 * _inMat._03 * _inMat._11;
 
-	_new._33 = _inMat._00 * _inMat._11 * _inMat._22 -
+	_new._33 =  _inMat._00 * _inMat._11 * _inMat._22 -
 				_inMat._00 * _inMat._12 * _inMat._21 -
 				_inMat._10 * _inMat._01 * _inMat._22 +
 				_inMat._10 * _inMat._02 * _inMat._21 +
