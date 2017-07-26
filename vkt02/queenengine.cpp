@@ -465,14 +465,14 @@ void QueenEngine::createDescriptorSetLayout() {
 	lightLayoutBinding.descriptorCount = 1;
 	lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	lightLayoutBinding.pImmutableSamplers = nullptr;
-	lightLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	lightLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT|VK_SHADER_STAGE_FRAGMENT_BIT;
 
 	VkDescriptorSetLayoutBinding materialLayoutBinding = {};
 	materialLayoutBinding.binding = 3;
 	materialLayoutBinding.descriptorCount = 1;
 	materialLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	materialLayoutBinding.pImmutableSamplers = nullptr;
-	materialLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	materialLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 	std::array<VkDescriptorSetLayoutBinding, 4> bindings = { mvpLayoutBinding, samplerLayoutBinding, lightLayoutBinding, materialLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};

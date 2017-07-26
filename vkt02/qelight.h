@@ -4,16 +4,16 @@
 enum QeLightType {
 	eLightPoint,
 	eLightDirection,
-	eLightSPot,
+	eLightSpot,
 };
 
 struct QeDataLight {
 	QeVector3f pos;
-	QeVector3f dir;
+	QeVector3f dir; // for direction & Spot
 	QeVector3f color;
 	QeLightType type;
 	float intensity;
-	float radius;
+	float radius; // for direction & Spot
 };
 
 class QeLight
