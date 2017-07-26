@@ -9,11 +9,11 @@ enum QeLightType {
 
 struct QeDataLight {
 	QeVector4f pos;
-	QeVector4f dir; // for direction & Spot
+	QeVector4f dir;
 	QeVector4f color;
 	QeLightType type;
 	float intensity;
-	float radius; // for direction & Spot
+	float coneAngle;
 };
 
 class QeLight

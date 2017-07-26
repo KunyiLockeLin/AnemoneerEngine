@@ -72,7 +72,6 @@ struct QeVector2f {
 	QeVector2f(float _x, float _y);
 
 	bool operator==(const QeVector2f& other)const;
-	QeVector2f& operator=(const QeVector2f& other);
 	QeVector2f& operator+=(const QeVector2f& other);
 	QeVector2f& operator-=(const QeVector2f& other);
 	QeVector2f& operator/=(const float& other);
@@ -87,7 +86,6 @@ struct QeVector3i {
 	QeVector3i(int _x, int _y, int _z);
 
 	bool operator==(const QeVector3i& other)const;
-	QeVector3i& operator=(const QeVector3i& other);
 	QeVector3i& operator+=(const QeVector3i& other);
 	QeVector3i& operator-=(const QeVector3i& other);
 	QeVector3i& operator-=(const int& other);
@@ -105,7 +103,6 @@ struct QeVector3f {
 	QeVector3f(float _x, float _y, float _z);
 
 	bool operator==(const QeVector3f& other)const;
-	QeVector3f& operator=(const QeVector3f& other);
 	QeVector3f& operator=(const QeVector4f& other);
 	QeVector3f& operator+=(const QeVector3f& other);
 	QeVector3f& operator-=(const QeVector3f& other);
@@ -128,20 +125,6 @@ struct QeVector4f {
 	QeVector4f& operator=(const QeVector3f& other);
 };
 
-struct QeMatrix3x3f {
-	float _00, _01, _02;
-	float _10, _11, _12;
-	float _20, _21, _22;
-
-	QeMatrix3x3f();
-	QeMatrix3x3f(float _num);
-	QeMatrix3x3f& operator=(const QeMatrix4x4f& other);
-	QeMatrix3x3f& operator*=(const QeMatrix3x3f& other);
-	QeMatrix3x3f operator*(const QeMatrix3x3f& other);
-	QeVector3f operator*(const QeVector3f& other);
-	QeMatrix3x3f& operator/=(const float& other);
-};
-
 struct QeMatrix4x4f {
 	float _00, _01, _02, _03;
 	float _10, _11, _12, _13;
@@ -150,7 +133,7 @@ struct QeMatrix4x4f {
 
 	QeMatrix4x4f();
 	QeMatrix4x4f(float _num);
-
+	QeMatrix4x4f(float __00, float __01, float __02, float __03, float __10, float __11, float __12, float __13, float __20, float __21, float __22, float __23, float __30, float __31, float __32, float __33);
 	QeMatrix4x4f& operator*=(const QeMatrix4x4f& other);
 	QeMatrix4x4f operator*(const QeMatrix4x4f& other);
 	QeVector4f operator*(const QeVector4f& other);

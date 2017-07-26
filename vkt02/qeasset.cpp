@@ -170,6 +170,10 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	char line[500];
 	char diffuseMapPath[500];
 	QeDataMaterial mtl1;
+	mtl1.ambient.w = 1;
+	mtl1.diffuse.w = 1;
+	mtl1.specular.w = 1;
+	mtl1.emissive.w = 1;
 
 	while (file.getline(line, sizeof(line))) {
 

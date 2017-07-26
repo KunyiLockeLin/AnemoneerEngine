@@ -169,11 +169,6 @@ bool QeVector2f::operator==(const QeVector2f& other) const {
 	return x == other.x && y == other.y;
 }
 
-QeVector2f& QeVector2f::operator=(const QeVector2f& other) {
-	x = other.x;
-	y = other.y;
-	return *this;
-}
 QeVector2f& QeVector2f::operator+=(const QeVector2f& other) {
 	x += other.x;
 	y += other.y;
@@ -208,12 +203,7 @@ QeVector3i::QeVector3i(int _x, int _y, int _z) :x(_x), y(_y), z(_z) {}
 bool QeVector3i::operator==(const QeVector3i& other) const {
 	return x == other.x && y == other.y && z == other.z;
 }
-QeVector3i& QeVector3i::operator=(const QeVector3i& other) {
-	x = other.x;
-	y = other.y;
-	z = other.z;
-	return *this;
-}
+
 QeVector3i& QeVector3i::operator+=(const QeVector3i& other) {
 	x += other.x;
 	y += other.y;
@@ -266,12 +256,7 @@ QeVector3f::QeVector3f(float _x, float _y, float _z) :x(_x), y(_y), z(_z) {}
 bool QeVector3f::operator==(const QeVector3f& other) const {
 	return x == other.x && y == other.y && z == other.z;
 }
-QeVector3f& QeVector3f::operator=(const QeVector3f& other) {
-	x = other.x;
-	y = other.y;
-	z = other.z;
-	return *this;
-}
+
 QeVector3f& QeVector3f::operator=(const QeVector4f& other) {
 	x = other.x;
 	y = other.y;
@@ -348,44 +333,6 @@ QeVector4f& QeVector4f::operator=(const QeVector3f& other) {
 	return *this;
 }
 
-QeMatrix3x3f::QeMatrix3x3f() :_00(1.0f), _01(0.0f), _02(0.0f),
-		_10(0.0f), _11(1.0f), _12(0.0f),
-		_20(0.0f), _21(0.0f), _22(1.0f) {}
-QeMatrix3x3f::QeMatrix3x3f(float _num) :_00(_num), _01(_num), _02(_num),
-		_10(_num), _11(_num), _12(_num),
-		_20(_num), _21(_num), _22(_num) {}
-
-QeMatrix3x3f& QeMatrix3x3f::operator=(const QeMatrix4x4f& other) {
-	for (int i = 0; i<3; i++)
-		for (int j = 0; j<3; j++)
-				(((float *)this)[i * 3 + j] = ((float *)&other)[i * 3 + j]);
-	return *this;
-}
-
-QeMatrix3x3f& QeMatrix3x3f::operator*=(const QeMatrix3x3f& other) {
-	*this = *this*other;
-	return *this;
-}
-QeMatrix3x3f QeMatrix3x3f::operator*(const QeMatrix3x3f& other) {
-	QeMatrix3x3f _new(0);
-	for (int i = 0; i<3; i++)
-		for (int j = 0; j<3; j++)
-			for (int k = 0; k < 3; k++) 
-				((float *)&_new)[i * 3 + j] += (((float *)this)[i * 3 + k] * ((float *)&other)[k * 3 + j]);
-	return _new;
-}
-QeVector3f QeMatrix3x3f::operator*(const QeVector3f& other) {
-	QeVector3f _new;
-	for (int i = 0; i<3; i++)
-		for (int j = 0; j < 3; j++) ((float *)&_new)[i] += (((float *)this)[j * 3 + i] * ((float *)&other)[j]);
-
-	return _new;
-}
-QeMatrix3x3f& QeMatrix3x3f::operator/=(const float& other) {
-	for (int i = 0; i<9; i++)	((float *)this)[i] /= other;
-	return *this;
-}
-
 QeMatrix4x4f::QeMatrix4x4f() :_00(1.0f), _01(0.0f), _02(0.0f), _03(0.0f),
 		_10(0.0f), _11(1.0f), _12(0.0f), _13(0.0f),
 		_20(0.0f), _21(0.0f), _22(1.0f), _23(0.0f),
@@ -394,6 +341,16 @@ QeMatrix4x4f::QeMatrix4x4f(float _num) :_00(_num), _01(_num), _02(_num), _03(_nu
 		_10(_num), _11(_num), _12(_num), _13(_num),
 		_20(_num), _21(_num), _22(_num), _23(_num),
 		_30(_num), _31(_num), _32(_num), _33(_num) {}
+QeMatrix4x4f::QeMatrix4x4f(float __00, float __01, float __02, float __03, 
+	float __10, float __11, float __12, float __13, 
+	float __20, float __21, float __22, float __23, 
+	float __30, float __31, float __32, float __33) :
+	_00(__00), _01(__01), _02(__02), _03(__03),
+	_10(__10), _11(__11), _12(__12), _13(__13),
+	_20(__20), _21(__21), _22(__22), _23(__23),
+	_30(__30), _31(__31), _32(__32), _33(__33)
+{}
+
 QeMatrix4x4f& QeMatrix4x4f::operator*=(const QeMatrix4x4f& other) {
 
 	*this = *this*other;
@@ -404,7 +361,7 @@ QeMatrix4x4f QeMatrix4x4f::operator*(const QeMatrix4x4f& other) {
 	for (int i = 0; i<4; i++)
 		for (int j = 0; j<4; j++)
 			for (int k = 0; k < 4; k++) 
-				((float *)&_new)[i * 4 + j] += (((float *)this)[i * 4 + k] * ((float *)&other)[k * 4 + j]);
+				((float *)&_new)[i * 4 + j] += (((float *)this)[k * 4 + j] * ((float *)&other)[i * 4 + k]);
 	return _new;
 }
 QeVector4f QeMatrix4x4f::operator*(const QeVector4f& other) {

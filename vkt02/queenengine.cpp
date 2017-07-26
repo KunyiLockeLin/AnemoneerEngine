@@ -69,10 +69,10 @@ void QueenEngine::prepare() {
 	light = OBJMGR->getLight();
 
 	model = OBJMGR->getModel("model",0);
-	model->setPosition( QeVector3f(2,2,0) );
+	model->setPosition( QeVector3f(0,2,0) );
 
 	model1 = OBJMGR->getModel("model",1);
-	model1->setPosition(QeVector3f(-3, -3, 0));
+	model1->setPosition(QeVector3f(0, -3, 0));
 }
 
 void QueenEngine::mainLoop() {

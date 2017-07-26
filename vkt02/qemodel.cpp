@@ -71,12 +71,12 @@ QeMatrix4x4f QeModel::getMatModel() {
 
 	QeMatrix4x4f mat;
 
-	mat *= MATH->scale(size);
+	mat *= MATH->translate(pos);
 	mat *= MATH->rotateY(up);
 	//mat *= MATH->rotate(up, QeVector3f(0.0f, 1.0f, 0.0f));
 	mat *= MATH->rotateZ(face);
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
-	mat *= MATH->translate(pos);
+	mat *= MATH->scale(size);
 	
 	return mat;
 }
@@ -178,7 +178,7 @@ void QeModel::updateDescriptorSet() {
 
 void QeModel::update(float time) {
 
-	rotateFace( time*100 );
+	rotateFace( time*50 );
 	updateUniformBuffer();
 }
 
@@ -192,7 +192,7 @@ void QeModel::updateUniformBuffer() {
 	QeMatrix4x4f mat = mvp.view*mvp.model;
 	MATH->inverse(mat, mat);
 	mvp.normal = MATH->transpose(mat);
-
+	
 	void* data;
 	vkMapMemory(QE->device, mvpBufferMemory, 0, sizeof(mvp), 0, &data);
 		memcpy(data, &mvp, sizeof(mvp));
