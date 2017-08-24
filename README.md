@@ -1,6 +1,8 @@
 # Vulkan
 
-reference: https://renderdoc.org/vulkan-in-30-minutes.html &
+reference: 
+https://www.khronos.org/blog/beginners-guide-to-vulkan &
+https://renderdoc.org/vulkan-in-30-minutes.html &
 https://vulkan-tutorial.com/ &
 https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md &
 https://github.com/LunarG/VulkanSamples &
