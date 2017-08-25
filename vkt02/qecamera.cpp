@@ -114,7 +114,7 @@ QeMatrix4x4f QeCamera::getMatView() {
 QeMatrix4x4f QeCamera::getMatProjection() {
 
 	int width, height;
-	QE->window->getWindowSize(width, height);
+	WIN->getWindowSize(width, height);
 	
 	QeMatrix4x4f _proj = MATH->perspective( fov, float(width)/height, fnear, ffar);
 	return _proj;

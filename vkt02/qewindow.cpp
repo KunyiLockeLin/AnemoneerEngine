@@ -15,67 +15,12 @@ void QeWindow::getWindowSize(int& width, int& height) {
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	QE->window->handleMessages(hWnd, uMsg, wParam, lParam);
+	WIN->handleMessages(hWnd, uMsg, wParam, lParam);
 	return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-
-	switch (uMsg){
-	case WM_CLOSE:
-		bClosed = true;
-		break;
-	case WM_PAINT:
-		ValidateRect(window, NULL);
-		break;
-	case WM_KEYDOWN:
-		switch (wParam){
-		case VK_ESCAPE:
-			bClosed = true;
-			break;
-		case KEY_W:
-		case VK_UP:
-			QE->camera->move(QeVector3f(0,0,1));
-			break;
-		case KEY_S:
-		case VK_DOWN:
-			QE->camera->move(QeVector3f(0, 0, -1));
-			break;
-		case KEY_D:
-		case VK_RIGHT:
-			QE->camera->move(QeVector3f(1, 0, 0));
-			break;
-		case KEY_A:
-		case VK_LEFT:
-			QE->camera->move(QeVector3f(-1, 0, 0));
-			break;
-		case KEY_Q:
-			QE->camera->move(QeVector3f(0, 1, 0));
-			break;
-		case KEY_E:
-			QE->camera->move(QeVector3f(0, -1, 0));
-			break;
-		case KEY_R:
-			QE->camera->init();
-			break;
-		}
-		break;
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-		QE->camera->setMousePos(QeVector2i(LOWORD(lParam), HIWORD(lParam)));
-		break;
-	case WM_MOUSEMOVE:
-
-		switch (wParam) {
-		case MK_LBUTTON:
-			QE->camera->rotateTarget(QeVector2i(LOWORD(lParam), HIWORD(lParam)));
-			break;
-		case MK_RBUTTON:
-			QE->camera->rotatePos(QeVector2i(LOWORD(lParam), HIWORD(lParam)));
-			break;
-		}
-		break;
-	}
+	QE->activity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
 }
 
 void QeWindow::init() {
@@ -180,7 +125,7 @@ void QeWindow::init() {
 
 std::string QeWindow::getWindowTitle()
 {
-	std::string device(QE->deviceProperties.deviceName);
+	std::string device(VLK->deviceProperties.deviceName);
 	std::string windowTitle;
 	windowTitle = AST->getString("title");
 	windowTitle.append(" - ");
@@ -200,7 +145,7 @@ void QeWindow::initSurface() {
 	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
 	surfaceCreateInfo.hinstance = windowInstance;
 	surfaceCreateInfo.hwnd = window;
-	err = vkCreateWin32SurfaceKHR(QE->instance, &surfaceCreateInfo, nullptr, &surface);
+	err = vkCreateWin32SurfaceKHR(VLK->instance, &surfaceCreateInfo, nullptr, &surface);
 
 	if (err != VK_SUCCESS) {
 		std::cout << "Could not create surface!\n";
@@ -210,7 +155,7 @@ void QeWindow::initSurface() {
 }
 
 void QeWindow::cleanup() {
-	vkDestroySurfaceKHR(QE->instance, surface, nullptr);
+	vkDestroySurfaceKHR(VLK->instance, surface, nullptr);
 }
 
 

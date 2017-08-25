@@ -5,7 +5,7 @@
 class QeWindow
 {
 public:
-	QeWindow() {}
+	QeWindow(QeGlobalKey& _key) {}
 	~QeWindow() {}
 
 	const int WIDTH = 800;

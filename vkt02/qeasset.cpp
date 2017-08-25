@@ -205,11 +205,11 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	file.close();
 
 	VkDeviceSize bufferSize = sizeof(QeDataMaterial);
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mtl->materialBuffer, mtl->materialBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mtl->materialBuffer, mtl->materialBufferMemory);
 	void* data;
-	vkMapMemory(QE->device, mtl->materialBufferMemory, 0, sizeof(mtl1), 0, &data);
+	vkMapMemory(VLK->device, mtl->materialBufferMemory, 0, sizeof(mtl1), 0, &data);
 		memcpy(data, &mtl1, sizeof(mtl1));
-	vkUnmapMemory(QE->device, mtl->materialBufferMemory);
+	vkUnmapMemory(VLK->device, mtl->materialBufferMemory);
 
 	astMaterials[_filePath] = mtl;
 
@@ -270,25 +270,25 @@ void QeAsset::createTextureImage(QeAssetImage& image, std::vector<char>& imageDa
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	QE->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	VLK->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
-	vkMapMemory(QE->device, stagingBufferMemory, 0, imageSize, 0, &data);
+	vkMapMemory(VLK->device, stagingBufferMemory, 0, imageSize, 0, &data);
 	memcpy(data, imageData.data(), static_cast<size_t>(imageSize));
-	vkUnmapMemory(QE->device, stagingBufferMemory);
+	vkUnmapMemory(VLK->device, stagingBufferMemory);
 
-	QE->createImage(width, height, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image.textureImage, image.textureImageMemory);
+	VLK->createImage(width, height, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image.textureImage, image.textureImageMemory);
 
-	QE->transitionImageLayout(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	QE->copyBufferToImage(stagingBuffer, image.textureImage, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
-	QE->transitionImageLayout(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	VLK->transitionImageLayout(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	VLK->copyBufferToImage(stagingBuffer, image.textureImage, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
+	VLK->transitionImageLayout(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	vkDestroyBuffer(QE->device, stagingBuffer, nullptr);
-	vkFreeMemory(QE->device, stagingBufferMemory, nullptr);
+	vkDestroyBuffer(VLK->device, stagingBuffer, nullptr);
+	vkFreeMemory(VLK->device, stagingBufferMemory, nullptr);
 }
 
 void QeAsset::createTextureImageView(QeAssetImage& image) {
-	image.textureImageView = QE->createImageView(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	image.textureImageView = VLK->createImageView(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void QeAsset::createTextureSampler(QeAssetImage& image) {
@@ -307,7 +307,7 @@ void QeAsset::createTextureSampler(QeAssetImage& image) {
 	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
-	if (vkCreateSampler(QE->device, &samplerInfo, nullptr, &image.textureSampler) != VK_SUCCESS) {
+	if (vkCreateSampler(VLK->device, &samplerInfo, nullptr, &image.textureSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
 	}
 }
@@ -317,19 +317,19 @@ void QeAsset::createVertexBuffer(QeAssetModel& model, std::vector<QeVertex>& ver
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
-	vkMapMemory(QE->device, stagingBufferMemory, 0, bufferSize, 0, &data);
+	vkMapMemory(VLK->device, stagingBufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, vertices.data(), (size_t)bufferSize);
-	vkUnmapMemory(QE->device, stagingBufferMemory);
+	vkUnmapMemory(VLK->device, stagingBufferMemory);
 
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, model.vertexBuffer, model.vertexBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, model.vertexBuffer, model.vertexBufferMemory);
 
-	QE->copyBuffer(stagingBuffer, model.vertexBuffer, bufferSize);
+	VLK->copyBuffer(stagingBuffer, model.vertexBuffer, bufferSize);
 
-	vkDestroyBuffer(QE->device, stagingBuffer, nullptr);
-	vkFreeMemory(QE->device, stagingBufferMemory, nullptr);
+	vkDestroyBuffer(VLK->device, stagingBuffer, nullptr);
+	vkFreeMemory(VLK->device, stagingBufferMemory, nullptr);
 }
 
 void QeAsset::createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indices) {
@@ -337,19 +337,19 @@ void QeAsset::createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indi
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
-	vkMapMemory(QE->device, stagingBufferMemory, 0, bufferSize, 0, &data);
+	vkMapMemory(VLK->device, stagingBufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(QE->device, stagingBufferMemory);
+	vkUnmapMemory(VLK->device, stagingBufferMemory);
 
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, model.indexBuffer, model.indexBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, model.indexBuffer, model.indexBufferMemory);
 
-	QE->copyBuffer(stagingBuffer, model.indexBuffer, bufferSize);
+	VLK->copyBuffer(stagingBuffer, model.indexBuffer, bufferSize);
 
-	vkDestroyBuffer(QE->device, stagingBuffer, nullptr);
-	vkFreeMemory(QE->device, stagingBufferMemory, nullptr);
+	vkDestroyBuffer(VLK->device, stagingBuffer, nullptr);
+	vkFreeMemory(VLK->device, stagingBufferMemory, nullptr);
 }
 
 bool QeAsset::loadConfig() {
@@ -432,7 +432,7 @@ void QeAsset::createShaderModule(QeAssetShader& shader, const std::vector<char>&
 	createInfo.codeSize = code.size();
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-	if (vkCreateShaderModule(QE->device, &createInfo, nullptr, &shader.shader) != VK_SUCCESS) {
+	if (vkCreateShaderModule(VLK->device, &createInfo, nullptr, &shader.shader) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create shader module!");
 	}
 }

@@ -22,6 +22,18 @@ QeLight* QeObjectManger::getLight(const char* _name) {
 
 	return newLight;
 }
+
+QeActivity* QeObjectManger::getActivity(const char* _name) {
+	std::map<std::string, QeActivity*>::iterator it = mgrActivitys.find(_name);
+	if (it != mgrActivitys.end())	return it->second;
+
+	QeActivity* newActivity = new QeActivity(key);
+	newActivity->init();
+	mgrActivitys[_name] = newActivity;
+
+	return newActivity;
+}
+
 QeModel* QeObjectManger::getModel(const char* _name, int _index ) {
 
 	QeModel* newModel = nullptr;
@@ -35,7 +47,7 @@ QeModel* QeObjectManger::getModel(const char* _name, int _index ) {
 	newModel->init(AST->getString("model", _index) );
 	mgrActiveModels.push_back(newModel);
 
-	QE->updateDrawCommandBuffers(mgrActiveModels);
+	VLK->updateDrawCommandBuffers(mgrActiveModels);
 	return newModel;
 }
 

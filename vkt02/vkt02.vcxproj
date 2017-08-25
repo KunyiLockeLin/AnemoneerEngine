@@ -146,9 +146,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="qeactivity.cpp" />
     <ClCompile Include="qeasset.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
+    <ClCompile Include="qevulkan.cpp" />
     <ClCompile Include="queenengine.cpp" />
     <ClCompile Include="qemath.cpp" />
     <ClCompile Include="qemodel.cpp" />
@@ -159,9 +161,11 @@
     <ClCompile Include="qewindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="qeactivity.h" />
     <ClInclude Include="qeasset.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qeobjectmanger.h" />
+    <ClInclude Include="qevulkan.h" />
     <ClInclude Include="queenengine.h" />
     <ClInclude Include="qeheader.h" />
     <ClInclude Include="qemath.h" />

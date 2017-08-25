@@ -51,6 +51,12 @@
     <ClCompile Include="qeobjectmanger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qevulkan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qeactivity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -84,6 +90,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeobjectmanger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qevulkan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qeactivity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

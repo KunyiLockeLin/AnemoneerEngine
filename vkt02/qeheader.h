@@ -56,6 +56,8 @@ class QeViewport;
 class QueenEngine;
 class QeObjectMangerKey;
 class QeObjectManger;
+class QeActivity;
+class QeVulkan;
 
 
 struct QeVector2i {
@@ -143,6 +145,7 @@ struct QeMatrix4x4f {
 
 #include "qemath.h"
 #include "qeasset.h"
+#include "qevulkan.h"
 #include "qemodel.h"
 #include "qecamera.h"
 #include "qelight.h"
@@ -151,3 +154,4 @@ struct QeMatrix4x4f {
 #include "queenengine.h"
 #include "qeglobal.h"
 #include "qeobjectmanger.h"
+#include "qeactivity.h"

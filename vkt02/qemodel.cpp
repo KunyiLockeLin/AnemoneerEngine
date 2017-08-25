@@ -98,23 +98,23 @@ void QeModel::init(const char* _filename) {
 }
 
 void QeModel::createDescriptorSet() {
-	VkDescriptorSetLayout layouts[] = { QE->descriptorSetLayout };
+	VkDescriptorSetLayout layouts[] = { VLK->descriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
 	allocInfo.descriptorSetCount = 1;
 	allocInfo.pSetLayouts = layouts;
 
-	if (vkAllocateDescriptorSets(QE->device, &allocInfo, &descriptorSet) != VK_SUCCESS) {
+	if (vkAllocateDescriptorSets(VLK->device, &allocInfo, &descriptorSet) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor set!");
 	}
 }
 
 void QeModel::createDescriptorBuffer() {
 	VkDeviceSize bufferSize = sizeof(QeDataMVP);
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mvpBuffer, mvpBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mvpBuffer, mvpBufferMemory);
 	bufferSize = sizeof(QeDataLight);
-	QE->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, lightBuffer, lightBufferMemory);
+	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, lightBuffer, lightBufferMemory);
 }
 
 void QeModel::updateDescriptorSet() {
@@ -173,7 +173,7 @@ void QeModel::updateDescriptorSet() {
 	descriptorWrites[3].descriptorCount = 1;
 	descriptorWrites[3].pBufferInfo = &materialInfo;
 
-	vkUpdateDescriptorSets(QE->device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+	vkUpdateDescriptorSets(VLK->device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 
 void QeModel::update(float time) {
@@ -186,24 +186,24 @@ void QeModel::updateUniformBuffer() {
 
 	QeDataMVP mvp = {};
 	mvp.model = getMatModel();
-	mvp.view = QE->camera->getMatView();
-	mvp.proj = QE->camera->getMatProjection();
+	mvp.view = QE->activity->camera->getMatView();
+	mvp.proj = QE->activity->camera->getMatProjection();
 
 	QeMatrix4x4f mat = mvp.view*mvp.model;
 	MATH->inverse(mat, mat);
 	mvp.normal = MATH->transpose(mat);
-	
+
 	void* data;
-	vkMapMemory(QE->device, mvpBufferMemory, 0, sizeof(mvp), 0, &data);
+	vkMapMemory(VLK->device, mvpBufferMemory, 0, sizeof(mvp), 0, &data);
 		memcpy(data, &mvp, sizeof(mvp));
-	vkUnmapMemory(QE->device, mvpBufferMemory);
+	vkUnmapMemory(VLK->device, mvpBufferMemory);
 
 	QeDataLight light = OBJMGR->getLight()->data;
 
 	data = nullptr;
-	vkMapMemory(QE->device, lightBufferMemory, 0, sizeof(light), 0, &data);
+	vkMapMemory(VLK->device, lightBufferMemory, 0, sizeof(light), 0, &data);
 		memcpy(data, &light, sizeof(light));
-	vkUnmapMemory(QE->device, lightBufferMemory);
+	vkUnmapMemory(VLK->device, lightBufferMemory);
 }
 
 
@@ -289,12 +289,12 @@ void QeModel::createGraphicsPipeline() {
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
-	pipelineInfo.layout = QE->pipelineLayout;
-	pipelineInfo.renderPass = QE->renderPass;
+	pipelineInfo.layout = VLK->pipelineLayout;
+	pipelineInfo.renderPass = VLK->renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-	if (vkCreateGraphicsPipelines(QE->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(VLK->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
@@ -329,7 +329,7 @@ void QeModel::createDescriptorPool() {
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.maxSets = 1;
 
-	if (vkCreateDescriptorPool(QE->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+	if (vkCreateDescriptorPool(VLK->device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
 }

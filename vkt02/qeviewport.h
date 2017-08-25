@@ -7,6 +7,7 @@ class QeViewport
 public:
 	VkViewport viewport;
 	VkRect2D scissor;
+	QeCamera* camera;
 	VkPipelineViewportStateCreateInfo viewportState;
 
 	QeViewport();
