@@ -19,7 +19,7 @@ public:
 	VkSurfaceKHR surface;
 	bool bClosed;
 	void init();
-	void initSurface();
+	
 	std::string getWindowTitle();
 	void cleanup();
 

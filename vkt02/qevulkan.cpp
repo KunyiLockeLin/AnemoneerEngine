@@ -4,17 +4,17 @@ void QeVulkan::init() {
 	createInstance();
 	setupDebugCallback();
 
-	WIN->initSurface();
+	WIN->init();
 
 	pickPhysicalDevice();
 	createLogicalDevice();
-	createSwapChain();
-
-	createImageViews();
-	createRenderPass();
-	createDescriptorSetLayout(3,1);
+	createDescriptorSetLayout(3, 1);
 	createPipeline();
 	createCommandPool();
+
+	createSwapChain();
+	createImageViews();
+	createRenderPass();
 	createDepthResources();
 	createFramebuffers();
 	createSemaphores();

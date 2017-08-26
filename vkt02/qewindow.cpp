@@ -122,6 +122,8 @@ void QeWindow::init() {
 	SetForegroundWindow(window);
 	SetFocus(window);
 
+	surface = VLK->createSurface(window, windowInstance);
+	bClosed = false;
 }
 
 std::string QeWindow::getWindowTitle()
@@ -136,12 +138,6 @@ std::string QeWindow::getWindowTitle()
 	windowTitle.append(" fps");
 
 	return windowTitle;
-}
-
-void QeWindow::initSurface() {
-
-	surface = VLK->createSurface(window, windowInstance);
-	bClosed = false;
 }
 
 void QeWindow::cleanup() {

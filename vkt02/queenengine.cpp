@@ -6,7 +6,7 @@ void QueenEngine::run() {
 	AST->loadConfig();
 	lastTime = std::chrono::high_resolution_clock::now();
 
-	WIN->init();
+	//WIN->init();
 	VLK->init();
 
 	viewport = new QeViewport();
