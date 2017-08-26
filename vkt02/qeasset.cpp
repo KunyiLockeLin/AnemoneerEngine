@@ -204,10 +204,9 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 
 	file.close();
 
-	VkDeviceSize bufferSize = sizeof(QeDataMaterial);
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mtl->materialBuffer, mtl->materialBufferMemory);
+	VLK->createUniformBuffer(sizeof(QeDataMaterial), mtl->materialBuffer, mtl->materialBufferMemory);
 	VLK->setMemory(mtl->materialBufferMemory, (void*)&mtl1, sizeof(mtl1));
-	
+
 	astMaterials[_filePath] = mtl;
 
 	if (strlen(diffuseMapPath) != 0)

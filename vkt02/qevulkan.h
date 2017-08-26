@@ -136,4 +136,6 @@ public:
 
 	void createImageData(void* data, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
 };

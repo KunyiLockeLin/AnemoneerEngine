@@ -113,10 +113,9 @@ void QeModel::init(const char* _filename) {
 }
 
 void QeModel::createDescriptorBuffer() {
-	VkDeviceSize bufferSize = sizeof(QeDataMVP);
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mvpBuffer, mvpBufferMemory);
-	bufferSize = sizeof(QeDataLight);
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, lightBuffer, lightBufferMemory);
+	
+	VLK->createUniformBuffer(sizeof(QeDataMVP), mvpBuffer, mvpBufferMemory);
+	VLK->createUniformBuffer(sizeof(QeDataLight), lightBuffer, lightBufferMemory);
 }
 
 void QeModel::update(float time) {
