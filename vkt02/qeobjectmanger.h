@@ -32,5 +32,8 @@ public:
 	QeModel* getModel(const char* _name, int _index=0);
 
 	void update(float _time);
+
+	void cleanupSwapChain();
+	void recreateSwapChain();
 };
 

@@ -20,7 +20,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	QE->activity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
+
+	int a = 0;
+	switch (uMsg) {
+	case WM_CLOSE:
+		bClosed = true;
+		break;
+	case WM_EXITSIZEMOVE:
+		VLK->recreateSwapChain();
+		break;
+	default:
+		QE->activity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
+		break;
+	}
 }
 
 void QeWindow::init() {
@@ -83,12 +95,13 @@ void QeWindow::init() {
 	dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 	dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	//}
-
+	//currentWidth = std::stoi(AST->getString("winWidth"));
+	//currentHeight = std::stoi(AST->getString("winHeight"));
 	RECT windowRect;
 	windowRect.left = 0L;
 	windowRect.top = 0L;
-	windowRect.right = WIDTH;//settings.fullscreen ? (long)screenWidth : (long)width;
-	windowRect.bottom = HEIGHT;//settings.fullscreen ? (long)screenHeight : (long)height;
+	windowRect.right = std::stoi(AST->getString("winWidth"));//settings.fullscreen ? (long)screenWidth : (long)width;
+	windowRect.bottom = std::stoi(AST->getString("winHeight"));//settings.fullscreen ? (long)screenHeight : (long)height;
 
 	AdjustWindowRectEx(&windowRect, dwStyle, FALSE, dwExStyle);
 
@@ -154,7 +167,8 @@ void QeWindow::update(float time) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 
-		if (msg.message == WM_QUIT) {
+		switch (msg.message) {
+		case WM_QUIT:
 			bClosed = true;
 			break;
 		}

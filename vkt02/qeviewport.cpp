@@ -30,4 +30,7 @@ void QeViewport::init() {
 	viewportState.pViewports = &viewport;
 	viewportState.scissorCount = 1;
 	viewportState.pScissors = &scissor;
+
+	//VkPipelineViewportStateCreateInfo viewportState =
+	//	vks::initializers::pipelineViewportStateCreateInfo(2, 2, 0);
 }

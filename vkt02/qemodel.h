@@ -49,5 +49,7 @@ public:
 	void enlarge(QeVector3f _size);
 	void setSize(QeVector3f _size);
 	QeMatrix4x4f getMatModel();
+	void cleanupSwapChain();
+	void recreateSwapChain();
 };
 

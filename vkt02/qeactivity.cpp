@@ -13,12 +13,10 @@ void QeActivity::init() {
 	model1->setPosition(QeVector3f(0, -3, 0));
 }
 
-void QeActivity::eventInput(int _input1, int _input2, int _mouseX, int _mouseY) {
-
+void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {
+	
 	switch (_input1) {
-	case WM_CLOSE:
-		WIN->bClosed = true;
-		break;
+
 	case WM_KEYDOWN:
 		switch (_input2) {
 		case VK_ESCAPE:
@@ -53,16 +51,16 @@ void QeActivity::eventInput(int _input1, int _input2, int _mouseX, int _mouseY) 
 		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		camera->setMousePos(QeVector2i(_mouseX, _mouseY));
+		camera->setMousePos(QeVector2i(_param1, _param2));
 		break;
 	case WM_MOUSEMOVE:
 
 		switch (_input2) {
 		case MK_LBUTTON:
-			camera->rotateTarget(QeVector2i(_mouseX, _mouseY));
+			camera->rotateTarget(QeVector2i(_param1, _param2));
 			break;
 		case MK_RBUTTON:
-			camera->rotatePos(QeVector2i(_mouseX, _mouseY));
+			camera->rotatePos(QeVector2i(_param1, _param2));
 			break;
 		}
 		break;

@@ -71,3 +71,24 @@ void QeObjectManger::update(float _time) {
 		++it2;
 	}
 }
+
+
+void QeObjectManger::cleanupSwapChain() {
+
+	std::vector<QeModel*>::iterator it2 = mgrActiveModels.begin();
+	while (it2 != mgrActiveModels.end()) {
+		(*it2)->cleanupSwapChain();
+		++it2;
+	}
+}
+
+void QeObjectManger::recreateSwapChain() {
+
+	std::vector<QeModel*>::iterator it2 = mgrActiveModels.begin();
+	while (it2 != mgrActiveModels.end()) {
+		(*it2)->recreateSwapChain();
+		++it2;
+	}
+
+	VLK->updateDrawCommandBuffers(mgrActiveModels);
+}

@@ -111,16 +111,19 @@ void QeVulkan::cleanupSwapChain() {
 	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
 		vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
 	}
+	vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
 
 	//vkDestroyPipeline(device, graphicsPipeline, nullptr);
-	//vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-	//vkDestroyRenderPass(device, renderPass, nullptr);
+	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+	vkDestroyRenderPass(device, renderPass, nullptr);
 
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
 		vkDestroyImageView(device, swapChainImageViews[i], nullptr);
 	}
 
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
+
+	OBJMGR->cleanupSwapChain();
 }
 
 void QeVulkan::cleanup() {
@@ -139,16 +142,21 @@ void QeVulkan::cleanup() {
 
 
 void QeVulkan::recreateSwapChain() {
-	vkDeviceWaitIdle(device);
+	deviceWaitIdle();
 
 	cleanupSwapChain();
 
+	createPipeline();
 	createSwapChain();
 	createImageViews();
 	createRenderPass();
-	//createGraphicsPipeline();
 	createDepthResources();
 	createFramebuffers();
+	createDrawCommandBuffers();
+
+	QE->viewport->init();
+	OBJMGR->recreateSwapChain();
+	//createGraphicsPipeline();
 	//createCommandBuffers(*model);
 	//createCommandBuffers(*model1);
 }
@@ -980,6 +988,31 @@ void QeVulkan::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, 
 
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
+	/*
+	VkViewport viewports[2];
+	// Left
+	viewports[0] = { 0, 0, (float)width / 2.0f, (float)height, 0.0, 1.0f };
+	// Right
+	viewports[1] = { (float)width / 2.0f, 0, (float)width / 2.0f, (float)height, 0.0, 1.0f };
+
+	vkCmdSetViewport(drawCmdBuffers[i], 0, 2, viewports);
+
+	VkRect2D scissorRects[2] = {
+		vks::initializers::rect2D(width / 2, height, 0, 0),
+		vks::initializers::rect2D(width / 2, height, width / 2, 0),
+	};
+	vkCmdSetScissor(drawCmdBuffers[i], 0, 2, scissorRects);
+
+	vkCmdSetLineWidth(drawCmdBuffers[i], 1.0f);
+
+	vkCmdBindDescriptorSets(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+
+	VkDeviceSize offsets[1] = { 0 };
+	vkCmdBindVertexBuffers(drawCmdBuffers[i], 0, 1, &scene.vertices.buffer, offsets);
+	vkCmdBindIndexBuffer(drawCmdBuffers[i], scene.indices.buffer, 0, VK_INDEX_TYPE_UINT32);
+	vkCmdBindPipeline(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	vkCmdDrawIndexed(drawCmdBuffers[i], scene.indexCount, 1, 0, 0, 0);
+	*/
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 }
@@ -1065,6 +1098,13 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 	fragShaderStageInfo.module = fragShader;
 	fragShaderStageInfo.pName = "main";
 
+	//shaderStages[0] = loadShader(getAssetPath() + "shaders/viewportarray/scene.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	//shaderStages[1] = loadShader(getAssetPath() + "shaders/viewportarray/scene.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	// A geometry shader is used to output geometry to multiple viewports in one single pass
+	// See the "invoctations" decorator of the layout input in the shader
+	//shaderStages[2] = loadShader(getAssetPath() + "shaders/viewportarray/multiview.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
+
+
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
@@ -1149,6 +1189,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 
 	/*VkDynamicState dynamicStates[] = {
 	VK_DYNAMIC_STATE_VIEWPORT,
+	VK_DYNAMIC_STATE_SCISSOR,
 	VK_DYNAMIC_STATE_LINE_WIDTH
 	};
 

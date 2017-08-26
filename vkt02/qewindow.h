@@ -8,9 +8,8 @@ public:
 	QeWindow(QeGlobalKey& _key) {}
 	~QeWindow() {}
 
-	const int WIDTH = 800;
-	const int HEIGHT = 600;
-
+	//int currentWidth = 0;
+	//int currentHeight = 0;
 	bool isWinodowShouldClose();
 	void getWindowSize(int& width, int& height);
 	void update(float time);

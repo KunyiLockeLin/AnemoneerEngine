@@ -1,6 +1,14 @@
 #include "qemodel.h"
 
 
+void QeModel::cleanupSwapChain() {
+	vkDestroyPipeline(VLK->device, graphicsPipeline, nullptr);
+}
+
+void QeModel::recreateSwapChain() {
+	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderFrag->shader);
+}
+
 void QeModel::cleanup() {
 	//vkDestroySampler(QE->device, textureSampler, nullptr);
 	//vkDestroyImageView(QE->device, textureImageView, nullptr);
