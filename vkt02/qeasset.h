@@ -43,7 +43,7 @@ struct QeAssetMaterial {
 	VkDeviceMemory materialBufferMemory;
 	QeAssetImage* pDiffuseMap;
 	QeAssetShader* pShaderVert;
-	QeAssetShader* pShaderFarg;
+	QeAssetShader* pShaderFrag;
 };
 
 struct QeAssetImage {
@@ -81,19 +81,11 @@ public:
 
 	std::vector<char>  loadFile(const char* _filename);
 	bool loadConfig();
-	const char* getString(const char* _nodeName, int _index=0);
-	std::string combinePath(const char* _filename, QeAssetType dataType );
+	const char* getString(const char* _nodeName, int _index = 0);
+	std::string combinePath(const char* _filename, QeAssetType dataType);
 	QeAssetModel* getModelOBJ(const char* _filename);
 	QeAssetMaterial* getMateialMTL(const char* _filename);
 	QeAssetImage* getImageBMP32(const char* _filename);
 	QeAssetShader* getShader(const char* _filename);
 
-	void createVertexBuffer(QeAssetModel& model, std::vector<QeVertex>& vertices);
-	void createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indices);
-
-	void createTextureImage(QeAssetImage& image, std::vector<char>& data, int width, int height, int imageSize);
-	void createTextureImageView(QeAssetImage& image);
-	void createTextureSampler(QeAssetImage& image);
-	void createShaderModule(QeAssetShader& shader, const std::vector<char>& code);
 };
-

@@ -9,7 +9,7 @@ layout( binding = 0) uniform QeDataMVP {
 	mat4 normal;
 } mvp;
 
-layout( binding = 2) uniform QeDataLight {
+layout( binding = 1) uniform QeDataLight {
 	vec4 pos;
     vec4 dir;
 	vec4 color;

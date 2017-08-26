@@ -86,7 +86,7 @@ public:
 	void createSwapChain();
 	void createImageViews();
 	void createRenderPass();
-	void createDescriptorSetLayout();
+	void createDescriptorSetLayout(int bufNum, int texNum);
 	void createPipeline();
 	void createFramebuffers();
 	void createCommandPool();
@@ -124,5 +124,16 @@ public:
 
 	void drawFrame();
 	void updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model);
-};
 
+	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
+	VkDescriptorPool createDescriptorPool();
+	VkDescriptorSet createDescriptorSet(VkDescriptorPool& descriptorPool);
+	VkPipeline createGraphicsPipeline(VkShaderModule& vertShader, VkShaderModule& fragShader);
+	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
+	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);
+	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
+	VkSampler createTextureSampler();
+
+	void createImageData(void* data, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
+	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+};

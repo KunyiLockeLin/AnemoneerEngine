@@ -30,14 +30,10 @@ public:
 	VkPipeline graphicsPipeline;
 	VkDescriptorPool descriptorPool;
 
-	void createDescriptorSet();
 	void createDescriptorBuffer();
-	void updateDescriptorSet();
 	void updateUniformBuffer();
-	void createGraphicsPipeline();
 	void update(float time);
-	void createDescriptorPool();
-
+	
 	QeModel(QeObjectMangerKey& _key) {}
 	~QeModel() {}
 

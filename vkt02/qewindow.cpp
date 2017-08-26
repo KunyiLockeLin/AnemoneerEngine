@@ -121,6 +121,7 @@ void QeWindow::init() {
 	ShowWindow(window, SW_SHOW);
 	SetForegroundWindow(window);
 	SetFocus(window);
+
 }
 
 std::string QeWindow::getWindowTitle()
@@ -139,18 +140,7 @@ std::string QeWindow::getWindowTitle()
 
 void QeWindow::initSurface() {
 
-	VkResult err = VK_SUCCESS;
-
-	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
-	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	surfaceCreateInfo.hinstance = windowInstance;
-	surfaceCreateInfo.hwnd = window;
-	err = vkCreateWin32SurfaceKHR(VLK->instance, &surfaceCreateInfo, nullptr, &surface);
-
-	if (err != VK_SUCCESS) {
-		std::cout << "Could not create surface!\n";
-	}
-
+	surface = VLK->createSurface(window, windowInstance);
 	bClosed = false;
 }
 

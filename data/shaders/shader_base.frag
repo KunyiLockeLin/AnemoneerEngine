@@ -1,9 +1,7 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout( binding = 1) uniform sampler2D texSampler;
-
-layout( binding = 2) uniform QeDataLight {
+layout( binding = 1) uniform QeDataLight {
     vec4 pos;
     vec4 dir;
 	vec4 color;
@@ -12,7 +10,7 @@ layout( binding = 2) uniform QeDataLight {
 	float coneAngle;
 } light;
 
-layout( binding = 3) uniform QeDataMaterial {
+layout( binding = 2) uniform QeDataMaterial {
     vec4 ambient;
     vec4 diffuse;
     vec4 specular;
@@ -21,6 +19,8 @@ layout( binding = 3) uniform QeDataMaterial {
 	float specularExponent;
 	float alpha;
 } mtl;
+
+layout( binding = 3) uniform sampler2D texSampler;
 
 layout(location = 0) in vec3 fragColor;
 layout(location = 1) in vec2 fragTexCoord;

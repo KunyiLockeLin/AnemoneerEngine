@@ -142,9 +142,9 @@ QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 	file.close();
 
 	QeAssetModel* model = new QeAssetModel();
+	VLK->createBufferData((void*)vertices.data(), sizeof(vertices[0]) * vertices.size(), model->vertexBuffer, model->vertexBufferMemory);
+	VLK->createBufferData((void*)indices.data(), sizeof(indices[0]) * indices.size(), model->indexBuffer, model->indexBufferMemory);
 
-	createVertexBuffer(*model, vertices);
-	createIndexBuffer(*model, indices);
 	model->indexSize = indices.size();
 
 	astModels[_filePath] = model;
@@ -206,18 +206,15 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 
 	VkDeviceSize bufferSize = sizeof(QeDataMaterial);
 	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, mtl->materialBuffer, mtl->materialBufferMemory);
-	void* data;
-	vkMapMemory(VLK->device, mtl->materialBufferMemory, 0, sizeof(mtl1), 0, &data);
-		memcpy(data, &mtl1, sizeof(mtl1));
-	vkUnmapMemory(VLK->device, mtl->materialBufferMemory);
-
+	VLK->setMemory(mtl->materialBufferMemory, (void*)&mtl1, sizeof(mtl1));
+	
 	astMaterials[_filePath] = mtl;
 
 	if (strlen(diffuseMapPath) != 0)
 		mtl->pDiffuseMap = getImageBMP32(diffuseMapPath);
 
 	mtl->pShaderVert = getShader(getString("defaultshadervert"));
-	mtl->pShaderFarg = getShader(getString("defaultshaderfarg"));
+	mtl->pShaderFrag = getShader(getString("defaultshaderfrag"));
 
 	return mtl;
 }
@@ -258,98 +255,11 @@ QeAssetImage* QeAsset::getImageBMP32(const char* _filename) {
 	_file.close();
 
 	QeAssetImage* image = new QeAssetImage();
-	createTextureImage(*image, data, width, height, imageSize);
-	createTextureImageView(*image);
-	createTextureSampler(*image);
+	VLK->createImageData((void*)data.data(), imageSize, width, height, image->textureImage, image->textureImageMemory);
+	image->textureImageView = VLK->createImageView(image->textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	image->textureSampler = VLK->createTextureSampler();
 	astTextures[_filePath] = image;
 	return image;
-}
-
-
-void QeAsset::createTextureImage(QeAssetImage& image, std::vector<char>& imageData, int width, int height, int imageSize) {
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	VLK->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(VLK->device, stagingBufferMemory, 0, imageSize, 0, &data);
-	memcpy(data, imageData.data(), static_cast<size_t>(imageSize));
-	vkUnmapMemory(VLK->device, stagingBufferMemory);
-
-	VLK->createImage(width, height, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image.textureImage, image.textureImageMemory);
-
-	VLK->transitionImageLayout(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	VLK->copyBufferToImage(stagingBuffer, image.textureImage, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
-	VLK->transitionImageLayout(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
-	vkDestroyBuffer(VLK->device, stagingBuffer, nullptr);
-	vkFreeMemory(VLK->device, stagingBufferMemory, nullptr);
-}
-
-void QeAsset::createTextureImageView(QeAssetImage& image) {
-	image.textureImageView = VLK->createImageView(image.textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
-}
-
-void QeAsset::createTextureSampler(QeAssetImage& image) {
-	VkSamplerCreateInfo samplerInfo = {};
-	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-	samplerInfo.magFilter = VK_FILTER_LINEAR;
-	samplerInfo.minFilter = VK_FILTER_LINEAR;
-	samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.anisotropyEnable = VK_TRUE;
-	samplerInfo.maxAnisotropy = 16;
-	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-	samplerInfo.unnormalizedCoordinates = VK_FALSE;
-	samplerInfo.compareEnable = VK_FALSE;
-	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-
-	if (vkCreateSampler(VLK->device, &samplerInfo, nullptr, &image.textureSampler) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create texture sampler!");
-	}
-}
-
-void QeAsset::createVertexBuffer(QeAssetModel& model, std::vector<QeVertex>& vertices) {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(VLK->device, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), (size_t)bufferSize);
-	vkUnmapMemory(VLK->device, stagingBufferMemory);
-
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, model.vertexBuffer, model.vertexBufferMemory);
-
-	VLK->copyBuffer(stagingBuffer, model.vertexBuffer, bufferSize);
-
-	vkDestroyBuffer(VLK->device, stagingBuffer, nullptr);
-	vkFreeMemory(VLK->device, stagingBufferMemory, nullptr);
-}
-
-void QeAsset::createIndexBuffer(QeAssetModel& model, std::vector<uint32_t>& indices) {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(VLK->device, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(VLK->device, stagingBufferMemory);
-
-	VLK->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, model.indexBuffer, model.indexBufferMemory);
-
-	VLK->copyBuffer(stagingBuffer, model.indexBuffer, bufferSize);
-
-	vkDestroyBuffer(VLK->device, stagingBuffer, nullptr);
-	vkFreeMemory(VLK->device, stagingBufferMemory, nullptr);
 }
 
 bool QeAsset::loadConfig() {
@@ -397,7 +307,7 @@ QeAssetShader* QeAsset::getShader(const char* _filename) {
 	std::vector<char> data = loadFile(_filePath.c_str());
 
 	QeAssetShader* shader = new QeAssetShader();
-	createShaderModule( *shader, data);
+	shader->shader = VLK->createShaderModel((void*)data.data(), int(data.size()));
 	astShaders[_filename] = shader;
 	return shader;
 }
@@ -423,16 +333,4 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 		break;
 	}
 	return rtn.append(_filename).c_str();
-}
-
-
-void QeAsset::createShaderModule(QeAssetShader& shader, const std::vector<char>& code) {
-	VkShaderModuleCreateInfo createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-	if (vkCreateShaderModule(VLK->device, &createInfo, nullptr, &shader.shader) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create shader module!");
-	}
 }
