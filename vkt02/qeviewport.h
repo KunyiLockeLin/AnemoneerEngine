@@ -2,6 +2,8 @@
 
 #include "qeheader.h"
 
+// MAX number of viewport is 8.
+
 class QeViewport
 {
 public:

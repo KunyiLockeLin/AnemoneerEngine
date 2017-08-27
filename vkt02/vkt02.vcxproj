@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\data\shaders\shader_base.frag" />
+    <None Include="..\data\shaders\shader_base.geom" />
     <None Include="..\data\shaders\shader_base.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

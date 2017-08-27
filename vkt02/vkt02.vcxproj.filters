@@ -106,5 +106,8 @@
     <None Include="..\data\shaders\shader_base.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\shader_base.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -9,6 +9,12 @@ void QueenEngine::run() {
 	VLK->init();
 	VP->addNewViewport();
 	VP->addNewViewport();
+	VP->addNewViewport();
+	VP->addNewViewport();
+	VP->addNewViewport();
+	VP->addNewViewport();
+	VP->addNewViewport();
+	VP->addNewViewport();
 
 	activity = OBJMGR->getActivity();
 	activity->init();

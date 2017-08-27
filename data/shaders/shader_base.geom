@@ -1,7 +1,7 @@
 #version 450
 #extension GL_ARB_viewport_array : enable
 
-layout (triangles, invocations = 2) in;
+layout (triangles, invocations = 8) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 

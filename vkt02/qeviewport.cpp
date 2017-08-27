@@ -11,33 +11,22 @@ void QeViewport::updateViewport() {
 	int yNum;
 	float eWidth;
 	float eHeight;
-
+	int time1;
+	int time2;
 	if (width > height) {
-		int time1 = width / height;
-		int time2 = int(ceil(float(size) / time1));
+		time1 = width / height;
+		time2 = int(ceil(sqrtf(float(size) / time1)));
 
-		if (time2 == 1 ) {
-			xNum = size;
-			yNum = time2;
-		}
-		else {
-			xNum = time1*time2;
-			yNum = time2;
-		}
+		xNum = int(ceil(float(size) /time2));
+		yNum = time2;
 	}
 	else
 	{
-		int time1 = height / width;
-		int time2 = int(ceil(float(size) / time1));
+		time1 = height / width;
+		time2 = int(ceil(sqrtf(float(size) / time1)));
 		
-		if (time2 == 1) {
-			yNum = size;
-			xNum = time2;
-		}
-		else {
-			yNum = time1*time2;
-			xNum = time2;
-		}
+		yNum = int(ceil(float(size) / time2));
+		xNum = time2;
 	}
 	eWidth = float(width) / xNum;
 	eHeight = float(height)/ yNum;
