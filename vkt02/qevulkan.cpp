@@ -255,6 +255,7 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
 	deviceFeatures.fillModeNonSolid = VK_TRUE;
 	deviceFeatures.multiViewport = VK_TRUE;
+	//deviceFeatures.geometryShader = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -963,6 +964,10 @@ void QeVulkan::updateDrawCommandBuffers(std::vector<QeModel*> & models) {
 
 		vkCmdBeginRenderPass(drawCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+		vkCmdSetViewport(drawCommandBuffers[i], 0, static_cast<uint32_t>(VP->viewports.size()), VP->viewports.data());
+		vkCmdSetScissor(drawCommandBuffers[i], 0, static_cast<uint32_t>(VP->scissors.size()), VP->scissors.data());
+		vkCmdSetLineWidth(drawCommandBuffers[i], 1.0f);
+
 		std::vector<QeModel*>::iterator it = models.begin();
 
 		while (it != models.end()) {
@@ -989,31 +994,6 @@ void QeVulkan::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, 
 
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
-	/*
-	VkViewport viewports[2];
-	// Left
-	viewports[0] = { 0, 0, (float)width / 2.0f, (float)height, 0.0, 1.0f };
-	// Right
-	viewports[1] = { (float)width / 2.0f, 0, (float)width / 2.0f, (float)height, 0.0, 1.0f };
-
-	vkCmdSetViewport(drawCmdBuffers[i], 0, 2, viewports);
-
-	VkRect2D scissorRects[2] = {
-		vks::initializers::rect2D(width / 2, height, 0, 0),
-		vks::initializers::rect2D(width / 2, height, width / 2, 0),
-	};
-	vkCmdSetScissor(drawCmdBuffers[i], 0, 2, scissorRects);
-
-	vkCmdSetLineWidth(drawCmdBuffers[i], 1.0f);
-
-	vkCmdBindDescriptorSets(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-
-	VkDeviceSize offsets[1] = { 0 };
-	vkCmdBindVertexBuffers(drawCmdBuffers[i], 0, 1, &scene.vertices.buffer, offsets);
-	vkCmdBindIndexBuffer(drawCmdBuffers[i], scene.indices.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdBindPipeline(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-	vkCmdDrawIndexed(drawCmdBuffers[i], scene.indexCount, 1, 0, 0, 0);
-	*/
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 }
@@ -1099,8 +1079,6 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 	fragShaderStageInfo.module = fragShader;
 	fragShaderStageInfo.pName = "main";
 
-	//shaderStages[0] = loadShader(getAssetPath() + "shaders/viewportarray/scene.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-	//shaderStages[1] = loadShader(getAssetPath() + "shaders/viewportarray/scene.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	// A geometry shader is used to output geometry to multiple viewports in one single pass
 	// See the "invoctations" decorator of the layout input in the shader
 	//shaderStages[2] = loadShader(getAssetPath() + "shaders/viewportarray/multiview.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
@@ -1163,6 +1141,17 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 	colorBlending.blendConstants[2] = 0.0f;
 	colorBlending.blendConstants[3] = 0.0f;
 
+	VkDynamicState dynamicStates[] = {
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_SCISSOR,
+		VK_DYNAMIC_STATE_LINE_WIDTH
+	};
+
+	VkPipelineDynamicStateCreateInfo dynamicState = {};
+	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	dynamicState.dynamicStateCount = 3;
+	dynamicState.pDynamicStates = dynamicStates;
+
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.stageCount = 2;
@@ -1174,6 +1163,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
+	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
 	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
@@ -1184,20 +1174,10 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
-	return graphicsPipeline;
 	//vkDestroyShaderModule(device, fragShaderModule, nullptr);
 	//vkDestroyShaderModule(device, vertShaderModule, nullptr);
 
-	/*VkDynamicState dynamicStates[] = {
-	VK_DYNAMIC_STATE_VIEWPORT,
-	VK_DYNAMIC_STATE_SCISSOR,
-	VK_DYNAMIC_STATE_LINE_WIDTH
-	};
-
-	VkPipelineDynamicStateCreateInfo dynamicState = {};
-	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicState.dynamicStateCount = 2;
-	dynamicState.pDynamicStates = dynamicStates;*/
+	return graphicsPipeline;
 }
 
 

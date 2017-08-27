@@ -3,8 +3,6 @@
 
 void QeViewport::updateViewport() {
 	
-	int width1, height1;
-	WIN->getWindowSize(width1,height1);
 	int width = VLK->swapChainExtent.width;
 	int height = VLK->swapChainExtent.height;
 	
@@ -18,7 +16,7 @@ void QeViewport::updateViewport() {
 		int time1 = width / height;
 		int time2 = int(ceil(float(size) / time1));
 
-		if (time2 == 0 ) {
+		if (time2 == 1 ) {
 			xNum = size;
 			yNum = time2;
 		}
@@ -32,7 +30,7 @@ void QeViewport::updateViewport() {
 		int time1 = height / width;
 		int time2 = int(ceil(float(size) / time1));
 		
-		if (time2 == 0) {
+		if (time2 == 1) {
 			yNum = size;
 			xNum = time2;
 		}
@@ -54,22 +52,20 @@ void QeViewport::updateViewport() {
 			viewports[i].width = eWidth;
 		else
 			viewports[i].width = width- viewports[i].x;
-	}
 
-	size = int(scissors.size());
-	for (int i = 0; i<size; ++i)
-		scissors[i].extent = VLK->swapChainExtent;
+		scissors[i].extent.width = int(viewports[i].width);
+		scissors[i].extent.height = int(viewports[i].height);
+		scissors[i].offset.x = int(viewports[i].x);
+		scissors[i].offset.y = int(viewports[i].y);
+		cameras[i]->faspect = viewports[i].width / viewports[i].height;
+	}
 
 	viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = static_cast<uint32_t>(viewports.size());
-	viewportState.pViewports = viewports.data();
+	//viewportState.pViewports = viewports.data();
 	viewportState.scissorCount = static_cast<uint32_t>(scissors.size());
-	viewportState.pScissors = scissors.data();
-
-	size = int(cameras.size());
-	for (int i = 0; i<size ; ++i )
-			cameras[i]->faspect = viewports[i].width / viewports[i].height;
+	//viewportState.pScissors = scissors.data();			
 }
 
 void QeViewport::popViewport() {
@@ -90,8 +86,6 @@ void QeViewport::addNewViewport() {
 	viewports.push_back(viewport);
 
 	VkRect2D scissor = {};
-	scissor.offset = { 0, 0 };
-	scissor.extent = VLK->swapChainExtent;
 	scissors.push_back(scissor);
 
 	QeCamera* camera = OBJMGR->getCamera();
@@ -99,7 +93,4 @@ void QeViewport::addNewViewport() {
 	cameras.push_back(camera);
 
 	updateViewport();
-
-	//VkPipelineViewportStateCreateInfo viewportState =
-	//	vks::initializers::pipelineViewportStateCreateInfo(2, 2, 0);
 }

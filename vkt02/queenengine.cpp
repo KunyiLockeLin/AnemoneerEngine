@@ -6,9 +6,8 @@ void QueenEngine::run() {
 	AST->loadConfig();
 	lastTime = std::chrono::high_resolution_clock::now();
 
-	//WIN->init();
 	VLK->init();
-
+	VP->addNewViewport();
 	VP->addNewViewport();
 
 	activity = OBJMGR->getActivity();

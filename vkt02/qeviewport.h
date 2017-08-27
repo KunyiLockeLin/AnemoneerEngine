@@ -13,7 +13,6 @@ public:
 	std::vector<QeCamera*> cameras;
 	VkPipelineViewportStateCreateInfo viewportState;
 
-	//void addNewViewport( int x, int y, int width, int height, QeCamera* camera );
 	void addNewViewport();
 	void popViewport();
 	void updateViewport();
