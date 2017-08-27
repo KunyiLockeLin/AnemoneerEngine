@@ -128,7 +128,7 @@ public:
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 	VkDescriptorPool createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorPool& descriptorPool);
-	VkPipeline createGraphicsPipeline(VkShaderModule& vertShader, VkShaderModule& fragShader);
+	VkPipeline createGraphicsPipeline(VkShaderModule& vertShader, VkShaderModule& geomShader, VkShaderModule& fragShader);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);

@@ -43,6 +43,7 @@ struct QeAssetMaterial {
 	VkDeviceMemory materialBufferMemory;
 	QeAssetImage* pDiffuseMap;
 	QeAssetShader* pShaderVert;
+	QeAssetShader* pShaderGeom;
 	QeAssetShader* pShaderFrag;
 };
 

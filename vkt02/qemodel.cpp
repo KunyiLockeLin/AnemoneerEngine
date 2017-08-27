@@ -6,7 +6,7 @@ void QeModel::cleanupSwapChain() {
 }
 
 void QeModel::recreateSwapChain() {
-	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderFrag->shader);
+	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
 }
 
 void QeModel::cleanup() {
@@ -112,7 +112,7 @@ void QeModel::init(const char* _filename) {
 	imageViews[0] = modelData->pMaterial->pDiffuseMap->textureImageView;
 
 	VLK->updateDescriptorSet(buffers, buffersSize, 3, samplersp, imageViews, 1, descriptorSet);
-	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderFrag->shader);
+	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
 	
 	pos = QeVector3f(0, 0, 0);
 	face = 0.0f;

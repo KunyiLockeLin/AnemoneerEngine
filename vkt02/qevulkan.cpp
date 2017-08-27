@@ -255,7 +255,7 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
 	deviceFeatures.fillModeNonSolid = VK_TRUE;
 	deviceFeatures.multiViewport = VK_TRUE;
-	//deviceFeatures.geometryShader = VK_TRUE;
+	deviceFeatures.geometryShader = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -412,7 +412,7 @@ void QeVulkan::createDescriptorSetLayout( int bufNum, int texNum ) {
 		bindings[i].descriptorCount = 1;
 		bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		bindings[i].pImmutableSamplers = nullptr;
-		bindings[i].stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+		bindings[i].stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT |VK_SHADER_STAGE_FRAGMENT_BIT;
 	}
 	for (int i = 0; i<texNum; ++i) {
 		bindings[bufNum + i].binding = bufNum + i;
@@ -985,15 +985,12 @@ void QeVulkan::updateDrawCommandBuffers(std::vector<QeModel*> & models) {
 
 void QeVulkan::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model) {
 
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.graphicsPipeline);
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &model.modelData->vertexBuffer, offsets);
-
 	vkCmdBindIndexBuffer(drawCommandBuffer, model.modelData->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
-
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.graphicsPipeline);
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 }
@@ -1065,7 +1062,7 @@ VkDescriptorPool QeVulkan::createDescriptorPool() {
 	return descriptorPool;
 }
 
-VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShaderModule& fragShader) {
+VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShaderModule& geomShader, VkShaderModule& fragShader) {
 
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -1073,18 +1070,19 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 	vertShaderStageInfo.module = vertShader;
 	vertShaderStageInfo.pName = "main";
 
+	VkPipelineShaderStageCreateInfo geomShaderStageInfo = {};
+	geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
+	geomShaderStageInfo.module = geomShader;
+	geomShaderStageInfo.pName = "main";
+
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 	fragShaderStageInfo.module = fragShader;
 	fragShaderStageInfo.pName = "main";
 
-	// A geometry shader is used to output geometry to multiple viewports in one single pass
-	// See the "invoctations" decorator of the layout input in the shader
-	//shaderStages[2] = loadShader(getAssetPath() + "shaders/viewportarray/multiview.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
-
-
-	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, geomShaderStageInfo, fragShaderStageInfo };
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -1154,7 +1152,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-	pipelineInfo.stageCount = 2;
+	pipelineInfo.stageCount = 3;
 	pipelineInfo.pStages = shaderStages;
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
