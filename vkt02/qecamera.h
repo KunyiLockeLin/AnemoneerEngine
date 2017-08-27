@@ -9,7 +9,7 @@ enum QeCameraType {
 
 class QeCamera
 {
-private:
+public:
 	QeVector3f pos;
 	QeVector3f target;
 	QeVector3f up;
@@ -17,11 +17,11 @@ private:
 	float fov;
 	float fnear;
 	float ffar;
+	float faspect = 1;
 	float rotateSpeed = 0.5f;
 	float moveSpeed = 0.5f;
 	QeCameraType type;
 
-public:
 	QeCamera(QeObjectMangerKey& _key) {}
 	~QeCamera() {}
 	void init();

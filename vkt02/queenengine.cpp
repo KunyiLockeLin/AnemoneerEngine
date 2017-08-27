@@ -9,8 +9,7 @@ void QueenEngine::run() {
 	//WIN->init();
 	VLK->init();
 
-	viewport = new QeViewport();
-	viewport->init();
+	VP->addNewViewport();
 
 	activity = OBJMGR->getActivity();
 	activity->init();
@@ -32,7 +31,7 @@ void QueenEngine::mainLoop() {
 			currentFPS = int(1 / time);
 			
 			activity->update(time);
-			viewport->update(time);
+			VP->update(time);
 			VLK->update(time);
 			WIN->update(time);
 		}

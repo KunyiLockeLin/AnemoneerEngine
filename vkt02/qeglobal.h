@@ -23,6 +23,7 @@ public:
 	QueenEngine*		engine;
 	QeVulkan*			vulkan;
 	QeWindow*			window;
+	QeViewport*			viewport;
 	QeMath*				math;
 	QeAsset*			asset;
 	QeObjectManger*		objMgr;
@@ -32,6 +33,7 @@ public:
 #define QE		GLB.engine
 #define VLK		GLB.vulkan
 #define WIN		GLB.window
+#define VP		GLB.viewport
 #define MATH	GLB.math
 #define AST		GLB.asset
 #define OBJMGR	GLB.objMgr

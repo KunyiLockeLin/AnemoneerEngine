@@ -154,7 +154,7 @@ void QeVulkan::recreateSwapChain() {
 	createFramebuffers();
 	createDrawCommandBuffers();
 
-	QE->viewport->init();
+	VP->updateViewport();
 	OBJMGR->recreateSwapChain();
 	//createGraphicsPipeline();
 	//createCommandBuffers(*model);
@@ -253,7 +253,8 @@ void QeVulkan::createLogicalDevice() {
 
 	VkPhysicalDeviceFeatures deviceFeatures = {};
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
-	deviceFeatures.fillModeNonSolid = true;
+	deviceFeatures.fillModeNonSolid = VK_TRUE;
+	deviceFeatures.multiViewport = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -862,7 +863,7 @@ QueueFamilyIndices QeVulkan::findQueueFamilies(VkPhysicalDevice device) {
 			indices.graphicsFamily = i;
 		}
 
-		VkBool32 presentSupport = false;
+		VkBool32 presentSupport = VK_FALSE;
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, WIN->surface, &presentSupport);
 
 		if (queueFamily.queueCount > 0 && presentSupport) {
@@ -1168,7 +1169,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 	pipelineInfo.pStages = shaderStages;
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
-	pipelineInfo.pViewportState = &QE->viewport->viewportState;
+	pipelineInfo.pViewportState = &VP->viewportState;
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;

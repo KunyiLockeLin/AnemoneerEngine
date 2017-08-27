@@ -5,15 +5,18 @@
 class QeViewport
 {
 public:
-	VkViewport viewport;
-	VkRect2D scissor;
-	QeCamera* camera;
+	QeViewport(QeGlobalKey& _key) {}
+	~QeViewport() {}
+
+	std::vector<VkViewport> viewports;
+	std::vector<VkRect2D> scissors;
+	std::vector<QeCamera*> cameras;
 	VkPipelineViewportStateCreateInfo viewportState;
 
-	QeViewport();
-	~QeViewport();
-	void init();
-
+	//void addNewViewport( int x, int y, int width, int height, QeCamera* camera );
+	void addNewViewport();
+	void popViewport();
+	void updateViewport();
 	void update(float time) {}
 };
 

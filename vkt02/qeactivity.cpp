@@ -3,7 +3,6 @@
 
 void QeActivity::init() {
 
-	camera = OBJMGR->getCamera();
 	light = OBJMGR->getLight();
 
 	model = OBJMGR->getModel("model", 0);
@@ -24,43 +23,43 @@ void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) 
 			break;
 		case KEY_W:
 		case VK_UP:
-			camera->move(QeVector3f(0, 0, 1));
+			VP->cameras[0]->move(QeVector3f(0, 0, 1));
 			break;
 		case KEY_S:
 		case VK_DOWN:
-			camera->move(QeVector3f(0, 0, -1));
+			VP->cameras[0]->move(QeVector3f(0, 0, -1));
 			break;
 		case KEY_D:
 		case VK_RIGHT:
-			camera->move(QeVector3f(1, 0, 0));
+			VP->cameras[0]->move(QeVector3f(1, 0, 0));
 			break;
 		case KEY_A:
 		case VK_LEFT:
-			camera->move(QeVector3f(-1, 0, 0));
+			VP->cameras[0]->move(QeVector3f(-1, 0, 0));
 			break;
 		case KEY_Q:
-			camera->move(QeVector3f(0, 1, 0));
+			VP->cameras[0]->move(QeVector3f(0, 1, 0));
 			break;
 		case KEY_E:
-			camera->move(QeVector3f(0, -1, 0));
+			VP->cameras[0]->move(QeVector3f(0, -1, 0));
 			break;
 		case KEY_R:
-			camera->init();
+			VP->cameras[0]->init();
 			break;
 		}
 		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		camera->setMousePos(QeVector2i(_param1, _param2));
+		VP->cameras[0]->setMousePos(QeVector2i(_param1, _param2));
 		break;
 	case WM_MOUSEMOVE:
 
 		switch (_input2) {
 		case MK_LBUTTON:
-			camera->rotateTarget(QeVector2i(_param1, _param2));
+			VP->cameras[0]->rotateTarget(QeVector2i(_param1, _param2));
 			break;
 		case MK_RBUTTON:
-			camera->rotatePos(QeVector2i(_param1, _param2));
+			VP->cameras[0]->rotatePos(QeVector2i(_param1, _param2));
 			break;
 		}
 		break;

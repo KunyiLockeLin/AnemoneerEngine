@@ -136,8 +136,8 @@ void QeModel::updateUniformBuffer() {
 
 	QeDataMVP mvp = {};
 	mvp.model = getMatModel();
-	mvp.view = QE->activity->camera->getMatView();
-	mvp.proj = QE->activity->camera->getMatProjection();
+	mvp.view = VP->cameras[0]->getMatView();
+	mvp.proj = VP->cameras[0]->getMatProjection();
 
 	QeMatrix4x4f mat = mvp.view*mvp.model;
 	MATH->inverse(mat, mat);

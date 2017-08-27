@@ -103,7 +103,7 @@ void QeWindow::init() {
 	windowRect.right = std::stoi(AST->getString("winWidth"));//settings.fullscreen ? (long)screenWidth : (long)width;
 	windowRect.bottom = std::stoi(AST->getString("winHeight"));//settings.fullscreen ? (long)screenHeight : (long)height;
 
-	AdjustWindowRectEx(&windowRect, dwStyle, FALSE, dwExStyle);
+	AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
 
 	window = CreateWindowEx(0,
 		convert(AST->getString("title")),

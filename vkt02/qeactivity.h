@@ -10,7 +10,6 @@ public:
 
 	QeModel*	model;
 	QeModel*	model1;
-	QeCamera*	camera;
 	QeLight*	light;
 
 	void init();

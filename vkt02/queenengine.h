@@ -9,7 +9,6 @@ public:
 	~QueenEngine() {}
 	void run();
 
-	QeViewport*	viewport;
 	QeActivity* activity;
 
 	int currentFPS;
