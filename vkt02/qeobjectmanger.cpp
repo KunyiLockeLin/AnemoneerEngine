@@ -1,13 +1,13 @@
 #include "qeobjectmanger.h"
 
-QeCamera* QeObjectManger::getCamera(const char* _name) {
+QeCamera* QeObjectManger::getCamera(int _id) {
 
-	std::map<std::string, QeCamera*>::iterator it = mgrCameras.find(_name);
+	std::map<int, QeCamera*>::iterator it = mgrCameras.find(_id);
 	if (it != mgrCameras.end())	return it->second;
 
 	QeCamera* newCamera = new QeCamera(key);
 	newCamera->init();
-	mgrCameras[_name] = newCamera;
+	mgrCameras[_id] = newCamera;
 
 	return newCamera;
 }
@@ -53,7 +53,7 @@ QeModel* QeObjectManger::getModel(const char* _name, int _index ) {
 
 void QeObjectManger::update(float _time) {
 
-	std::map<std::string, QeCamera*>::iterator it = mgrCameras.begin();
+	std::map<int, QeCamera*>::iterator it = mgrCameras.begin();
 	while (it != mgrCameras.end()) {
 		it->second->update(_time);
 		++it;

@@ -30,6 +30,8 @@
 #define KEY_S 0x53
 #define KEY_W 0x57
 
+const int MAX_VIEWPORT_NUM = 9;
+
 struct QeVector2i;
 struct QeVector2f;
 struct QeVector3i;

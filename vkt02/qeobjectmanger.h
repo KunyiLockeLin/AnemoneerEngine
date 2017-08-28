@@ -17,7 +17,7 @@ private:
 	QeObjectMangerKey key;
 public:
 
-	std::map<std::string, QeCamera*> mgrCameras;
+	std::map<int, QeCamera*> mgrCameras;
 	std::map<std::string, QeLight*> mgrLights;
 	std::map<std::string, QeActivity*> mgrActivitys;
 	std::vector<QeModel*> mgrInactiveModels;
@@ -26,7 +26,7 @@ public:
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger() {}
 	
-	QeCamera* getCamera(const char* _name = "MAIN");
+	QeCamera* getCamera(int _id);
 	QeLight* getLight(const char* _name = "MAIN");
 	QeActivity* getActivity(const char* _name = "MAIN");
 	QeModel* getModel(const char* _name, int _index=0);

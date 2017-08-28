@@ -1,15 +1,15 @@
 #version 450
 #extension GL_ARB_viewport_array : enable
 
-layout (triangles, invocations = 8) in;
+layout (triangles, invocations = 9) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 
 layout( binding = 0) uniform QeDataMVP {
 	mat4 model;
-    mat4 view;
-    mat4 proj;
-	mat4 normal;
+    mat4 view[9];
+    mat4 proj[9];
+	mat4 normal[9];
 } mvp;
 
 layout( binding = 1) uniform QeDataLight {
@@ -39,17 +39,17 @@ void main(void)
 		outColor = inColor[i];
 		outTexCoord = inTexCoord[i];
 		
-		//outNormal = normalize( vec3(mvp.view * mvp.model * vec4(inNormal[i],0)));
-		outNormal = normalize( vec3(mvp.normal * vec4(inNormal[i],0)));
-		//mat4 normalMatrix = transpose(inverse(mvp.view * mvp.model));
+		//outNormal = normalize( vec3(mvp.view[gl_InvocationID] * mvp.model * vec4(inNormal[i],0)));
+		outNormal = normalize( vec3(mvp.normal[gl_InvocationID] * vec4(inNormal[i],0)));
+		//mat4 normalMatrix = transpose(inverse(mvp.view[gl_InvocationID] * mvp.model));
 		//outNormal = normalize( vec3(normalMatrix * vec4(inNormal[i],0)));
 		
-		vec4 posC = mvp.view * mvp.model * gl_in[i].gl_Position;
+		vec4 posC = mvp.view[gl_InvocationID] * mvp.model * gl_in[i].gl_Position;
 		outEye = vec3(-posC);
-		outLighttoVertex = vec3( mvp.view * light.pos - posC);
+		outLighttoVertex = vec3( mvp.view[gl_InvocationID] * light.pos - posC);
 		
-		gl_Position = mvp.proj * posC;
-		//gl_Position = mvp.proj *mvp.view * mvp.model * gl_in[i].gl_Position;
+		gl_Position = mvp.proj[gl_InvocationID] * posC;
+		//gl_Position = mvp.proj[gl_InvocationID] *mvp.view[gl_InvocationID] * mvp.model * gl_in[i].gl_Position;
 	
 		// Set the viewport index that the vertex will be emitted to
 		gl_ViewportIndex = gl_InvocationID;

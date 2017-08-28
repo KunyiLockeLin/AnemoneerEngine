@@ -135,14 +135,17 @@ void QeModel::update(float time) {
 void QeModel::updateUniformBuffer() {
 
 	QeDataMVP mvp = {};
+
 	mvp.model = getMatModel();
-	mvp.view = VP->cameras[0]->getMatView();
-	mvp.proj = VP->cameras[0]->getMatProjection();
 
-	QeMatrix4x4f mat = mvp.view*mvp.model;
-	MATH->inverse(mat, mat);
-	mvp.normal = MATH->transpose(mat);
+	for (int i = 0; i < VP->currentNum; ++i) {
+		mvp.view[i] = VP->cameras[i]->getMatView();
+		mvp.proj[i] = VP->cameras[i]->getMatProjection();
 
+		QeMatrix4x4f mat = mvp.view[i]*mvp.model;
+		MATH->inverse(mat, mat);
+		mvp.normal[i] = MATH->transpose(mat);
+	}
 	VLK->setMemory(mvpBufferMemory,(void*)&mvp, sizeof(mvp));
 	
 	QeDataLight light = OBJMGR->getLight()->data;

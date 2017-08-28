@@ -1,12 +1,27 @@
 #include "qeviewport.h"
 
 
+void QeViewport::init() {
+
+	for (int i = 0; i<MAX_VIEWPORT_NUM;++i ) {
+		viewports[i].minDepth = 0.0f;
+		viewports[i].maxDepth = 1.0f;
+	}
+	
+	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
+		cameras[i] = OBJMGR->getCamera(i);
+		cameras[i]->init();
+	}
+
+	currentNum = 1;
+	updateViewport();
+}
+
 void QeViewport::updateViewport() {
 	
 	int width = VLK->swapChainExtent.width;
 	int height = VLK->swapChainExtent.height;
 	
-	int size = int(viewports.size());
 	int xNum;
 	int yNum;
 	float eWidth;
@@ -14,30 +29,30 @@ void QeViewport::updateViewport() {
 	int time1;
 	int time2;
 	if (width > height) {
-		time1 = width / height;
-		time2 = int(ceil(sqrtf(float(size) / time1)));
+		time1 = width / height+1;
+		time2 = int(ceil(sqrtf(float(currentNum) / time1)));
 
-		xNum = int(ceil(float(size) /time2));
+		xNum = int(ceil(float(currentNum) /time2));
 		yNum = time2;
 	}
 	else
 	{
-		time1 = height / width;
-		time2 = int(ceil(sqrtf(float(size) / time1)));
+		time1 = height / width+1;
+		time2 = int(ceil(sqrtf(float(currentNum) / time1)));
 		
-		yNum = int(ceil(float(size) / time2));
+		yNum = int(ceil(float(currentNum) / time2));
 		xNum = time2;
 	}
 	eWidth = float(width) / xNum;
 	eHeight = float(height)/ yNum;
 
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < currentNum; ++i) {
 
 		viewports[i].x = (i%xNum)*eWidth;
 		viewports[i].y = (i / xNum)*eHeight;
 		viewports[i].height = eHeight;
 
-		if((i+1) != size)
+		if((i+1) != currentNum)
 			viewports[i].width = eWidth;
 		else
 			viewports[i].width = width- viewports[i].x;
@@ -51,35 +66,48 @@ void QeViewport::updateViewport() {
 
 	viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	viewportState.viewportCount = static_cast<uint32_t>(viewports.size());
+	viewportState.viewportCount = currentNum;
 	//viewportState.pViewports = viewports.data();
-	viewportState.scissorCount = static_cast<uint32_t>(scissors.size());
+	viewportState.scissorCount = currentNum;
 	//viewportState.pScissors = scissors.data();			
 }
 
 void QeViewport::popViewport() {
 	
-	viewports.pop_back();
-	scissors.pop_back();
-	cameras.pop_back();
+	if (currentNum < 2) return;
+	
+	--currentNum;
+	targetCamera = 0;
 
-	updateViewport();
+	viewports[currentNum].x = 0;
+	viewports[currentNum].y = 0;
+	viewports[currentNum].height = 0;
+	viewports[currentNum].width = 0;
+
+	scissors[currentNum].extent.width = 0;
+	scissors[currentNum].extent.height = 0;
+	scissors[currentNum].offset.x = 0;
+	scissors[currentNum].offset.y = 0;
+
+	VLK->recreateSwapChain();
 }
 
 void QeViewport::addNewViewport() {
 	
-	VkViewport viewport = {};
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
+	if (currentNum >= MAX_VIEWPORT_NUM) return;
+
+	++currentNum;
+
+	VLK->recreateSwapChain();
+}
+
+void QeViewport::setTargetCamera( int index ) {
 	
-	viewports.push_back(viewport);
+	--index;
+	if (index < currentNum)
+		targetCamera = index;
+}
 
-	VkRect2D scissor = {};
-	scissors.push_back(scissor);
-
-	QeCamera* camera = OBJMGR->getCamera();
-	camera->init();
-	cameras.push_back(camera);
-
-	updateViewport();
+QeCamera* QeViewport::getTargetCamera() {
+	return cameras[targetCamera];
 }

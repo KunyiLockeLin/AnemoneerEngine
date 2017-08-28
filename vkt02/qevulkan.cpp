@@ -964,8 +964,8 @@ void QeVulkan::updateDrawCommandBuffers(std::vector<QeModel*> & models) {
 
 		vkCmdBeginRenderPass(drawCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		vkCmdSetViewport(drawCommandBuffers[i], 0, static_cast<uint32_t>(VP->viewports.size()), VP->viewports.data());
-		vkCmdSetScissor(drawCommandBuffers[i], 0, static_cast<uint32_t>(VP->scissors.size()), VP->scissors.data());
+		vkCmdSetViewport(drawCommandBuffers[i], 0, VP->currentNum, VP->viewports.data());
+		vkCmdSetScissor(drawCommandBuffers[i], 0, VP->currentNum, VP->scissors.data());
 		vkCmdSetLineWidth(drawCommandBuffers[i], 1.0f);
 
 		std::vector<QeModel*>::iterator it = models.begin();

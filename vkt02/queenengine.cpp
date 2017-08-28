@@ -7,15 +7,8 @@ void QueenEngine::run() {
 	lastTime = std::chrono::high_resolution_clock::now();
 
 	VLK->init();
-	VP->addNewViewport();
-	VP->addNewViewport();
-	VP->addNewViewport();
-	VP->addNewViewport();
-	VP->addNewViewport();
-	VP->addNewViewport();
-	VP->addNewViewport();
-	VP->addNewViewport();
-
+	VP->init();
+	
 	activity = OBJMGR->getActivity();
 	activity->init();
 
