@@ -1,9 +1,14 @@
 # Vulkan
 Input:
-"+" : Add new viewport. The maximum number of viewport is nine. 
+
+"+" : Add new viewport. The maximum number of viewport is nine.
+ 
 "-" : Substract the last viewport.
+
 "1"~"9" : Choose a viewport to control its camera.
+
 "R" : Reset the camera.
+
 "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
 
 reference: 
