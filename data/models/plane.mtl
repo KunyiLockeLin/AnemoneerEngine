@@ -12,3 +12,4 @@ d 1.000000
 illum 1
 map_Kd D:\Works\github\Vulkan\data\textures\light.bmp
 sg billboardg.spv
+sf billboardf.spv

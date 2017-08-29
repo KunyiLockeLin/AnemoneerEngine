@@ -24,22 +24,3 @@ void main()
 	outTexCoord = inTexCoord;
 	outNormal = inNormal;
 }
-
-/*
-void main() {
-	
-	fragColor = inColor;
-    fragTexCoord = inTexCoord;
-
-	//fragNormal = normalize( vec3(mvp.view * mvp.model * vec4(inNormal,0)));
-	fragNormal = normalize( vec3(mvp.normal * vec4(inNormal,0)));
-	//mat4 normalMatrix = transpose(inverse(mvp.view * mvp.model));
-	//fragNormal = normalize( vec3(normalMatrix * vec4(inNormal,0)));
-
-	vec4 posC = mvp.view * mvp.model * vec4(inPosition, 1);
-	fragEye = vec3(-posC);
-	fragLighttoVertex = vec3( mvp.view * light.pos - posC);
-	gl_Position = mvp.proj * posC;
-	//gl_Position = mvp.proj *mvp.view * mvp.model * vec4(inPosition, 1);
-}
-*/

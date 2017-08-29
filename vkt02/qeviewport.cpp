@@ -78,6 +78,14 @@ void QeViewport::popViewport() {
 	
 	--currentNum;
 	targetCamera = 0;
+	viewports[currentNum].x = 0;
+	viewports[currentNum].y = 0;
+	viewports[currentNum].height = 0;
+	viewports[currentNum].width = 0;
+	scissors[currentNum].extent.width = 0;
+	scissors[currentNum].extent.height = 0;
+	scissors[currentNum].offset.x = 0;
+	scissors[currentNum].offset.y = 0;
 
 	VLK->recreateSwapChain();
 }

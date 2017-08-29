@@ -44,7 +44,7 @@ struct QeAssetMaterial;
 struct QeDataMaterial;
 struct QeAssetImage;
 struct QeAssetShader;
-struct QeDataMVP;
+struct QeUniformBufferObject;
 struct QeDataLight;
 class QeMath;
 class QeAsset;

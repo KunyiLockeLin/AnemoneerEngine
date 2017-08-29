@@ -3,18 +3,18 @@
 #include "qeheader.h"
 
 
-struct QeDataMVP {
+struct QeUniformBufferObject {
 	QeMatrix4x4f model;
 	QeMatrix4x4f view[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f proj[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f normal[MAX_VIEWPORT_NUM];
+	float param1;
 };
 
 class QeModel
 {
 public:
 
-	QeDataMVP mvp;
 	QeVector3f pos;
 	float face;
 	float up;
@@ -23,8 +23,9 @@ public:
 	QeAssetModel* modelData;
 
 	VkDescriptorSet descriptorSet;
-	VkBuffer mvpBuffer;
-	VkDeviceMemory mvpBufferMemory;
+	QeUniformBufferObject ubo;
+	VkBuffer uboBuffer;
+	VkDeviceMemory uboBufferMemory;
 	VkBuffer lightBuffer;
 	VkDeviceMemory lightBufferMemory;
 

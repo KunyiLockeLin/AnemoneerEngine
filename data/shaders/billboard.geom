@@ -5,12 +5,13 @@ layout (triangles, invocations = 9) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 
-layout( binding = 0) uniform QeDataMVP {
+layout( binding = 0) uniform QeUniformBufferObject {
 	mat4 model;
     mat4 view[9];
     mat4 proj[9];
 	mat4 normal[9];
-} mvp;
+	float param1;
+} ubo;
 
 layout( binding = 1) uniform QeDataLight {
 	vec4 pos;
@@ -39,12 +40,12 @@ void main(void)
 		outColor = inColor[i];
 		outTexCoord = inTexCoord[i];
 		
-		//outNormal = normalize( vec3(mvp.view[gl_InvocationID] * mvp.model * vec4(inNormal[i],0)));
-		outNormal = normalize( vec3(mvp.normal[gl_InvocationID] * vec4(inNormal[i],0)));
-		//mat4 normalMatrix = transpose(inverse(mvp.view[gl_InvocationID] * mvp.model));
+		//outNormal = normalize( vec3(ubo.view[gl_InvocationID] * ubo.model * vec4(inNormal[i],0)));
+		outNormal = normalize( vec3(ubo.normal[gl_InvocationID] * vec4(inNormal[i],0)));
+		//mat4 normalMatrix = transpose(inverse(ubo.view[gl_InvocationID] * ubo.model));
 		//outNormal = normalize( vec3(normalMatrix * vec4(inNormal[i],0)));
 		
-		mat4 viewModel = mvp.view[gl_InvocationID] * mvp.model;
+		mat4 viewModel = ubo.view[gl_InvocationID] * ubo.model;
 		viewModel[0].x = 1;
 		viewModel[0].y = 0;
 		viewModel[0].z = 0;
@@ -57,14 +58,14 @@ void main(void)
 		viewModel[2].y = 0;
 		viewModel[2].z = 1;
 		
-		//vec4 posC = mvp.view[gl_InvocationID] * mvp.model * gl_in[i].gl_Position;
-		//vec4 posC = mvp.model * gl_in[i].gl_Position;
+		//vec4 posC = ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
+		//vec4 posC = ubo.model * gl_in[i].gl_Position;
 		vec4 posC = viewModel * gl_in[i].gl_Position;
 		outEye = vec3(-posC);
-		outLighttoVertex = vec3( mvp.view[gl_InvocationID] * light.pos - posC);
+		outLighttoVertex = vec3( ubo.view[gl_InvocationID] * light.pos - posC);
 		
-		gl_Position = mvp.proj[gl_InvocationID] * posC;
-		//gl_Position = mvp.proj[gl_InvocationID] *mvp.view[gl_InvocationID] * mvp.model * gl_in[i].gl_Position;
+		gl_Position = ubo.proj[gl_InvocationID] * posC;
+		//gl_Position = ubo.proj[gl_InvocationID] *ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
 	
 		// Set the viewport index that the vertex will be emitted to
 		gl_ViewportIndex = gl_InvocationID;

@@ -10,17 +10,8 @@ void QeBillboard::setMatModel() {
 	mat *= MATH->translate(pos);
 	mat *= MATH->scale(size);
 
-	mvp.model = mat;
+	ubo.model = mat;
+	ubo.param1 = float(type);
 }
-/*
-void QeBillBoard::setMatModelBillBoardFace() {
-	modelData->vertices[0].normal;
-	for (int i = 0; i<VP->currentNum; ++i) {
-
-	}
-}
-void QeBillBoard::setMatModelBillBoardFaceAndPosition() {}
-void QeBillBoard::setMatModelBillBoardFaceAndSize() {}
-*/
 
 void QeBillboard::update(float time) { updateUniformBuffer(); }

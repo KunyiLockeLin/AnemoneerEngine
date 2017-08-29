@@ -86,7 +86,7 @@ void QeModel::setMatModel() {
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	mat *= MATH->scale(size);
 	
-	mvp.model = mat;
+	ubo.model = mat;
 }
 
 
@@ -99,8 +99,8 @@ void QeModel::init(const char* _filename) {
 	
 	VkBuffer buffers[3];
 	int buffersSize[3];
-	buffers[0] = mvpBuffer;
-	buffersSize[0] = sizeof(QeDataMVP);
+	buffers[0] = uboBuffer;
+	buffersSize[0] = sizeof(QeUniformBufferObject);
 	buffers[1] = lightBuffer;
 	buffersSize[1] = sizeof(QeDataLight);
 	buffers[2] = modelData->pMaterial->materialBuffer;
@@ -122,7 +122,7 @@ void QeModel::init(const char* _filename) {
 
 void QeModel::createDescriptorBuffer() {
 	
-	VLK->createUniformBuffer(sizeof(QeDataMVP), mvpBuffer, mvpBufferMemory);
+	VLK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer, uboBufferMemory);
 	VLK->createUniformBuffer(sizeof(QeDataLight), lightBuffer, lightBufferMemory);
 }
 
@@ -137,14 +137,14 @@ void QeModel::updateUniformBuffer() {
 	setMatModel();
 
 	for (int i = 0; i < VP->currentNum; ++i) {
-		mvp.view[i] = VP->cameras[i]->getMatView();
-		mvp.proj[i] = VP->cameras[i]->getMatProjection();
+		ubo.view[i] = VP->cameras[i]->getMatView();
+		ubo.proj[i] = VP->cameras[i]->getMatProjection();
 
-		QeMatrix4x4f mat = mvp.view[i]*mvp.model;
+		QeMatrix4x4f mat = ubo.view[i]* ubo.model;
 		MATH->inverse(mat, mat);
-		mvp.normal[i] = MATH->transpose(mat);
+		ubo.normal[i] = MATH->transpose(mat);
 	}
-	VLK->setMemory(mvpBufferMemory,(void*)&mvp, sizeof(mvp));
+	VLK->setMemory(uboBufferMemory,(void*)&ubo, sizeof(ubo));
 	
 	QeDataLight light = OBJMGR->getLight(0)->data;
 	VLK->setMemory(lightBufferMemory, (void*)&light, sizeof(light));

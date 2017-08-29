@@ -61,11 +61,5 @@ void main() {
 	vec4 specular =  mtl.specular*pow(cosAlpha,mtl.specularExponent);
 	vec4 gamma = vec4(1.0/2.2);
 	
-	outColor =	pow( ambient + (diffuse + specular)*light.color*attenuation, gamma) ;
-	//outColor = texColor;
-	//outColor.x = texColor.w;
-	//outColor.y = texColor.w;
-	//outColor.z = texColor.w;
-	//outColor.w = texColor.w;
-	//outColor.w = 0;
+	outColor =	pow( ambient + (diffuse + specular)*light.color*attenuation, gamma)*texColor.a;
 }

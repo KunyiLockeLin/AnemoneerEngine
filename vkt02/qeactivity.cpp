@@ -9,7 +9,7 @@ void QeActivity::init() {
 	model->setPosition(QeVector3f(0, 2, 0));
 
 	model1 = OBJMGR->getModel("model", 1);
-	model1->setPosition(QeVector3f(0, -3, 0));
+	model1->setPosition(QeVector3f(0, -2, 0));
 }
 
 void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {
