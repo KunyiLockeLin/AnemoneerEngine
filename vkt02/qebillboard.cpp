@@ -9,7 +9,7 @@ void QeBillboard::setMatModel() {
 	mat *= MATH->scale(size);
 
 	ubo.model = mat;
-	ubo.param1 = float(type);
+	ubo.param.y = float(type);
 }
 
 void QeBillboard::update(float time) { updateUniformBuffer(); }

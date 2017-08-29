@@ -11,16 +11,14 @@ layout( binding = 0) uniform QeUniformBufferObject {
     mat4 proj[9];
 	mat4 normal[9];
 	vec4 cameraPos[9];
-	float param1;
+	vec4 param; // 1: viewportNum, 2:billboardType
 } ubo;
 
 layout( binding = 1) uniform QeDataLight {
 	vec4 pos;
     vec4 dir;
 	vec4 color;
-	int type;
-	float intensity;
-	float coneAngle;
+	vec4 param; // 1: type, 2: intensity, 3: coneAngle
 } light;
 
 layout(location = 0) in vec3 inColor[];

@@ -1,23 +1,13 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout( binding = 1) uniform QeDataLight {
-    vec4 pos;
-    vec4 dir;
-	vec4 color;
-	int type; //	0: eLightPoint, 1: eLightDirection, 2: eLightSpot,
-	float intensity;
-	float coneAngle;
-} light;
 
 layout( binding = 2) uniform QeDataMaterial {
     vec4 ambient;
     vec4 diffuse;
     vec4 specular;
 	vec4 emissive;
-	float refraction;
-	float specularExponent;
-	float alpha;
+	vec4 param; // 1: specularExponent, 2: refraction, 3: alpha,
 } mtl;
 
 layout( binding = 3) uniform sampler2D texSampler;

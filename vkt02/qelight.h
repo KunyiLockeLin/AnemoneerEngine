@@ -11,9 +11,7 @@ struct QeDataLight {
 	QeVector4f pos;
 	QeVector4f dir;
 	QeVector4f color;
-	QeLightType type;
-	float intensity;
-	float coneAngle;
+	QeVector4f param; // 1: type, 2: intensity, 3: coneAngle
 };
 
 class QeLight

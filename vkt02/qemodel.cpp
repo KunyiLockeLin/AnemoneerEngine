@@ -133,9 +133,17 @@ void QeModel::update(float time) {
 }
 
 void QeModel::updateUniformBuffer() {
-
+	int size1 = sizeof(float);
+	int size2 = sizeof(int);
+	int size3 = sizeof(QeVector3f);
+	int size4 = sizeof(QeVector4f);
+	int size5 = sizeof(QeVector3i);
+	int size6 = sizeof(QeMatrix4x4f);
+	int size7 = sizeof(QeMatrix4x4f)*9;
+	int size8 = sizeof(QeUniformBufferObject);
+	int size9 = sizeof(ubo);
 	setMatModel();
-
+	ubo.param.x = float(VP->currentNum);
 	for (int i = 0; i < VP->currentNum; ++i) {
 		ubo.view[i] = VP->cameras[i]->getMatView();
 		ubo.proj[i] = VP->cameras[i]->getMatProjection();

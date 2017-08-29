@@ -1,0 +1,8 @@
+*.db
+*.opendb
+*.tlog
+*.pdb
+*.idb
+*.log
+*.exe
+*.ilk

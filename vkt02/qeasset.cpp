@@ -183,7 +183,7 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 			sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
 	
 		else if (line[0] == 'N' && line[1] == 's') 
-			sscanf_s(line, "Ns %f", &mtl1.specularExponent);
+			sscanf_s(line, "Ns %f", &mtl1.param.x);
 		
 		else if (line[0] == 'K' && line[1] == 'a') 
 			sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
@@ -198,10 +198,10 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 			sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
 
 		else if (line[0] == 'N' && line[1] == 'i') 
-			sscanf_s(line, "Ni %f", &(mtl1.refraction));
+			sscanf_s(line, "Ni %f", &(mtl1.param.y));
 	
 		else if (line[0] == 'd' && line[1] == ' ') 
-			sscanf_s(line, "d %f", &(mtl1.alpha));
+			sscanf_s(line, "d %f", &(mtl1.param.z));
 
 		else if (line[0] == 's' && line[1] == 'v')
 			sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
