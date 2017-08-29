@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="qeactivity.cpp" />
     <ClCompile Include="qeasset.cpp" />
+    <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
     <ClCompile Include="qevulkan.cpp" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="qeactivity.h" />
     <ClInclude Include="qeasset.h" />
+    <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qeobjectmanger.h" />
     <ClInclude Include="qevulkan.h" />
@@ -176,9 +178,10 @@
     <ClInclude Include="qewindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\shaders\shader_base.frag" />
-    <None Include="..\data\shaders\shader_base.geom" />
-    <None Include="..\data\shaders\shader_base.vert" />
+    <None Include="..\data\shaders\base.frag" />
+    <None Include="..\data\shaders\base.geom" />
+    <None Include="..\data\shaders\base.vert" />
+    <None Include="..\data\shaders\billboard.geom" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,4 @@
-#include "qeasset.h"
+#include "qeheader.h"
 
 
 VkVertexInputBindingDescription QeVertex::getBindingDescription() {
@@ -71,8 +71,6 @@ QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 	file.seekg(0);
 
 	char line[500];
-	std::vector<QeVertex> vertices;
-	std::vector<uint32_t> indices;
 
 	std::vector<QeVector3f> normalV;
 	std::vector<QeVector2f> texCoordV;
@@ -81,6 +79,8 @@ QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 	QeVector2f tempV2;
 	QeVector3i tempV3p, tempV3t, tempV3n;
 	char mtlPath[200];
+	
+	QeAssetModel* model = new QeAssetModel();
 
 	while (file.getline(line, sizeof(line))) {
 		
@@ -92,7 +92,7 @@ QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 			QeVertex vet;
 			vet.pos = tempV3;
 			vet.color ={ 1.0f, 1.0f, 1.0f };
-			vertices.push_back(vet);
+			model->vertices.push_back(vet);
 		} 
 		else if (line[0] == 'v' && line[1] == 't') {
 			sscanf_s(line, "vt %f %f", &(tempV2.x), &(tempV2.y));
@@ -124,28 +124,27 @@ QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 
 			if (!texCoordV.empty()) {
 				tempV3t -= 1;
-				vertices[tempV3p.x].texCoord = texCoordV[tempV3t.x];
-				vertices[tempV3p.y].texCoord = texCoordV[tempV3t.y];
-				vertices[tempV3p.z].texCoord = texCoordV[tempV3t.z];
+				model->vertices[tempV3p.x].texCoord = texCoordV[tempV3t.x];
+				model->vertices[tempV3p.y].texCoord = texCoordV[tempV3t.y];
+				model->vertices[tempV3p.z].texCoord = texCoordV[tempV3t.z];
 			}
 			if (!normalV.empty()) {
 				tempV3n -= 1;
-				vertices[tempV3p.x].normal = normalV[tempV3n.x];
-				vertices[tempV3p.y].normal = normalV[tempV3n.y];
-				vertices[tempV3p.z].normal = normalV[tempV3n.z];
+				model->vertices[tempV3p.x].normal = normalV[tempV3n.x];
+				model->vertices[tempV3p.y].normal = normalV[tempV3n.y];
+				model->vertices[tempV3p.z].normal = normalV[tempV3n.z];
 			}
-			indices.push_back(tempV3p.x);
-			indices.push_back(tempV3p.y);
-			indices.push_back(tempV3p.z);
+			model->indices.push_back(tempV3p.x);
+			model->indices.push_back(tempV3p.y);
+			model->indices.push_back(tempV3p.z);
 		}
 	}
 	file.close();
 
-	QeAssetModel* model = new QeAssetModel();
-	VLK->createBufferData((void*)vertices.data(), sizeof(vertices[0]) * vertices.size(), model->vertexBuffer, model->vertexBufferMemory);
-	VLK->createBufferData((void*)indices.data(), sizeof(indices[0]) * indices.size(), model->indexBuffer, model->indexBufferMemory);
+	VLK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertexBuffer, model->vertexBufferMemory);
+	VLK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->indexBuffer, model->indexBufferMemory);
 
-	model->indexSize = indices.size();
+	model->indexSize = model->indices.size();
 
 	astModels[_filePath] = model;
 
@@ -174,6 +173,9 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	mtl1.diffuse.w = 1;
 	mtl1.specular.w = 1;
 	mtl1.emissive.w = 1;
+	char sv[500]="";
+	char sg[500]="";
+	char sf[500]="";
 
 	while (file.getline(line, sizeof(line))) {
 
@@ -200,10 +202,18 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	
 		else if (line[0] == 'd' && line[1] == ' ') 
 			sscanf_s(line, "d %f", &(mtl1.alpha));
+
+		else if (line[0] == 's' && line[1] == 'v')
+			sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
+		else if (line[0] == 's' && line[1] == 'g')
+			sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
+		else if (line[0] == 's' && line[1] == 'f')
+			sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
+		 
 	}
 
 	file.close();
-
+	mtl->value = mtl1;
 	VLK->createUniformBuffer(sizeof(QeDataMaterial), mtl->materialBuffer, mtl->materialBufferMemory);
 	VLK->setMemory(mtl->materialBufferMemory, (void*)&mtl1, sizeof(mtl1));
 
@@ -212,9 +222,20 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	if (strlen(diffuseMapPath) != 0)
 		mtl->pDiffuseMap = getImageBMP32(diffuseMapPath);
 
-	mtl->pShaderVert = getShader(getString("defaultshadervert"));
-	mtl->pShaderGeom = getShader(getString("defaultshadergeom"));
-	mtl->pShaderFrag = getShader(getString("defaultshaderfrag"));
+	if(strlen(sv) == 0)
+		mtl->pShaderVert = getShader(getString("defaultshadervert"));
+	else
+		mtl->pShaderVert = getShader(sv);
+
+	if (strlen(sg) == 0)
+		mtl->pShaderGeom = getShader(getString("defaultshadergeom"));
+	else
+		mtl->pShaderGeom = getShader(sg);
+
+	if (strlen(sf) == 0)
+		mtl->pShaderFrag = getShader(getString("defaultshaderfrag"));
+	else
+		mtl->pShaderFrag = getShader(sf);
 
 	return mtl;
 }

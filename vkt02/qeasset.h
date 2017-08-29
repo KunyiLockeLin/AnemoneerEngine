@@ -17,6 +17,9 @@ struct QeVertex {
 
 struct QeAssetModel {
 
+	std::vector<QeVertex> vertices;
+	std::vector<uint32_t> indices;
+
 	VkBuffer vertexBuffer;
 	VkBuffer indexBuffer;
 	VkDeviceMemory vertexBufferMemory;
@@ -38,7 +41,7 @@ struct QeDataMaterial {
 
 struct QeAssetMaterial {
 
-	//QeDataMaterial* pMaterial;
+	QeDataMaterial value;
 	VkBuffer materialBuffer;
 	VkDeviceMemory materialBufferMemory;
 	QeAssetImage* pDiffuseMap;
@@ -56,6 +59,7 @@ struct QeAssetImage {
 };
 
 struct QeAssetShader {
+
 	VkShaderModule shader;
 };
 

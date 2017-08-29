@@ -95,7 +95,7 @@ public:
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
 	void createDrawCommandBuffers();
-	void updateDrawCommandBuffers(std::vector<QeModel*> & models);
+	void updateDrawCommandBuffers();
 
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);

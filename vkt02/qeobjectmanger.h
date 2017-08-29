@@ -18,22 +18,27 @@ private:
 public:
 
 	std::map<int, QeCamera*> mgrCameras;
-	std::map<std::string, QeLight*> mgrLights;
-	std::map<std::string, QeActivity*> mgrActivitys;
+	std::map<int, QeLight*> mgrLights;
+	std::map<int, QeActivity*> mgrActivitys;
 	std::vector<QeModel*> mgrInactiveModels;
 	std::vector<QeModel*> mgrActiveModels;
+	std::vector<QeModel*> mgrInactiveBillboards;
+	std::vector<QeModel*> mgrActiveBillboards;
 
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger() {}
 	
 	QeCamera* getCamera(int _id);
-	QeLight* getLight(const char* _name = "MAIN");
-	QeActivity* getActivity(const char* _name = "MAIN");
+	QeLight* getLight(int _id);
+	QeActivity* getActivity(int _id);
 	QeModel* getModel(const char* _name, int _index=0);
-
+	QeBillboard* getBillboard(int _id);
+	
 	void update(float _time);
 
 	void cleanupSwapChain();
 	void recreateSwapChain();
+
+	std::vector<QeModel*> getDrawObject();
 };
 

@@ -57,6 +57,9 @@
     <ClCompile Include="qeactivity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qebillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -98,15 +101,21 @@
     <ClInclude Include="qeactivity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qebillboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\shaders\shader_base.frag">
+    <None Include="..\data\shaders\base.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\shader_base.vert">
+    <None Include="..\data\shaders\base.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\shader_base.geom">
+    <None Include="..\data\shaders\base.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\billboard.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

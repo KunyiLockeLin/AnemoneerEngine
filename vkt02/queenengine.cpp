@@ -1,4 +1,4 @@
-#include "queenengine.h"
+#include "qeheader.h"
 
 
 
@@ -9,7 +9,7 @@ void QueenEngine::run() {
 	VLK->init();
 	VP->init();
 	
-	activity = OBJMGR->getActivity();
+	activity = OBJMGR->getActivity(0);
 	activity->init();
 
 	mainLoop();

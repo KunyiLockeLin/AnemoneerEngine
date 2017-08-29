@@ -1,4 +1,4 @@
-#include "qewindow.h"
+#include "qeheader.h"
 
 bool QeWindow::isWinodowShouldClose() {
 	return bClosed;

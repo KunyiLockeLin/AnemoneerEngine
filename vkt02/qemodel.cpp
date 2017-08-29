@@ -1,4 +1,4 @@
-#include "qemodel.h"
+#include "qeheader.h"
 
 
 void QeModel::cleanupSwapChain() {
@@ -75,7 +75,7 @@ void QeModel::setSize(QeVector3f _size) {
 	size = _size;
 }
 
-QeMatrix4x4f QeModel::getMatModel() {
+void QeModel::setMatModel() {
 
 	QeMatrix4x4f mat;
 
@@ -86,7 +86,7 @@ QeMatrix4x4f QeModel::getMatModel() {
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	mat *= MATH->scale(size);
 	
-	return mat;
+	mvp.model = mat;
 }
 
 
@@ -134,9 +134,7 @@ void QeModel::update(float time) {
 
 void QeModel::updateUniformBuffer() {
 
-	QeDataMVP mvp = {};
-
-	mvp.model = getMatModel();
+	setMatModel();
 
 	for (int i = 0; i < VP->currentNum; ++i) {
 		mvp.view[i] = VP->cameras[i]->getMatView();
@@ -148,6 +146,8 @@ void QeModel::updateUniformBuffer() {
 	}
 	VLK->setMemory(mvpBufferMemory,(void*)&mvp, sizeof(mvp));
 	
-	QeDataLight light = OBJMGR->getLight()->data;
+	QeDataLight light = OBJMGR->getLight(0)->data;
 	VLK->setMemory(lightBufferMemory, (void*)&light, sizeof(light));
+
+	VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
 }

@@ -24,7 +24,9 @@ public:
 
 	QeDataLight data;
 	void init();
-	void update(float time) {}
+	void update(float time);
+
+	QeBillboard* billboard;
 
 };
 

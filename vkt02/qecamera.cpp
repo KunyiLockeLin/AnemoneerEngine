@@ -1,4 +1,4 @@
-#include "qecamera.h"
+#include "qeheader.h"
 
 
 void QeCamera::setCamera(QeVector3f _pos, QeVector3f _target, QeVector3f _up, float _fov, float _near, float _far) {

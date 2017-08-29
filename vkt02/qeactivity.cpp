@@ -1,9 +1,9 @@
-#include "qeactivity.h"
+#include "qeheader.h"
 
 
 void QeActivity::init() {
 
-	light = OBJMGR->getLight();
+	light = OBJMGR->getLight(0);
 
 	model = OBJMGR->getModel("model", 0);
 	model->setPosition(QeVector3f(0, 2, 0));

@@ -14,6 +14,7 @@ class QeModel
 {
 public:
 
+	QeDataMVP mvp;
 	QeVector3f pos;
 	float face;
 	float up;
@@ -32,7 +33,7 @@ public:
 
 	void createDescriptorBuffer();
 	void updateUniformBuffer();
-	void update(float time);
+	virtual void update(float time);
 	
 	QeModel(QeObjectMangerKey& _key) {}
 	~QeModel() {}
@@ -48,7 +49,7 @@ public:
 	void setUp(float _up);
 	void enlarge(QeVector3f _size);
 	void setSize(QeVector3f _size);
-	QeMatrix4x4f getMatModel();
+	virtual void setMatModel();
 	void cleanupSwapChain();
 	void recreateSwapChain();
 };
