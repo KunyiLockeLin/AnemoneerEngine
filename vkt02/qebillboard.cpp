@@ -2,11 +2,9 @@
 
 
 void QeBillboard::setMatModel() {
+	
+	//type = eBillboardFaceAndSize;
 	QeMatrix4x4f mat;
-
-	size.x = 10;
-	size.y = 10;
-	size.z = 10;
 	mat *= MATH->translate(pos);
 	mat *= MATH->scale(size);
 

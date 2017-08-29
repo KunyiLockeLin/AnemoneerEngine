@@ -8,6 +8,7 @@ struct QeUniformBufferObject {
 	QeMatrix4x4f view[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f proj[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f normal[MAX_VIEWPORT_NUM];
+	QeVector4f cameraPos[MAX_VIEWPORT_NUM];
 	float param1;
 };
 

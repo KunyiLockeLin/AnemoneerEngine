@@ -4,7 +4,6 @@
 
 enum QeBillboardType {
 	eBillboardFace,
-	eBillboardFaceAndPosition,
 	eBillboardFaceAndSize,
 };
 

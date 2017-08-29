@@ -143,6 +143,7 @@ void QeModel::updateUniformBuffer() {
 		QeMatrix4x4f mat = ubo.view[i]* ubo.model;
 		MATH->inverse(mat, mat);
 		ubo.normal[i] = MATH->transpose(mat);
+		ubo.cameraPos[i] = VP->cameras[i]->pos;
 	}
 	VLK->setMemory(uboBufferMemory,(void*)&ubo, sizeof(ubo));
 	

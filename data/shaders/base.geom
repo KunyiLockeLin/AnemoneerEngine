@@ -10,6 +10,7 @@ layout( binding = 0) uniform QeUniformBufferObject {
     mat4 view[9];
     mat4 proj[9];
 	mat4 normal[9];
+	vec4 cameraPos[9];
 	float param1;
 } ubo;
 
