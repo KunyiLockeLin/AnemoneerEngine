@@ -1,16 +1,18 @@
 #version 450
 #extension GL_ARB_viewport_array : enable
 
-layout (triangles, invocations = 16) in;
+const int MAX_VIEWPORT_NUM = 16;
+
+layout (triangles, invocations = MAX_VIEWPORT_NUM) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 
 layout( binding = 0) uniform QeUniformBufferObject {
 	mat4 model;
-    mat4 view[16];
-    mat4 proj[16];
-	mat4 normal[16];
-	vec4 cameraPos[16];
+    mat4 view[MAX_VIEWPORT_NUM];
+    mat4 proj[MAX_VIEWPORT_NUM];
+	mat4 normal[MAX_VIEWPORT_NUM];
+	vec4 cameraPos[MAX_VIEWPORT_NUM];
 	vec4 param; // 1: viewportNum, 2:billboardType
 } ubo;
 
@@ -34,6 +36,8 @@ layout(location = 4) out vec3 outEye;
 
 void main(void)
 {	
+	if( ubo.param.x <= gl_InvocationID) return;
+
 	for(int i = 0; i < gl_in.length(); i++)
 	{
 		outColor = inColor[i];

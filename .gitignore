@@ -6,3 +6,5 @@
 *.log
 *.exe
 *.ilk
+*.ipch
+.vs/vkt/v15/.suo
