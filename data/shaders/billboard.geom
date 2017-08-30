@@ -29,23 +29,19 @@ void main(void)
 {	
 	if( ubo.param.x <= gl_InvocationID) return;
 
-	for(int i = 0; i < gl_in.length(); i++)
-	{
+	mat4 viewModel = ubo.view[gl_InvocationID] * ubo.model;
+	vec3 size = vec3(ubo.model[0].x,ubo.model[1].y,ubo.model[2].z);
+
+	if( ubo.param.y == 1 ){
+		float len = distance(ubo.model[3], ubo.cameraPos[gl_InvocationID])/10;
+		size *= len;
+	}
+
+	for(int i = 0; i < gl_in.length(); i++){
+
 		outColor = inColor[i];
 		outTexCoord = inTexCoord[i];
-		
-		mat4 viewModel = ubo.view[gl_InvocationID] * ubo.model;
 
-		vec3 size;
-
-		//if( ubo.param1 == 0 ){
-			size.x = ubo.model[0].x;
-			size.y = ubo.model[1].y;
-			size.z = ubo.model[2].z;
-		//}
-		//else if( ubo.param1 == 1 ){
-
-		//}
 		viewModel[0].x = size.x;
 		viewModel[0].y = 0;
 		viewModel[0].z = 0;
