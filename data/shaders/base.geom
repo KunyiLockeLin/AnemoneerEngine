@@ -1,16 +1,16 @@
 #version 450
 #extension GL_ARB_viewport_array : enable
 
-layout (triangles, invocations = 9) in;
+layout (triangles, invocations = 16) in;
 layout (triangle_strip, max_vertices = 3) out;
 
 
 layout( binding = 0) uniform QeUniformBufferObject {
 	mat4 model;
-    mat4 view[9];
-    mat4 proj[9];
-	mat4 normal[9];
-	vec4 cameraPos[9];
+    mat4 view[16];
+    mat4 proj[16];
+	mat4 normal[16];
+	vec4 cameraPos[16];
 	vec4 param; // 1: viewportNum, 2:billboardType
 } ubo;
 
