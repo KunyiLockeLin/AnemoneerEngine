@@ -1,7 +1,7 @@
 # Vulkan
 Input:
 
-"+" : Add new viewport. The maximum number of viewport is sixteen.
+"+" : Add new viewport. The maximum number of viewport is nine.
  
 "-" : Substract the last viewport.
 
