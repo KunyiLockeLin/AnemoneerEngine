@@ -26,11 +26,13 @@ future:
   
   3. Replace .obj and .mlt files to .dae(COLLADA) for bone animation.
   
-  4. attach obj.
+  4. Attach obj.
   
-  5. bone animation.
+  5. Bone animation.
   
-  6. normal map and specular map.
+  6. Normal map and specular map.
+  
+  7. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   
  
 Reference:
