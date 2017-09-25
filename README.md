@@ -1,12 +1,13 @@
 # Vulkan
 
 enviroment: Visual Studio 2017 and VulkanSDK 1.0.51.0
-
-
+-
+-
 Setting: data/config.ini
-
-
+-
+-
 Input:
+
   "+" : Add new viewport. The maximum number of viewport is nine.
 
   "-" : Substract the last viewport.
@@ -16,8 +17,8 @@ Input:
   "R" : Reset the camera.
 
   "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
-
-
+-
+-
 future:
   1. Memory Management and Object Management are weak.
   
@@ -30,8 +31,8 @@ future:
   5. bone animation.
   
   6. normal map and specular map.
-  
- 
+-  
+- 
 Reference:
 
 https://www.khronos.org/blog/beginners-guide-to-vulkan &
