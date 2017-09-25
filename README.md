@@ -3,10 +3,10 @@
 enviroment: Visual Studio 2017 and VulkanSDK 1.0.51.0
 
 
-content:
-  Setting: data/config.ini
-  
-  Input:
+Setting: data/config.ini
+
+
+Input:
   "+" : Add new viewport. The maximum number of viewport is nine.
 
   "-" : Substract the last viewport.
