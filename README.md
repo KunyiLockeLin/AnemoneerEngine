@@ -34,6 +34,8 @@ future:
   
   7. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   
+  8. Separate different libraries.
+  
  
 Reference:
 
