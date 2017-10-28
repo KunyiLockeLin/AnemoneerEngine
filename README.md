@@ -35,7 +35,13 @@ future:
   7. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   
   8. Separate different libraries.
-  
+
+  9. Bounding Box
+
+ 10. Frustum Culling
+ 
+ 11. Room
+  
  
 Reference:
 
