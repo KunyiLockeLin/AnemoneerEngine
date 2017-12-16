@@ -24,7 +24,7 @@ future:
   
   2. I think the light calculation is not correct in fragment shader.
   
-  3. Replace .obj and .mlt files to .dae(COLLADA) for bone animation.
+  3. Replace .obj and .mlt files to glTF for bone animation.
   
   4. Attach obj.
   
