@@ -1,6 +1,6 @@
 # Vulkan
 
-enviroment: Visual Studio 2017 and VulkanSDK 1.0.51.0
+enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
 
 
 Setting: data/config.ini
