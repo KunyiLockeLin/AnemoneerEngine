@@ -10,20 +10,20 @@
     - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
     
 # ToDoList:
-  - 1 Memory Management and Object Management are weak.
-  - 2 It only can run in debug mode. It crashes in the others. 
-  - 3 I think the light calculation is not correct in fragment shader.
-  - 4 Replace .obj and .mlt files to glTF for bone animation.
-  - 5 Load .jpg and .png image, instead of .bmp32.
-  - 6 Attach obj.
-  - 7 Bone animation.
-  - 8 Normal map and specular map.
-  - 9 Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - 10 Separate different libraries.
-  - 11 bunding Box
-  - 12 Frustum Culling
-  - 13 Room
-  - 14 Timer
+  1. Memory Management and Object Management are weak.
+  2. It only can run in debug mode. It crashes in the others. 
+  3. I think the light calculation is not correct in fragment shader.
+  4. Replace .obj and .mlt files to glTF for bone animation.
+  5. Load .jpg and .png image, instead of .bmp32.
+  6. Attach obj.
+  7. Bone animation.
+  8. Normal map and specular map.
+  9. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
+  10. Separate different libraries.
+  11. bunding Box
+  12. Frustum Culling
+  13. Room
+  14. Timer
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
