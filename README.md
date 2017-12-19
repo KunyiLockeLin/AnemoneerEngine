@@ -9,6 +9,8 @@
     - "R" : Reset the camera.
     - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
     
+    ![alt text](..sample1.jpg)
+    
 # ToDoList:
   - 1. Memory Management and Object Management are weak.
   - 2. It only can run in debug mode. It crashes in the others. 
