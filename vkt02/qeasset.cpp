@@ -59,6 +59,10 @@ std::vector<char> QeAsset::loadFile(const char* _filename) {
 	return buffer;
 }
 
+QeAssetModel* QeAsset::getModelGLTF(const char* _filename) {
+	return nullptr;
+}
+
 QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetModel);

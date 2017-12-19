@@ -86,9 +86,15 @@ public:
 	bool loadConfig();
 	const char* getString(const char* _nodeName, int _index = 0);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
+	//QeAssetModel* getModel(const char* _filename);
 	QeAssetModel* getModelOBJ(const char* _filename);
+	QeAssetModel* getModelGLTF(const char* _filename);
+	//QeAssetModel* getModelGLB(const char* _filename);
 	QeAssetMaterial* getMateialMTL(const char* _filename);
+	//QeAssetImage* getImage(const char* _filename);
 	QeAssetImage* getImageBMP32(const char* _filename);
+	//QeAssetImage* getImageJPG(const char* _filename);
+	//QeAssetImage* getImagePNG(const char* _filename);
 	QeAssetShader* getShader(const char* _filename);
 
 };
