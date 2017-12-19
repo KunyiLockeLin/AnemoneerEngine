@@ -20,10 +20,11 @@
   - 8. Normal map and specular map.
   - 9. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - 10. Separate different libraries.
-  - 11. bunding Box
-  - 12. Frustum Culling
-  - 13. Room
-  - 14. Timer
+  - 11. bounding Box
+  - 12. Collision
+  - 13. Frustum Culling
+  - 14. Room
+  - 15. Timer
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
