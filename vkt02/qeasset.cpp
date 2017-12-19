@@ -59,6 +59,14 @@ std::vector<char> QeAsset::loadFile(const char* _filename) {
 	return buffer;
 }
 
+void QeAsset::readJSON(const char* _nodeName) {
+
+}
+
+void QeAsset::readXML(const char* _nodeName) {
+
+}
+
 QeAssetModel* QeAsset::getModelGLTF(const char* _filename) {
 	return nullptr;
 }

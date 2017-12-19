@@ -85,6 +85,8 @@ public:
 	std::vector<char>  loadFile(const char* _filename);
 	bool loadConfig();
 	const char* getString(const char* _nodeName, int _index = 0);
+	void readJSON(const char* _nodeName);
+	void readXML(const char* _nodeName);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
 	//QeAssetModel* getModel(const char* _filename);
 	QeAssetModel* getModelOBJ(const char* _filename);
