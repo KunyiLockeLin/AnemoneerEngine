@@ -27,6 +27,7 @@
   - 13. Frustum Culling
   - 14. Room
   - 15. Timer
+  - 16. HDR
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
