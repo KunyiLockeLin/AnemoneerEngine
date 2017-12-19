@@ -19,16 +19,16 @@
   - 7. Bone animation.
   - 8. Normal map and specular map.
   - 9. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  -10. Separate different libraries.
-  -11. bunding Box
-  -12. Frustum Culling
-  -13. Room
-  -14. Timer
+  - 10. Separate different libraries.
+  - 11. bunding Box
+  - 12. Frustum Culling
+  - 13. Room
+  - 14. Timer
  
 # Reference:
-  -https://www.khronos.org/blog/beginners-guide-to-vulkan
-  -https://renderdoc.org/vulkan-in-30-minutes.html
-  -https://vulkan-tutorial.com/
-  -https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
-  -https://github.com/LunarG/VulkanSamples
-  -https://github.com/SaschaWillems/Vulkan
+  - https://www.khronos.org/blog/beginners-guide-to-vulkan
+  - https://renderdoc.org/vulkan-in-30-minutes.html
+  - https://vulkan-tutorial.com/
+  - https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
+  - https://github.com/LunarG/VulkanSamples
+  - https://github.com/SaschaWillems/Vulkan
