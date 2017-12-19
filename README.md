@@ -12,8 +12,8 @@
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
 # ToDoList:
-  - 1. Memory Management and Object Management are weak.
-  - 2. It only can run in debug mode. It crashes in the others. 
+  - 1. It only can run in debug mode. It crashes in the others. 
+  - 2. Memory Management and Object Management are weak.
   - 3. I think the light calculation is not correct in fragment shader.
   - 4. Replace .obj and .mlt files to glTF for bone animation.
   - 5. Load .jpg and .png image, instead of .bmp32.
@@ -22,7 +22,7 @@
   - 8. Normal map and specular map.
   - 9. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - 10. Separate different libraries.
-  - 11. bounding Box
+  - 11. bounding Box
   - 12. Collision
   - 13. Frustum Culling
   - 14. Room
