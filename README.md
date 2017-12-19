@@ -37,3 +37,4 @@
   - https://github.com/LunarG/VulkanSamples
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
+  - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
