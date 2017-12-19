@@ -15,8 +15,8 @@
   - 1. It only can run in debug mode. It crashes in the others. 
   - 2. Memory Management and Object Management are weak.
   - 3. I think the light calculation is not correct in fragment shader.
-  - 4. Replace .obj and .mlt files to glTF for bone animation.
-  - 5. Load .jpg and .png image, instead of .bmp32.
+  - 4. Replace .obj and .mlt files to .glTF for bone animation.
+  - 5. Load .jpg and .png image, instead of .bmp 32bits.
   - 6. Attach obj.
   - 7. Bone animation.
   - 8. Normal map and specular map.
