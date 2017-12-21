@@ -863,7 +863,7 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 	astMaterials[_filePath] = mtl;
 
 	if (strlen(diffuseMapPath) != 0)
-		mtl->pDiffuseMap = getImageBMP32(diffuseMapPath);
+		mtl->pDiffuseMap = getImage(diffuseMapPath);
 
 	if(strlen(sv) == 0)
 		mtl->pShaderVert = getShader(getXMLValue(3, CONFIG, "defaultShader", "vert"));
@@ -881,6 +881,20 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 		mtl->pShaderFrag = getShader(sf);
 
 	return mtl;
+}
+
+QeAssetImage* QeAsset::getImage(const char* _filename) {
+	std::string _filePath = combinePath(_filename, eAssetTexture);
+	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
+
+	if (it != astTextures.end())	return it->second;
+
+	return getImageBMP32(_filename);
+	//return getImagePNG(_filename);
+}
+
+QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
+	return nullptr;
 }
 
 QeAssetImage* QeAsset::getImageBMP32(const char* _filename) {

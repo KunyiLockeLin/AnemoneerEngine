@@ -129,18 +129,19 @@ public:
 	const char* getXMLValue(QeAssetXML* source, const char* keys[], int length);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
 
-	std::string trim(std::string s);
-	
-	std::string combinePath(const char* _filename, QeAssetType dataType);
 	QeAssetModel* getModel(const char* _filename);
 	QeAssetModel* getModelOBJ(const char* _filename);
 	QeAssetModel* getModelGLTF(const char* _filename);
 	//QeAssetModel* getModelGLB(const char* _filename);
 	QeAssetMaterial* getMateialMTL(const char* _filename);
-	//QeAssetImage* getImage(const char* _filename);
+
+	QeAssetImage* getImage(const char* _filename);
 	QeAssetImage* getImageBMP32(const char* _filename);
+	QeAssetImage* getImagePNG(const char* _filename);
 	//QeAssetImage* getImageJPG(const char* _filename);
-	//QeAssetImage* getImagePNG(const char* _filename);
+
 	QeAssetShader* getShader(const char* _filename);
 
+	std::string trim(std::string s);
+	std::string combinePath(const char* _filename, QeAssetType dataType);
 };
