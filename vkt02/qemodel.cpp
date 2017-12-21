@@ -92,7 +92,7 @@ void QeModel::setMatModel() {
 
 void QeModel::init(const char* _filename) {
 
-	modelData = AST->getModelOBJ(_filename);
+	modelData = AST->getModel(_filename);
 	descriptorPool = VLK->createDescriptorPool();
 	descriptorSet = VLK->createDescriptorSet(descriptorPool);
 	createDescriptorBuffer();

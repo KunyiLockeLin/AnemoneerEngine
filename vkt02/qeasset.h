@@ -67,28 +67,56 @@ enum QeAssetType {
 	eAssetMaterial,
 	eAssetShader,
 	eAssetTexture,
+	eAssetXML,
+	eAssetJSON,
+};
+
+struct QeAssetXML {
+	std::string key;
+	std::string value;
+	std::vector<std::string> eKeys;
+	std::vector<std::string> eVaules;
+	std::vector<QeAssetXML*> nexts;
+};
+
+struct QeAssetJSON {
+	std::vector<std::string> eKeysforValues;
+	std::vector<std::string> eValues;
+	std::vector<std::string> eKeysforNodes;
+	std::vector<QeAssetJSON*> eNodes;
+	std::vector<std::string> eKeysforArrayValues;
+	std::vector<std::vector<std::string>> eArrayValues;
+	std::vector<std::string> eKeysforArrayNodes;
+	std::vector<std::vector<QeAssetJSON*>> eArrayNodes;
 };
 
 class QeAsset
 {
 public:
-	const std::string CONFIG_PATH = "../data/config.ini";
+	const char* CONFIG = "../data/config.xml";
 
+	std::map<std::string, QeAssetXML*> astXMLs;
+	std::map<std::string, QeAssetJSON*> astJSONs;
 	std::map<std::string, QeAssetModel*> astModels;
 	std::map<std::string, QeAssetMaterial*> astMaterials;
 	std::map<std::string, QeAssetShader*> astShaders;
 	std::map<std::string, QeAssetImage*> astTextures;
-	std::map<std::string, std::vector<std::string>> astString;
+
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset() {}
 
-	std::vector<char>  loadFile(const char* _filename);
-	bool loadConfig();
-	const char* getString(const char* _nodeName, int _index = 0);
-	void readJSON(const char* _nodeName);
-	void readXML(const char* _nodeName);
+	QeAssetJSON* getJSON(const char* _filePath);
+	QeAssetJSON* decodeJSON(const char* buffer, int &index);
+	QeAssetXML* getXML(const char* _filePath);
+	QeAssetXML* decodeXML(const char* buffer, int &index);
+
+	const char* getXMLValue(int length, ...);
+	QeAssetXML* getXMLNode(int length, ...);
+
+	std::string trim(std::string s);
+	
 	std::string combinePath(const char* _filename, QeAssetType dataType);
-	//QeAssetModel* getModel(const char* _filename);
+	QeAssetModel* getModel(const char* _filename);
 	QeAssetModel* getModelOBJ(const char* _filename);
 	QeAssetModel* getModelGLTF(const char* _filename);
 	//QeAssetModel* getModelGLB(const char* _filename);

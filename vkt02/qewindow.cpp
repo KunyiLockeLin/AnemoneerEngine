@@ -51,7 +51,7 @@ void QeWindow::init() {
 	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wndClass.lpszMenuName = NULL;
-	wndClass.lpszClassName = convert(AST->getString("title"));
+	wndClass.lpszClassName = convert(AST->getXMLValue(2, AST->CONFIG, "title"));
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
 	if (!RegisterClassEx(&wndClass))
@@ -100,14 +100,14 @@ void QeWindow::init() {
 	RECT windowRect;
 	windowRect.left = 0L;
 	windowRect.top = 0L;
-	windowRect.right = std::stoi(AST->getString("winWidth"));//settings.fullscreen ? (long)screenWidth : (long)width;
-	windowRect.bottom = std::stoi(AST->getString("winHeight"));//settings.fullscreen ? (long)screenHeight : (long)height;
+	windowRect.right = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "width"));//settings.fullscreen ? (long)screenWidth : (long)width;
+	windowRect.bottom = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "height"));//settings.fullscreen ? (long)screenHeight : (long)height;
 
 	AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
 
 	window = CreateWindowEx(0,
-		convert(AST->getString("title")),
-		convert(AST->getString("title")),
+		convert(AST->getXMLValue(2, AST->CONFIG, "title")),
+		convert(AST->getXMLValue(2, AST->CONFIG, "title")),
 		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		0,
 		0,
@@ -143,7 +143,7 @@ std::string QeWindow::getWindowTitle()
 {
 	std::string device(VLK->deviceProperties.deviceName);
 	std::string windowTitle;
-	windowTitle = AST->getString("title");
+	windowTitle = AST->getXMLValue(2, AST->CONFIG, "title");
 	windowTitle.append(" - ");
 	windowTitle.append(device);
 	windowTitle.append(" - ");

@@ -34,7 +34,7 @@ QeActivity* QeObjectManger::getActivity(int _id) {
 	return newActivity;
 }
 
-QeModel* QeObjectManger::getModel(const char* _name, int _index ) {
+QeModel* QeObjectManger::getModel(const char* _name ) {
 
 	QeModel* newModel = nullptr;
 	if (!mgrInactiveModels.empty()) {
@@ -44,7 +44,7 @@ QeModel* QeObjectManger::getModel(const char* _name, int _index ) {
 	else
 		newModel = new QeModel(key);
 
-	newModel->init(AST->getString("model", _index) );
+	newModel->init(_name);
 	mgrActiveModels.push_back(newModel);
 
 	VLK->updateDrawCommandBuffers();
@@ -61,7 +61,9 @@ QeBillboard* QeObjectManger::getBillboard(int _id) {
 	else
 		newModel = new QeBillboard(key);
 
-	newModel->init("plane.obj");
+	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "billboards");
+
+	newModel->init(node->nexts[0]->value.c_str());
 	mgrActiveBillboards.push_back(newModel);
 
 	VLK->updateDrawCommandBuffers();

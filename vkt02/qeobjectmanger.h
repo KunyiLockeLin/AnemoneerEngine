@@ -31,7 +31,7 @@ public:
 	QeCamera* getCamera(int _id);
 	QeLight* getLight(int _id);
 	QeActivity* getActivity(int _id);
-	QeModel* getModel(const char* _name, int _index=0);
+	QeModel* getModel(const char* _name);
 	QeBillboard* getBillboard(int _id);
 	
 	void update(float _time);

@@ -5,10 +5,11 @@ void QeActivity::init() {
 
 	light = OBJMGR->getLight(0);
 
-	model = OBJMGR->getModel("model", 0);
+	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "models");
+	model = OBJMGR->getModel(node->nexts[0]->value.c_str());
 	model->setPosition(QeVector3f(0, 2, 0));
 
-	model1 = OBJMGR->getModel("model", 1);
+	model1 = OBJMGR->getModel(node->nexts[1]->value.c_str());
 	model1->setPosition(QeVector3f(0, -2, 0));
 }
 

@@ -168,9 +168,9 @@ void QeVulkan::createInstance() {
 
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = AST->getString("title");
+	appInfo.pApplicationName = AST->getXMLValue(2, AST->CONFIG, "title");
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = AST->getString("engine");
+	appInfo.pEngineName = AST->getXMLValue(2, AST->CONFIG, "engine");
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 

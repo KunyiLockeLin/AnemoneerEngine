@@ -40,34 +40,316 @@ bool QeVertex::operator==(const QeVertex& other) const {
 	return pos == other.pos && normal == other.normal && texCoord == other.texCoord && color == other.color;
 }
 
+QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
+	std::map<std::string, QeAssetJSON*>::iterator it = astJSONs.find(_filePath);
 
-std::vector<char> QeAsset::loadFile(const char* _filename) {
-	std::ifstream file(_filename, std::ios::ate | std::ios::binary);
+	if (it != astJSONs.end())	return it->second;
 
-	if (!file.is_open()) {
-		throw std::runtime_error("failed to open file!");
+	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
+	if (!file.is_open()) return nullptr;
+	
+	file.seekg(0, file.end);
+	int length = int(file.tellg());
+	file.seekg(0);
+
+	char * buffer = new char[length];
+	file.read(buffer, length);
+	int index = 0;
+	QeAssetJSON* head = decodeJSON(buffer,index);
+	astJSONs[_filePath] = head;
+	return head;
+}
+
+std::string QeAsset::trim(std::string s) {
+	
+	if (s.empty())	return s;
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(0, s.find_first_not_of("\n"));
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(s.find_last_not_of(" ") + 1);
+	s.erase(s.find_last_not_of("\n") + 1);
+	s.erase(s.find_last_not_of(" ") + 1);
+	return s;
+}
+
+QeAssetJSON* QeAsset::decodeJSON(const char* buffer, int &index ) {	
+	/* key	
+	0: {
+	1: }
+	2: "
+	3: :
+	4: [
+	5: ]
+	6: ,
+	*/
+	const char keys[] = "{}\":[],";
+	QeAssetJSON* node = new QeAssetJSON();
+	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
+	char* newChar = nullptr;
+	std::vector<std::string> *vsBuffer = nullptr;
+	bool bValue = false;
+	int count = 0;
+	std::string key;
+	while (1) {
+		currentIndex = int(strcspn(buffer+lastIndex, keys)+ lastIndex);
+		currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
+		
+		if (currentKey == 0 && lastKey != 3 && lastKey != 4)	count++;
+
+		if (lastKey == currentKey && currentKey == 2 ) {
+			std::string s(buffer+lastIndex, currentIndex - lastIndex);
+			s = trim(s);
+			if (bValue){
+				bValue = false;
+				
+				node->eKeysforValues.push_back(key);
+				node->eValues.push_back(s);
+			}
+			else	key = s;
+		}
+		else if (lastKey == 3) {
+			if (currentKey == 2) bValue = true;
+
+			else if (currentKey == 0) {
+				node->eKeysforNodes.push_back(key);
+				node->eNodes.push_back(decodeJSON(buffer, currentIndex));
+			}
+			else if (currentKey != 4) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->eKeysforValues.push_back(key);
+				node->eValues.push_back(s);
+			}
+		}
+		else if (lastKey == 4) {
+			if (currentKey == 0) {
+				std::vector<QeAssetJSON*> vjson;
+				while (1) {
+					vjson.push_back(decodeJSON(buffer, currentIndex));
+					lastIndex = currentIndex + 1;
+					currentIndex = int(strcspn(buffer + lastIndex, keys)+ lastIndex);
+					currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
+
+					if (currentKey != 6) break;
+				}
+				node->eKeysforArrayNodes.push_back(key);
+				node->eArrayNodes.push_back(vjson);
+			}else {
+				currentIndex = int(strchr(buffer + lastIndex, ']') - buffer);
+				currentKey = 5;
+				std::vector<std::string> vs;
+				
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				char s2[512];
+				strncpy_s(s2, s.c_str(), 512);
+				char *context = NULL;
+				const char* key = ",\"\n";
+				char* pch = strtok_s(s2, key, &context);
+				
+				while (pch != NULL){
+					std::string s(pch); 
+					s = trim(s);
+					if (s.length() > 0) vs.push_back(s);
+					pch = strtok_s(NULL, key, &context);
+				}
+				node->eKeysforArrayValues.push_back(key);
+				node->eArrayValues.push_back(vs);
+			}
+		}
+
+		lastKey = currentKey;
+		lastIndex = currentIndex + 1;
+
+		if (currentKey == 1) {
+			count--;
+			if (count == 0) break;
+		}
 	}
 
-	size_t fileSize = (size_t)file.tellg();
-	std::vector<char> buffer(fileSize);
+	index = currentIndex;
+	return node;
+}
 
+QeAssetXML* QeAsset::getXML(const char* _filePath) {
+	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.find(_filePath);
+
+	if (it != astXMLs.end())	return it->second;
+
+	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
+	if (!file.is_open()) return nullptr;
+
+	file.seekg(0, file.end);
+	int length = int(file.tellg());
 	file.seekg(0);
-	file.read(buffer.data(), fileSize);
 
-	file.close();
+	char * buffer = new char[length];
+	file.read(buffer, length);
+	int index = 0;
+	QeAssetXML* head = decodeXML(buffer, index);
+	astXMLs[_filePath] = head;
+	return head;
 
-	return buffer;
+}
+QeAssetXML* QeAsset::decodeXML(const char* buffer, int &index) {
+	/* key
+	0: <
+	1: >
+	2: /
+	3: =
+	4: "
+	5: ?
+	*/
+	const char keys[] = "<>/=\"?";
+
+	QeAssetXML* node = new QeAssetXML();
+	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
+	char* newChar = nullptr;
+	std::vector<std::string> *vsBuffer = nullptr;
+	bool bRoot = true;
+
+	while (1) {
+		currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
+		currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
+		
+		if (currentKey == 5) {
+			lastIndex = currentIndex + 1;
+			currentIndex = int(strchr(buffer + lastIndex, '?')- buffer);
+			lastIndex = currentIndex + 1;
+			bRoot = true;
+		}
+		else if ( currentKey == 0 ) {
+			
+			if (bRoot) bRoot = false;
+
+			else if (buffer[currentIndex + 1] != '/')	node->nexts.push_back(decodeXML(buffer, currentIndex));
+
+			else if (lastKey == 1) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->value = s;
+			}
+		}
+		else if (lastKey == 0) {
+
+			if (currentKey == 1) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->key = s;
+			}
+			else if (currentKey == 3) {
+				int index = int(strchr(buffer + lastIndex, ' ')- buffer);
+				std::string s(buffer + lastIndex, index - lastIndex);
+				s = trim(s);
+				node->key = s;
+				std::string s1(buffer + index, currentIndex - index);
+				s1 = trim(s1);
+				node->eKeys.push_back(s1);
+			}
+		}
+		else if (lastKey == 2 && currentKey == 1)	break;
+	
+		else if (lastKey == 4 ) {
+
+			if (currentKey == 3) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->eKeys.push_back(s);
+			}
+			else if (currentKey == lastKey) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->eVaules.push_back(s);
+			}
+		}
+		lastKey = currentKey;
+		lastIndex = currentIndex + 1;
+	}
+	index = currentIndex;
+	return node;
 }
 
-void QeAsset::readJSON(const char* _nodeName) {
+//const char* keys[], int length
+const char* QeAsset::getXMLValue(int length, ...) {
 
+	va_list keys;
+	va_start(keys, length);
+
+	const char* key = va_arg(keys, const char*);
+	QeAssetXML* source = getXML(key);
+	if (source == nullptr) return nullptr;
+
+	for (int index = 0; index < length; ++index) {
+
+		if (index == (length - 1)) {
+			if (strcmp(key, source->key.c_str()) == 0) return source->value.c_str();
+			break;
+		}
+		
+		key = va_arg(keys, const char*);
+		if (index == (length - 2)) {
+			int size = int(source->eKeys.size());
+			for (int index1 = 0; index1 < size; ++index1)
+				if (strcmp(key, source->eKeys[index1].c_str()) == 0) return source->eVaules[index1].c_str();
+		}
+
+		int size = int(source->nexts.size());
+		int index1 = 0;
+		for (; index1<size; ++index1) {
+			if (strcmp(key, source->nexts[index1]->key.c_str()) == 0) {
+				source = source->nexts[index1];
+				break;
+			}
+		}
+		if (index1 == size) break;
+	}
+	return nullptr;
 }
 
-void QeAsset::readXML(const char* _nodeName) {
+QeAssetXML* QeAsset::getXMLNode(int length, ...) {
 
+	va_list keys;
+	va_start(keys, length);
+
+	const char* key = va_arg(keys, const char*);
+	QeAssetXML* source = getXML(key);
+	if (source == nullptr) return nullptr;
+
+	for (int index = 1; index < length; ++index) {
+
+		key = va_arg(keys, const char*);
+		
+		int size = int(source->nexts.size());
+		int index1 = 0;
+		for (; index1<size; ++index1) {
+			if (strcmp(key, source->nexts[index1]->key.c_str()) == 0) {
+				source = source->nexts[index1];
+				break;
+			}
+		}
+		if (index1 == size) break;
+	}
+	va_end(keys);
+	return source;
+}
+
+QeAssetModel* QeAsset::getModel(const char* _filename) {
+
+	std::string _filePath = combinePath(_filename, eAssetModel);
+	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
+
+	if (it != astModels.end())	return it->second;
+
+	//return getModelGLTF(_filename);
+	return getModelOBJ(_filename);
 }
 
 QeAssetModel* QeAsset::getModelGLTF(const char* _filename) {
+
+	std::string _filePath = combinePath(_filename, eAssetModel);
+	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
+
+	if (it != astModels.end())	return it->second;
+	QeAssetJSON* head = getJSON(_filePath.c_str());
 	return nullptr;
 }
 
@@ -235,17 +517,17 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 		mtl->pDiffuseMap = getImageBMP32(diffuseMapPath);
 
 	if(strlen(sv) == 0)
-		mtl->pShaderVert = getShader(getString("defaultshadervert"));
+		mtl->pShaderVert = getShader(getXMLValue(3, CONFIG, "defaultShader", "vert"));
 	else
 		mtl->pShaderVert = getShader(sv);
 
 	if (strlen(sg) == 0)
-		mtl->pShaderGeom = getShader(getString("defaultshadergeom"));
+		mtl->pShaderGeom = getShader(getXMLValue(3, CONFIG, "defaultShader", "geom"));
 	else
 		mtl->pShaderGeom = getShader(sg);
 
 	if (strlen(sf) == 0)
-		mtl->pShaderFrag = getShader(getString("defaultshaderfrag"));
+		mtl->pShaderFrag = getShader(getXMLValue(3, CONFIG, "defaultShader", "frag"));
 	else
 		mtl->pShaderFrag = getShader(sf);
 
@@ -295,52 +577,28 @@ QeAssetImage* QeAsset::getImageBMP32(const char* _filename) {
 	return image;
 }
 
-bool QeAsset::loadConfig() {
-
-	std::ifstream file(CONFIG_PATH.c_str(), std::ios::ate | std::ios::binary);
-	if (!file.is_open()) return false;
-	file.seekg(0);
-
-	char line[500];
-
-	while (file.getline(line, sizeof(line))) {
-		char node[100];
-		char value[400];
-		sscanf_s(line, "%s %s", node, (unsigned int)sizeof(node), value, (unsigned int)sizeof(value));
-
-		std::map<std::string, std::vector<std::string>>::iterator it = astString.find(node);
-		
-		if (it != astString.end() && !it->second.empty()) {
-			it->second.push_back( value );
-		}
-		else {
-			std::vector<std::string> s;
-			s.push_back( value );
-			astString[node] = s;
-		}
-	}
-	file.close();
-	return true;
-}
-
-const char* QeAsset::getString(const char* _nodeName, int _index ) {
-	std::map<std::string, std::vector<std::string>>::iterator it = astString.find(_nodeName);
-	if (it != astString.end() && !it->second.empty() ) 
-		return it->second.at(_index).c_str();
-
-	return nullptr;
-}
-
 QeAssetShader* QeAsset::getShader(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetShader);
 	std::map<std::string, QeAssetShader*>::iterator it = astShaders.find(_filePath.c_str());
 	if (it != astShaders.end())	return it->second;
 
-	std::vector<char> data = loadFile(_filePath.c_str());
+	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
+
+	if (!file.is_open()) {
+		throw std::runtime_error("failed to open file!");
+	}
+
+	size_t fileSize = (size_t)file.tellg();
+	std::vector<char> buffer(fileSize);
+
+	file.seekg(0);
+	file.read(buffer.data(), fileSize);
+
+	file.close();
 
 	QeAssetShader* shader = new QeAssetShader();
-	shader->shader = VLK->createShaderModel((void*)data.data(), int(data.size()));
+	shader->shader = VLK->createShaderModel((void*)buffer.data(), int(buffer.size()));
 	astShaders[_filename] = shader;
 	return shader;
 }
@@ -353,16 +611,16 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 	switch (dataType) {
 	
 	case eAssetModel:
-		rtn = getString( "MODEL_PATH" );
+		rtn = getXMLValue(3, CONFIG, "path", "model");
 		break;
 	case eAssetMaterial:
-		rtn = getString("MTL_PATH");
+		rtn = getXMLValue(3, CONFIG, "path", "material");
 		break;
 	case eAssetShader:
-		rtn = getString("SHADER_PATH");
+		rtn = getXMLValue(3, CONFIG, "path", "sharder");
 		break;
 	case eAssetTexture:
-		rtn = getString("TEXTURE_PATH");
+		rtn = getXMLValue(3, CONFIG, "path", "texture");
 		break;
 	}
 	return rtn.append(_filename).c_str();

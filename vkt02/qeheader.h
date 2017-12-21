@@ -14,6 +14,7 @@
 #include <cmath>
 #include <chrono>
 #include <vector>
+#include <algorithm>
 #include <array>
 #include <set>
 #include <map>
