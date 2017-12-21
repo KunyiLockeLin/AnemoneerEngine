@@ -107,10 +107,18 @@ public:
 
 	QeAssetJSON* getJSON(const char* _filePath);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
-	/*const char*	 getJSONValue(int length, ...);
+	const char*	 getJSONValue(int length, ...);
+	const char*	 getJSONValue(QeAssetJSON* source, int length, ...);
+	const char*	 getJSONValue(QeAssetJSON* source, const char* keys[], int length);
 	QeAssetJSON* getJSONNode(int length, ...);
+	QeAssetJSON* getJSONNode(QeAssetJSON* source, int length, ...);
+	QeAssetJSON* getJSONNode(QeAssetJSON* source, const char* keys[], int length);
 	std::vector<std::string>*	getJSONArrayValues(int length, ...);
-	std::vector<QeAssetJSON*>*	getJSONArrayNodes(int length, ...);*/
+	std::vector<std::string>*	getJSONArrayValues(QeAssetJSON* source, int length, ...);
+	std::vector<std::string>*	getJSONArrayValues(QeAssetJSON* source, const char* keys[], int length);
+	std::vector<QeAssetJSON*>*	getJSONArrayNodes(int length, ...);
+	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, int length, ...);
+	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, const char* keys[], int length);
 
 	QeAssetXML* getXML(const char* _filePath);
 	QeAssetXML* decodeXML(const char* buffer, int &index);
