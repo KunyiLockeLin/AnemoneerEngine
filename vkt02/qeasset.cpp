@@ -40,6 +40,18 @@ bool QeVertex::operator==(const QeVertex& other) const {
 	return pos == other.pos && normal == other.normal && texCoord == other.texCoord && color == other.color;
 }
 
+std::string QeAsset::trim(std::string s) {
+
+	if (s.empty())	return s;
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(0, s.find_first_not_of("\n"));
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(s.find_last_not_of(" ") + 1);
+	s.erase(s.find_last_not_of("\n") + 1);
+	s.erase(s.find_last_not_of(" ") + 1);
+	return s;
+}
+
 QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
 	std::map<std::string, QeAssetJSON*>::iterator it = astJSONs.find(_filePath);
 
@@ -52,24 +64,13 @@ QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
 	int length = int(file.tellg());
 	file.seekg(0);
 
-	char * buffer = new char[length];
+	char* buffer = new char[length];
 	file.read(buffer, length);
 	int index = 0;
 	QeAssetJSON* head = decodeJSON(buffer,index);
 	astJSONs[_filePath] = head;
+	delete buffer;
 	return head;
-}
-
-std::string QeAsset::trim(std::string s) {
-	
-	if (s.empty())	return s;
-	s.erase(0, s.find_first_not_of(" "));
-	s.erase(0, s.find_first_not_of("\n"));
-	s.erase(0, s.find_first_not_of(" "));
-	s.erase(s.find_last_not_of(" ") + 1);
-	s.erase(s.find_last_not_of("\n") + 1);
-	s.erase(s.find_last_not_of(" ") + 1);
-	return s;
 }
 
 QeAssetJSON* QeAsset::decodeJSON(const char* buffer, int &index ) {	
@@ -170,6 +171,29 @@ QeAssetJSON* QeAsset::decodeJSON(const char* buffer, int &index ) {
 	return node;
 }
 
+/*
+const char*	 QeAsset::getJSONValue(int length, ...) {
+	va_list keys;
+	va_start(keys, length);
+
+	const char* key = va_arg(keys, const char*);
+	QeAssetJSON* source = getJSON(key);
+	if (source == nullptr) return nullptr;
+
+	for (int index = 0; index < length; ++index) {
+
+	}
+	va_end(keys);
+	return nullptr;
+}
+
+QeAssetJSON* QeAsset::getJSONNode(int length, ...) {}
+
+std::vector<std::string>*	QeAsset::getJSONArrayValues(int length, ...) {}
+
+std::vector<QeAssetJSON*>*	QeAsset::getJSONArrayNodes(int length, ...) {}
+*/
+
 QeAssetXML* QeAsset::getXML(const char* _filePath) {
 	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.find(_filePath);
 
@@ -268,7 +292,6 @@ QeAssetXML* QeAsset::decodeXML(const char* buffer, int &index) {
 	return node;
 }
 
-//const char* keys[], int length
 const char* QeAsset::getXMLValue(int length, ...) {
 
 	va_list keys;
@@ -276,26 +299,58 @@ const char* QeAsset::getXMLValue(int length, ...) {
 
 	const char* key = va_arg(keys, const char*);
 	QeAssetXML* source = getXML(key);
+	if (source == nullptr) {
+		va_end(keys);
+		return nullptr;
+	}
+	const char** keys1 = new const char*[length-1];
+	for (int i = 0; i<(length-1); ++i )	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getXMLValue(source, keys1, length);
+	va_end(keys);
+	delete keys1;
+	return ret;
+}
+
+const char* QeAsset::getXMLValue(QeAssetXML* source, int length, ...) {
+	
+	if (source == nullptr)	return nullptr;
+	
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getXMLValue(source, keys1, length+1);
+	va_end(keys);
+	delete keys1;
+	return ret;
+}
+
+const char* QeAsset::getXMLValue(QeAssetXML* source, const char* keys[], int length) {
+
 	if (source == nullptr) return nullptr;
 
 	for (int index = 0; index < length; ++index) {
 
 		if (index == (length - 1)) {
-			if (strcmp(key, source->key.c_str()) == 0) return source->value.c_str();
+			if (strcmp(keys[index-1], source->key.c_str()) == 0) return source->value.c_str();
 			break;
 		}
-		
-		key = va_arg(keys, const char*);
+
 		if (index == (length - 2)) {
 			int size = int(source->eKeys.size());
 			for (int index1 = 0; index1 < size; ++index1)
-				if (strcmp(key, source->eKeys[index1].c_str()) == 0) return source->eVaules[index1].c_str();
+				if (strcmp(keys[index], source->eKeys[index1].c_str()) == 0) {
+					return source->eVaules[index1].c_str();
+				}
 		}
 
 		int size = int(source->nexts.size());
 		int index1 = 0;
 		for (; index1<size; ++index1) {
-			if (strcmp(key, source->nexts[index1]->key.c_str()) == 0) {
+			if (strcmp(keys[index], source->nexts[index1]->key.c_str()) == 0) {
 				source = source->nexts[index1];
 				break;
 			}
@@ -303,6 +358,7 @@ const char* QeAsset::getXMLValue(int length, ...) {
 		if (index1 == size) break;
 	}
 	return nullptr;
+
 }
 
 QeAssetXML* QeAsset::getXMLNode(int length, ...) {
@@ -312,23 +368,53 @@ QeAssetXML* QeAsset::getXMLNode(int length, ...) {
 
 	const char* key = va_arg(keys, const char*);
 	QeAssetXML* source = getXML(key);
-	if (source == nullptr) return nullptr;
+	if (source == nullptr) {
+		va_end(keys);
+		return nullptr;
+	}
+	length--;
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i<length; ++i )	keys1[i] = va_arg(keys, const char*);
 
-	for (int index = 1; index < length; ++index) {
+	source = getXMLNode(source, keys1, length);
+	va_end(keys);
+	delete keys1;
+	return source;
+}
 
-		key = va_arg(keys, const char*);
-		
+QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, int length, ...) {
+
+	if (source == nullptr)	return nullptr;
+	
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i<length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	source = getXMLNode(source, keys1, length);
+	va_end(keys);
+	delete keys1;
+	return source;
+
+}
+
+QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int length) {
+
+	if (source == nullptr)	return nullptr;
+
+	for (int index = 0; index < length; ++index) {
+
 		int size = int(source->nexts.size());
 		int index1 = 0;
 		for (; index1<size; ++index1) {
-			if (strcmp(key, source->nexts[index1]->key.c_str()) == 0) {
+			if (strcmp(keys[index], source->nexts[index1]->key.c_str()) == 0) {
 				source = source->nexts[index1];
 				break;
 			}
 		}
 		if (index1 == size) break;
 	}
-	va_end(keys);
 	return source;
 }
 
@@ -606,7 +692,7 @@ QeAssetShader* QeAsset::getShader(const char* _filename) {
 std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 
 	if (strlen(_filename) > 3 && _filename[1] == ':' && _filename[2] == '\\')	return _filename;
-
+	
 	std::string rtn;
 	switch (dataType) {
 	

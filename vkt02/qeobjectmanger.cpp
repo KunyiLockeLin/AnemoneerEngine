@@ -62,7 +62,6 @@ QeBillboard* QeObjectManger::getBillboard(int _id) {
 		newModel = new QeBillboard(key);
 
 	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "billboards");
-
 	newModel->init(node->nexts[0]->value.c_str());
 	mgrActiveBillboards.push_back(newModel);
 
