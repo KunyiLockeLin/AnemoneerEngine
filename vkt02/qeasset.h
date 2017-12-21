@@ -123,10 +123,10 @@ public:
 	QeAssetXML* getXML(const char* _filePath);
 	QeAssetXML* decodeXML(const char* buffer, int &index);
 	const char* getXMLValue(int length, ...);
-	QeAssetXML* getXMLNode(int length, ...);
 	const char* getXMLValue(QeAssetXML* source, int length, ...);
-	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	const char* getXMLValue(QeAssetXML* source, const char* keys[], int length);
+	QeAssetXML* getXMLNode(int length, ...);
+	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
 
 	QeAssetModel* getModel(const char* _filename);
