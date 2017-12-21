@@ -894,6 +894,23 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 }
 
 QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
+
+	std::string _filePath = combinePath(_filename, eAssetTexture);
+	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
+	if (it != astTextures.end())	return it->second;
+
+	std::ifstream _file(_filePath.c_str(), std::ios::ate | std::ios::binary);
+	if (!_file.is_open()) return nullptr;
+	_file.seekg(0);
+
+	char header[122];
+	_file.read(header, sizeof(header));
+
+	if (header[0] != 0x89 || header[1] != 0x50 || header[2] != 0x4E || header[3] != 0x47
+		|| header[4] != 0x0D || header[5] != 0x0A || header[6] != 0x1A || header[7] != 0x0A) {
+		_file.close();
+		return false;
+	}
 	return nullptr;
 }
 
