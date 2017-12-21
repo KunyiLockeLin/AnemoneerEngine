@@ -1,1 +1,168 @@
-{"accessors":[{"bufferView":0,"componentType":5121,"count":6,"max":[5],"min":[0],"type":"SCALAR"},{"bufferView":1,"componentType":5126,"count":6,"max":[1.0,0.0,1.0],"min":[-1.0,0.0,-1.0],"type":"VEC3"},{"bufferView":2,"componentType":5126,"count":6,"max":[-0.0,1.0,-0.0],"min":[-0.0,1.0,-0.0],"type":"VEC3"},{"bufferView":3,"componentType":5126,"count":6,"max":[-1.2914341596115264e-07,0.0,-1.0,1.0],"min":[-1.390775139498146e-07,0.0,-1.0,1.0],"type":"VEC4"},{"bufferView":4,"componentType":5126,"count":6,"max":[1.0,1.0],"min":[0.0,0.0],"type":"VEC2"}],"asset":{"generator":"Khronos Blender glTF 2.0 exporter","version":"2.0"},"bufferViews":[{"buffer":0,"byteLength":6,"byteOffset":0,"target":34963},{"buffer":0,"byteLength":72,"byteOffset":8,"target":34962},{"buffer":0,"byteLength":72,"byteOffset":80,"target":34962},{"buffer":0,"byteLength":96,"byteOffset":152,"target":34962},{"buffer":0,"byteLength":48,"byteOffset":248,"target":34962}],"buffers":[{"byteLength":296,"uri":"data:application/octet-stream;base64,AAECAwQFAAAAAIA/AAAAAAAAgD8AAIC/AAAAAAAAgL8AAIC/AAAAAAAAgD8AAIA/AAAAAAAAgD8AAIA/AAAAAAAAgL8AAIC/AAAAAAAAgL8AAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAICsqgq0AAAAAAAAgL8AAIA/rKoKtAAAAAAAAIC/AACAP6yqCrQAAAAAAACAvwAAgD9WVRW0AAAAAAAAgL8AAIA/VlUVtAAAAAAAAIC/AACAP1ZVFbQAAAAAAACAvwAAgD8AAAAA/v9/PwAAgD8AAAA0//8fNAAAAAAAAAAA/v9/P/7/fz8AAIA/AACAPwAAADQ="}],"materials":[{"name":"Material.001","pbrMetallicRoughness":{"baseColorFactor":[0.6400000190734865,0.6400000190734865,0.6400000190734865,1.0],"metallicFactor":0.0}}],"meshes":[{"name":"Plane","primitives":[{"attributes":{"NORMAL":2,"POSITION":1,"TANGENT":3,"TEXCOORD_0":4},"indices":0,"material":0}]}],"nodes":[{"mesh":0,"name":"Plane"}],"scene":0,"scenes":[{"name":"Scene","nodes":[0]}]}
+{
+    "accessors" : [
+        {
+            "bufferView" : 0, 
+            "componentType" : 5121, 
+            "count" : 6, 
+            "max" : [
+                5
+            ], 
+            "min" : [
+                0
+            ], 
+            "type" : "SCALAR"
+        }, 
+        {
+            "bufferView" : 1, 
+            "componentType" : 5126, 
+            "count" : 6, 
+            "max" : [
+                1.0, 
+                0.0, 
+                1.0
+            ], 
+            "min" : [
+                -1.0, 
+                0.0, 
+                -1.0
+            ], 
+            "type" : "VEC3"
+        }, 
+        {
+            "bufferView" : 2, 
+            "componentType" : 5126, 
+            "count" : 6, 
+            "max" : [
+                -0.0, 
+                1.0, 
+                -0.0
+            ], 
+            "min" : [
+                -0.0, 
+                1.0, 
+                -0.0
+            ], 
+            "type" : "VEC3"
+        }, 
+        {
+            "bufferView" : 3, 
+            "componentType" : 5126, 
+            "count" : 6, 
+            "max" : [
+                -1.2914341596115264e-07, 
+                0.0, 
+                -1.0, 
+                1.0
+            ], 
+            "min" : [
+                -1.390775139498146e-07, 
+                0.0, 
+                -1.0, 
+                1.0
+            ], 
+            "type" : "VEC4"
+        }, 
+        {
+            "bufferView" : 4, 
+            "componentType" : 5126, 
+            "count" : 6, 
+            "max" : [
+                1.0, 
+                1.0
+            ], 
+            "min" : [
+                0.0, 
+                0.0
+            ], 
+            "type" : "VEC2"
+        }
+    ], 
+    "asset" : {
+        "generator" : "Khronos Blender glTF 2.0 exporter", 
+        "version" : "2.0"
+    }, 
+    "bufferViews" : [
+        {
+            "buffer" : 0, 
+            "byteLength" : 6, 
+            "byteOffset" : 0, 
+            "target" : 34963
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 72, 
+            "byteOffset" : 8, 
+            "target" : 34962
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 72, 
+            "byteOffset" : 80, 
+            "target" : 34962
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 96, 
+            "byteOffset" : 152, 
+            "target" : 34962
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 48, 
+            "byteOffset" : 248, 
+            "target" : 34962
+        }
+    ], 
+    "buffers" : [
+        {
+            "byteLength" : 296, 
+            "uri" : "plane.bin"
+        }
+    ], 
+    "materials" : [
+        {
+            "name" : "Material.001", 
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.6400000190734865, 
+                    0.6400000190734865, 
+                    0.6400000190734865, 
+                    1.0
+                ], 
+                "metallicFactor" : 0.0
+            }
+        }
+    ], 
+    "meshes" : [
+        {
+            "name" : "Plane", 
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "NORMAL" : 2, 
+                        "POSITION" : 1, 
+                        "TANGENT" : 3, 
+                        "TEXCOORD_0" : 4
+                    }, 
+                    "indices" : 0, 
+                    "material" : 0
+                }
+            ]
+        }
+    ], 
+    "nodes" : [
+        {
+            "mesh" : 0, 
+            "name" : "Plane"
+        }
+    ], 
+    "scene" : 0, 
+    "scenes" : [
+        {
+            "name" : "Scene", 
+            "nodes" : [
+                0
+            ]
+        }
+    ]
+}
