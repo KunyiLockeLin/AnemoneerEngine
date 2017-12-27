@@ -889,7 +889,7 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 
 	if (it != astTextures.end())	return it->second;
 
-	return getImageBMP32(_filename);
+	return getImageBMP(_filename);
 	//return getImagePNG(_filename);
 }
 
@@ -911,10 +911,12 @@ QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
 		_file.close();
 		return false;
 	}
+
+
 	return nullptr;
 }
 
-QeAssetImage* QeAsset::getImageBMP32(const char* _filename) {
+QeAssetImage* QeAsset::getImageBMP(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetTexture);
 	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
@@ -933,25 +935,44 @@ QeAssetImage* QeAsset::getImageBMP32(const char* _filename) {
 	}
 	
 	int dataPos = *(int*)&(header[0x0A]);
+	if (dataPos == 0) {
+		_file.close();
+		return false;
+	}
+
 	int width = *(int*)&(header[0x12]);
 	int height = *(int*)&(header[0x16]);
-	int imageSize = *(int*)&(header[0x22]);
-
-	if (imageSize == 0)
-		imageSize = width *height * 4;
-	if (dataPos == 0)
-		dataPos = sizeof(header);
+	short int bits = *(int*)&(header[0x1C]);
+	int bytes = bits / 8;
+	//int imageSize = *(int*)&(header[0x22]);
+	int	imageSize = width *height * 4;
 	
 	std::vector<char> data;
 	data.resize(imageSize);
 	
-	_file.seekg(dataPos);
-	_file.read(data.data(), imageSize);
+	if (bytes == 4) {
+		_file.seekg(dataPos);
+		_file.read(data.data(), imageSize);
+	}
+	else {
+		int fileIndex = 0;
+		int dataIndex = 0;
+		unsigned char c = 0xff;
+		data.assign(imageSize, c);
+
+		while (dataIndex<imageSize) {
+			_file.seekg(dataPos+ fileIndex);
+			_file.read(data.data()+ dataIndex, bytes);
+			fileIndex += bytes;
+			dataIndex += 4;
+		}
+	}
 	_file.close();
 
 	QeAssetImage* image = new QeAssetImage();
-	VLK->createImageData((void*)data.data(), imageSize, width, height, image->textureImage, image->textureImageMemory);
+	VLK->createImageData((void*)data.data(), VK_FORMAT_B8G8R8A8_UNORM, imageSize, width, height, image->textureImage, image->textureImageMemory);
 	image->textureImageView = VLK->createImageView(image->textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+
 	image->textureSampler = VLK->createTextureSampler();
 	astTextures[_filePath] = image;
 	return image;

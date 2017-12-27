@@ -136,7 +136,7 @@ public:
 	QeAssetMaterial* getMateialMTL(const char* _filename);
 
 	QeAssetImage* getImage(const char* _filename);
-	QeAssetImage* getImageBMP32(const char* _filename);
+	QeAssetImage* getImageBMP(const char* _filename);
 	QeAssetImage* getImagePNG(const char* _filename);
 	//QeAssetImage* getImageJPG(const char* _filename);
 
