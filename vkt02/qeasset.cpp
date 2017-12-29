@@ -912,8 +912,9 @@ QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
 	file.read(buffer, length);
 	file.close();
 	
-	int width, height;
-	std::vector<unsigned char> data = ENCODE->decodePNG((unsigned char*)buffer, length, &width, &height);
+	int width, height, bytes;
+	std::vector<unsigned char> data = ENCODE->decodePNG((unsigned char*)buffer, length, &width, &height, &bytes);
+	if (bytes != 4)	imageFillto32bits(&data, bytes);
 
 	QeAssetImage* image = new QeAssetImage();
 	VLK->createImageData((void*)data.data(), VK_FORMAT_R8G8B8A8_UNORM, data.size(), width, height, image->textureImage, image->textureImageMemory);
@@ -951,39 +952,43 @@ QeAssetImage* QeAsset::getImageBMP(const char* _filename) {
 	int width = *(int*)&(header[0x12]);
 	int height = *(int*)&(header[0x16]);
 	short int bits = *(int*)&(header[0x1C]);
-	int bytes = bits / 8;
+	int bytes = (bits+7) / 8;
 	//int imageSize = *(int*)&(header[0x22]);
-	int	imageSize = width *height * 4;
+	int	imageSize = width *height * bytes;
 	
 	std::vector<char> data;
 	data.resize(imageSize);
-	
-	if (bytes == 4) {
-		_file.seekg(dataPos);
-		_file.read(data.data(), imageSize);
-	}
-	else {
-		int fileIndex = 0;
-		int dataIndex = 0;
-		unsigned char c = 0xff;
-		data.assign(imageSize, c);
-
-		while (dataIndex<imageSize) {
-			_file.seekg(dataPos+ fileIndex);
-			_file.read(data.data()+ dataIndex, bytes);
-			fileIndex += bytes;
-			dataIndex += 4;
-		}
-	}
+	_file.seekg(dataPos);
+	_file.read(data.data(), imageSize);
 	_file.close();
 
+	if (bytes != 4)	imageFillto32bits((std::vector<unsigned char>*)&data, bytes);
+
 	QeAssetImage* image = new QeAssetImage();
-	VLK->createImageData((void*)data.data(), VK_FORMAT_B8G8R8A8_UNORM, imageSize, width, height, image->textureImage, image->textureImageMemory);
+	VLK->createImageData((void*)data.data(), VK_FORMAT_B8G8R8A8_UNORM, data.size(), width, height, image->textureImage, image->textureImageMemory);
 	image->textureImageView = VLK->createImageView(image->textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 
 	image->textureSampler = VLK->createTextureSampler();
 	astTextures[_filePath] = image;
 	return image;
+}
+
+void QeAsset::imageFillto32bits(std::vector<unsigned char>* data, int bytes) {
+	int fileIndex = 0;
+	int dataIndex = 0;
+	unsigned char c = 0xff;
+
+	size_t size = data->size();
+	size_t index = bytes;
+	short int addBytes = 4 - bytes;
+
+	while (index<size) {
+		
+		for( int i =0 ; i<addBytes; ++i)	data->insert( data->begin()+index+i, c );
+
+		index += 4;
+		size = data->size();
+	}
 }
 
 QeAssetShader* QeAsset::getShader(const char* _filename) {

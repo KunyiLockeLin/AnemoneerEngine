@@ -140,6 +140,7 @@ public:
 	QeAssetImage* getImageBMP(const char* _filename);
 	QeAssetImage* getImagePNG(const char* _filename);
 	//QeAssetImage* getImageJPG(const char* _filename);
+	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
 
 	QeAssetShader* getShader(const char* _filename);
 

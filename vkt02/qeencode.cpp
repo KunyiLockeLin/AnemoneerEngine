@@ -9,7 +9,7 @@ unsigned int QeEncode::readBits(const unsigned char* stream, unsigned int *bitPo
 }
 
 
-std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height) {
+std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
 
 	unsigned char headerKey[8] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 
@@ -33,6 +33,19 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, unsigned i
 	*height = *(int*)&(num);
 	int bitDepth = buffer[0x18];
 	int colorType = buffer[0x19];
+	int bits = 0;
+
+	switch (colorType)
+	{
+	case 0: bits = 1; break;	// grey
+	case 2: bits = 3; break;	// RGB
+	case 3: bits = 1; break;	// palette
+	case 4: bits = 2; break;	// grey + alpha
+	case 6: bits = 4; break;	// RGBA
+	}
+	bits *= bitDepth;
+
+	*bytes = (bits + 7) / 8;
 	int CompressionMethod = buffer[0x1A];
 	int FilterMethod = buffer[0x1B];
 	int InterlaceMethod = buffer[0x1C];
@@ -69,8 +82,8 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, unsigned i
 	unsigned char* recon = 0;
 	unsigned char* scanline = 0;
 	unsigned char* prevline = 0;
-	int bytewidth = 4;
-	unsigned int linebytes = ((*width) * 32 + 7) / 8;
+	unsigned int bytewidth = *bytes;
+	unsigned int linebytes = ((*width) * bits + 7) / 8;
 	
 	size_t j = 0;
 	size_t outindex;

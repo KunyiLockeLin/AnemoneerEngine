@@ -29,7 +29,7 @@ public:
 	QeEncode(QeGlobalKey& _key) {}
 	~QeEncode() {}
 	unsigned int readBits(const unsigned char* stream, unsigned int *bitPointer, unsigned int readCount );
-	std::vector<unsigned char> decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height);
+	std::vector<unsigned char> decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodeDeflate(unsigned char* in, unsigned int size);
 	void decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, unsigned int* bitPointer, unsigned int BYTE);
 	void buildFixedHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD);
