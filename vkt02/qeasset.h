@@ -90,6 +90,7 @@ struct QeAssetJSON {
 	std::vector<std::vector<QeAssetJSON*>> eArrayNodes;
 };
 
+
 class QeAsset
 {
 public:

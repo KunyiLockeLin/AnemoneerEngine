@@ -27,6 +27,7 @@ public:
 	QeMath*				math;
 	QeAsset*			asset;
 	QeObjectManger*		objMgr;
+	QeEncode*			encode;
 };
 
 #define GLB		QeGlobal::getInstance()
@@ -37,3 +38,4 @@ public:
 #define MATH	GLB.math
 #define AST		GLB.asset
 #define OBJMGR	GLB.objMgr
+#define ENCODE	GLB.encode

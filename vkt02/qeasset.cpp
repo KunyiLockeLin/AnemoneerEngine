@@ -66,6 +66,7 @@ QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
 
 	char* buffer = new char[length];
 	file.read(buffer, length);
+	file.close();
 	int index = 0;
 	QeAssetJSON* head = decodeJSON(buffer,index);
 	astJSONs[_filePath] = head;
@@ -470,6 +471,7 @@ QeAssetXML* QeAsset::getXML(const char* _filePath) {
 
 	char * buffer = new char[length];
 	file.read(buffer, length);
+	file.close();
 	int index = 0;
 	QeAssetXML* head = decodeXML(buffer, index);
 	astXMLs[_filePath] = head;
@@ -727,26 +729,25 @@ QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
 
 	while (file.getline(line, sizeof(line))) {
 		
-		if (line[0] == 'm' && line[1] == 't' && line[2] == 'l' && line[3] == 'l' && line[4] == 'i' && line[5] == 'b') {
-			sscanf_s(line, "mtllib  %s", mtlPath,  (unsigned int)sizeof(mtlPath) );
-		}
-		else if (line[0] == 'v' && line[1] == ' ') {
+		if(strncmp(line, "mtllib ", 7) == 0)
+			sscanf_s(line, "mtllib %s", mtlPath,  (unsigned int)sizeof(mtlPath) );
+		
+		else if (strncmp(line, "v ", 2) == 0) {
 			sscanf_s(line, "v %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
 			QeVertex vet;
 			vet.pos = tempV3;
 			vet.color ={ 1.0f, 1.0f, 1.0f };
 			model->vertices.push_back(vet);
 		} 
-		else if (line[0] == 'v' && line[1] == 't') {
+		else if (strncmp(line, "vt ", 3) == 0) {
 			sscanf_s(line, "vt %f %f", &(tempV2.x), &(tempV2.y));
 			texCoordV.push_back(tempV2);
 		}
-		else if (line[0] == 'v' && line[1] == 'n') {
+		else if (strncmp(line, "vn ", 3) == 0) {
 			sscanf_s(line, "vn %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
 			normalV.push_back(tempV3);
 		}
-		else if (line[0] == 'f' && line[1] == ' ') {
-			
+		else if (strncmp(line, "f ", 2) == 0) {
 			if (strstr(line, "//")) {
 				sscanf_s(line, "f %d//%d %d//%d %d//%d", &(tempV3p.x), &(tempV3n.x),
 					&(tempV3p.y), &(tempV3n.y), &(tempV3p.z), &(tempV3n.z));
@@ -822,35 +823,37 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 
 	while (file.getline(line, sizeof(line))) {
 
-		if (line[0] == 'm' && line[1] == 'a' && line[2] == 'p' && line[3] == '_' && line[4] == 'K' && line[5] == 'd') 
+		if (strncmp(line, "map_Kd ", 7) == 0)
 			sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
-	
-		else if (line[0] == 'N' && line[1] == 's') 
+		
+		else if (strncmp(line, "Ns ", 3) == 0)
 			sscanf_s(line, "Ns %f", &mtl1.param.x);
 		
-		else if (line[0] == 'K' && line[1] == 'a') 
+		else if (strncmp(line, "Ka ", 3) == 0)
 			sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
 
-		else if (line[0] == 'K' && line[1] == 'd') 
+		else if (strncmp(line, "Kd ", 3) == 0)
 			sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
 
-		else if (line[0] == 'K' && line[1] == 's') 
+		else if (strncmp(line, "Ks ", 3) == 0)
 			sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
 	
-		else if (line[0] == 'K' && line[1] == 'e') 
+		else if (strncmp(line, "Ke ", 3) == 0)
 			sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
 
-		else if (line[0] == 'N' && line[1] == 'i') 
+		else if (strncmp(line, "Ni ", 3) == 0)
 			sscanf_s(line, "Ni %f", &(mtl1.param.y));
 	
-		else if (line[0] == 'd' && line[1] == ' ') 
+		else if (strncmp(line, "d ", 2) == 0)
 			sscanf_s(line, "d %f", &(mtl1.param.z));
 
-		else if (line[0] == 's' && line[1] == 'v')
+		else if (strncmp(line, "sv ", 3) == 0)
 			sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
-		else if (line[0] == 's' && line[1] == 'g')
+
+		else if (strncmp(line, "sg ", 3) == 0)
 			sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
-		else if (line[0] == 's' && line[1] == 'f')
+
+		else if (strncmp(line, "sf ", 3) == 0)
 			sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
 		 
 	}
@@ -889,8 +892,8 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 
 	if (it != astTextures.end())	return it->second;
 
-	return getImageBMP(_filename);
-	//return getImagePNG(_filename);
+	//return getImageBMP(_filename);
+	return getImagePNG(_filename);
 }
 
 QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
@@ -899,21 +902,26 @@ QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
 	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
 	if (it != astTextures.end())	return it->second;
 
-	std::ifstream _file(_filePath.c_str(), std::ios::ate | std::ios::binary);
-	if (!_file.is_open()) return nullptr;
-	_file.seekg(0);
+	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
+	if (!file.is_open()) return nullptr;
+	file.seekg(0, file.end);
+	int length = int(file.tellg());
+	file.seekg(0);
 
-	char header[122];
-	_file.read(header, sizeof(header));
+	char* buffer = new char[length];
+	file.read(buffer, length);
+	file.close();
+	
+	int width, height;
+	std::vector<unsigned char> data = ENCODE->decodePNG((unsigned char*)buffer, length, &width, &height);
 
-	if (header[0] != 0x89 || header[1] != 0x50 || header[2] != 0x4E || header[3] != 0x47
-		|| header[4] != 0x0D || header[5] != 0x0A || header[6] != 0x1A || header[7] != 0x0A) {
-		_file.close();
-		return false;
-	}
+	QeAssetImage* image = new QeAssetImage();
+	VLK->createImageData((void*)data.data(), VK_FORMAT_R8G8B8A8_UNORM, data.size(), width, height, image->textureImage, image->textureImageMemory);
+	image->textureImageView = VLK->createImageView(image->textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 
-
-	return nullptr;
+	image->textureSampler = VLK->createTextureSampler();
+	astTextures[_filePath] = image;
+	return image;
 }
 
 QeAssetImage* QeAsset::getImageBMP(const char* _filename) {
@@ -929,7 +937,7 @@ QeAssetImage* QeAsset::getImageBMP(const char* _filename) {
 	char header[122];
 	_file.read(header, sizeof(header));
 
-	if (header[0] != 'B' || header[1] != 'M') {
+	if(strncmp( header, "BM", 2 ) != 0){
 		_file.close();
 		return false;
 	}

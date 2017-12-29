@@ -47,6 +47,8 @@ struct QeAssetImage;
 struct QeAssetShader;
 struct QeUniformBufferObject;
 struct QeDataLight;
+struct QeHuffmanTree;
+class QeEncode;
 class QeMath;
 class QeAsset;
 class QeModel;
@@ -63,7 +65,7 @@ class QeObjectManger;
 class QeActivity;
 class QeVulkan;
 
-
+#include "qeencode.h"
 #include "qemath.h"
 #include "qeasset.h"
 #include "qevulkan.h"
