@@ -169,10 +169,20 @@ std::vector<unsigned char> QeEncode::decodeDeflate(unsigned char* in, unsigned i
 	unsigned int BYTE = 0;
 
 	while (!BFINAL) {
-		BFINAL = readBits( in, &bitPointer, 1);
+		BFINAL = readBits(in, &bitPointer, 1);
 		BYTE = readBits(in, &bitPointer, 2);
-		
-		if (BYTE == 0) {} // No compression
+
+		if (BYTE == 0) { // No compression
+
+			while ( (bitPointer & 0x7) != 0 )	++bitPointer;
+			size_t bytePos = bitPointer / 8;
+
+			unsigned short int length = *(unsigned short int*)&(in[bytePos]);
+			bytePos += 4;
+
+			out.insert( out.end(), in[bytePos], in[bytePos]+ length);
+			bitPointer = bytePos * 8;
+		}
 		else if (BYTE == 1 || BYTE == 2) decodeHuffmanLZ77(&out, in, &bitPointer, BYTE);// fixed or dynamic Huffman
 
 		else return out;

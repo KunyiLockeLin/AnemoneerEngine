@@ -951,7 +951,7 @@ QeAssetImage* QeAsset::getImageBMP(const char* _filename) {
 
 	int width = *(int*)&(header[0x12]);
 	int height = *(int*)&(header[0x16]);
-	short int bits = *(int*)&(header[0x1C]);
+	short int bits = *(short int*)&(header[0x1C]);
 	int bytes = (bits+7) / 8;
 	//int imageSize = *(int*)&(header[0x22]);
 	int	imageSize = width *height * bytes;
