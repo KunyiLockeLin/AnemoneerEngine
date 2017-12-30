@@ -28,14 +28,19 @@ public:
 	
 	QeEncode(QeGlobalKey& _key) {}
 	~QeEncode() {}
-	unsigned int readBits(const unsigned char* stream, unsigned int *bitPointer, unsigned int readCount );
+	unsigned int readBits(const unsigned char* stream, size_t *bitPointer, unsigned int readCount );
+	std::string trim(std::string s);
+	QeAssetXML* decodeXML(const char* buffer, int &index);
+	QeAssetJSON* decodeJSON(const char* buffer, int &index);
+	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
+	std::vector<unsigned char> decodeBMP(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodeDeflate(unsigned char* in, unsigned int size);
-	void decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, unsigned int* bitPointer, unsigned int BYTE);
+	void decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, size_t* bitPointer, unsigned int BYTE);
 	void buildFixedHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD);
-	void buildDynamicHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, unsigned int* bitPointer);
-	unsigned int huffmanDecodeSymbol(const unsigned char* in, unsigned int* bitPointer, const QeHuffmanTree* tree);
+	void buildDynamicHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, size_t* bitPointer);
+	unsigned int huffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree* tree);
 	void buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen, unsigned int numcodes, unsigned maxbitlen);
-	void decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, unsigned int* bitPointer);
+	void decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, size_t* bitPointer);
 };
 

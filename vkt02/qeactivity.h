@@ -8,8 +8,6 @@ public:
 	QeActivity(QeObjectMangerKey& _key) {}
 	~QeActivity() {}
 
-	QeModel*	model;
-	QeModel*	model1;
 	QeLight*	light;
 
 	void init();

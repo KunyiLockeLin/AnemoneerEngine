@@ -6,11 +6,13 @@ void QeActivity::init() {
 	light = OBJMGR->getLight(0);
 
 	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "models");
-	model = OBJMGR->getModel(node->nexts[0]->value.c_str());
-	model->setPosition(QeVector3f(0, 2, 0));
 
-	model1 = OBJMGR->getModel(node->nexts[1]->value.c_str());
-	model1->setPosition(QeVector3f(0, -2, 0));
+	if (node != nullptr) {
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			QeModel* model = OBJMGR->getModel(node->nexts[index]->value.c_str());
+			model->setPosition(QeVector3f(2.0f * index, 2.0f * index, 2.0f * index));
+		}
+	}
 }
 
 void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {

@@ -40,18 +40,6 @@ bool QeVertex::operator==(const QeVertex& other) const {
 	return pos == other.pos && normal == other.normal && texCoord == other.texCoord && color == other.color;
 }
 
-std::string QeAsset::trim(std::string s) {
-
-	if (s.empty())	return s;
-	s.erase(0, s.find_first_not_of(" "));
-	s.erase(0, s.find_first_not_of("\n"));
-	s.erase(0, s.find_first_not_of(" "));
-	s.erase(s.find_last_not_of(" ") + 1);
-	s.erase(s.find_last_not_of("\n") + 1);
-	s.erase(s.find_last_not_of(" ") + 1);
-	return s;
-}
-
 QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
 	std::map<std::string, QeAssetJSON*>::iterator it = astJSONs.find(_filePath);
 
@@ -68,108 +56,10 @@ QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
 	file.read(buffer, length);
 	file.close();
 	int index = 0;
-	QeAssetJSON* head = decodeJSON(buffer,index);
+	QeAssetJSON* head = ENCODE->decodeJSON(buffer,index);
 	astJSONs[_filePath] = head;
 	delete buffer;
 	return head;
-}
-
-QeAssetJSON* QeAsset::decodeJSON(const char* buffer, int &index ) {	
-	/* key	
-	0: {
-	1: }
-	2: "
-	3: :
-	4: [
-	5: ]
-	6: ,
-	*/
-	const char keys[] = "{}\":[],";
-	QeAssetJSON* node = new QeAssetJSON();
-	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
-	char* newChar = nullptr;
-	std::vector<std::string> *vsBuffer = nullptr;
-	bool bValue = false;
-	int count = 0;
-	std::string key;
-	while (1) {
-		currentIndex = int(strcspn(buffer+lastIndex, keys)+ lastIndex);
-		currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
-		
-		if (currentKey == 0 && lastKey != 3 && lastKey != 4)	count++;
-
-		if (lastKey == currentKey && currentKey == 2 ) {
-			std::string s(buffer+lastIndex, currentIndex - lastIndex);
-			s = trim(s);
-			if (bValue){
-				bValue = false;
-				
-				node->eKeysforValues.push_back(key);
-				node->eValues.push_back(s);
-			}
-			else	key = s;
-		}
-		else if (lastKey == 3) {
-			if (currentKey == 2) bValue = true;
-
-			else if (currentKey == 0) {
-				node->eKeysforNodes.push_back(key);
-				node->eNodes.push_back(decodeJSON(buffer, currentIndex));
-			}
-			else if (currentKey != 4) {
-				std::string s(buffer + lastIndex, currentIndex - lastIndex);
-				s = trim(s);
-				node->eKeysforValues.push_back(key);
-				node->eValues.push_back(s);
-			}
-		}
-		else if (lastKey == 4) {
-			if (currentKey == 0) {
-				std::vector<QeAssetJSON*> vjson;
-				while (1) {
-					vjson.push_back(decodeJSON(buffer, currentIndex));
-					lastIndex = currentIndex + 1;
-					currentIndex = int(strcspn(buffer + lastIndex, keys)+ lastIndex);
-					currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
-
-					if (currentKey != 6) break;
-				}
-				node->eKeysforArrayNodes.push_back(key);
-				node->eArrayNodes.push_back(vjson);
-			}else {
-				currentIndex = int(strchr(buffer + lastIndex, ']') - buffer);
-				currentKey = 5;
-				std::vector<std::string> vs;
-				
-				std::string s(buffer + lastIndex, currentIndex - lastIndex);
-				char s2[512];
-				strncpy_s(s2, s.c_str(), 512);
-				char *context = NULL;
-				const char* key1 = ",\"\n";
-				char* pch = strtok_s(s2, key1, &context);
-				
-				while (pch != NULL){
-					std::string s(pch); 
-					s = trim(s);
-					if (s.length() > 0) vs.push_back(s);
-					pch = strtok_s(NULL, key1, &context);
-				}
-				node->eKeysforArrayValues.push_back(key);
-				node->eArrayValues.push_back(vs);
-			}
-		}
-
-		lastKey = currentKey;
-		lastIndex = currentIndex + 1;
-
-		if (currentKey == 1) {
-			count--;
-			if (count == 0) break;
-		}
-	}
-
-	index = currentIndex;
-	return node;
 }
 
 const char*	 QeAsset::getJSONValue(int length, ...) {
@@ -247,7 +137,6 @@ const char*	 QeAsset::getJSONValue(QeAssetJSON* source, const char* keys[], int 
 	}
 	return nullptr;
 }
-
 
 QeAssetJSON* QeAsset::getJSONNode(int length, ...) {
 	va_list keys;
@@ -473,87 +362,9 @@ QeAssetXML* QeAsset::getXML(const char* _filePath) {
 	file.read(buffer, length);
 	file.close();
 	int index = 0;
-	QeAssetXML* head = decodeXML(buffer, index);
+	QeAssetXML* head = ENCODE->decodeXML(buffer, index);
 	astXMLs[_filePath] = head;
 	return head;
-
-}
-QeAssetXML* QeAsset::decodeXML(const char* buffer, int &index) {
-	/* key
-	0: <
-	1: >
-	2: /
-	3: =
-	4: "
-	5: ?
-	*/
-	const char keys[] = "<>/=\"?";
-
-	QeAssetXML* node = new QeAssetXML();
-	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
-	char* newChar = nullptr;
-	std::vector<std::string> *vsBuffer = nullptr;
-	bool bRoot = true;
-
-	while (1) {
-		currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
-		currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
-		
-		if (currentKey == 5) {
-			lastIndex = currentIndex + 1;
-			currentIndex = int(strchr(buffer + lastIndex, '?')- buffer);
-			lastIndex = currentIndex + 1;
-			bRoot = true;
-		}
-		else if ( currentKey == 0 ) {
-			
-			if (bRoot) bRoot = false;
-
-			else if (buffer[currentIndex + 1] != '/')	node->nexts.push_back(decodeXML(buffer, currentIndex));
-
-			else if (lastKey == 1) {
-				std::string s(buffer + lastIndex, currentIndex - lastIndex);
-				s = trim(s);
-				node->value = s;
-			}
-		}
-		else if (lastKey == 0) {
-
-			if (currentKey == 1) {
-				std::string s(buffer + lastIndex, currentIndex - lastIndex);
-				s = trim(s);
-				node->key = s;
-			}
-			else if (currentKey == 3) {
-				int index = int(strchr(buffer + lastIndex, ' ')- buffer);
-				std::string s(buffer + lastIndex, index - lastIndex);
-				s = trim(s);
-				node->key = s;
-				std::string s1(buffer + index, currentIndex - index);
-				s1 = trim(s1);
-				node->eKeys.push_back(s1);
-			}
-		}
-		else if (lastKey == 2 && currentKey == 1)	break;
-	
-		else if (lastKey == 4 ) {
-
-			if (currentKey == 3) {
-				std::string s(buffer + lastIndex, currentIndex - lastIndex);
-				s = trim(s);
-				node->eKeys.push_back(s);
-			}
-			else if (currentKey == lastKey) {
-				std::string s(buffer + lastIndex, currentIndex - lastIndex);
-				s = trim(s);
-				node->eVaules.push_back(s);
-			}
-		}
-		lastKey = currentKey;
-		lastIndex = currentIndex + 1;
-	}
-	index = currentIndex;
-	return node;
 }
 
 const char* QeAsset::getXMLValue(int length, ...) {
@@ -674,7 +485,7 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 				break;
 			}
 		}
-		if (index1 == size) break;
+		if (index1 == size) return nullptr;
 	}
 	return source;
 }
@@ -887,19 +698,19 @@ QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
 }
 
 QeAssetImage* QeAsset::getImage(const char* _filename) {
+
+	char type = 0; // 0:BMP, 1:PNG, 2:JPEG
+
+	char *ret = strrchr((char*)_filename, '.');
+
+	if (strcmp(ret + 1, "bmp") == 0)		type = 0;
+	else if (strcmp(ret + 1, "png") == 0)	type = 1;
+	else if (strcmp(ret + 1, "jpg") == 0 || strcmp(ret + 1, "jpeg") == 0) type = 2;
+	else return nullptr;
+
 	std::string _filePath = combinePath(_filename, eAssetTexture);
 	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
 
-	if (it != astTextures.end())	return it->second;
-
-	//return getImageBMP(_filename);
-	return getImagePNG(_filename);
-}
-
-QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
-
-	std::string _filePath = combinePath(_filename, eAssetTexture);
-	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
 	if (it != astTextures.end())	return it->second;
 
 	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
@@ -911,62 +722,32 @@ QeAssetImage* QeAsset::getImagePNG(const char* _filename) {
 	char* buffer = new char[length];
 	file.read(buffer, length);
 	file.close();
-	
+
+	VkFormat format;
+
 	int width, height, bytes;
-	std::vector<unsigned char> data = ENCODE->decodePNG((unsigned char*)buffer, length, &width, &height, &bytes);
+
+	std::vector<unsigned char> data; 
+	
+	switch (type) {
+	case 0:
+		data = ENCODE->decodeBMP((unsigned char*)buffer, length, &width, &height, &bytes);
+		format = VK_FORMAT_B8G8R8A8_UNORM;
+		break;
+	case 1:
+		data = ENCODE->decodePNG((unsigned char*)buffer, length, &width, &height, &bytes);
+		format = VK_FORMAT_R8G8B8A8_UNORM;
+		break;
+	case 2:
+		data = ENCODE->decodeJPEG((unsigned char*)buffer, length, &width, &height, &bytes);
+		format = VK_FORMAT_R8G8B8A8_UNORM;
+		break;
+	}
 	if (bytes != 4)	imageFillto32bits(&data, bytes);
 
 	QeAssetImage* image = new QeAssetImage();
-	VLK->createImageData((void*)data.data(), VK_FORMAT_R8G8B8A8_UNORM, data.size(), width, height, image->textureImage, image->textureImageMemory);
-	image->textureImageView = VLK->createImageView(image->textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
-
-	image->textureSampler = VLK->createTextureSampler();
-	astTextures[_filePath] = image;
-	return image;
-}
-
-QeAssetImage* QeAsset::getImageBMP(const char* _filename) {
-
-	std::string _filePath = combinePath(_filename, eAssetTexture);
-	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
-	if (it != astTextures.end())	return it->second;
-
-	std::ifstream _file(_filePath.c_str(), std::ios::ate | std::ios::binary);
-	if (!_file.is_open()) return nullptr;
-	_file.seekg(0);
-
-	char header[122];
-	_file.read(header, sizeof(header));
-
-	if(strncmp( header, "BM", 2 ) != 0){
-		_file.close();
-		return false;
-	}
-	
-	int dataPos = *(int*)&(header[0x0A]);
-	if (dataPos == 0) {
-		_file.close();
-		return false;
-	}
-
-	int width = *(int*)&(header[0x12]);
-	int height = *(int*)&(header[0x16]);
-	short int bits = *(short int*)&(header[0x1C]);
-	int bytes = (bits+7) / 8;
-	//int imageSize = *(int*)&(header[0x22]);
-	int	imageSize = width *height * bytes;
-	
-	std::vector<char> data;
-	data.resize(imageSize);
-	_file.seekg(dataPos);
-	_file.read(data.data(), imageSize);
-	_file.close();
-
-	if (bytes != 4)	imageFillto32bits((std::vector<unsigned char>*)&data, bytes);
-
-	QeAssetImage* image = new QeAssetImage();
-	VLK->createImageData((void*)data.data(), VK_FORMAT_B8G8R8A8_UNORM, data.size(), width, height, image->textureImage, image->textureImageMemory);
-	image->textureImageView = VLK->createImageView(image->textureImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	VLK->createImageData((void*)data.data(), format, data.size(), width, height, image->textureImage, image->textureImageMemory);
+	image->textureImageView = VLK->createImageView(image->textureImage, format, VK_IMAGE_ASPECT_COLOR_BIT);
 
 	image->textureSampler = VLK->createTextureSampler();
 	astTextures[_filePath] = image;
@@ -982,7 +763,7 @@ void QeAsset::imageFillto32bits(std::vector<unsigned char>* data, int bytes) {
 	size_t index = bytes;
 	short int addBytes = 4 - bytes;
 
-	while (index<size) {
+	while (index<=size) {
 		
 		for( int i =0 ; i<addBytes; ++i)	data->insert( data->begin()+index+i, c );
 

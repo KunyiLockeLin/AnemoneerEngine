@@ -1,6 +1,6 @@
 #include "qeheader.h"
 
-unsigned int QeEncode::readBits(const unsigned char* stream, unsigned int *bitPointer, unsigned int readCount){
+unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, unsigned int readCount){
 
 	unsigned int ret=0;
 	for (unsigned int i = 0; i < readCount; ++i) 
@@ -8,12 +8,222 @@ unsigned int QeEncode::readBits(const unsigned char* stream, unsigned int *bitPo
 	return ret;
 }
 
+std::string QeEncode::trim(std::string s) {
+
+	if (s.empty())	return s;
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(0, s.find_first_not_of("\n"));
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(s.find_last_not_of(" ") + 1);
+	s.erase(s.find_last_not_of("\n") + 1);
+	s.erase(s.find_last_not_of(" ") + 1);
+	return s;
+}
+
+QeAssetJSON* QeEncode::decodeJSON(const char* buffer, int &index) {
+	/* key
+	0: {
+	1: }
+	2: "
+	3: :
+	4: [
+	5: ]
+	6: ,
+	*/
+	const char keys[] = "{}\":[],";
+	QeAssetJSON* node = new QeAssetJSON();
+	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
+	char* newChar = nullptr;
+	std::vector<std::string> *vsBuffer = nullptr;
+	bool bValue = false;
+	int count = 0;
+	std::string key;
+	while (1) {
+		currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
+		currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
+
+		if (currentKey == 0 && lastKey != 3 && lastKey != 4)	count++;
+
+		if (lastKey == currentKey && currentKey == 2) {
+			std::string s(buffer + lastIndex, currentIndex - lastIndex);
+			s = trim(s);
+			if (bValue) {
+				bValue = false;
+
+				node->eKeysforValues.push_back(key);
+				node->eValues.push_back(s);
+			}
+			else	key = s;
+		}
+		else if (lastKey == 3) {
+			if (currentKey == 2) bValue = true;
+
+			else if (currentKey == 0) {
+				node->eKeysforNodes.push_back(key);
+				node->eNodes.push_back(decodeJSON(buffer, currentIndex));
+			}
+			else if (currentKey != 4) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->eKeysforValues.push_back(key);
+				node->eValues.push_back(s);
+			}
+		}
+		else if (lastKey == 4) {
+			if (currentKey == 0) {
+				std::vector<QeAssetJSON*> vjson;
+				while (1) {
+					vjson.push_back(decodeJSON(buffer, currentIndex));
+					lastIndex = currentIndex + 1;
+					currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
+					currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
+
+					if (currentKey != 6) break;
+				}
+				node->eKeysforArrayNodes.push_back(key);
+				node->eArrayNodes.push_back(vjson);
+			}
+			else {
+				currentIndex = int(strchr(buffer + lastIndex, ']') - buffer);
+				currentKey = 5;
+				std::vector<std::string> vs;
+
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				char s2[512];
+				strncpy_s(s2, s.c_str(), 512);
+				char *context = NULL;
+				const char* key1 = ",\"\n";
+				char* pch = strtok_s(s2, key1, &context);
+
+				while (pch != NULL) {
+					std::string s(pch);
+					s = trim(s);
+					if (s.length() > 0) vs.push_back(s);
+					pch = strtok_s(NULL, key1, &context);
+				}
+				node->eKeysforArrayValues.push_back(key);
+				node->eArrayValues.push_back(vs);
+			}
+		}
+
+		lastKey = currentKey;
+		lastIndex = currentIndex + 1;
+
+		if (currentKey == 1) {
+			count--;
+			if (count == 0) break;
+		}
+	}
+
+	index = currentIndex;
+	return node;
+}
+
+QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index) {
+	/* key
+	0: <
+	1: >
+	2: /
+	3: =
+	4: "
+	5: ?
+	*/
+	const char keys[] = "<>/=\"?";
+
+	QeAssetXML* node = new QeAssetXML();
+	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
+	char* newChar = nullptr;
+	std::vector<std::string> *vsBuffer = nullptr;
+	bool bRoot = true;
+
+	while (1) {
+		currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
+		currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
+
+		if (currentKey == 5) {
+			lastIndex = currentIndex + 1;
+			currentIndex = int(strchr(buffer + lastIndex, '?') - buffer);
+			lastIndex = currentIndex + 1;
+			bRoot = true;
+		}
+		else if (currentKey == 0) {
+
+			if (bRoot) bRoot = false;
+
+			else if (buffer[currentIndex + 1] != '/')	node->nexts.push_back(decodeXML(buffer, currentIndex));
+
+			else if (lastKey == 1) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->value = s;
+			}
+		}
+		else if (lastKey == 0) {
+
+			if (currentKey == 1) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->key = s;
+			}
+			else if (currentKey == 3) {
+				int index = int(strchr(buffer + lastIndex, ' ') - buffer);
+				std::string s(buffer + lastIndex, index - lastIndex);
+				s = trim(s);
+				node->key = s;
+				std::string s1(buffer + index, currentIndex - index);
+				s1 = trim(s1);
+				node->eKeys.push_back(s1);
+			}
+		}
+		else if (lastKey == 2 && currentKey == 1)	break;
+
+		else if (lastKey == 4) {
+
+			if (currentKey == 3) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->eKeys.push_back(s);
+			}
+			else if (currentKey == lastKey) {
+				std::string s(buffer + lastIndex, currentIndex - lastIndex);
+				s = trim(s);
+				node->eVaules.push_back(s);
+			}
+		}
+		lastKey = currentKey;
+		lastIndex = currentIndex + 1;
+	}
+	index = currentIndex;
+	return node;
+}
+
+std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
+	std::vector<unsigned char> ret;
+	return ret;
+}
+
+std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
+	
+	std::vector<unsigned char> ret;
+	if (strncmp((char*)buffer, "BM", 2) != 0) return ret;
+
+
+	*width = *(int*)&(buffer[0x12]);
+	*height = *(int*)&(buffer[0x16]);
+	short int bits = *(short int*)&(buffer[0x1C]);
+	*bytes = (bits + 7) / 8;
+	int	imageSize = *width * *height * *bytes;
+
+	ret.resize(imageSize);
+	memcpy(ret.data(), buffer+ 0x0A, imageSize);
+	
+	return ret;
+}
 
 std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
 
-	unsigned char headerKey[8] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
-
 	std::vector<unsigned char> ret;
+	unsigned char headerKey[8] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 	if (memcmp(buffer, headerKey, 8) != 0) return ret;
 
 	//IHDR 0x08 - 0x20
@@ -164,7 +374,7 @@ std::vector<unsigned char> QeEncode::decodeDeflate(unsigned char* in, unsigned i
 	if (in[1] != 0x01 && in[1] != 0x5E && in[1] != 0x9C && in[1] != 0xDA) return out;
 
 	in += 2;
-	unsigned int bitPointer = 0;
+	size_t bitPointer = 0;
 	unsigned int BFINAL = 0;
 	unsigned int BYTE = 0;
 
@@ -190,7 +400,7 @@ std::vector<unsigned char> QeEncode::decodeDeflate(unsigned char* in, unsigned i
 	return out;
 }
 
-void QeEncode::decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, unsigned int* bitPointer, unsigned int BYTE) {
+void QeEncode::decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, size_t* bitPointer, unsigned int BYTE) {
 
 	// literal/length, distance for LZ77
 	QeHuffmanTree treeLL, treeD;
@@ -217,7 +427,7 @@ void QeEncode::buildFixedHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD
 	buildHuffmanTree(treeD, bitlenD, 288, 15);
 }
 
-void QeEncode::buildDynamicHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, unsigned int* bitPointer){
+void QeEncode::buildDynamicHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, size_t* bitPointer){
 
 	unsigned int HLIT = readBits(in, bitPointer, 5) + 257;
 	unsigned int HDIST = readBits( in, bitPointer, 5) + 1;
@@ -280,7 +490,7 @@ void QeEncode::buildDynamicHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* tre
 	buildHuffmanTree(treeD, bitlenD, 32, 15);
 }
 
-unsigned int QeEncode::huffmanDecodeSymbol(const unsigned char* in, unsigned int* bitPointer, const QeHuffmanTree* tree){
+unsigned int QeEncode::huffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree* tree){
 
 	unsigned int treepos = 0, ret = 0;
 
@@ -345,7 +555,7 @@ void QeEncode::buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen,
 	if (nextcode != nullptr) nextcode;
 }
 
-void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, unsigned int* bitPointer) {
+void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, size_t* bitPointer) {
 	
 	while (1)
 	{

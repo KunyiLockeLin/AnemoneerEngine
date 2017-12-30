@@ -48,6 +48,8 @@ struct QeAssetShader;
 struct QeUniformBufferObject;
 struct QeDataLight;
 struct QeHuffmanTree;
+struct QeAssetXML;
+struct QeAssetJSON;
 class QeEncode;
 class QeMath;
 class QeAsset;

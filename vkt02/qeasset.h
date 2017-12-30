@@ -107,7 +107,6 @@ public:
 	~QeAsset() {}
 
 	QeAssetJSON* getJSON(const char* _filePath);
-	QeAssetJSON* decodeJSON(const char* buffer, int &index);
 	const char*	 getJSONValue(int length, ...);
 	const char*	 getJSONValue(QeAssetJSON* source, int length, ...);
 	const char*	 getJSONValue(QeAssetJSON* source, const char* keys[], int length);
@@ -122,7 +121,6 @@ public:
 	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, const char* keys[], int length);
 
 	QeAssetXML* getXML(const char* _filePath);
-	QeAssetXML* decodeXML(const char* buffer, int &index);
 	const char* getXMLValue(int length, ...);
 	const char* getXMLValue(QeAssetXML* source, int length, ...);
 	const char* getXMLValue(QeAssetXML* source, const char* keys[], int length);
@@ -137,13 +135,9 @@ public:
 	QeAssetMaterial* getMateialMTL(const char* _filename);
 
 	QeAssetImage* getImage(const char* _filename);
-	QeAssetImage* getImageBMP(const char* _filename);
-	QeAssetImage* getImagePNG(const char* _filename);
-	//QeAssetImage* getImageJPG(const char* _filename);
 	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
 
 	QeAssetShader* getShader(const char* _filename);
 
-	std::string trim(std::string s);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
 };
