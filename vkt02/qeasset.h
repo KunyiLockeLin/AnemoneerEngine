@@ -129,15 +129,11 @@ public:
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
 
 	QeAssetModel* getModel(const char* _filename);
-	QeAssetModel* getModelOBJ(const char* _filename);
-	QeAssetModel* getModelGLTF(const char* _filename);
-	//QeAssetModel* getModelGLB(const char* _filename);
-	QeAssetMaterial* getMateialMTL(const char* _filename);
-
+	QeAssetMaterial* getMaterial(const char* _filename);
 	QeAssetImage* getImage(const char* _filename);
-	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
-
 	QeAssetShader* getShader(const char* _filename);
 
+	std::vector<char> loadFile(const char* _filePath);
+	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
 };

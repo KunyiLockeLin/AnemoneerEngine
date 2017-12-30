@@ -32,9 +32,13 @@ public:
 	std::string trim(std::string s);
 	QeAssetXML* decodeXML(const char* buffer, int &index);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
-	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
-	std::vector<unsigned char> decodeBMP(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
-	std::vector<unsigned char> decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes);
+	QeAssetModel* decodeOBJ(char* buffer);
+	QeAssetModel* decodeGLTF(char* buffer);
+	QeAssetModel* decodeGLB(char* buffer);
+	QeAssetMaterial* decodeMTL(char* buffer);
+	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, int* width, int* height, int* bytes);
+	std::vector<unsigned char> decodeBMP(unsigned char* buffer, int* width, int* height, int* bytes);
+	std::vector<unsigned char> decodePNG(unsigned char* buffer, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodeDeflate(unsigned char* in, unsigned int size);
 	void decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, size_t* bitPointer, unsigned int BYTE);
 	void buildFixedHuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD);

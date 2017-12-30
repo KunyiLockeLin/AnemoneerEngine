@@ -197,12 +197,156 @@ QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index) {
 	return node;
 }
 
-std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
+QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
+
+	std::vector<QeVector3f> normalV;
+	std::vector<QeVector2f> texCoordV;
+
+	QeVector3f tempV3;
+	QeVector2f tempV2;
+	QeVector3i tempV3p, tempV3t, tempV3n;
+	char mtlPath[256];
+	QeAssetModel* model = new QeAssetModel();
+	char *context;
+	char* line = strtok_s(buffer, "\n", &context);
+
+	while ( line != nullptr ) {
+
+		if (strncmp(line, "mtllib ", 7) == 0)
+			sscanf_s(line, "mtllib %s", mtlPath, (unsigned int)sizeof(mtlPath));
+
+		else if (strncmp(line, "v ", 2) == 0) {
+			sscanf_s(line, "v %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
+			QeVertex vet;
+			vet.pos = tempV3;
+			vet.color = { 1.0f, 1.0f, 1.0f };
+			model->vertices.push_back(vet);
+		}
+		else if (strncmp(line, "vt ", 3) == 0) {
+			sscanf_s(line, "vt %f %f", &(tempV2.x), &(tempV2.y));
+			texCoordV.push_back(tempV2);
+		}
+		else if (strncmp(line, "vn ", 3) == 0) {
+			sscanf_s(line, "vn %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
+			normalV.push_back(tempV3);
+		}
+		else if (strncmp(line, "f ", 2) == 0) {
+			if (strstr(line, "//")) {
+				sscanf_s(line, "f %d//%d %d//%d %d//%d", &(tempV3p.x), &(tempV3n.x),
+					&(tempV3p.y), &(tempV3n.y), &(tempV3p.z), &(tempV3n.z));
+			}
+			else if (texCoordV.empty()) {
+				sscanf_s(line, "f %d %d %d", &(tempV3p.x), &(tempV3p.y), &(tempV3p.z));
+			}
+			else if (normalV.empty()) {
+				sscanf_s(line, "f %d/%d %d/%d %d/%d", &(tempV3p.x), &(tempV3t.x),
+					&(tempV3p.y), &(tempV3t.y), &(tempV3p.z), &(tempV3t.z));
+			}
+			else {
+				sscanf_s(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &(tempV3p.x), &(tempV3t.x),
+					&(tempV3n.x), &(tempV3p.y), &(tempV3t.y), &(tempV3n.y), &(tempV3p.z), &(tempV3t.z), &(tempV3n.z));
+			}
+
+			tempV3p -= 1;
+
+			if (!texCoordV.empty()) {
+				tempV3t -= 1;
+				model->vertices[tempV3p.x].texCoord = texCoordV[tempV3t.x];
+				model->vertices[tempV3p.y].texCoord = texCoordV[tempV3t.y];
+				model->vertices[tempV3p.z].texCoord = texCoordV[tempV3t.z];
+			}
+			if (!normalV.empty()) {
+				tempV3n -= 1;
+				model->vertices[tempV3p.x].normal = normalV[tempV3n.x];
+				model->vertices[tempV3p.y].normal = normalV[tempV3n.y];
+				model->vertices[tempV3p.z].normal = normalV[tempV3n.z];
+			}
+			model->indices.push_back(tempV3p.x);
+			model->indices.push_back(tempV3p.y);
+			model->indices.push_back(tempV3p.z);
+		}
+		line = strtok_s(NULL, "\n", &context);
+	}
+
+	model->indexSize = model->indices.size();
+
+	if (strlen(mtlPath) != 0) model->pMaterial = AST->getMaterial(mtlPath);
+
+	return model;
+}
+
+QeAssetModel* QeEncode::decodeGLTF(char* buffer) { return nullptr; }
+QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
+
+QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
+
+	QeAssetMaterial* mtl = new QeAssetMaterial();
+	QeDataMaterial mtl1;
+	mtl1.ambient.w = 1;
+	mtl1.diffuse.w = 1;
+	mtl1.specular.w = 1;
+	mtl1.emissive.w = 1;
+	char diffuseMapPath[512];
+	char sv[512] = "";
+	char sg[512] = "";
+	char sf[512] = "";
+	char *context;
+	char* line = strtok_s(buffer, "\n", &context);
+
+	while (line != nullptr) {
+
+		if (strncmp(line, "map_Kd ", 7) == 0)
+			sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
+
+		else if (strncmp(line, "Ns ", 3) == 0)	sscanf_s(line, "Ns %f", &mtl1.param.x);
+
+		else if (strncmp(line, "Ka ", 3) == 0)
+			sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
+
+		else if (strncmp(line, "Kd ", 3) == 0)
+			sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
+
+		else if (strncmp(line, "Ks ", 3) == 0)
+			sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
+
+		else if (strncmp(line, "Ke ", 3) == 0)
+			sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
+
+		else if (strncmp(line, "Ni ", 3) == 0)	sscanf_s(line, "Ni %f", &(mtl1.param.y));
+
+		else if (strncmp(line, "d ", 2) == 0)	sscanf_s(line, "d %f", &(mtl1.param.z));
+
+		else if (strncmp(line, "sv ", 3) == 0)	sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
+
+		else if (strncmp(line, "sg ", 3) == 0)	sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
+
+		else if (strncmp(line, "sf ", 3) == 0)	sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
+
+		line = strtok_s(NULL, "\n", &context);
+	}
+
+	mtl->value = mtl1;
+	
+	if (strlen(diffuseMapPath) != 0)	mtl->pDiffuseMap = AST->getImage(diffuseMapPath);
+
+	if (strlen(sv) == 0)	mtl->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
+	else					mtl->pShaderVert = AST->getShader(sv);
+
+	if (strlen(sg) == 0)	mtl->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom"));
+	else					mtl->pShaderGeom = AST->getShader(sg);
+
+	if (strlen(sf) == 0)	mtl->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag"));
+	else					mtl->pShaderFrag = AST->getShader(sf);
+
+	return mtl;
+}
+
+std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* width, int* height, int* bytes) {
 	std::vector<unsigned char> ret;
 	return ret;
 }
 
-std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
+std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, int* width, int* height, int* bytes) {
 	
 	std::vector<unsigned char> ret;
 	if (strncmp((char*)buffer, "BM", 2) != 0) return ret;
@@ -220,7 +364,7 @@ std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, unsigned i
 	return ret;
 }
 
-std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, unsigned int size, int* width, int* height, int* bytes) {
+std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, int* width, int* height, int* bytes) {
 
 	std::vector<unsigned char> ret;
 	unsigned char headerKey[8] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };

@@ -40,25 +40,32 @@ bool QeVertex::operator==(const QeVertex& other) const {
 	return pos == other.pos && normal == other.normal && texCoord == other.texCoord && color == other.color;
 }
 
+std::vector<char> QeAsset::loadFile(const char* _filePath) {
+
+	std::vector<char> ret;
+	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
+	if (!file.is_open()) return ret;
+
+	file.seekg(0, file.end);
+	int length = int(file.tellg());
+	file.seekg(0);
+
+	ret.resize(length);
+	file.read(ret.data(), length);
+	file.close();
+	return ret;
+}
+
 QeAssetJSON* QeAsset::getJSON(const char* _filePath) {
 	std::map<std::string, QeAssetJSON*>::iterator it = astJSONs.find(_filePath);
 
 	if (it != astJSONs.end())	return it->second;
 
-	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
-	if (!file.is_open()) return nullptr;
-	
-	file.seekg(0, file.end);
-	int length = int(file.tellg());
-	file.seekg(0);
+	std::vector<char> buffer = loadFile(_filePath);
 
-	char* buffer = new char[length];
-	file.read(buffer, length);
-	file.close();
 	int index = 0;
-	QeAssetJSON* head = ENCODE->decodeJSON(buffer,index);
+	QeAssetJSON* head = ENCODE->decodeJSON(buffer.data(), index);
 	astJSONs[_filePath] = head;
-	delete buffer;
 	return head;
 }
 
@@ -354,15 +361,10 @@ QeAssetXML* QeAsset::getXML(const char* _filePath) {
 	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
 	if (!file.is_open()) return nullptr;
 
-	file.seekg(0, file.end);
-	int length = int(file.tellg());
-	file.seekg(0);
+	std::vector<char> buffer = loadFile(_filePath);
 
-	char * buffer = new char[length];
-	file.read(buffer, length);
-	file.close();
 	int index = 0;
-	QeAssetXML* head = ENCODE->decodeXML(buffer, index);
+	QeAssetXML* head = ENCODE->decodeXML(buffer.data(), index);
 	astXMLs[_filePath] = head;
 	return head;
 }
@@ -491,208 +493,57 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 }
 
 QeAssetModel* QeAsset::getModel(const char* _filename) {
-
-	std::string _filePath = combinePath(_filename, eAssetModel);
-	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
-
-	if (it != astModels.end())	return it->second;
-
-	//return getModelGLTF(_filename);
-	return getModelOBJ(_filename);
-}
-
-QeAssetModel* QeAsset::getModelGLTF(const char* _filename) {
-
-	std::string _filePath = combinePath(_filename, eAssetModel);
-	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
-
-	if (it != astModels.end())	return it->second;
-	QeAssetJSON* head = getJSON(_filePath.c_str());
-	/*const char* ret1 = getJSONValue(head, 2, "accessors", "componentType");
-	QeAssetJSON* ret2 = getJSONNode(head, 2, "materials", "pbrMetallicRoughness");
-	std::vector<std::string>* ret3 = getJSONArrayValues(head, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
-	std::vector<QeAssetJSON*>* ret4 = getJSONArrayNodes(head, 1, "bufferViews");*/
-	return nullptr;
-}
-
-QeAssetModel* QeAsset::getModelOBJ(const char* _filename) {
-
-	std::string _filePath = combinePath(_filename, eAssetModel);
-	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
-
-	if (it != astModels.end())	return it->second;
-
-	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
-	if (!file.is_open()) return nullptr;
-	file.seekg(0);
-
-	char line[500];
-
-	std::vector<QeVector3f> normalV;
-	std::vector<QeVector2f> texCoordV;
-
-	QeVector3f tempV3;
-	QeVector2f tempV2;
-	QeVector3i tempV3p, tempV3t, tempV3n;
-	char mtlPath[200];
 	
-	QeAssetModel* model = new QeAssetModel();
+	char type = 0; // 0:OBJ, 1:GLTF, 2:GLB
 
-	while (file.getline(line, sizeof(line))) {
-		
-		if(strncmp(line, "mtllib ", 7) == 0)
-			sscanf_s(line, "mtllib %s", mtlPath,  (unsigned int)sizeof(mtlPath) );
-		
-		else if (strncmp(line, "v ", 2) == 0) {
-			sscanf_s(line, "v %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
-			QeVertex vet;
-			vet.pos = tempV3;
-			vet.color ={ 1.0f, 1.0f, 1.0f };
-			model->vertices.push_back(vet);
-		} 
-		else if (strncmp(line, "vt ", 3) == 0) {
-			sscanf_s(line, "vt %f %f", &(tempV2.x), &(tempV2.y));
-			texCoordV.push_back(tempV2);
-		}
-		else if (strncmp(line, "vn ", 3) == 0) {
-			sscanf_s(line, "vn %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
-			normalV.push_back(tempV3);
-		}
-		else if (strncmp(line, "f ", 2) == 0) {
-			if (strstr(line, "//")) {
-				sscanf_s(line, "f %d//%d %d//%d %d//%d", &(tempV3p.x), &(tempV3n.x),
-					&(tempV3p.y), &(tempV3n.y), &(tempV3p.z), &(tempV3n.z));
-			}
-			else if (texCoordV.empty()) {
-				sscanf_s(line, "f %d %d %d", &(tempV3p.x), &(tempV3p.y), &(tempV3p.z));
-			}
-			else if (normalV.empty()) {
-				sscanf_s(line, "f %d/%d %d/%d %d/%d", &(tempV3p.x), &(tempV3t.x),
-					&(tempV3p.y), &(tempV3t.y), &(tempV3p.z), &(tempV3t.z));
-			}
-			else{
-				sscanf_s(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &(tempV3p.x), &(tempV3t.x),
-					&(tempV3n.x), &(tempV3p.y), &(tempV3t.y), &(tempV3n.y), &(tempV3p.z), &(tempV3t.z), &(tempV3n.z));
-			}
-			
-			tempV3p -= 1;
+	char *ret = strrchr((char*)_filename, '.');
 
-			if (!texCoordV.empty()) {
-				tempV3t -= 1;
-				model->vertices[tempV3p.x].texCoord = texCoordV[tempV3t.x];
-				model->vertices[tempV3p.y].texCoord = texCoordV[tempV3t.y];
-				model->vertices[tempV3p.z].texCoord = texCoordV[tempV3t.z];
-			}
-			if (!normalV.empty()) {
-				tempV3n -= 1;
-				model->vertices[tempV3p.x].normal = normalV[tempV3n.x];
-				model->vertices[tempV3p.y].normal = normalV[tempV3n.y];
-				model->vertices[tempV3p.z].normal = normalV[tempV3n.z];
-			}
-			model->indices.push_back(tempV3p.x);
-			model->indices.push_back(tempV3p.y);
-			model->indices.push_back(tempV3p.z);
-		}
+	if (strcmp(ret + 1, "obj") == 0)		type = 0;
+	else if (strcmp(ret + 1, "gltf") == 0)	type = 1;
+	else if (strcmp(ret + 1, "glb") == 0 ) type = 2;
+	else return nullptr;
+
+	std::string _filePath = combinePath(_filename, eAssetModel);
+	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
+
+	if (it != astModels.end())	return it->second;
+
+	std::vector<char> buffer = loadFile(_filePath.c_str());
+	QeAssetModel* model = nullptr;
+
+	switch (type) {
+	case 0:
+		model = ENCODE->decodeOBJ(buffer.data());
+		break;
+	case 1:
+		model = ENCODE->decodeGLTF(buffer.data());
+		break;
+	case 2:
+		model = ENCODE->decodeGLB(buffer.data());
+		break;
 	}
-	file.close();
 
 	VLK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertexBuffer, model->vertexBufferMemory);
 	VLK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->indexBuffer, model->indexBufferMemory);
-
-	model->indexSize = model->indices.size();
-
 	astModels[_filePath] = model;
-
-	if (strlen(mtlPath) != 0)
-		model->pMaterial = getMateialMTL(mtlPath);
 
 	return model;
 }
 
-QeAssetMaterial* QeAsset::getMateialMTL(const char* _filename) {
+QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetMaterial);
 	std::map<std::string, QeAssetMaterial*>::iterator it = astMaterials.find(_filePath.c_str());
 
 	if (it != astMaterials.end())	return it->second;
 
-	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
-	if (!file.is_open()) return nullptr;
-	file.seekg(0);
+	std::vector<char> buffer = loadFile(_filePath.c_str());
+	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());;
 
-	QeAssetMaterial* mtl = new QeAssetMaterial();
-	char line[500];
-	char diffuseMapPath[500];
-	QeDataMaterial mtl1;
-	mtl1.ambient.w = 1;
-	mtl1.diffuse.w = 1;
-	mtl1.specular.w = 1;
-	mtl1.emissive.w = 1;
-	char sv[500]="";
-	char sg[500]="";
-	char sf[500]="";
-
-	while (file.getline(line, sizeof(line))) {
-
-		if (strncmp(line, "map_Kd ", 7) == 0)
-			sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
-		
-		else if (strncmp(line, "Ns ", 3) == 0)
-			sscanf_s(line, "Ns %f", &mtl1.param.x);
-		
-		else if (strncmp(line, "Ka ", 3) == 0)
-			sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
-
-		else if (strncmp(line, "Kd ", 3) == 0)
-			sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
-
-		else if (strncmp(line, "Ks ", 3) == 0)
-			sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
-	
-		else if (strncmp(line, "Ke ", 3) == 0)
-			sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
-
-		else if (strncmp(line, "Ni ", 3) == 0)
-			sscanf_s(line, "Ni %f", &(mtl1.param.y));
-	
-		else if (strncmp(line, "d ", 2) == 0)
-			sscanf_s(line, "d %f", &(mtl1.param.z));
-
-		else if (strncmp(line, "sv ", 3) == 0)
-			sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
-
-		else if (strncmp(line, "sg ", 3) == 0)
-			sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
-
-		else if (strncmp(line, "sf ", 3) == 0)
-			sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
-		 
-	}
-
-	file.close();
-	mtl->value = mtl1;
 	VLK->createUniformBuffer(sizeof(QeDataMaterial), mtl->materialBuffer, mtl->materialBufferMemory);
-	VLK->setMemory(mtl->materialBufferMemory, (void*)&mtl1, sizeof(mtl1));
+	VLK->setMemory(mtl->materialBufferMemory, (void*)&mtl->value, sizeof(mtl->value));
 
 	astMaterials[_filePath] = mtl;
-
-	if (strlen(diffuseMapPath) != 0)
-		mtl->pDiffuseMap = getImage(diffuseMapPath);
-
-	if(strlen(sv) == 0)
-		mtl->pShaderVert = getShader(getXMLValue(3, CONFIG, "defaultShader", "vert"));
-	else
-		mtl->pShaderVert = getShader(sv);
-
-	if (strlen(sg) == 0)
-		mtl->pShaderGeom = getShader(getXMLValue(3, CONFIG, "defaultShader", "geom"));
-	else
-		mtl->pShaderGeom = getShader(sg);
-
-	if (strlen(sf) == 0)
-		mtl->pShaderFrag = getShader(getXMLValue(3, CONFIG, "defaultShader", "frag"));
-	else
-		mtl->pShaderFrag = getShader(sf);
 
 	return mtl;
 }
@@ -713,33 +564,23 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 
 	if (it != astTextures.end())	return it->second;
 
-	std::ifstream file(_filePath.c_str(), std::ios::ate | std::ios::binary);
-	if (!file.is_open()) return nullptr;
-	file.seekg(0, file.end);
-	int length = int(file.tellg());
-	file.seekg(0);
-
-	char* buffer = new char[length];
-	file.read(buffer, length);
-	file.close();
+	std::vector<char> buffer = loadFile(_filePath.c_str());
 
 	VkFormat format;
-
 	int width, height, bytes;
-
 	std::vector<unsigned char> data; 
 	
 	switch (type) {
 	case 0:
-		data = ENCODE->decodeBMP((unsigned char*)buffer, length, &width, &height, &bytes);
+		data = ENCODE->decodeBMP((unsigned char*)buffer.data(), &width, &height, &bytes);
 		format = VK_FORMAT_B8G8R8A8_UNORM;
 		break;
 	case 1:
-		data = ENCODE->decodePNG((unsigned char*)buffer, length, &width, &height, &bytes);
+		data = ENCODE->decodePNG((unsigned char*)buffer.data(), &width, &height, &bytes);
 		format = VK_FORMAT_R8G8B8A8_UNORM;
 		break;
 	case 2:
-		data = ENCODE->decodeJPEG((unsigned char*)buffer, length, &width, &height, &bytes);
+		data = ENCODE->decodeJPEG((unsigned char*)buffer.data(), &width, &height, &bytes);
 		format = VK_FORMAT_R8G8B8A8_UNORM;
 		break;
 	}
@@ -778,19 +619,7 @@ QeAssetShader* QeAsset::getShader(const char* _filename) {
 	std::map<std::string, QeAssetShader*>::iterator it = astShaders.find(_filePath.c_str());
 	if (it != astShaders.end())	return it->second;
 
-	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
-
-	if (!file.is_open()) {
-		throw std::runtime_error("failed to open file!");
-	}
-
-	size_t fileSize = (size_t)file.tellg();
-	std::vector<char> buffer(fileSize);
-
-	file.seekg(0);
-	file.read(buffer.data(), fileSize);
-
-	file.close();
+	std::vector<char> buffer = loadFile(_filePath.c_str());
 
 	QeAssetShader* shader = new QeAssetShader();
 	shader->shader = VLK->createShaderModel((void*)buffer.data(), int(buffer.size()));
