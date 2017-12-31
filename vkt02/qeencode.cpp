@@ -1,9 +1,9 @@
 #include "qeheader.h"
 
-unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, unsigned int readCount){
+unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, unsigned int readCount) {
 
-	unsigned int ret=0;
-	for (unsigned int i = 0; i < readCount; ++i) 
+	unsigned int ret = 0;
+	for (unsigned int i = 0; i < readCount; ++i)
 		ret += (((*(stream + (*bitPointer >> 3)) >> ((*bitPointer)++ & 0x7)) & 1) << i);
 	return ret;
 }
@@ -210,7 +210,7 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 	char *context;
 	char* line = strtok_s(buffer, "\n", &context);
 
-	while ( line != nullptr ) {
+	while (line != nullptr) {
 
 		if (strncmp(line, "mtllib ", 7) == 0)
 			sscanf_s(line, "mtllib %s", mtlPath, (unsigned int)sizeof(mtlPath));
@@ -275,12 +275,12 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 	return model;
 }
 
-QeAssetModel* QeEncode::decodeGLTF(char* buffer) { 
+QeAssetModel* QeEncode::decodeGLTF(char* buffer) {
 
 	int index = 0;
 	QeAssetJSON *json = decodeJSON(buffer, index);
 
-	return nullptr; 
+	return nullptr;
 }
 
 QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
@@ -333,7 +333,7 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 	}
 
 	mtl->value = mtl1;
-	
+
 	if (strlen(diffuseMapPath) != 0)	mtl->pDiffuseMap = AST->getImage(diffuseMapPath);
 
 	if (strlen(sv) == 0)	mtl->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
@@ -351,13 +351,13 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* width, int* height, int* bytes) {
 	std::vector<unsigned char> ret;
 	// YCbCr(YUV), DCT(Discrete Cosine Transform), Quantization, Z(Entropy Coding), RLC(Run Length Coding), Canonical Huffman Code
-	unsigned char startKey[2]	= { 0xFF, 0xD8 }; // SOI
-	unsigned char APP0[2]		= { 0xFF, 0xE0 };
-	unsigned char quanKey[2]	= { 0xFF, 0xDB }; // DQT
-	unsigned char inforKey[2]	= { 0xFF, 0xC0 }; // SOF
+	unsigned char startKey[2] = { 0xFF, 0xD8 }; // SOI
+	unsigned char APP0[2] = { 0xFF, 0xE0 };
+	unsigned char quanKey[2] = { 0xFF, 0xDB }; // DQT
+	unsigned char inforKey[2] = { 0xFF, 0xC0 }; // SOF
 	unsigned char huffmanKey[2] = { 0xFF, 0xC4 }; // DHT
-	unsigned char scanKey[2]	= { 0xFF, 0xDA }; // SOS
-	unsigned char endKey[2]		= { 0xFF, 0xD9 }; // EOI
+	unsigned char scanKey[2] = { 0xFF, 0xDA }; // SOS
+	unsigned char endKey[2] = { 0xFF, 0xD9 }; // EOI
 
 	if (memcmp(buffer, startKey, 2) != 0) return ret;
 
@@ -377,7 +377,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 		key = (char*)(buffer + index);
 		num[0] = *(buffer + index + 3);
 		num[1] = *(buffer + index + 2);
-		length = *(unsigned short int*)(num)-2;
+		length = *(unsigned short int*)(num) - 2;
 		data = (char*)(buffer + index + 4);
 
 		if (memcmp(key, APP0, 2) == 0) {
@@ -402,7 +402,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			*bytes = (bits + 7) / 8;
 		}
 		else if (memcmp(key, huffmanKey, 2) == 0) {
-			
+
 			QeHuffmanTree2 *tree = nullptr;
 			if (data[0] == 0x00) tree = &DC0;
 			else if (data[0] == 0x10) tree = &AC0;
@@ -411,37 +411,36 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 
 			unsigned char treeIndex[16];
 			size_t length = 0;
-			for (i = 0;i<16;++i) {
-				treeIndex[i] = data[1+i];
+			for (i = 0; i<16; ++i) {
+				treeIndex[i] = data[1 + i];
 				length += treeIndex[i];
 			}
-
-			tree->values= new char[length];
+			tree->size = length;
+			tree->codeBits = new unsigned char[length];
+			tree->values = new unsigned int[length];
 			tree->codes = new unsigned short int[length];
 			tree->codes[0] = 0;
 
 			int itreeIndex = 0;
 			int ntreeIndex = 1;
-			while (treeIndex[itreeIndex] ==0 ) ++itreeIndex;
-			int incresingLength = 0;
+			while (treeIndex[itreeIndex] == 0) ++itreeIndex;
+			tree->codeBits[0] = itreeIndex;
 
 			i = 0;
-			while(1){
+			while (1) {
 				tree->values[i] = data[17 + i];
 
 				if (i == length) break;
 
-				while (treeIndex[itreeIndex]<=ntreeIndex) {
+				while (treeIndex[itreeIndex] <= ntreeIndex) {
 					++itreeIndex;
-					++incresingLength;
 					ntreeIndex = 0;
 				}
-				tree->codes[i + 1]= tree->codes[i]+1;
+				tree->codes[i + 1] = tree->codes[i] + 1;
+				tree->codeBits[i + 1] = itreeIndex;
 
-				if (ntreeIndex == 0) {
-					tree->codes[i + 1] <<= incresingLength;
-					incresingLength = 0;
-				}
+				if (ntreeIndex == 0)	tree->codes[i + 1] <<= (tree->codeBits[i + 1]- tree->codeBits[i]);
+		
 				++ntreeIndex;
 				++i;
 			}
@@ -452,31 +451,47 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			dataPos = buffer + index;
 			break;
 		}
-		index += (length + 2*2);
+		index += (length + 2 * 2);
 	}
 
 	/*while (1) {
-	
-		if (memcmp(dataPos, endKey, 2) == 0) break;
+
+	if (memcmp(dataPos, endKey, 2) == 0) break;
 	}*/
 	return ret;
 }
 
-std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, int* width, int* height, int* bytes) {
+unsigned int QeEncode::getHuffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* tree) {
+
+	unsigned char codeBits = 0;
+	unsigned int key = 0;
 	
+	for (int i = 0;i<tree->size;++i ) {
+		if (tree->codeBits[i] != codeBits) {
+			codeBits = tree->codeBits[i];
+			key = readBits(in, bitPointer, codeBits );
+		}
+		if (key == tree->codes[i]) return tree->values[i];
+	}
+	return 0;
+}
+
+
+std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, int* width, int* height, int* bytes) {
+
 	std::vector<unsigned char> ret;
 	if (strncmp((char*)buffer, "BM", 2) != 0) return ret;
 
 
-	*width = *(int*)(buffer+0x12);
-	*height = *(int*)(buffer+0x16);
-	short int *bits = (short int*)(buffer+0x1C);
+	*width = *(int*)(buffer + 0x12);
+	*height = *(int*)(buffer + 0x16);
+	short int *bits = (short int*)(buffer + 0x1C);
 	*bytes = (*bits + 7) / 8;
 	int	imageSize = *width * *height * *bytes;
 
 	ret.resize(imageSize);
-	memcpy(ret.data(), buffer+ 0x0A, imageSize);
-	
+	memcpy(ret.data(), buffer + 0x0A, imageSize);
+
 	return ret;
 }
 
@@ -554,7 +569,7 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, int* width
 	unsigned char* prevline = 0;
 	unsigned int bytewidth = *bytes;
 	unsigned int linebytes = ((*width) * bits + 7) / 8;
-	
+
 	size_t j = 0;
 	size_t outindex;
 	size_t inindex;
@@ -570,7 +585,7 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, int* width
 		recon = &ret[outindex];
 		scanline = &dataDecode[inindex];
 
-		switch (filterType){
+		switch (filterType) {
 
 		case 0: // none
 			for (j = 0; j != linebytes; ++j) recon[j] = scanline[j];
@@ -587,8 +602,9 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, int* width
 			if (prevline) {
 				for (j = 0; j != bytewidth; ++j)		recon[j] = scanline[j] + (prevline[j] >> 1);
 				for (j = bytewidth; j < linebytes; ++j) recon[j] = scanline[j] + ((recon[j - bytewidth] + prevline[j]) >> 1);
-			
-			} else {
+
+			}
+			else {
 				for (j = 0; j != bytewidth; ++j)		recon[j] = scanline[j];
 				for (j = bytewidth; j < linebytes; ++j) recon[j] = scanline[j] + (recon[j - bytewidth] >> 1);
 			}
@@ -612,7 +628,8 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, int* width
 
 					recon[j] = (scanline[j] + paethPredictor);
 				}
-			} else {
+			}
+			else {
 				for (j = 0; j != bytewidth; ++j)		recon[j] = scanline[j];
 				for (j = bytewidth; j < linebytes; ++j)	recon[j] = (scanline[j] + recon[j - bytewidth]);
 			}
@@ -644,13 +661,13 @@ std::vector<unsigned char> QeEncode::decodeDeflate(unsigned char* in, unsigned i
 
 		if (BYTE == 0) { // No compression
 
-			while ( (bitPointer & 0x7) != 0 )	++bitPointer;
+			while ((bitPointer & 0x7) != 0)	++bitPointer;
 			size_t bytePos = bitPointer / 8;
 
 			unsigned short int length = *(unsigned short int*)&(in[bytePos]);
 			bytePos += 4;
 
-			out.insert( out.end(), in[bytePos], in[bytePos]+ length);
+			out.insert(out.end(), in[bytePos], in[bytePos] + length);
 			bitPointer = bytePos * 8;
 		}
 		else if (BYTE == 1 || BYTE == 2) decodeHuffmanLZ77(&out, in, &bitPointer, BYTE);// fixed or dynamic Huffman
@@ -687,10 +704,10 @@ void QeEncode::buildFixedLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* t
 	buildHuffmanTree(treeD, bitlenD, 288, 15);
 }
 
-void QeEncode::buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, size_t* bitPointer){
+void QeEncode::buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, size_t* bitPointer) {
 
 	unsigned int HLIT = readBits(in, bitPointer, 5) + 257;
-	unsigned int HDIST = readBits( in, bitPointer, 5) + 1;
+	unsigned int HDIST = readBits(in, bitPointer, 5) + 1;
 	unsigned int HCLEN = readBits(in, bitPointer, 4) + 4;
 
 	unsigned int i = 0, j = 0;
@@ -698,8 +715,8 @@ void QeEncode::buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree*
 	memset(bitlenCCL, 0, 19 * sizeof(unsigned int));
 	//for (i = 0; i < 19; ++i) bitlenCCL[i] = 0;
 
-	for (i = 0; i < 19; ++i)	if (i < HCLEN) bitlenCCL[CCL_ORDER[i]] = readBits( in, bitPointer, 3);
-	
+	for (i = 0; i < 19; ++i)	if (i < HCLEN) bitlenCCL[CCL_ORDER[i]] = readBits(in, bitPointer, 3);
+
 	QeHuffmanTree treeCCL;
 	buildHuffmanTree(&treeCCL, bitlenCCL, 19, 7);
 
@@ -707,7 +724,7 @@ void QeEncode::buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree*
 	unsigned int bitlenD[32];
 	memset(bitlenLL, 0, 288 * sizeof(unsigned int));
 	memset(bitlenD, 0, 32 * sizeof(unsigned int));
-	
+
 	i = 0;
 	while (i < HLIT + HDIST) {
 
@@ -716,30 +733,33 @@ void QeEncode::buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree*
 			if (i < HLIT) bitlenLL[i] = code;
 			else bitlenD[i - HLIT] = code;
 			++i;
-		} else if (code == 16) {  // not 0, duplicate 3-6
+		}
+		else if (code == 16) {  // not 0, duplicate 3-6
 			unsigned int replength = 3 + readBits(in, bitPointer, 2);
 			unsigned int value;
 
 			if (i < HLIT + 1) value = bitlenLL[i - 1];
 			else value = bitlenD[i - HLIT - 1];
-				
-			for (j = 0; j < replength; ++j){
+
+			for (j = 0; j < replength; ++j) {
 				if (i < HLIT) bitlenLL[i] = value;
 				else bitlenD[i - HLIT] = value;
 				++i;
 			}
-		} else if (code == 17) {  // 0, duplicate 3-10, 3 bits
-			unsigned int replength = 3 + readBits( in, bitPointer, 3 );
-				
-			for (j = 0; j < replength; ++j){
+		}
+		else if (code == 17) {  // 0, duplicate 3-10, 3 bits
+			unsigned int replength = 3 + readBits(in, bitPointer, 3);
+
+			for (j = 0; j < replength; ++j) {
 				if (i < HLIT) bitlenLL[i] = 0;
 				else bitlenD[i - HLIT] = 0;
 				++i;
 			}
-		} else if (code == 18) { // 0, duplicate 11-138, 7 bits
+		}
+		else if (code == 18) { // 0, duplicate 11-138, 7 bits
 			unsigned int replength = 11 + readBits(in, bitPointer, 7);
-				
-			for (j = 0; j < replength; ++j)	{
+
+			for (j = 0; j < replength; ++j) {
 				if (i < HLIT) bitlenLL[i] = 0;
 				else bitlenD[i - HLIT] = 0;
 				++i;
@@ -750,77 +770,76 @@ void QeEncode::buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree*
 	buildHuffmanTree(treeD, bitlenD, 32, 15);
 }
 
-unsigned int QeEncode::huffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree* tree){
+unsigned int QeEncode::huffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree* tree) {
 
 	unsigned int treepos = 0, ret = 0;
 
-	while(1) {
-		ret = tree->tree2d[(treepos << 1) + readBits(in, bitPointer,1)];
+	while (1) {
+		ret = tree->tree[(treepos << 1) + readBits(in, bitPointer, 1)];
 		if (ret < tree->numcodes) return ret;
 		else treepos = ret - tree->numcodes;
 	}
 }
 
-void QeEncode::buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen, unsigned int numcodes, unsigned maxbitlen){
-	
+void QeEncode::buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen, unsigned int numcodes, unsigned maxbitlen) {
+
 	tree->numcodes = (unsigned)numcodes;
-	tree->maxbitlen = maxbitlen;
 
-	tree->lengths = new unsigned int[tree->numcodes];
-	tree->tree1d = new unsigned int[tree->numcodes];
+	unsigned int* tree1d = new unsigned int[numcodes];
 	unsigned int *blcount = new unsigned int[maxbitlen + 1];
-	unsigned int *nextcode = new unsigned int[tree->maxbitlen + 1];
+	unsigned int *nextcode = new unsigned int[maxbitlen + 1];
 
-	memcpy(tree->lengths, bitlen, tree->numcodes*sizeof(unsigned int));
-	memset(tree->tree1d, 0, tree->numcodes * sizeof(unsigned int));
-	memset(blcount, 0, (tree->maxbitlen+1) * sizeof(unsigned int));
-	memset(nextcode, 0, (tree->maxbitlen + 1) * sizeof(unsigned int));
+	memset(tree1d, 0, numcodes * sizeof(unsigned int));
+	memset(blcount, 0, (maxbitlen + 1) * sizeof(unsigned int));
+	memset(nextcode, 0, (maxbitlen + 1) * sizeof(unsigned int));
 
 	unsigned int i = 0, j = 0;
 
-	for (i = 0; i < tree->numcodes; ++i)	++blcount[tree->lengths[i]];	
-	for (i = 1; i <= tree->maxbitlen; ++i)	nextcode[i] = (nextcode[i - 1] + blcount[i - 1]) << 1;
-	for (i = 0; i < tree->numcodes; ++i)
-		if (tree->lengths[i] != 0)	tree->tree1d[i] = nextcode[tree->lengths[i]]++;
-	
+	for (i = 0; i < numcodes; ++i)	++blcount[bitlen[i]];
+	for (i = 1; i <=maxbitlen; ++i)	nextcode[i] = (nextcode[i - 1] + blcount[i - 1]) << 1;
+	for (i = 0; i < numcodes; ++i)
+		if (bitlen[i] != 0)	tree1d[i] = nextcode[bitlen[i]]++;
+
 	unsigned int nodefilled = 0;
 	unsigned int treepos = 0;
 
-	tree->tree2d = new unsigned int[tree->numcodes*2];
-	for (i = 0; i < tree->numcodes*2; ++i)	tree->tree2d[i] = UINT_MAX; 
+	tree->tree = new unsigned int[tree->numcodes * 2];
+	for (i = 0; i < numcodes * 2; ++i)	tree->tree[i] = UINT_MAX;
 
-	for (i = 0; i < tree->numcodes; ++i) {
-		for (j = 0; j < tree->lengths[i]; ++j) {
+	for (i = 0; i < numcodes; ++i) {
+		for (j = 0; j < bitlen[i]; ++j) {
 
-			unsigned char bit = (unsigned char)((tree->tree1d[i] >> (tree->lengths[i] - j - 1)) & 1);
+			unsigned char bit = (unsigned char)((tree1d[i] >> (bitlen[i] - j - 1)) & 1);
 
-			if (tree->tree2d[2 * treepos + bit] == UINT_MAX) {
-				if (j + 1 == tree->lengths[i]) {
-					tree->tree2d[2 * treepos + bit] = i;
+			if (tree->tree[2 * treepos + bit] == UINT_MAX) {
+				if (j + 1 == bitlen[i]) {
+					tree->tree[2 * treepos + bit] = i;
 					treepos = 0;
-				} else {
+				}
+				else {
 					++nodefilled;
-					tree->tree2d[2 * treepos + bit] = nodefilled + tree->numcodes;
+					tree->tree[2 * treepos + bit] = nodefilled + tree->numcodes;
 					treepos = nodefilled;
 				}
 			}
-			else treepos = tree->tree2d[2 * treepos + bit] - tree->numcodes;
+			else treepos = tree->tree[2 * treepos + bit] - tree->numcodes;
 		}
 	}
 
-	for (i = 0; i < tree->numcodes * 2; ++i)	
-		if (tree->tree2d[i] == UINT_MAX)	tree->tree2d[i] = 0;
+	for (i = 0; i < tree->numcodes * 2; ++i)
+		if (tree->tree[i] == UINT_MAX)	tree->tree[i] = 0;
 
-	if (blcount != nullptr)	blcount;
-	if (nextcode != nullptr) nextcode;
+	if (tree1d != nullptr) delete tree1d;
+	if (blcount != nullptr)	 delete blcount;
+	if (nextcode != nullptr) delete nextcode;
 }
 
 void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, size_t* bitPointer) {
-	
+
 	while (1)
 	{
 		unsigned int codeLL = huffmanDecodeSymbol(in, bitPointer, treeLL);
-		if (codeLL < 256)	out->push_back( codeLL ); // literals
+		if (codeLL < 256)	out->push_back(codeLL); // literals
 
 		else if (codeLL > 256 && codeLL < 286) { // length
 			unsigned int numextrabitsLen = LENGTHEXTRA[codeLL - 257];
@@ -829,12 +848,13 @@ void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* t
 			unsigned int codeD = huffmanDecodeSymbol(in, bitPointer, treeD); // 0-29
 			unsigned int numextrabitsDis = DISTANCEEXTRA[codeD];
 			unsigned int distance = DISTANCEBASE[codeD] + readBits(in, bitPointer, numextrabitsDis);
-			
+
 			while (1) {
 				if (distance < length) {
-					out->insert(out->end(), out->end() - distance, out->end() );
+					out->insert(out->end(), out->end() - distance, out->end());
 					length -= distance;
-				} else {
+				}
+				else {
 					out->insert(out->end(), out->end() - distance, out->end() - distance + length);
 					break;
 				}
