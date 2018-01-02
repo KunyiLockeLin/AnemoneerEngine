@@ -514,7 +514,6 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			index = 0;
 			unsigned char dc = readBits(&huffmanTreeIndex[j], &index, 4);
 			unsigned char ac = readBits(&huffmanTreeIndex[j], &index, 4);
-
 			getHuffmanDecodeSymbolfromDCAC( (char*)mcuDatas[j] + mcusSize[j]*i*64, mcusSize[j], dataPos, &bitPointer, &DC[dc], &AC[ac]);
 		}
 	}
@@ -554,7 +553,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 	}
 	// YCrCb to RGB
 	unsigned char cY, cCb, cCr;
-	ret.resize( *width * *height* *bytes * 8 );
+	ret.resize( *width * *height* *bytes );
 	size_t x = 0;
 	size_t y = 0;
 	if (mcusSize[0] == 1) {
@@ -570,10 +569,12 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 				y = i / mcuWidth * 8 + j / 8;
 				index = y* *width + x;
 
-				ret[index]		= unsigned char(cY + 1.402 * cCr - 179.456);							// R
-				ret[index + 1]  = unsigned char(cY - 0.3441363 * cCb - 0.71413636 * cCr + 135.4589);	// G
-				ret[index + 2]  = unsigned char(cY + 1.772 * cCb - 226.816);							// B
-			
+				//ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr - 179.456), 0, 255));							// R
+				//ret[index*3 + 1]  = unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 135.4589), 0, 255));	// G
+				//ret[index*3 + 2]  = unsigned char(MATH->clamp(int(cY + 1.772 * cCb - 226.816), 0, 255));							// B
+				ret[index*3]	 = unsigned char(MATH->clamp(int(cY + 1.402 * cCr + 128), 0, 255));							// R
+				ret[index*3 + 1] = unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 128), 0, 255));	// G
+				ret[index*3 + 2] = unsigned char(MATH->clamp(int(cY + 1.772 * cCb + 128), 0, 255));							// B
 			}
 		}
 	} else if(mcusSize[0] == 4){
@@ -584,16 +585,19 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 					index = (i * 4 + j) * 64 + k;
 					cY = mcuDatas[0][index];
 					if (index % 4 == 0) {
-						cCb = mcuDatas[1][index];
-						cCr = mcuDatas[2][index];
+						cCb = mcuDatas[1][index/4];
+						cCr = mcuDatas[2][index/4];
 					}
 					x = i % mcuWidth * 16 + j%2*8 + k % 8;
 					y = i / mcuWidth * 16 + j/2*8 + k / 8;
 
 					index = y* *width + x;
-					ret[index]		= unsigned char(cY + 1.402 * cCr - 179.456);							// R
-					ret[index + 1]	= unsigned char(cY - 0.3441363 * cCb - 0.71413636 * cCr + 135.4589);	// G
-					ret[index + 2]	= unsigned char(cY + 1.772 * cCb - 226.816);							// B
+					//ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr - 179.456), 0, 255));							// R
+					//ret[index*3 + 1]	= unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 135.4589), 0, 255));	// G
+					//ret[index*3 + 2]	= unsigned char(MATH->clamp(int(cY + 1.772 * cCb - 226.816), 0, 255));							// B
+					ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr +128), 0, 255));							// R
+					ret[index*3 + 1]	= unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 128), 0, 255));	// G
+					ret[index*3 + 2]	= unsigned char(MATH->clamp(int(cY + 1.772 * cCb +128), 0, 255));							// B
 				}
 			}
 		}

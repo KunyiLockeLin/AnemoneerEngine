@@ -111,4 +111,5 @@ public:
 	float fastSqrt(float _number);
 	bool inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat);
 	QeMatrix4x4f transpose(QeMatrix4x4f _mat);
+	int clamp( int in, int low, int high );
 };

@@ -525,3 +525,5 @@ QeMatrix4x4f QeMath::transpose(QeMatrix4x4f _mat) {
 	_new._33 = _mat._33;
 	return _new;
 }
+
+int QeMath::clamp(int in, int low, int high) {	return in<low ? low : in > high ? high : in;	}
