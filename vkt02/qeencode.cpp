@@ -504,7 +504,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 
 	for (i = 0; i < colorNum; ++i) {
 		mcuDatas[i] = new char[64 * totalmcuSize*mcusSize[i]];
-		memset(mcuDatas[i],0, 64 * totalmcuSize*mcusSize[i]);
+		memset(mcuDatas[i],0, 64 * totalmcuSize*mcusSize[i]* sizeof(char));
 	}
 
 	size_t bitPointer = 0;
@@ -515,7 +515,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			unsigned char dc = readBits(&huffmanTreeIndex[j], &index, 4);
 			unsigned char ac = readBits(&huffmanTreeIndex[j], &index, 4);
 
-			getHuffmanDecodeSymbolfromDCAC( mcuDatas[j] + mcusSize[j]*i*64, mcusSize[j], dataPos, &bitPointer, &DC[dc], &AC[ac]);
+			getHuffmanDecodeSymbolfromDCAC( (char*)mcuDatas[j] + mcusSize[j]*i*64, mcusSize[j], dataPos, &bitPointer, &DC[dc], &AC[ac]);
 		}
 	}
 	for (i = 0; i < colorNum; ++i) { // DCn=DCn-1+Diff
@@ -553,7 +553,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 		}
 	}
 	// YCrCb to RGB
-	char cY, cCb, cCr;
+	unsigned char cY, cCb, cCr;
 	ret.resize( *width * *height* *bytes * 8 );
 	size_t x = 0;
 	size_t y = 0;
