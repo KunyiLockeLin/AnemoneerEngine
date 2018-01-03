@@ -19,14 +19,23 @@ unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer,
 		(*bitPointer)++;
 	}
 
-	if (bNegative && ret>0) {
-		i = 0;
-		move = 1;
-		move <<= (readCount - 1);
-		bytes = readBits((unsigned char*)&ret, &i, readCount - 1);
-		bits = readBits((unsigned char*)&ret, &i, 1);
+	if (bNegative) {
+		if (ret == 0) {
+			move = 1;
+			move <<= readCount;
+			ret = unsigned int(-1*(move - 1));
+		}
+		else {
+			i = 0;
+			bytes = readBits((unsigned char*)&ret, &i, readCount - 1);
+			bits = readBits((unsigned char*)&ret, &i, 1);
 
-		if (bits == 0)	ret = ((move << 1) - bytes - 1)*-1;
+			if (bits == 0) {
+				move = 1;
+				move <<= readCount ;
+				ret = unsigned int(-1*(move  - bytes - 1));
+			}
+		}
 	}
 	return ret;
 }
