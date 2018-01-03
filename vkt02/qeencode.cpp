@@ -27,7 +27,6 @@ unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer,
 		bits = readBits((unsigned char*)&ret, &i, 1);
 
 		if (bits == 0)	ret = ((move << 1) - bytes - 1)*-1;
-		else				ret += move;
 	}
 	return ret;
 }

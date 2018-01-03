@@ -9,7 +9,7 @@ void QeLight::init() {
 	data.param.z = 90.0f;
 
 	billboard = OBJMGR->getBillboard(0);
-	//billboard->modelData->pMaterial->value.diffuse = data.color;
+	billboard->modelData->pMaterial->value.diffuse = data.color;
 }
 
 
