@@ -1,11 +1,11 @@
 #include "qeheader.h"
 
-unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft, bool bNegative) {
+int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft, bool bNegative) {
 
 	size_t bytes;
 	unsigned char bits;
 	size_t move;
-	unsigned int ret = 0;
+	int ret = 0;
 	size_t i;
 	for ( i = 0; i < readCount; ++i) {
 		bytes = (*bitPointer) >> 3;
@@ -23,7 +23,7 @@ unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer,
 		if (ret == 0) {
 			move = 1;
 			move <<= readCount;
-			ret = unsigned int(-1*(move - 1));
+			ret = int(-1*(move - 1));
 		}
 		else {
 			i = 0;
@@ -33,7 +33,7 @@ unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer,
 			if (bits == 0) {
 				move = 1;
 				move <<= readCount ;
-				ret = unsigned int(-1*(move  - bytes - 1));
+				ret = int(-1*(move  - bytes - 1));
 			}
 		}
 	}
@@ -588,12 +588,12 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 			for (j = 0; j < 64; ++j) {
 				
 				index = i * 64 + j;
-				cY =  mcuDatas[0][index];
+				cY  = mcuDatas[0][index];
 				cCb = mcuDatas[1][index];
 				cCr = mcuDatas[2][index];
 
 				x = i % mcuWidth * 8 + j % 8;
-				y = i / mcuWidth * 8 + j / 8;
+				y = i / mcuWidth * 8 + 7-(j / 8);
 				index = y* *width + x;
 
 				ret[index*3]	 = unsigned char(MATH->clamp(int(cY + 1.402 * cCr + 128), 0, 255));							// R
@@ -611,7 +611,6 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 
 					index = (i * 4 + j) * 64 + k;
 					cY = mcuDatas[0][index];
-					//index = *width * y /2 + x/2;
 					index = index/4;
 					cCb = mcuDatas[1][index];
 					cCr = mcuDatas[2][index];
@@ -676,7 +675,7 @@ void QeEncode::xmul(int* xa, int* xb, int k1, int k2, int sh, int* p, int* n) {
 	*xb = (*n - (k2 + k1)* *p) >> sh;
 }
 
-void QeEncode::getHuffmanDecodeSymbolfromDCAC(short int* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac) {
+void QeEncode::getHuffmanDecodeSymbolfromDCAC( short int* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac) {
 
 	int value1 = 0, value2 = 0, value3 = 0;
 	size_t index = 0, index1 = 0;

@@ -38,7 +38,7 @@ public:
 	
 	QeEncode(QeGlobalKey& _key) {}
 	~QeEncode() {}
-	unsigned int readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft=false, bool bNegative = false);
+	int readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft=false, bool bNegative = false);
 	std::string trim(std::string s);
 	QeAssetXML* decodeXML(const char* buffer, int &index);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
@@ -53,7 +53,7 @@ public:
 	void decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, size_t* bitPointer, unsigned int BYTE);
 	void buildFixedLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD);
 	void buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, size_t* bitPointer);
-	void getHuffmanDecodeSymbolfromDCAC(short int* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac);
+	void getHuffmanDecodeSymbolfromDCAC( short int* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac);
 	unsigned int getHuffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* tree);
 	unsigned int huffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree* tree);
 	void buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen, unsigned int numcodes, unsigned maxbitlen);
