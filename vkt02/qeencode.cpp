@@ -1,22 +1,33 @@
 #include "qeheader.h"
 
-unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, unsigned int readCount, bool bLeft) {
+unsigned int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft, bool bNegative) {
 
 	size_t bytes;
 	unsigned char bits;
-	unsigned int move;
+	size_t move;
 	unsigned int ret = 0;
-
-	for (unsigned int i = 0; i < readCount; ++i) {
+	size_t i;
+	for ( i = 0; i < readCount; ++i) {
 		bytes = (*bitPointer) >> 3;
-		bits = (*bitPointer) & 7;
+		bits = (*bitPointer) % 8;
 		move = i;
 		if (bLeft) {
 			bits = 7 - bits;
-			move = readCount - move-1;
+			move = readCount - move - 1;
 		}
 		ret += ((*(stream + bytes) >> bits & 1) << move);
 		(*bitPointer)++;
+	}
+
+	if (bNegative && ret>0) {
+		i = 0;
+		move = 1;
+		move <<= (readCount - 1);
+		bytes = readBits((unsigned char*)&ret, &i, readCount - 1);
+		bits = readBits((unsigned char*)&ret, &i, 1);
+
+		if (bits == 0)	ret = ((move << 1) - bytes - 1)*-1;
+		else				ret += move;
 	}
 	return ret;
 }
@@ -361,17 +372,17 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 	return mtl;
 }
 
-std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* width, int* height, int* bytes) {
+std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t size, int* width, int* height, int* bytes) {
 	std::vector<unsigned char> ret;
 	// YCbCr(YUV), DCT(Discrete Cosine Transform), Quantization, Zig-zag(Entropy Coding), RLC(Run Length Coding), Canonical Huffman Code
 
-	unsigned char startKey[2]	= { 0xFF, 0xD8 }; // SOI  Start of Image
-	unsigned char APP0[2]		= { 0xFF, 0xE0 }; // APP0 Application
-	unsigned char quanKey[2]	= { 0xFF, 0xDB }; // DQT  Define Quantization Table
-	unsigned char frameKey[2]	= { 0xFF, 0xC0 }; // SOF0 Start of Frame
-	unsigned char huffmanKey[2] = { 0xFF, 0xC4 }; // DHT  Difine Huffman Table
-	unsigned char scanKey[2]	= { 0xFF, 0xDA }; // SOS  Start of Scan
-	unsigned char endKey[2]		= { 0xFF, 0xD9 }; // EOI  End of Image
+	unsigned char startKey[2]	 = { 0xFF, 0xD8 }; // SOI  Start of Image
+	unsigned char APP0[2]		 = { 0xFF, 0xE0 }; // APP0 Application
+	unsigned char quanKey[2]	 = { 0xFF, 0xDB }; // DQT  Define Quantization Table
+	unsigned char frameKey[2]	 = { 0xFF, 0xC0 }; // SOF0 Start of Frame
+	unsigned char huffmanKey[2]  = { 0xFF, 0xC4 }; // DHT  Difine Huffman Table
+	unsigned char scanKey[2]	 = { 0xFF, 0xDA }; // SOS  Start of Scan
+	unsigned char endKey[2]		 = { 0xFF, 0xD9 }; // EOI  End of Image
 
 	if (memcmp(buffer, startKey, 2) != 0) return ret;
 
@@ -380,37 +391,32 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 	unsigned char* data = nullptr;
 	size_t index = 2;
 	unsigned char buf[2];
-	unsigned char* dataPos = nullptr;
+	std::vector <unsigned char> dataHuffman;
 	QeHuffmanTree2 DC[2]; // DC00, DC01
 	QeHuffmanTree2 AC[2]; // AC10, AC11
 	unsigned char colorNum;
 	unsigned char* mcusType = nullptr;
 	unsigned char* mcusQuan = nullptr;
 	unsigned char* mcusSize = nullptr;
-	unsigned char maxmcusSize = 0;
-	unsigned char maxmcusSizeX = 0;
-	unsigned char maxmcusSizeY = 0;
 	unsigned char* huffmanTreeIndex = nullptr;
 	unsigned int mcuWidth = 0;
 	unsigned int mcuHeight = 0;
 	unsigned int totalmcuSize = 0;
 	unsigned char* quanData[4] = {nullptr, nullptr, nullptr, nullptr };
-	unsigned int quanLength[4] = {0,0,0,0};
 
 	size_t i = 0, j = 0;
 	while (1) {
 
 		key = (char*)(buffer + index);
+		//if (memcmp(key, endKey, 2) == 0)	break;
+
 		buf[0] = *(buffer + index + 3);
 		buf[1] = *(buffer + index + 2);
 		length = *(unsigned short int*)(buf) - 2;
 		data = (buffer + index + 4);
 
-		if (memcmp(key, APP0, 2) == 0) {}
-		else if (memcmp(key, quanKey, 2) == 0) {
-			quanLength[data[0] & 15] = length-1;
-			quanData[data[0] & 15] = data+1;
-		}
+		//else if (memcmp(key, APP0, 2) == 0) {}
+		if (memcmp(key, quanKey, 2) == 0)	quanData[data[0] % 16] = data + 1;
 		else if (memcmp(key, frameKey, 2) == 0) {
 			unsigned char colorBits = data[0];
 			buf[1] = data[1];
@@ -429,17 +435,15 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			mcusType = new unsigned char[colorNum];
 			mcusQuan = new unsigned char[colorNum];
 			mcusSize = new unsigned char[colorNum];
-
+			int maxSize = 0;
 			for (i = 0; i<colorNum;++i ) {
 				j = 0;
 				mcusType[i] = data[6 + i * 3];
 				int x = readBits(&data[7 + i * 3], &j, 4);
 				int y = readBits(&data[7 + i * 3], &j, 4);
 				mcusSize[i] = x* y;
-				if (mcusSize[i] > maxmcusSize) {
-					maxmcusSize = mcusSize[i];
-					maxmcusSizeX = x;
-					maxmcusSizeY = y;
+				if (mcusSize[i] > maxSize) {
+					maxSize = mcusSize[i];
 					mcuWidth  = ((*width) +7)/8/x;
 					mcuHeight = ((*height)+7)/8/y;
 				}
@@ -458,9 +462,9 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			for (i = 0; i<16; ++i)	length += data[1 + i];
 
 			tree->size = length;
-			tree->codeBits = new unsigned char[length];
+			tree->codeBits = new unsigned int[length];
 			tree->values = new unsigned int[length];
-			tree->codes = new unsigned short int[length];
+			tree->codes = new unsigned int[length];
 			tree->codes[0] = 0;
 			
 			int itreeIndex = 0;
@@ -470,7 +474,6 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			i = 0;
 			while (1) {
 				tree->values[i] = data[17 + i];
-
 				if ((i+1) == length) break;
 
 				while (data[1+itreeIndex] <= ntreeIndex) {
@@ -489,22 +492,37 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 		else if (memcmp(key, scanKey, 2) == 0) {
 			
 			huffmanTreeIndex = new unsigned char[data[0]];
-
 			for (i = 0;i<data[0];++i ) huffmanTreeIndex[i] = data[2 + i * 2];
-			
-			index += (data[0]*2+8);
-			dataPos = buffer + index;
+
+			unsigned char* dataPos = data + length;
+			size_t lengthData = size - (dataPos-buffer);
+			size_t lengthData1 = 0;
+			unsigned char* dataPos1 = nullptr;
+			while (1) {
+				dataPos1 = (unsigned char*)memchr(dataPos+ lengthData1, 0xFF, lengthData);
+				if (dataPos1 == nullptr ) break;
+
+				else if (dataPos1[1] == 0) {
+					lengthData1 = dataPos1 - dataPos + 1;
+					dataHuffman.insert(dataHuffman.end(), dataPos, dataPos + lengthData1);
+					dataPos += (lengthData1+1);
+					lengthData1 = 0;
+					lengthData -= (lengthData1+1);
+				}
+				else lengthData1 = dataPos1 - dataPos+1;
+			}
+			dataHuffman.insert(dataHuffman.end(), dataPos, dataPos + lengthData-2);
 			break;
 		}
 		index += (length + 2 * 2);
 	}
 
 	// MCU(Minimum Coded Unit)
-	char** mcuDatas = new char*[colorNum];
+	short int** mcuDatas = new short int*[colorNum];
 
 	for (i = 0; i < colorNum; ++i) {
-		mcuDatas[i] = new char[64 * totalmcuSize*mcusSize[i]];
-		memset(mcuDatas[i],0, 64 * totalmcuSize*mcusSize[i]* sizeof(char));
+		mcuDatas[i] = new short int[64 * totalmcuSize*mcusSize[i]];
+		memset(mcuDatas[i],0, 64 * totalmcuSize*mcusSize[i]* sizeof(mcuDatas[0][0]));
 	}
 
 	size_t bitPointer = 0;
@@ -514,7 +532,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			index = 0;
 			unsigned char dc = readBits(&huffmanTreeIndex[j], &index, 4);
 			unsigned char ac = readBits(&huffmanTreeIndex[j], &index, 4);
-			getHuffmanDecodeSymbolfromDCAC( (char*)mcuDatas[j] + mcusSize[j]*i*64, mcusSize[j], dataPos, &bitPointer, &DC[dc], &AC[ac]);
+			getHuffmanDecodeSymbolfromDCAC( mcuDatas[j] + mcusSize[j]*i*64, mcusSize[j], dataHuffman.data(), &bitPointer, &DC[dc], &AC[ac]);
 		}
 	}
 	for (i = 0; i < colorNum; ++i) { // DCn=DCn-1+Diff
@@ -528,18 +546,18 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			for (k = 0; k<64; ++k)		mcuDatas[i][j * 64 + k] *= quanData[mcusQuan[i]][k];
 		}
 	}
-	char buffer1[64];
+	short int buffer1[64];
 	for (i = 0; i < colorNum; ++i) {	// reverse Zig-zag
 		index = mcusSize[i] * totalmcuSize;
 		for (j = 0; j < index; ++j) {
-			memcpy(buffer1, &mcuDatas[i][j * 64], 64 * sizeof(char));
+			memcpy(buffer1, &mcuDatas[i][j * 64], 64 * sizeof(mcuDatas[0][0]));
 			for (k = 0; k<64; ++k)	mcuDatas[i][j * 64 + k] = buffer1[ZIGZAGTABLE[k]];
 		}
 	}
 	for (i = 0; i < colorNum; ++i) {	// odd lines change signed
 		index = mcusSize[i] * totalmcuSize;
 		for (j = 0; j < index; ++j) {
-			for (k = 0; k<64; ++k)	if (k % 8 % 2 == 1)	mcuDatas[i][j * 64 + k] *= -1;
+			for (k = 0; k<64; ++k)	if (k / 8 % 2 == 1)	mcuDatas[i][j * 64 + k] *= -1;
 		}
 	}
 	int buffer2[64];
@@ -549,10 +567,11 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			for (k = 0; k < 64; ++k)	buffer2[k] = mcuDatas[i][j * 64 + k];
 			FastIntegerIDCT(buffer2);
 			for (k = 0; k < 64; ++k)	mcuDatas[i][j * 64 + k] = buffer2[k];
+			//FastIntegerIDCT(&mcuDatas[i][j * 64]);
 		}
 	}
 	// YCrCb to RGB
-	unsigned char cY, cCb, cCr;
+	double cY, cCb, cCr;
 	ret.resize( *width * *height* *bytes );
 	size_t x = 0;
 	size_t y = 0;
@@ -569,9 +588,6 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 				y = i / mcuWidth * 8 + j / 8;
 				index = y* *width + x;
 
-				//ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr - 179.456), 0, 255));							// R
-				//ret[index*3 + 1]  = unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 135.4589), 0, 255));	// G
-				//ret[index*3 + 2]  = unsigned char(MATH->clamp(int(cY + 1.772 * cCb - 226.816), 0, 255));							// B
 				ret[index*3]	 = unsigned char(MATH->clamp(int(cY + 1.402 * cCr + 128), 0, 255));							// R
 				ret[index*3 + 1] = unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 128), 0, 255));	// G
 				ret[index*3 + 2] = unsigned char(MATH->clamp(int(cY + 1.772 * cCb + 128), 0, 255));							// B
@@ -582,19 +598,17 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, int* widt
 			for (j = 0; j < 4; ++j) {
 				for (k = 0; k < 64; ++k) {
 
+					x = i % mcuWidth * 16 + j % 2 * 8 + k % 8;
+					y = i / mcuWidth * 16 + j / 2 * 8 + k / 8;
+
 					index = (i * 4 + j) * 64 + k;
 					cY = mcuDatas[0][index];
-					if (index % 4 == 0) {
-						cCb = mcuDatas[1][index/4];
-						cCr = mcuDatas[2][index/4];
-					}
-					x = i % mcuWidth * 16 + j%2*8 + k % 8;
-					y = i / mcuWidth * 16 + j/2*8 + k / 8;
+					//index = *width * y /2 + x/2;
+					index = index/4;
+					cCb = mcuDatas[1][index];
+					cCr = mcuDatas[2][index];
 
 					index = y* *width + x;
-					//ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr - 179.456), 0, 255));							// R
-					//ret[index*3 + 1]	= unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 135.4589), 0, 255));	// G
-					//ret[index*3 + 2]	= unsigned char(MATH->clamp(int(cY + 1.772 * cCb - 226.816), 0, 255));							// B
 					ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr +128), 0, 255));							// R
 					ret[index*3 + 1]	= unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 128), 0, 255));	// G
 					ret[index*3 + 2]	= unsigned char(MATH->clamp(int(cY + 1.772 * cCb +128), 0, 255));							// B
@@ -624,11 +638,11 @@ void QeEncode::idct1(int *x, int *y, int ps, int half){
 
 	int p, n;
 	x[0] <<= 9, x[1] <<= 7, x[3] *= 181, x[4] <<= 9, x[5] *= 181, x[7] <<= 7;
-	xmul(x[6], x[2], 277, 669, 0, &p, &n);
-	xadd3(x[0], x[4], x[6], x[2], half, &p, &n);
-	xadd3(x[1], x[7], x[3], x[5], 0, &p, &n);
-	xmul(x[5], x[3], 251, 50, 6, &p, &n);
-	xmul(x[1], x[7], 213, 142, 6, &p, &n);
+	xmul(&x[6], &x[2], 277, 669, 0, &p, &n);
+	xadd3(&x[0], &x[4], &x[6], &x[2], half, &p, &n);
+	xadd3(&x[1], &x[7], &x[3], &x[5], 0, &p, &n);
+	xmul(&x[5], &x[3], 251, 50, 6, &p, &n);
+	xmul(&x[1], &x[7], 213, 142, 6, &p, &n);
 	y[0 * 8] = (x[0] + x[1]) >> ps;
 	y[1 * 8] = (x[4] + x[5]) >> ps;
 	y[2 * 8] = (x[2] + x[3]) >> ps;
@@ -639,50 +653,46 @@ void QeEncode::idct1(int *x, int *y, int ps, int half){
 	y[7 * 8] = (x[0] - x[1]) >> ps;
 }
 
-void QeEncode::xadd3(int xa, int xb, int xc, int xd, int h, int* p, int* n) {
-	*p = xa + xb;			*n = xa - xb;
-	xa = *p + xc + h;		xb = *n + xd + h;
-	xc = *p - xc + h;		xd = *n - xd + h;
+void QeEncode::xadd3(int* xa, int* xb, int* xc, int* xd, int h, int* p, int* n) {
+	*p  = *xa + *xb;			
+	*n = *xa - *xb;
+	*xa = *p + *xc + h;		
+	*xb = *n + *xd + h;
+	*xc = *p - *xc + h;		
+	*xd = *n - *xd + h;
 }
-void QeEncode::xmul(int xa, int xb, int k1, int k2, int sh, int* p, int* n) {
-	*n = k1*(xa + xb);		*p = xa;
-	xa = (*n + (k2 - k1)*xb) >> sh;
-	xb = (*n - (k2 + k1)* *p) >> sh;
+void QeEncode::xmul(int* xa, int* xb, int k1, int k2, int sh, int* p, int* n) {
+	*n  = k1*(*xa + *xb);		
+	*p = *xa;
+	*xa = (*n + (k2 - k1)**xb) >> sh;
+	*xb = (*n - (k2 + k1)* *p) >> sh;
 }
 
-void QeEncode::getHuffmanDecodeSymbolfromDCAC(char* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac) {
+void QeEncode::getHuffmanDecodeSymbolfromDCAC(short int* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac) {
 
-	int value1 = 0, value2 = 0, value3 = 0, value4 = 0;
+	int value1 = 0, value2 = 0, value3 = 0;
 	size_t index = 0, index1 = 0;
 
 	int j = 0;
 	for (int i = 0; i < blocks; ++i) {
 		value1 = getHuffmanDecodeSymbol(in, bitPointer, dc);
-		value2 = readBits(in, bitPointer, value1, true);
+		value2 = readBits(in, bitPointer, value1, true, true);
 		out[index] = value2;
 		++index;
 
-		while (1) {
+		while (index%64 != 0) {
 			value1 = getHuffmanDecodeSymbol(in, bitPointer, ac);
-			if (value1 == 0) break;
+			if (value1 == 0)	break;
 
 			index1 = 0;
 			value2 = readBits((unsigned char*)&value1, &index1, 4);
 			value3 = readBits((unsigned char*)&value1, &index1, 4);
 			index += value3;
-			value1 = readBits(in, bitPointer, value2, true);
-			
-			index1 = 0;
-			value3 = 1;
-			value3 <<= (value2-1);
-			value2 = readBits((unsigned char*)&value1, &index1, value2-1);
-			value4 = readBits((unsigned char*)&value1, &index1, 1);
 
-			if (value4 == 0)	value2 = ((value3 << 1) - value2 - 1)*-1;
-			else				value2 += value3;
-
-			out[index] = value2;
-			++index;
+			if (value2 > 0) {
+				out[index] = readBits(in, bitPointer, value2, true, true);
+				++index;
+			}
 		}
 		index = (index + 63) / 64 * 64;
 	}

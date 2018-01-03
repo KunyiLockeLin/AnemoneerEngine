@@ -13,8 +13,8 @@ struct QeHuffmanTree
 
 struct QeHuffmanTree2
 {
-	unsigned short int* codes;
-	unsigned char* codeBits;
+	unsigned int* codes;
+	unsigned int* codeBits;
 	unsigned int* values;
 	size_t size;
 
@@ -38,7 +38,7 @@ public:
 	
 	QeEncode(QeGlobalKey& _key) {}
 	~QeEncode() {}
-	unsigned int readBits(const unsigned char* stream, size_t *bitPointer, unsigned int readCount, bool bLeft=false);
+	unsigned int readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft=false, bool bNegative = false);
 	std::string trim(std::string s);
 	QeAssetXML* decodeXML(const char* buffer, int &index);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
@@ -46,20 +46,20 @@ public:
 	QeAssetModel* decodeGLTF(char* buffer);
 	QeAssetModel* decodeGLB(char* buffer);
 	QeAssetMaterial* decodeMTL(char* buffer);
-	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, int* width, int* height, int* bytes);
+	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, size_t size, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodeBMP(unsigned char* buffer, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodePNG(unsigned char* buffer, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodeDeflate(unsigned char* in, unsigned int size);
 	void decodeHuffmanLZ77(std::vector<unsigned char> *out, unsigned char* in, size_t* bitPointer, unsigned int BYTE);
 	void buildFixedLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD);
 	void buildDynamicLZ77HuffmanTree(QeHuffmanTree* treeLL, QeHuffmanTree* treeD, const unsigned char* in, size_t* bitPointer);
-	void getHuffmanDecodeSymbolfromDCAC(char* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac);
+	void getHuffmanDecodeSymbolfromDCAC(short int* out, unsigned char blocks, const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* dc, const QeHuffmanTree2* ac);
 	unsigned int getHuffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree2* tree);
 	unsigned int huffmanDecodeSymbol(const unsigned char* in, size_t* bitPointer, const QeHuffmanTree* tree);
 	void buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen, unsigned int numcodes, unsigned maxbitlen);
 	void decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, size_t* bitPointer);
 	void FastIntegerIDCT(int* i8x8);
 	void idct1(int *x, int *y, int ps, int half);
-	void xadd3(int xa, int xb, int xc, int xd, int h, int* p, int* n);
-	void xmul(int xa, int xb, int k1, int k2, int sh, int* p, int* n);
+	void xadd3(int* xa, int* xb, int* xc, int* xd, int h, int* p, int* n);
+	void xmul(int* xa, int* xb, int k1, int k2, int sh, int* p, int* n);
 };

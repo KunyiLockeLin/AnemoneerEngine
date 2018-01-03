@@ -580,7 +580,7 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 		format = VK_FORMAT_R8G8B8A8_UNORM;
 		break;
 	case 2:
-		data = ENCODE->decodeJPEG((unsigned char*)buffer.data(), &width, &height, &bytes);
+		data = ENCODE->decodeJPEG((unsigned char*)buffer.data(), buffer.size(), &width, &height, &bytes);
 		format = VK_FORMAT_R8G8B8A8_UNORM;
 		break;
 	}
