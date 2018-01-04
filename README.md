@@ -1,7 +1,7 @@
 # Vulkan
 
   - enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
-  - Setting: data/config.ini
+  - Setting: data/config.xml
   - Input:
     - "+" : Add new viewport. The maximum number of viewport is nine.
     - "-" : Substract the last viewport.
@@ -11,23 +11,32 @@
     
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
+# Feature:
+  - Comptuer Graphics's power is by Vulkan. VulkanSDK is only the third party llibrary.
+  - Support mutli-viewports.
+  - Support simple light and camera control.
+  - Run vertex, fragment, and geometry shader.
+  - For model  - decode obj, mtl.
+  - For image  - decode png, jpeg, bmp.
+  - For string - decode xml, json.
+  - Decode deflate, Huffman code.
+  
 # ToDoList:
-  - 1. It only can run in debug mode. It crashes in the others. 
-  - 2. Memory Management and Object Management are weak.
-  - 3. I think the light calculation is not correct in fragment shader.
-  - 4. Replace .obj and .mlt files to .glTF for bone animation.
-  - 5. Load .jpg and .png image, instead of .bmp 32bits.
-  - 6. Attach obj.
-  - 7. Bone animation.
-  - 8. Normal map and specular map.
-  - 9. Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - 10. Separate different libraries.
-  - 11. bounding Box
-  - 12. Collision
-  - 13. Frustum Culling
-  - 14. Room
-  - 15. Timer
-  - 16. HDR
+  - Replace .obj and .mlt files to .glTF for bone animation.
+  - It only can run in debug mode. It crashes in the others. 
+  - Memory Management and Object Management are weak.
+  - I think the light calculation is not correct in fragment shader.
+  - Attach obj.
+  - Bone animation.
+  - Normal map and specular map.
+  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
+  - Separate different libraries.
+  - bounding Box
+  - Collision
+  - Frustum Culling
+  - Room
+  - Timer
+  - HDR
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
