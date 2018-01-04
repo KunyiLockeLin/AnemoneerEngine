@@ -43,7 +43,7 @@ public:
 	QeAssetXML* decodeXML(const char* buffer, int &index);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
 	QeAssetModel* decodeOBJ(char* buffer);
-	QeAssetModel* decodeGLTF(char* buffer);
+	QeAssetModel* decodeGLTF(QeAssetJSON *json);
 	QeAssetModel* decodeGLB(char* buffer);
 	QeAssetMaterial* decodeMTL(char* buffer);
 	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, size_t size, int* width, int* height, int* bytes);

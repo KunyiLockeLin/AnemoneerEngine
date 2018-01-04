@@ -308,11 +308,7 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 	return model;
 }
 
-QeAssetModel* QeEncode::decodeGLTF(char* buffer) {
-
-	int index = 0;
-	QeAssetJSON *json = decodeJSON(buffer, index);
-
+QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	return nullptr;
 }
 

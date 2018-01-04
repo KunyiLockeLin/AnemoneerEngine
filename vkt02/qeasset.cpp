@@ -500,7 +500,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 
 	if (strcmp(ret + 1, "obj") == 0)		type = 0;
 	else if (strcmp(ret + 1, "gltf") == 0)	type = 1;
-	else if (strcmp(ret + 1, "glb") == 0 ) type = 2;
+	else if (strcmp(ret + 1, "glb") == 0 )	type = 2;
 	else return nullptr;
 
 	std::string _filePath = combinePath(_filename, eAssetModel);
@@ -508,18 +508,21 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 
 	if (it != astModels.end())	return it->second;
 
-	std::vector<char> buffer = loadFile(_filePath.c_str());
 	QeAssetModel* model = nullptr;
+	QeAssetJSON *json = nullptr;
+	std::vector<char> buffer;
 
 	switch (type) {
 	case 0:
+		buffer = loadFile(_filePath.c_str());
 		model = ENCODE->decodeOBJ(buffer.data());
 		break;
 	case 1:
-		model = ENCODE->decodeGLTF(buffer.data());
+		json = getJSON(_filePath.c_str());
+		model = ENCODE->decodeGLTF(json);
 		break;
 	case 2:
-		model = ENCODE->decodeGLB(buffer.data());
+		model = ENCODE->decodeGLB(0);
 		break;
 	}
 
