@@ -608,16 +608,16 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 			for (j = 0; j < 4; ++j) {
 				for (k = 0; k < 64; ++k) {
 
-					x = i % mcuWidth * 16 + j % 2 * 8 + k % 8;
-					y = i / mcuWidth * 16 + j / 2 * 8 + k / 8;
-
 					index = (i * 4 + j) * 64 + k;
 					cY = mcuDatas[0][index];
 					index = index/4;
 					cCb = mcuDatas[1][index];
 					cCr = mcuDatas[2][index];
 
+					x = i % mcuWidth * 16 + j % 2 * 8 + k % 8;
+					y = i / mcuWidth * 16 + j / 2 * 8 + 7-(k / 8);
 					index = y* *width + x;
+					
 					ret[index*3]		= unsigned char(MATH->clamp(int(cY + 1.402 * cCr +128), 0, 255));							// R
 					ret[index*3 + 1]	= unsigned char(MATH->clamp(int(cY - 0.3441363 * cCb - 0.71413636 * cCr + 128), 0, 255));	// G
 					ret[index*3 + 2]	= unsigned char(MATH->clamp(int(cY + 1.772 * cCb +128), 0, 255));							// B
