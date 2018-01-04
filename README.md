@@ -16,9 +16,9 @@
   - Support mutli-viewports.
   - Support simple light and camera control.
   - Run vertex, fragment, and geometry shader.
-  - For model  - decode obj, mtl.
-  - For image  - decode png, jpeg, bmp.
-  - For string - decode xml, json.
+  - For model  - obj, mtl.
+  - For image  - png, jpeg, bmp.
+  - For string - xml, json.
   - Decode deflate, Huffman code.
   
 # ToDoList:
