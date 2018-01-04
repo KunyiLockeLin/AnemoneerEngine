@@ -309,7 +309,10 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 }
 
 QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
-	return nullptr;
+	QeAssetModel* model = new QeAssetModel();
+
+	std::string bufferInfo = AST->getJSONValue( json, 2, "buffers", "uri" );
+	return model;
 }
 
 QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
