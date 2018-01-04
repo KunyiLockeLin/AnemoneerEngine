@@ -15,11 +15,12 @@ int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, size_t r
 			bits = 7 - bits;
 			move = readCount - move - 1;
 		}
+		int bit = (*(stream + bytes) >> bits & 1);
 		ret += ((*(stream + bytes) >> bits & 1) << move);
 		(*bitPointer)++;
 	}
 
-	if (bNegative) {
+	if (bNegative && readCount>0) {
 		if (ret == 0) {
 			move = 1;
 			move <<= readCount;
@@ -508,18 +509,20 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 			unsigned char* dataPos1 = nullptr;
 			while (1) {
 				dataPos1 = (unsigned char*)memchr(dataPos+ lengthData1, 0xFF, lengthData);
-				if (dataPos1 == nullptr ) break;
 
-				else if (dataPos1[1] == 0) {
+				if (dataPos1[1] == 0) {
 					lengthData1 = dataPos1 - dataPos + 1;
 					dataHuffman.insert(dataHuffman.end(), dataPos, dataPos + lengthData1);
 					dataPos += (lengthData1+1);
-					lengthData1 = 0;
 					lengthData -= (lengthData1+1);
+					lengthData1 = 0;
 				}
-				else lengthData1 = dataPos1 - dataPos+1;
+				else {
+					lengthData1 = dataPos1 - dataPos;
+					dataHuffman.insert(dataHuffman.end(), dataPos, dataPos + lengthData1);
+					break;
+				}
 			}
-			dataHuffman.insert(dataHuffman.end(), dataPos, dataPos + lengthData-2);
 			break;
 		}
 		index += (length + 2 * 2);
@@ -545,7 +548,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 	}
 	for (i = 0; i < colorNum; ++i) { // DCn=DCn-1+Diff
 		index = mcusSize[i] * totalmcuSize;
-		for (j = 1; j < index; ++j) mcuDatas[i][j * 64] += mcuDatas[i][(j - 1) * 64];
+		for (j = 1; j < index; ++j)	mcuDatas[i][j * 64] += mcuDatas[i][(j - 1) * 64];
 	}
 	int k = 0;
 	for (i = 0; i < colorNum; ++i) { // reverse Quantization
@@ -575,7 +578,6 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 			for (k = 0; k < 64; ++k)	buffer2[k] = mcuDatas[i][j * 64 + k];
 			FastIntegerIDCT(buffer2);
 			for (k = 0; k < 64; ++k)	mcuDatas[i][j * 64 + k] = buffer2[k];
-			//FastIntegerIDCT(&mcuDatas[i][j * 64]);
 		}
 	}
 	// YCrCb to RGB
@@ -688,6 +690,7 @@ void QeEncode::getHuffmanDecodeSymbolfromDCAC( short int* out, unsigned char blo
 		++index;
 
 		while (index%64 != 0) {
+
 			value1 = getHuffmanDecodeSymbol(in, bitPointer, ac);
 			if (value1 == 0)	break;
 
@@ -696,10 +699,9 @@ void QeEncode::getHuffmanDecodeSymbolfromDCAC( short int* out, unsigned char blo
 			value3 = readBits((unsigned char*)&value1, &index1, 4);
 			index += value3;
 
-			if (value2 > 0) {
-				out[index] = readBits(in, bitPointer, value2, true, true);
-				++index;
-			}
+			if (value2 > 0)	out[index] = readBits(in, bitPointer, value2, true, true);
+			else			out[index] = 0;
+			++index;
 		}
 		index = (index + 63) / 64 * 64;
 	}
@@ -1080,8 +1082,7 @@ void QeEncode::buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen,
 
 void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, size_t* bitPointer) {
 
-	while (1)
-	{
+	while (1) {
 		unsigned int codeLL = huffmanDecodeSymbol(in, bitPointer, treeLL);
 		if (codeLL < 256)	out->push_back(codeLL); // literals
 
