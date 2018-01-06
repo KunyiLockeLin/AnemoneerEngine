@@ -65,6 +65,7 @@ struct QeAssetShader {
 enum QeAssetType {
 	eAssetModel,
 	eAssetMaterial,
+	eAssetBin,
 	eAssetShader,
 	eAssetTexture,
 	eAssetXML,

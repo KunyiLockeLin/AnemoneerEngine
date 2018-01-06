@@ -2,7 +2,7 @@
 	<title>VulkanText</title>
 	<engine>QueenEngine</engine>
 	<envir FPS="30" width="800" height="600" />
-	<path model="..\data\models\" material="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
+	<path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
 	<defaultShader vert="basev.spv" geom="baseg.spv" frag="basef.spv"/>
 	<initWorld>
 		<billboards>

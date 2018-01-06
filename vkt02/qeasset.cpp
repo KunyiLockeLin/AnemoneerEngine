@@ -643,6 +643,9 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 	case eAssetMaterial:
 		rtn = getXMLValue(3, CONFIG, "path", "material");
 		break;
+	case eAssetBin:
+		rtn = getXMLValue(3, CONFIG, "path", "bin");
+		break;
 	case eAssetShader:
 		rtn = getXMLValue(3, CONFIG, "path", "sharder");
 		break;

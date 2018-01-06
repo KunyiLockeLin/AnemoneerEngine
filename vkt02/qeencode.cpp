@@ -245,8 +245,7 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 
 	while (line != nullptr) {
 
-		if (strncmp(line, "mtllib ", 7) == 0)
-			sscanf_s(line, "mtllib %s", mtlPath, (unsigned int)sizeof(mtlPath));
+		if (strncmp(line, "mtllib ", 7) == 0)	sscanf_s(line, "mtllib %s", mtlPath, (unsigned int)sizeof(mtlPath));
 
 		else if (strncmp(line, "v ", 2) == 0) {
 			sscanf_s(line, "v %f %f %f", &(tempV3.x), &(tempV3.y), &(tempV3.z));
@@ -264,21 +263,10 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 			normalV.push_back(tempV3);
 		}
 		else if (strncmp(line, "f ", 2) == 0) {
-			if (strstr(line, "//")) {
-				sscanf_s(line, "f %d//%d %d//%d %d//%d", &(tempV3p.x), &(tempV3n.x),
-					&(tempV3p.y), &(tempV3n.y), &(tempV3p.z), &(tempV3n.z));
-			}
-			else if (texCoordV.empty()) {
-				sscanf_s(line, "f %d %d %d", &(tempV3p.x), &(tempV3p.y), &(tempV3p.z));
-			}
-			else if (normalV.empty()) {
-				sscanf_s(line, "f %d/%d %d/%d %d/%d", &(tempV3p.x), &(tempV3t.x),
-					&(tempV3p.y), &(tempV3t.y), &(tempV3p.z), &(tempV3t.z));
-			}
-			else {
-				sscanf_s(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &(tempV3p.x), &(tempV3t.x),
-					&(tempV3n.x), &(tempV3p.y), &(tempV3t.y), &(tempV3n.y), &(tempV3p.z), &(tempV3t.z), &(tempV3n.z));
-			}
+			if (strstr(line, "//"))		sscanf_s(line, "f %d//%d %d//%d %d//%d", &(tempV3p.x), &(tempV3n.x), &(tempV3p.y), &(tempV3n.y), &(tempV3p.z), &(tempV3n.z));
+			else if (texCoordV.empty())	sscanf_s(line, "f %d %d %d", &(tempV3p.x), &(tempV3p.y), &(tempV3p.z));
+			else if (normalV.empty())	sscanf_s(line, "f %d/%d %d/%d %d/%d", &(tempV3p.x), &(tempV3t.x), &(tempV3p.y), &(tempV3t.y), &(tempV3p.z), &(tempV3t.z));
+			else						sscanf_s(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &(tempV3p.x), &(tempV3t.x), &(tempV3n.x), &(tempV3p.y), &(tempV3t.y), &(tempV3n.y), &(tempV3p.z), &(tempV3t.z), &(tempV3n.z));
 
 			tempV3p -= 1;
 
@@ -311,7 +299,78 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	QeAssetModel* model = new QeAssetModel();
 
-	std::string bufferInfo = AST->getJSONValue( json, 2, "buffers", "uri" );
+	const char* binData = AST->getJSONValue( json, 2, "buffers", "uri" );
+	char *ret = strrchr((char*)binData, '.');
+	std::vector<char> buf;
+	if (strcmp(ret + 1, "bin") == 0) {
+		std::string _filePath = AST->combinePath(binData, eAssetBin);
+		buf = AST->loadFile(_filePath.c_str());
+		binData = buf.data();
+	}
+	/*
+	componentType			Size in bytes
+	5120 (BYTE)				1
+	5121 (UNSIGNED_BYTE)	1
+	5122 (SHORT)			2
+	5123 (UNSIGNED_SHORT)	2
+	5125 (UNSIGNED_INT)		4
+	5126 (FLOAT)			4
+
+	type 		Number of components
+	"SCALAR" 	1
+	"VEC2" 		2
+	"VEC3" 		3
+	"VEC4" 		4
+	"MAT2" 		4
+	"MAT3" 		9
+	"MAT4" 		16
+	*/
+	unsigned char bufferViews[4];
+	bufferViews[0] = atoi(AST->getJSONValue(json, 3, "meshes", "primitives", "indices"));
+	bufferViews[1] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "POSITION"));
+	bufferViews[2] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "NORMAL"));
+	bufferViews[3] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TEXCOORD_0"));
+	
+	std::vector<QeAssetJSON*>* jaccessors	= AST->getJSONArrayNodes(json, 1, "accessors");
+	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
+	unsigned char index;
+	unsigned int offset, length;
+
+	size_t size = jbufferViews->size();
+	size_t i, j;
+	QeVertex vet;
+	for ( i = 0;i<size; ++i ) {
+		index  = atoi(AST->getJSONValue((*jaccessors)[i], 1, "bufferView"));
+		length = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteLength"));
+		offset = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteOffset"));
+
+		if(index == bufferViews[0]){ // indices
+			unsigned char* dataPos = (unsigned char*)binData + offset;
+			model->indexSize = length;
+			for (j = 0; j < length; ++j) model->indices.push_back( *(dataPos+j) );
+		}
+		else if (index == bufferViews[1]) { // position
+			length /= (4*3);
+			QeVector3f* dataPos = (QeVector3f*)(binData + offset);
+			if (model->vertices.size() < length)	model->vertices.resize(length);
+			for (j = 0; j < length; ++j) {
+				model->vertices[j].pos = *(dataPos + j);
+				model->vertices[j].color = { 1.0f, 1.0f, 1.0f };
+			}
+		}
+		else if (index == bufferViews[2]) { // normal
+			length /= (4*3);
+			QeVector3f* dataPos = (QeVector3f*)(binData + offset);
+			if (model->vertices.size() < length)	model->vertices.resize(length);
+			for (j = 0; j < length; ++j) model->vertices[j].normal = *(dataPos + j);
+		}
+		else if (index == bufferViews[3]) { // texcoord
+			length /= (4*2);
+			QeVector2f* dataPos = (QeVector2f*)(binData + offset);
+			if (model->vertices.size() < length)	model->vertices.resize(length);
+			for (j = 0; j < length; ++j) model->vertices[j].texCoord = *(dataPos + j);
+		}
+	}
 	return model;
 }
 
@@ -334,31 +393,16 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 
 	while (line != nullptr) {
 
-		if (strncmp(line, "map_Kd ", 7) == 0)
-			sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
-
+		if (strncmp(line, "map_Kd ", 7) == 0)	sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
 		else if (strncmp(line, "Ns ", 3) == 0)	sscanf_s(line, "Ns %f", &mtl1.param.x);
-
-		else if (strncmp(line, "Ka ", 3) == 0)
-			sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
-
-		else if (strncmp(line, "Kd ", 3) == 0)
-			sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
-
-		else if (strncmp(line, "Ks ", 3) == 0)
-			sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
-
-		else if (strncmp(line, "Ke ", 3) == 0)
-			sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
-
+		else if (strncmp(line, "Ka ", 3) == 0)	sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
+		else if (strncmp(line, "Kd ", 3) == 0)	sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
+		else if (strncmp(line, "Ks ", 3) == 0)	sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
+		else if (strncmp(line, "Ke ", 3) == 0)	sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
 		else if (strncmp(line, "Ni ", 3) == 0)	sscanf_s(line, "Ni %f", &(mtl1.param.y));
-
 		else if (strncmp(line, "d ", 2) == 0)	sscanf_s(line, "d %f", &(mtl1.param.z));
-
 		else if (strncmp(line, "sv ", 3) == 0)	sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
-
 		else if (strncmp(line, "sg ", 3) == 0)	sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
-
 		else if (strncmp(line, "sf ", 3) == 0)	sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
 
 		line = strtok_s(NULL, "\n", &context);
