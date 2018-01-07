@@ -47,4 +47,5 @@
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
+  - https://github.com/KhronosGroup/glTF-Blender-Exporter
   - http://lodev.org/lodepng/
