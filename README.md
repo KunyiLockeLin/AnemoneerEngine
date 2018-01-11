@@ -23,6 +23,7 @@
   
 # ToDoList:
   - Replace .obj and .mlt files to .glTF for bone animation.
+  - Physically-Based Rendering (PBR)
   - It only can run in debug mode. It crashes in the others. 
   - Memory Management and Object Management are weak.
   - I think the light calculation is not correct in fragment shader.
