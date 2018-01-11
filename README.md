@@ -23,7 +23,7 @@
   
 # ToDoList:
   - Replace .obj and .mlt files to .glTF for bone animation.
-  - It only can run in debug mode. It crashes in the others. 
+  - Physically-Based Rendering (PBR)
   - Memory Management and Object Management are weak.
   - I think the light calculation is not correct in fragment shader.
   - Attach obj.
@@ -47,4 +47,5 @@
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
+  - https://github.com/KhronosGroup/glTF-Blender-Exporter
   - http://lodev.org/lodepng/
