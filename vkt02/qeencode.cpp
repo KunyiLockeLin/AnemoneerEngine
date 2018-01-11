@@ -371,6 +371,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 			for (j = 0; j < length; ++j) model->vertices[j].texCoord = *(dataPos + j);
 		}
 	}
+	// material
 	return model;
 }
 

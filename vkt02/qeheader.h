@@ -21,7 +21,7 @@
 #include <unordered_map>
 
 #define VK_USE_PLATFORM_WIN32_KHR
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 #define KEY_A 0x41
 #define KEY_D 0x44
