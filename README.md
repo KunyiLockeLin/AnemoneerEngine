@@ -50,3 +50,4 @@
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
   - https://github.com/KhronosGroup/glTF-Blender-Exporter
   - http://lodev.org/lodepng/
+  - https://github.com/KhronosGroup/glTF-WebGL-PBR
