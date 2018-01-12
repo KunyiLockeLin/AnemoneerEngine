@@ -19,15 +19,14 @@
   - For model  - obj, mtl.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
-  - Decode deflate, Huffman code.
+  - Decode deflate, Huffman code, png, jpeg.
   
 # ToDoList:
-  - Replace .obj and .mlt files to .glTF for bone animation.
+  - Replace .obj and .mlt files to .glTF.
   - Physically-Based Rendering (PBR)
+  - Skeletal animation.
   - Memory Management and Object Management are weak.
-  - I think the light calculation is not correct in fragment shader.
   - Attach obj.
-  - Bone animation.
   - Normal map and specular map.
   - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - Separate different libraries.
@@ -35,8 +34,10 @@
   - Collision
   - Frustum Culling
   - Room
-  - Timer
+  - Terrian system
   - HDR
+  - Shadow
+  - reflection and CubeMap
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
