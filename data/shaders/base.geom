@@ -6,13 +6,13 @@ const int MAX_VIEWPORT_NUM = 9;
 layout (triangles, invocations = MAX_VIEWPORT_NUM) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-
 layout( binding = 0) uniform QeUniformBufferObject {
 	mat4 model;
     mat4 view[MAX_VIEWPORT_NUM];
     mat4 proj[MAX_VIEWPORT_NUM];
 	mat4 normal[MAX_VIEWPORT_NUM];
 	vec4 cameraPos[MAX_VIEWPORT_NUM];
+	vec4 ambientColor;
 	vec4 param; // 1: viewportNum, 2:billboardType
 } ubo;
 

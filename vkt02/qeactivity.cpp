@@ -4,6 +4,7 @@
 void QeActivity::init() {
 
 	light = OBJMGR->getLight(0);
+	ambientColor = {0.2f, 0.2f, 0.2f, 1.0f};
 
 	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "models");
 

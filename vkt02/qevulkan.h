@@ -38,6 +38,9 @@ public:
 	const bool enableValidationLayers = true;
 #endif
 
+	const int descriptorSetBufferNumber = 3;
+	const int descriptorSetTextureNumber = 1;
+
 	void init();
 	void update(float time);
 	void deviceWaitIdle();

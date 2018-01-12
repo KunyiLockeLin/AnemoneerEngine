@@ -9,7 +9,7 @@ public:
 	~QueenEngine() {}
 	void run();
 
-	QeActivity* activity;
+	QeActivity* currentActivity;
 
 	int currentFPS;
 	std::chrono::steady_clock::time_point lastTime;

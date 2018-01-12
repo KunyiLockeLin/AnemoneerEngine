@@ -111,7 +111,7 @@ void QeModel::init(const char* _filename) {
 	samplersp[0] = modelData->pMaterial->pDiffuseMap->textureSampler;
 	imageViews[0] = modelData->pMaterial->pDiffuseMap->textureImageView;
 
-	VLK->updateDescriptorSet(buffers, buffersSize, 3, samplersp, imageViews, 1, descriptorSet);
+	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
 	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
 	
 	pos = QeVector3f(0, 0, 0);
@@ -143,6 +143,7 @@ void QeModel::updateUniformBuffer() {
 	int size8 = sizeof(QeUniformBufferObject);
 	int size9 = sizeof(ubo);
 	setMatModel();
+	ubo.ambientColor = QE->currentActivity->ambientColor;
 	ubo.param.x = float(VP->currentNum);
 	for (int i = 0; i < VP->currentNum; ++i) {
 		ubo.view[i] = VP->cameras[i]->getMatView();
@@ -156,8 +157,10 @@ void QeModel::updateUniformBuffer() {
 	}
 	VLK->setMemory(uboBufferMemory,(void*)&ubo, sizeof(ubo));
 	
-	QeDataLight light = OBJMGR->getLight(0)->data;
-	VLK->setMemory(lightBufferMemory, (void*)&light, sizeof(light));
+	QeDataLight* light = &OBJMGR->getLight(0)->data;
+	VLK->setMemory(lightBufferMemory, (void*)light, sizeof(*light));
 
 	VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
+
+	QeVector4f* ambientColor = &QE->currentActivity->ambientColor;
 }

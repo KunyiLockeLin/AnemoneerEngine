@@ -34,7 +34,7 @@ struct QeDataMaterial {
 	QeVector4f diffuse;
 	QeVector4f specular;
 	QeVector4f emissive;
-	QeVector4f param; // 1: specularExponent, 2: refraction, 3: alpha,
+	QeVector4f param; // 1: specularExponent(1f), 2: refraction(1f), 3: alpha(1f),
 };
 
 struct QeAssetMaterial {

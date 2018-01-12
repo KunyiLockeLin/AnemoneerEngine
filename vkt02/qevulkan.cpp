@@ -8,7 +8,7 @@ void QeVulkan::init() {
 
 	pickPhysicalDevice();
 	createLogicalDevice();
-	createDescriptorSetLayout(3, 1);
+	createDescriptorSetLayout(descriptorSetBufferNumber, descriptorSetTextureNumber);
 	createPipeline();
 	createCommandPool();
 

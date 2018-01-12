@@ -93,8 +93,8 @@ void QeCamera::init() {
 	fov = 45.0f;
 	fnear = 0.1f;
 	ffar = 1000.0f;
-	type = eCameraFirstPerson;
-	//type = eCameraThirdPerson;
+	//type = eCameraFirstPerson;
+	type = eCameraThirdPerson;
 }
 
 void QeCamera::update(float time) {

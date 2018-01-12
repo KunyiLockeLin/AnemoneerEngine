@@ -1,6 +1,18 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+const int MAX_VIEWPORT_NUM = 9;
+
+layout( binding = 0) uniform QeUniformBufferObject {
+	mat4 model;
+    mat4 view[MAX_VIEWPORT_NUM];
+    mat4 proj[MAX_VIEWPORT_NUM];
+	mat4 normal[MAX_VIEWPORT_NUM];
+	vec4 cameraPos[MAX_VIEWPORT_NUM];
+	vec4 ambientColor;
+	vec4 param; // 1: viewportNum, 2:billboardType
+} ubo;
+
 layout( binding = 1) uniform QeDataLight {
     vec4 pos;
     vec4 dir;
@@ -57,7 +69,7 @@ void main() {
 	float cosTheta = clamp(dot(inNormal,vLighttoVertex), 0, 1);
 
 	vec4 texColor = texture(texSampler, inTexCoord);
-	vec4 ambient =  mtl.ambient*texColor;
+	vec4 ambient =  mtl.ambient*ubo.ambientColor*texColor;
 	vec4 diffuse = mtl.diffuse*texColor*cosTheta;
 
 	vec3 E = normalize(inEye);

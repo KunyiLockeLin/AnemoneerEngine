@@ -30,7 +30,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		VLK->recreateSwapChain();
 		break;
 	default:
-		QE->activity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
+		QE->currentActivity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
 		break;
 	}
 }

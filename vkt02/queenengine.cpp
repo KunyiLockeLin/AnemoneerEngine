@@ -8,8 +8,8 @@ void QueenEngine::run() {
 	VLK->init();
 	VP->init();
 	
-	activity = OBJMGR->getActivity(0);
-	activity->init();
+	currentActivity = OBJMGR->getActivity(0);
+	currentActivity->init();
 
 	mainLoop();
 	cleanup();
@@ -27,7 +27,7 @@ void QueenEngine::mainLoop() {
 			lastTime = currentTime;
 			currentFPS = int(1 / time);
 			
-			activity->update(time);
+			currentActivity->update(time);
 			VP->update(time);
 			VLK->update(time);
 			WIN->update(time);
