@@ -127,5 +127,8 @@
     <None Include="..\data\shaders\billboard.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\pbr.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

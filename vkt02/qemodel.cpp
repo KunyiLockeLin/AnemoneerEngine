@@ -99,17 +99,26 @@ void QeModel::init(const char* _filename) {
 	
 	VkBuffer buffers[3];
 	int buffersSize[3];
-	buffers[0] = uboBuffer;
-	buffersSize[0] = sizeof(QeUniformBufferObject);
-	buffers[1] = lightBuffer;
-	buffersSize[1] = sizeof(QeDataLight);
-	buffers[2] = modelData->pMaterial->materialBuffer;
-	buffersSize[2] = sizeof(QeDataMaterial);
-
 	VkSampler samplersp[1];
 	VkImageView imageViews[1];
-	samplersp[0] = modelData->pMaterial->pDiffuseMap->textureSampler;
-	imageViews[0] = modelData->pMaterial->pDiffuseMap->textureImageView;
+
+	buffers[0]		= uboBuffer;
+	buffersSize[0]	= sizeof(QeUniformBufferObject);
+	buffers[1]		= lightBuffer;
+	buffersSize[1]	= sizeof(QeDataLight);
+
+	if (modelData->pMaterial != nullptr) {
+		buffers[2]		= modelData->pMaterial->materialBuffer;
+		buffersSize[2]	= sizeof(QeDataMaterial);
+		samplersp[0]	= modelData->pMaterial->pDiffuseMap->textureSampler;
+		imageViews[0]	= modelData->pMaterial->pDiffuseMap->textureImageView;
+	}
+	else if (modelData->pPBRMaterial != nullptr) {
+		buffers[2]		= modelData->pPBRMaterial->materialBuffer;
+		buffersSize[2]	= sizeof(QeDataPBRMaterial);
+		samplersp[0]	= modelData->pPBRMaterial->pBaseColorMap->textureSampler;
+		imageViews[0]	= modelData->pPBRMaterial->pBaseColorMap->textureImageView;
+	}
 
 	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
 	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
@@ -160,7 +169,8 @@ void QeModel::updateUniformBuffer() {
 	QeDataLight* light = &OBJMGR->getLight(0)->data;
 	VLK->setMemory(lightBufferMemory, (void*)light, sizeof(*light));
 
-	VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
-
-	QeVector4f* ambientColor = &QE->currentActivity->ambientColor;
+	if (modelData->pMaterial != nullptr)	
+		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
+	else if (modelData->pPBRMaterial != nullptr)
+		VLK->setMemory(modelData->pPBRMaterial->materialBufferMemory, (void*)&modelData->pPBRMaterial->value, sizeof(modelData->pPBRMaterial->value));
 }

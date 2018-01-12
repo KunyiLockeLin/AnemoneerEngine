@@ -372,6 +372,27 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		}
 	}
 	// material
+	QeAssetPBRMaterial *pMaterial = new QeAssetPBRMaterial();
+	model->pPBRMaterial = pMaterial;
+	
+	int baseColorTextureIndex = atoi(AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index"));
+	std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
+	const char* baseColorTexturePath = AST->getJSONValue((*imageJSON)[baseColorTextureIndex], 1, "uri");
+	pMaterial->pBaseColorMap = AST->getImage(baseColorTexturePath);
+	char* pEnd;
+	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
+	if (baseColorJ != nullptr) {
+		pMaterial->value.baseColor.x = strtof((*baseColorJ)[0].c_str(), &pEnd);
+		pMaterial->value.baseColor.y = strtof((*baseColorJ)[1].c_str(), &pEnd);
+		pMaterial->value.baseColor.z = strtof((*baseColorJ)[2].c_str(), &pEnd);
+		pMaterial->value.baseColor.w = strtof((*baseColorJ)[3].c_str(), &pEnd);
+	}
+	pMaterial->value.metallic	= strtof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor"), &pEnd);
+	pMaterial->value.roughness	= strtof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor"), &pEnd);
+	pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
+	pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom"));
+	pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag"));
+
 	return model;
 }
 

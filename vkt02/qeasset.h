@@ -26,7 +26,8 @@ struct QeAssetModel {
 	VkDeviceMemory indexBufferMemory;
 	size_t indexSize;
 
-	QeAssetMaterial* pMaterial;
+	QeAssetMaterial* pMaterial = nullptr;
+	QeAssetPBRMaterial* pPBRMaterial = nullptr;
 };
 
 struct QeDataMaterial {
@@ -43,6 +44,25 @@ struct QeAssetMaterial {
 	VkBuffer materialBuffer;
 	VkDeviceMemory materialBufferMemory;
 	QeAssetImage* pDiffuseMap;
+	QeAssetShader* pShaderVert;
+	QeAssetShader* pShaderGeom;
+	QeAssetShader* pShaderFrag;
+};
+
+struct QeDataPBRMaterial {
+
+	QeVector4f baseColor;
+	float metallic;
+	float roughness;
+	QeVector4f emissive;
+};
+
+struct QeAssetPBRMaterial {
+
+	QeDataPBRMaterial value;
+	VkBuffer materialBuffer;
+	VkDeviceMemory materialBufferMemory;
+	QeAssetImage* pBaseColorMap;
 	QeAssetShader* pShaderVert;
 	QeAssetShader* pShaderGeom;
 	QeAssetShader* pShaderFrag;

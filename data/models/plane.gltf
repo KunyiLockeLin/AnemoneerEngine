@@ -119,17 +119,26 @@
             "uri" : "plane.bin"
         }
     ], 
+    "images" : [
+        {
+            "uri" : "light.png"
+        }
+    ], 
     "materials" : [
         {
-            "name" : "Material", 
+            "name" : "Material.001", 
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
-                    0.800000011920929, 
-                    0.800000011920929, 
-                    0.800000011920929, 
+                    0.8928479552268982, 
+                    1.0, 
+                    0.05332355573773384, 
                     1.0
                 ], 
-                "metallicFactor" : 0.0
+                "baseColorTexture" : {
+                    "index" : 0
+                }, 
+                "metallicFactor" : 0.5, 
+                "roughnessFactor" : 0.30000001192092896
             }
         }
     ], 
@@ -162,6 +171,9 @@
             ]
         }
     ], 
+    "samplers" : [
+        {}
+    ], 
     "scene" : 0, 
     "scenes" : [
         {
@@ -169,6 +181,12 @@
             "nodes" : [
                 0
             ]
+        }
+    ], 
+    "textures" : [
+        {
+            "sampler" : 0, 
+            "source" : 0
         }
     ]
 }
