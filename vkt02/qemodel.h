@@ -42,6 +42,7 @@ public:
 	~QeModel() {}
 
 	void init(const char* _filename);
+	void setProperty(QeAssetXML* _property);
 	void cleanup();
 	void setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size);
 	void move(QeVector3f _pos);

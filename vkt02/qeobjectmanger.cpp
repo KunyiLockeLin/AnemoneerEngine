@@ -12,12 +12,13 @@ QeCamera* QeObjectManger::getCamera(int _id) {
 	return newCamera;
 }
 
-QeLight* QeObjectManger::getLight(int _id) {
+QeLight* QeObjectManger::getLight(int _id, QeAssetXML* _property) {
 	std::map<int, QeLight*>::iterator it = mgrLights.find(_id);
 	if (it != mgrLights.end())	return it->second;
 
 	QeLight* newLight = new QeLight(key);
 	newLight->init();
+	newLight->setProperty(_property);
 	mgrLights[_id] = newLight;
 
 	return newLight;
@@ -34,7 +35,7 @@ QeActivity* QeObjectManger::getActivity(int _id) {
 	return newActivity;
 }
 
-QeModel* QeObjectManger::getModel(const char* _name ) {
+QeModel* QeObjectManger::getModel(const char* _name, QeAssetXML* _property) {
 
 	QeModel* newModel = nullptr;
 	if (!mgrInactiveModels.empty()) {
@@ -45,6 +46,7 @@ QeModel* QeObjectManger::getModel(const char* _name ) {
 		newModel = new QeModel(key);
 
 	newModel->init(_name);
+	if(_property != nullptr) newModel->setProperty(_property);
 	mgrActiveModels.push_back(newModel);
 
 	VLK->updateDrawCommandBuffers();
@@ -61,8 +63,9 @@ QeBillboard* QeObjectManger::getBillboard(int _id) {
 	else
 		newModel = new QeBillboard(key);
 
-	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "billboards");
-	newModel->init(node->nexts[0]->value.c_str());
+	QeAssetXML* node = AST->getXMLNode(2, AST->CONFIG, "billboard");
+	newModel->init(AST->getXMLValue(node, 1, "obj"));
+	newModel->setProperty(node);
 	mgrActiveBillboards.push_back(newModel);
 
 	VLK->updateDrawCommandBuffers();

@@ -3,16 +3,21 @@
 
 void QeActivity::init() {
 
-	light = OBJMGR->getLight(0);
-	ambientColor = {0.2f, 0.2f, 0.2f, 1.0f};
+	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, name, "ambientColor");
+	if (node != nullptr)
+		ambientColor = { float(atof(AST->getXMLValue(node, 1, "r"))), float(atof(AST->getXMLValue(node, 1, "g"))), float(atof(AST->getXMLValue(node, 1, "b"))), 1.0f};
 
-	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "initWorld", "models");
+	node = AST->getXMLNode(3, AST->CONFIG, name, "lights");
 
 	if (node != nullptr) {
-		for (int index = 0; index < node->nexts.size(); ++index) {
-			QeModel* model = OBJMGR->getModel(node->nexts[index]->value.c_str());
-			model->setPosition(QeVector3f(2.0f * index, 2.0f * index, 2.0f * index));
-		}
+		for (int index = 0; index < node->nexts.size(); ++index)
+			QeLight* light = OBJMGR->getLight(index, node->nexts[index]);
+	}
+
+	node = AST->getXMLNode(3, AST->CONFIG, name, "models");
+	if (node != nullptr) {
+		for (int index = 0; index < node->nexts.size(); ++index)
+			QeModel* model = OBJMGR->getModel( AST->getXMLValue(node->nexts[index], 1, "obj"), node->nexts[index]);
 	}
 }
 

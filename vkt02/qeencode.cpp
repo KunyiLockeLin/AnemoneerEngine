@@ -379,19 +379,19 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
 	const char* baseColorTexturePath = AST->getJSONValue((*imageJSON)[baseColorTextureIndex], 1, "uri");
 	pMaterial->pBaseColorMap = AST->getImage(baseColorTexturePath);
-	char* pEnd;
+
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
 	if (baseColorJ != nullptr) {
-		pMaterial->value.baseColor.x = strtof((*baseColorJ)[0].c_str(), &pEnd);
-		pMaterial->value.baseColor.y = strtof((*baseColorJ)[1].c_str(), &pEnd);
-		pMaterial->value.baseColor.z = strtof((*baseColorJ)[2].c_str(), &pEnd);
-		pMaterial->value.baseColor.w = strtof((*baseColorJ)[3].c_str(), &pEnd);
+		pMaterial->value.baseColor.x = float(atof((*baseColorJ)[0].c_str()));
+		pMaterial->value.baseColor.y = float(atof((*baseColorJ)[1].c_str()));
+		pMaterial->value.baseColor.z = float(atof((*baseColorJ)[2].c_str()));
+		pMaterial->value.baseColor.w = float(atof((*baseColorJ)[3].c_str()));
 	}
-	pMaterial->value.metallic	= strtof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor"), &pEnd);
-	pMaterial->value.roughness	= strtof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor"), &pEnd);
-	pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
-	pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom"));
-	pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag"));
+	pMaterial->value.metallic	= float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor")));
+	pMaterial->value.roughness	= float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor")));
+	//pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert"));
+	//pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom"));
+	//pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag"));
 
 	return model;
 }
@@ -407,9 +407,9 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 	mtl1.specular.w = 1;
 	mtl1.emissive.w = 1;
 	char diffuseMapPath[512];
-	char sv[512] = "";
-	char sg[512] = "";
-	char sf[512] = "";
+	//char sv[512] = "";
+	//char sg[512] = "";
+	//char sf[512] = "";
 	char *context;
 	char* line = strtok_s(buffer, "\n", &context);
 
@@ -423,9 +423,9 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 		else if (strncmp(line, "Ke ", 3) == 0)	sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
 		else if (strncmp(line, "Ni ", 3) == 0)	sscanf_s(line, "Ni %f", &(mtl1.param.y));
 		else if (strncmp(line, "d ", 2) == 0)	sscanf_s(line, "d %f", &(mtl1.param.z));
-		else if (strncmp(line, "sv ", 3) == 0)	sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
-		else if (strncmp(line, "sg ", 3) == 0)	sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
-		else if (strncmp(line, "sf ", 3) == 0)	sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
+		//else if (strncmp(line, "sv ", 3) == 0)	sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
+		//else if (strncmp(line, "sg ", 3) == 0)	sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
+		//else if (strncmp(line, "sf ", 3) == 0)	sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
 
 		line = strtok_s(NULL, "\n", &context);
 	}
@@ -433,15 +433,12 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 	mtl->value = mtl1;
 
 	if (strlen(diffuseMapPath) != 0)	mtl->pDiffuseMap = AST->getImage(diffuseMapPath);
-
-	if (strlen(sv) == 0)	mtl->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
-	else					mtl->pShaderVert = AST->getShader(sv);
-
-	if (strlen(sg) == 0)	mtl->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom"));
-	else					mtl->pShaderGeom = AST->getShader(sg);
-
-	if (strlen(sf) == 0)	mtl->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag"));
-	else					mtl->pShaderFrag = AST->getShader(sf);
+	//if (strlen(sv) == 0)	mtl->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
+	//else					mtl->pShaderVert = AST->getShader(sv);
+	//if (strlen(sg) == 0)	mtl->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom"));
+	//else					mtl->pShaderGeom = AST->getShader(sg);
+	//if (strlen(sf) == 0)	mtl->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag"));
+	//else					mtl->pShaderFrag = AST->getShader(sf);
 
 	return mtl;
 }

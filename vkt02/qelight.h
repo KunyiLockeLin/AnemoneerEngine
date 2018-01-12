@@ -19,12 +19,12 @@ class QeLight
 public:
 	QeLight(QeObjectMangerKey& _key) {}
 	~QeLight() {}
-
+	int speed = 0;
 	QeDataLight data;
 	void init();
+	void setProperty(QeAssetXML* _property);
 	void update(float time);
 
 	QeBillboard* billboard;
-
 };
 

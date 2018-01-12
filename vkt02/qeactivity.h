@@ -8,7 +8,7 @@ public:
 	QeActivity(QeObjectMangerKey& _key) {}
 	~QeActivity() {}
 
-	QeLight*	light;
+	const char* name = "activity1";
 	QeVector4f	ambientColor;
 
 	void init();

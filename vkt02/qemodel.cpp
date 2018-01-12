@@ -121,16 +121,43 @@ void QeModel::init(const char* _filename) {
 	}
 
 	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
-	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
-	
+
 	pos = QeVector3f(0, 0, 0);
 	face = 0.0f;
 	up = 0.0f;
 	size = QeVector3f(1, 1, 1);
 }
 
-void QeModel::createDescriptorBuffer() {
+void QeModel::setProperty(QeAssetXML* _property) {
+
+	const char* c;
+
+	c = AST->getXMLValue(_property, 1, "shadervert");
+	if( c == nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert"));
+	else				modelData->pMaterial->pShaderVert = AST->getShader(c);
+
+	c = AST->getXMLValue(_property, 1, "shadergeom");
+	if (c == nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom"));
+	else				modelData->pMaterial->pShaderGeom = AST->getShader(c);
+
+	c = AST->getXMLValue(_property, 1, "shaderfrag");
+	if (c == nullptr) {
+		if (modelData->pMaterial	!= nullptr)			modelData->pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basefrag"));
+		else if (modelData->pPBRMaterial != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag"));
+	}
+	else				modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	
+	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
+
+	c = AST->getXMLValue(_property, 1, "posX");
+	if (c != nullptr)	pos.x = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "posY");
+	if (c != nullptr)	pos.y = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "posZ");
+	if (c != nullptr)	pos.z = float(atof(c));
+}
+
+void QeModel::createDescriptorBuffer() {
 	VLK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer, uboBufferMemory);
 	VLK->createUniformBuffer(sizeof(QeDataLight), lightBuffer, lightBufferMemory);
 }

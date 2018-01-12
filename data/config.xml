@@ -1,16 +1,19 @@
 <confing>
 	<title>VulkanText</title>
 	<engine>QueenEngine</engine>
-	<envir FPS="30" width="800" height="600" />
+	<envir FPS="30" width="1280" height="720" />
 	<path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-	<initWorld>
-		<billboards>
-			<e>plane.obj</e>
-		</billboards>
+	<defaultShader basevert="basev.spv" basegeom="baseg.spv" basefrag="basef.spv" pbrfrag="pbrf.spv"/>
+	<billboard obj= "plane.obj" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
+	
+	<activity1>
+		<ambientColor r="0.2" g="0.2" b="0.2"/>
 		<models>
-			<e>ball.obj</e>
-			<e>box.obj</e>
+			<e obj= "box.obj" posX="1" posY="1" posZ="1" />
+			<e obj= "ball.obj" posX="-1" posY="-1" posZ="-1" />
 		</models>
-	</initWorld>
-	<defaultShader vert="basev.spv" geom="baseg.spv" frag="basef.spv" pbrfrag="pbrf.spv"/>
+		<lights>
+			<e show="1" type="0" posX="5" posY="0" posZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="1000" coneAngle="90" speed="30"/>
+		</lights>
+	</activity1>
 </confing>
