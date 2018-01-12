@@ -119,22 +119,26 @@
             "uri" : "box.bin"
         }
     ], 
+    "images" : [
+        {
+            "uri" : "wood.jpg"
+        }
+    ], 
     "materials" : [
         {
-            "emissiveFactor" : [
-                0.0, 
-                80.0, 
-                0.0
-            ], 
-            "name" : "Material", 
+            "name" : "Material.001", 
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
-                    0.0, 
-                    0.800000011920929, 
+                    1.0, 
+                    0.26065436005592346, 
                     0.0, 
                     1.0
                 ], 
-                "metallicFactor" : 0.0
+                "baseColorTexture" : {
+                    "index" : 0
+                }, 
+                "metallicFactor" : 0.30000001192092896, 
+                "roughnessFactor" : 0.699999988079071
             }
         }
     ], 
@@ -161,6 +165,9 @@
             "name" : "Cube"
         }
     ], 
+    "samplers" : [
+        {}
+    ], 
     "scene" : 0, 
     "scenes" : [
         {
@@ -168,6 +175,12 @@
             "nodes" : [
                 0
             ]
+        }
+    ], 
+    "textures" : [
+        {
+            "sampler" : 0, 
+            "source" : 0
         }
     ]
 }
