@@ -19,7 +19,7 @@
   - For model  - obj, mtl.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
-  - Decode deflate, Huffman code.
+  - Decode deflate, Huffman code, png, jpeg.
   
 # ToDoList:
   - Replace .obj and .mlt files to .glTF.
