@@ -325,12 +325,13 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	"MAT3" 		9
 	"MAT4" 		16
 	*/
-	unsigned char bufferViews[4];
+	unsigned char bufferViews[5];
 	bufferViews[0] = atoi(AST->getJSONValue(json, 3, "meshes", "primitives", "indices"));
 	bufferViews[1] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "POSITION"));
 	bufferViews[2] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "NORMAL"));
 	bufferViews[3] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TEXCOORD_0"));
-	
+	bufferViews[4] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TANGENT"));
+
 	std::vector<QeAssetJSON*>* jaccessors	= AST->getJSONArrayNodes(json, 1, "accessors");
 	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
 	unsigned char index;
@@ -369,6 +370,12 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 			QeVector2f* dataPos = (QeVector2f*)(binData + offset);
 			if (model->vertices.size() < length)	model->vertices.resize(length);
 			for (j = 0; j < length; ++j) model->vertices[j].texCoord = *(dataPos + j);
+		}
+		else if (index == bufferViews[4]) { // tangent
+			length /= (4 * 4);
+			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
+			if (model->vertices.size() < length)	model->vertices.resize(length);
+			for (j = 0; j < length; ++j) model->vertices[j].tangent = *(dataPos + j);
 		}
 	}
 	// material

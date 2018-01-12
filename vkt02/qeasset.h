@@ -8,10 +8,11 @@ struct QeVertex {
 	QeVector3f color;
 	QeVector2f texCoord;
 	QeVector3f normal;
+	QeVector4f tangent;
 
 	QeVertex() {}
 	static VkVertexInputBindingDescription getBindingDescription();
-	static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions();
+	static std::array<VkVertexInputAttributeDescription, 5> getAttributeDescriptions();
 	bool operator==(const QeVertex& other) const; 
 };
 
