@@ -15,11 +15,12 @@
   - Comptuer Graphics's power is by Vulkan. VulkanSDK is only the third party llibrary.
   - Support mutli-viewports.
   - Support simple light and camera control.
-  - Run vertex, fragment, and geometry shader.
+  - Run vertex, geometry, fragment shader.
   - For model  - obj, mtl.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
+  - Math library.
   
 # ToDoList:
   - Replace .obj and .mlt files to .glTF.
