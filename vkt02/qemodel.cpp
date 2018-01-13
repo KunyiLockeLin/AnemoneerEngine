@@ -133,19 +133,25 @@ void QeModel::setProperty(QeAssetXML* _property) {
 	const char* c;
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
-	if( c == nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert"));
-	else				modelData->pMaterial->pShaderVert = AST->getShader(c);
+	if (c == nullptr) {
+		if (modelData->pMaterial != nullptr)			modelData->pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert"));
+		else if (modelData->pPBRMaterial != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrvert"));
+	}
+	else	modelData->pMaterial->pShaderVert = AST->getShader(c);
 
 	c = AST->getXMLValue(_property, 1, "shadergeom");
-	if (c == nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom"));
-	else				modelData->pMaterial->pShaderGeom = AST->getShader(c);
+	if (c == nullptr) {
+		if (modelData->pMaterial != nullptr)			modelData->pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom"));
+		else if (modelData->pPBRMaterial != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom"));
+	}
+	else	modelData->pMaterial->pShaderGeom = AST->getShader(c);
 
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
 		if (modelData->pMaterial	!= nullptr)			modelData->pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basefrag"));
 		else if (modelData->pPBRMaterial != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag"));
 	}
-	else				modelData->pMaterial->pShaderFrag = AST->getShader(c);
+	else	modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	
 	graphicsPipeline = VLK->createGraphicsPipeline(modelData->pMaterial->pShaderVert->shader, modelData->pMaterial->pShaderGeom->shader, modelData->pMaterial->pShaderFrag->shader);
 

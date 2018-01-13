@@ -188,6 +188,8 @@
     <None Include="..\data\shaders\billboard.frag" />
     <None Include="..\data\shaders\billboard.geom" />
     <None Include="..\data\shaders\pbr.frag" />
+    <None Include="..\data\shaders\pbr.geom" />
+    <None Include="..\data\shaders\pbr.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

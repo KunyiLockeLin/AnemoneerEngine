@@ -130,5 +130,11 @@
     <None Include="..\data\shaders\pbr.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\pbr.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\pbr.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
