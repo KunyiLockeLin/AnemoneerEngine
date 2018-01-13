@@ -1052,28 +1052,35 @@ VkDescriptorPool QeVulkan::createDescriptorPool() {
 	return descriptorPool;
 }
 
-VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShaderModule& geomShader, VkShaderModule& fragShader, VkBool32 bAlpha, VkBool32 bDepthTest) {
+VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest) {
 
-	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
-	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-	vertShaderStageInfo.module = vertShader;
-	vertShaderStageInfo.pName = "main";
+	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
-	VkPipelineShaderStageCreateInfo geomShaderStageInfo = {};
-	geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-	geomShaderStageInfo.module = geomShader;
-	geomShaderStageInfo.pName = "main";
+	if (vertShader != nullptr) {
+		VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
+		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+		vertShaderStageInfo.module = *vertShader;
+		vertShaderStageInfo.pName = "main";
+		shaderStages.push_back(vertShaderStageInfo);
+	}
 
-	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
-	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	fragShaderStageInfo.module = fragShader;
-	fragShaderStageInfo.pName = "main";
-
-	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, geomShaderStageInfo, fragShaderStageInfo };
-
+	if (geomShader != nullptr) {
+		VkPipelineShaderStageCreateInfo geomShaderStageInfo = {};
+		geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
+		geomShaderStageInfo.module = *geomShader;
+		geomShaderStageInfo.pName = "main";
+		shaderStages.push_back(geomShaderStageInfo);
+	}
+	if (fragShader != nullptr) {
+		VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
+		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+		fragShaderStageInfo.module = *fragShader;
+		fragShaderStageInfo.pName = "main";
+		shaderStages.push_back(fragShaderStageInfo);
+	}
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
@@ -1160,8 +1167,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule& vertShader, VkShader
 
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-	pipelineInfo.stageCount = 3;
-	pipelineInfo.pStages = shaderStages;
+	pipelineInfo.stageCount = (uint32_t)shaderStages.size();
+	pipelineInfo.pStages = shaderStages.data();
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &VP->viewportState;

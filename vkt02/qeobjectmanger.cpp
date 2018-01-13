@@ -119,13 +119,13 @@ void QeObjectManger::recreateSwapChain() {
 
 	std::vector<QeModel*>::iterator it = mgrActiveModels.begin();
 	while (it != mgrActiveModels.end()) {
-		(*it)->recreateSwapChain();
+		(*it)->createSwapChain();
 		++it;
 	}
 	
 	it = mgrActiveBillboards.begin();
 	while (it != mgrActiveBillboards.end()) {
-		(*it)->recreateSwapChain();
+		(*it)->createSwapChain();
 		++it;
 	}
 	VLK->updateDrawCommandBuffers();

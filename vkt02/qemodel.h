@@ -55,6 +55,6 @@ public:
 	void setSize(QeVector3f _size);
 	virtual void setMatModel();
 	void cleanupSwapChain();
-	void recreateSwapChain();
+	void createSwapChain();
 };
 
