@@ -332,6 +332,28 @@ QeVector4f& QeVector4f::operator=(const QeVector3f& other) {
 	z = other.z;
 	return *this;
 }
+QeVector4f& QeVector4f::operator+=(const QeVector3f& other) {
+	x -= other.x;
+	y -= other.y;
+	z -= other.z;
+	return *this;
+}
+QeVector4f QeVector4f::operator+(const QeVector3f& other) {
+	QeVector4f _new;
+	_new.x = x + other.x;
+	_new.y = y + other.y;
+	_new.z = z + other.z;
+	_new.z = z;
+	return _new;
+}
+QeVector4f QeVector4f::operator-(const QeVector3f& other) {
+	QeVector4f _new;
+	_new.x = x - other.x;
+	_new.y = y - other.y;
+	_new.z = z - other.z;
+	_new.z = z;
+	return _new;
+}
 
 QeMatrix4x4f::QeMatrix4x4f() :_00(1.0f), _01(0.0f), _02(0.0f), _03(0.0f),
 		_10(0.0f), _11(1.0f), _12(0.0f), _13(0.0f),

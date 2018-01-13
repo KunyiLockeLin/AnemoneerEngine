@@ -5,6 +5,7 @@ void QeLight::init() {
 	data.dir	= QeVector4f(1, 1, 1, 1);
 	data.color	= QeVector4f(1, 1, 1, 1);
 	data.param	= QeVector4f(0, 1, 1, 1);
+	rotateCenter= QeVector3f(0, 0, 0);
 }
 
 void QeLight::setProperty(QeAssetXML* _property) {
@@ -31,6 +32,13 @@ void QeLight::setProperty(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "posZ");
 	if (c != nullptr)	data.pos.z = float(atof(c));
 
+	c = AST->getXMLValue(_property, 1, "rotateCenterX");
+	if (c != nullptr)	rotateCenter.x = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "rotateCenterY");
+	if (c != nullptr)	rotateCenter.y = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "rotateCenterZ");
+	if (c != nullptr)	rotateCenter.z = float(atof(c));
+
 	c = AST->getXMLValue(_property, 1, "dirX");
 	if (c != nullptr)	data.dir.x = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "dirY");
@@ -51,10 +59,13 @@ void QeLight::setProperty(QeAssetXML* _property) {
 
 void QeLight::update(float time) {
 
-	float angle = -time * speed;
-	QeMatrix4x4f mat;
-	mat *= MATH->rotateZ(angle);
-	data.pos = mat*data.pos;
-
+	if (speed != 0) {
+		float angle = -time * speed;
+		QeMatrix4x4f mat;
+		mat *= MATH->rotateZ(angle);
+		QeVector4f pos = data.pos - rotateCenter;
+		pos = mat*pos;
+		data.pos = pos + rotateCenter;
+	}
 	if (billboard != nullptr) billboard->pos = data.pos;
 }

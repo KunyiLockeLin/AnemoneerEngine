@@ -67,6 +67,9 @@ struct QeVector4f {
 	QeVector4f(const QeVector3f& other, float _w);
 
 	QeVector4f& operator=(const QeVector3f& other);
+	QeVector4f& operator+=(const QeVector3f& other);
+	QeVector4f operator+(const QeVector3f& other);
+	QeVector4f operator-(const QeVector3f& other);
 };
 
 struct QeMatrix4x4f {

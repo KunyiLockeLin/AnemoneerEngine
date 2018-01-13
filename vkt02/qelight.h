@@ -20,6 +20,7 @@ public:
 	QeLight(QeObjectMangerKey& _key) {}
 	~QeLight() {}
 	int speed = 0;
+	QeVector3f rotateCenter;
 	QeDataLight data;
 	void init();
 	void setProperty(QeAssetXML* _property);
