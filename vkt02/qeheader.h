@@ -31,6 +31,7 @@
 #define KEY_S 0x53
 #define KEY_W 0x57
 
+//	VLK->deviceProperties.limits.maxViewports;  VkPhysicalDeviceLimits::maxViewports
 const int MAX_VIEWPORT_NUM = 9;
 
 struct QeVector2i;
