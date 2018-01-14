@@ -75,6 +75,174 @@
                 0.0
             ], 
             "type" : "VEC2"
+        }, 
+        {
+            "bufferView" : 5, 
+            "componentType" : 5123, 
+            "count" : 204, 
+            "max" : [
+                2, 
+                2, 
+                2, 
+                0
+            ], 
+            "min" : [
+                0, 
+                0, 
+                0, 
+                0
+            ], 
+            "type" : "VEC4"
+        }, 
+        {
+            "bufferView" : 6, 
+            "componentType" : 5126, 
+            "count" : 204, 
+            "max" : [
+                0.9792311191558838, 
+                0.9726688265800476, 
+                0.3031221330165863, 
+                0.0
+            ], 
+            "min" : [
+                0.0005460008978843689, 
+                0.0, 
+                0.0, 
+                0.0
+            ], 
+            "type" : "VEC4"
+        }, 
+        {
+            "bufferView" : 7, 
+            "componentType" : 5126, 
+            "count" : 3, 
+            "max" : [
+                1.0, 
+                0.0, 
+                0.0, 
+                0.0, 
+                0.0, 
+                0.0, 
+                -1.0, 
+                0.0, 
+                0.0, 
+                1.0, 
+                0.0, 
+                0.0, 
+                -0.031120065599679947, 
+                0.03433510661125183, 
+                -0.006646394729614258, 
+                1.0
+            ], 
+            "min" : [
+                1.0, 
+                0.0, 
+                0.0, 
+                0.0, 
+                0.0, 
+                0.0, 
+                -1.0, 
+                0.0, 
+                0.0, 
+                1.0, 
+                0.0, 
+                0.0, 
+                -0.031120065599679947, 
+                -4.465664863586426, 
+                -0.006646394729614258, 
+                1.0
+            ], 
+            "type" : "MAT4"
+        }, 
+        {
+            "bufferView" : 8, 
+            "componentType" : 5126, 
+            "count" : 41, 
+            "max" : [
+                1.6666666666666667
+            ], 
+            "min" : [
+                0.0
+            ], 
+            "type" : "SCALAR"
+        }, 
+        {
+            "bufferView" : 9, 
+            "componentType" : 5126, 
+            "count" : 41, 
+            "max" : [
+                0.0, 
+                2.200000047683716, 
+                0.0
+            ], 
+            "min" : [
+                0.0, 
+                2.200000047683716, 
+                0.0
+            ], 
+            "type" : "VEC3"
+        }, 
+        {
+            "bufferView" : 10, 
+            "componentType" : 5126, 
+            "count" : 41, 
+            "max" : [
+                1.6666666666666667
+            ], 
+            "min" : [
+                0.0
+            ], 
+            "type" : "SCALAR"
+        }, 
+        {
+            "bufferView" : 11, 
+            "componentType" : 5126, 
+            "count" : 41, 
+            "max" : [
+                0.454998642206192, 
+                0.03073318675160408, 
+                0.2050163745880127, 
+                1.0
+            ], 
+            "min" : [
+                -0.454998642206192, 
+                -0.03073319047689438, 
+                -0.2050163447856903, 
+                0.8660253882408142
+            ], 
+            "type" : "VEC4"
+        }
+    ], 
+    "animations" : [
+        {
+            "channels" : [
+                {
+                    "sampler" : 0, 
+                    "target" : {
+                        "node" : 4, 
+                        "path" : "translation"
+                    }
+                }, 
+                {
+                    "sampler" : 1, 
+                    "target" : {
+                        "node" : 4, 
+                        "path" : "rotation"
+                    }
+                }
+            ], 
+            "samplers" : [
+                {
+                    "input" : 8, 
+                    "interpolation" : "LINEAR", 
+                    "output" : 9
+                }, 
+                {
+                    "input" : 10, 
+                    "interpolation" : "LINEAR", 
+                    "output" : 11
+                }
+            ]
         }
     ], 
     "asset" : {
@@ -111,11 +279,48 @@
             "byteLength" : 1632, 
             "byteOffset" : 8436, 
             "target" : 34962
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 1632, 
+            "byteOffset" : 10068, 
+            "target" : 34962
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 3264, 
+            "byteOffset" : 11700, 
+            "target" : 34962
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 192, 
+            "byteOffset" : 14964
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 164, 
+            "byteOffset" : 15156
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 492, 
+            "byteOffset" : 15320
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 164, 
+            "byteOffset" : 15812
+        }, 
+        {
+            "buffer" : 0, 
+            "byteLength" : 656, 
+            "byteOffset" : 15976
         }
     ], 
     "buffers" : [
         {
-            "byteLength" : 10068, 
+            "byteLength" : 16632, 
             "uri" : "animation.bin"
         }
     ], 
@@ -129,9 +334,9 @@
             "name" : "Material.001", 
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
-                    0.2159850299358368, 
+                    0.7634099125862122, 
+                    0.9657506942749023, 
                     1.0, 
-                    0.38167333602905273, 
                     1.0
                 ], 
                 "baseColorTexture" : {
@@ -148,10 +353,12 @@
             "primitives" : [
                 {
                     "attributes" : {
+                        "JOINTS_0" : 5, 
                         "NORMAL" : 2, 
                         "POSITION" : 1, 
                         "TANGENT" : 3, 
-                        "TEXCOORD_0" : 4
+                        "TEXCOORD_0" : 4, 
+                        "WEIGHTS_0" : 6
                     }, 
                     "indices" : 0, 
                     "material" : 0
@@ -161,8 +368,57 @@
     ], 
     "nodes" : [
         {
+            "children" : [
+                1, 
+                2
+            ], 
+            "name" : "Armature", 
+            "translation" : [
+                0.031120065599679947, 
+                -0.006646394729614258, 
+                -0.03433510661125183
+            ]
+        }, 
+        {
             "mesh" : 0, 
-            "name" : "Plane"
+            "name" : "Plane", 
+            "skin" : 0, 
+            "translation" : [
+                -0.031120065599679947, 
+                0.006646394729614258, 
+                0.03433510661125183
+            ]
+        }, 
+        {
+            "children" : [
+                3
+            ], 
+            "name" : "Armature_Bone", 
+            "rotation" : [
+                0.7071068286895752, 
+                0.0, 
+                0.0, 
+                0.7071068286895752
+            ]
+        }, 
+        {
+            "children" : [
+                4
+            ], 
+            "name" : "Armature_Bone.001", 
+            "translation" : [
+                0.0, 
+                2.299999952316284, 
+                0.0
+            ]
+        }, 
+        {
+            "name" : "Armature_Bone.002", 
+            "translation" : [
+                0.0, 
+                2.200000047683716, 
+                0.0
+            ]
         }
     ], 
     "samplers" : [
@@ -175,6 +431,17 @@
             "nodes" : [
                 0
             ]
+        }
+    ], 
+    "skins" : [
+        {
+            "inverseBindMatrices" : 7, 
+            "joints" : [
+                2, 
+                3, 
+                4
+            ], 
+            "skeleton" : 0
         }
     ], 
     "textures" : [
