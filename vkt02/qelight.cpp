@@ -22,7 +22,10 @@ void QeLight::setProperty(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "show");
 	if (c != nullptr && atoi(c) == 1) {
 		billboard = OBJMGR->getBillboard(0);
-		billboard->modelData->pMaterial->value.diffuse = data.color;
+		if(billboard->modelData->pMaterial->type == eMaterialNormal)
+			billboard->modelData->pMaterial->value.diffuse = data.color;
+		else if (billboard->modelData->pMaterial->type == eMaterialPBR)
+			billboard->modelData->pMaterial->pbrValue.baseColor = data.color;
 	}
 
 	c = AST->getXMLValue(_property, 1, "posX");

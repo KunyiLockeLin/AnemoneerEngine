@@ -23,8 +23,8 @@ layout( binding = 1) uniform QeDataLight {
 } light;
 
 layout( binding = 2) uniform QeDataMaterial {
-    vec4 ambient;
     vec4 diffuse;
+    vec4 ambient;
     vec4 specular;
 	vec4 emissive;
 	vec4 param; // 1: specularExponent, 2: refraction, 3: alpha,

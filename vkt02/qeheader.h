@@ -44,7 +44,6 @@ struct QeVertex;
 struct QeAssetModel;
 struct QeAssetMaterial;
 struct QeDataMaterial;
-struct QeAssetPBRMaterial;
 struct QeDataPBRMaterial;
 struct QeAssetImage;
 struct QeAssetShader;

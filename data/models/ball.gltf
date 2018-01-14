@@ -3,9 +3,9 @@
         {
             "bufferView" : 0, 
             "componentType" : 5123, 
-            "count" : 2880, 
+            "count" : 1080, 
             "max" : [
-                2879
+                1079
             ], 
             "min" : [
                 0
@@ -15,49 +15,49 @@
         {
             "bufferView" : 1, 
             "componentType" : 5126, 
-            "count" : 2880, 
+            "count" : 1080, 
             "max" : [
-                1.000000238418579, 
+                1.0000005960464478, 
                 1.0, 
-                1.0000003576278687
+                1.0
             ], 
             "min" : [
-                -0.9999998211860657, 
-                -1.0, 
-                -0.9999991655349731
+                -1.0000007152557373, 
+                -1.000001072883606, 
+                -1.0
             ], 
             "type" : "VEC3"
         }, 
         {
             "bufferView" : 2, 
             "componentType" : 5126, 
-            "count" : 2880, 
+            "count" : 1080, 
             "max" : [
-                0.9904383420944214, 
-                0.99513840675354, 
-                0.9904382824897766
+                0.9758205413818359, 
+                0.9758206605911255, 
+                0.9873854517936707
             ], 
             "min" : [
-                -0.9904382228851318, 
-                -0.99513840675354, 
-                -0.9904387593269348
+                -0.9758204817771912, 
+                -0.9758204221725464, 
+                -0.9873854517936707
             ], 
             "type" : "VEC3"
         }, 
         {
             "bufferView" : 3, 
             "componentType" : 5126, 
-            "count" : 2880, 
+            "count" : 1080, 
             "max" : [
-                0.9969950914382935, 
-                0.679046094417572, 
-                0.8974925875663757, 
+                0.7438902854919434, 
+                0.9935950040817261, 
+                0.6785961389541626, 
                 1.0
             ], 
             "min" : [
-                -0.9806984663009644, 
-                -0.9951883554458618, 
-                -0.9974741339683533, 
+                -0.9925518035888672, 
+                -0.9906268119812012, 
+                -0.7114731669425964, 
                 1.0
             ], 
             "type" : "VEC4"
@@ -65,7 +65,7 @@
         {
             "bufferView" : 4, 
             "componentType" : 5126, 
-            "count" : 2880, 
+            "count" : 1080, 
             "max" : [
                 1.0, 
                 1.0
@@ -84,39 +84,62 @@
     "bufferViews" : [
         {
             "buffer" : 0, 
-            "byteLength" : 5760, 
+            "byteLength" : 2160, 
             "byteOffset" : 0, 
             "target" : 34963
         }, 
         {
             "buffer" : 0, 
-            "byteLength" : 34560, 
-            "byteOffset" : 5760, 
+            "byteLength" : 12960, 
+            "byteOffset" : 2160, 
             "target" : 34962
         }, 
         {
             "buffer" : 0, 
-            "byteLength" : 34560, 
-            "byteOffset" : 40320, 
+            "byteLength" : 12960, 
+            "byteOffset" : 15120, 
             "target" : 34962
         }, 
         {
             "buffer" : 0, 
-            "byteLength" : 46080, 
-            "byteOffset" : 74880, 
+            "byteLength" : 17280, 
+            "byteOffset" : 28080, 
             "target" : 34962
         }, 
         {
             "buffer" : 0, 
-            "byteLength" : 23040, 
-            "byteOffset" : 120960, 
+            "byteLength" : 8640, 
+            "byteOffset" : 45360, 
             "target" : 34962
         }
     ], 
     "buffers" : [
         {
-            "byteLength" : 144000, 
+            "byteLength" : 54000, 
             "uri" : "ball.bin"
+        }
+    ], 
+    "images" : [
+        {
+            "uri" : "stone.jpg"
+        }
+    ], 
+    "materials" : [
+        {
+            "name" : "Material.001", 
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    1.0, 
+                    0.8414579033851624, 
+                    0.17398104071617126, 
+                    1.0
+                ], 
+                "baseColorTexture" : {
+                    "index" : 0
+                }, 
+                "metallicFactor" : 0.4000000059604645, 
+                "roughnessFactor" : 0.800000011920929
+            }
         }
     ], 
     "meshes" : [
@@ -130,7 +153,8 @@
                         "TANGENT" : 3, 
                         "TEXCOORD_0" : 4
                     }, 
-                    "indices" : 0
+                    "indices" : 0, 
+                    "material" : 0
                 }
             ]
         }
@@ -141,6 +165,9 @@
             "name" : "Sphere"
         }
     ], 
+    "samplers" : [
+        {}
+    ], 
     "scene" : 0, 
     "scenes" : [
         {
@@ -148,6 +175,12 @@
             "nodes" : [
                 0
             ]
+        }
+    ], 
+    "textures" : [
+        {
+            "sampler" : 0, 
+            "source" : 0
         }
     ]
 }

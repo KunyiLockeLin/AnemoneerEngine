@@ -1189,7 +1189,6 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule* vertShader, VkShader
 
 	//vkDestroyShaderModule(device, fragShaderModule, nullptr);
 	//vkDestroyShaderModule(device, vertShaderModule, nullptr);
-
 	return graphicsPipeline;
 }
 

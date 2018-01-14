@@ -3,8 +3,8 @@
 
 
 layout( binding = 2) uniform QeDataMaterial {
-    vec4 ambient;
     vec4 diffuse;
+    vec4 ambient;
     vec4 specular;
 	vec4 emissive;
 	vec4 param; // 1: specularExponent, 2: refraction, 3: alpha,
@@ -21,5 +21,8 @@ layout(location = 0) out vec4 outColor;
 void main() {
 	
 	vec4 texColor = texture(texSampler, inTexCoord);
-	outColor =	texColor*mtl.diffuse*texColor.a;
+	//outColor = texColor;
+	//outColor = texColor*texColor.a;
+	outColor = texColor*mtl.diffuse*texColor.a;
+	//outColor = vec4((texColor*mtl.diffuse).rgb, texColor.a);
 }

@@ -118,9 +118,6 @@
     <None Include="..\data\shaders\base.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\base.vert">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\billboard.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>

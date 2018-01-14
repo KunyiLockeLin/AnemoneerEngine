@@ -26,36 +26,31 @@ layout( binding = 1) uniform QeDataLight {
 layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inTexCoord[];
 layout(location = 2) in vec3 inNormal[];
+layout(location = 3) in vec4 inTangent[];
 
 layout(location = 0) out vec3 outColor;
 layout(location = 1) out vec2 outTexCoord;
 layout(location = 2) out vec3 outNormal;
-layout(location = 3) out vec3 outLighttoVertex;
-layout(location = 4) out vec3 outEye;
+layout(location = 3) out vec3 outTangent;
+layout(location = 4) out vec3 outBiTanget;
+layout(location = 5) out vec3 outPostion;
+layout(location = 6) out vec3 outCameraPostion;
 
 
-void main(void)
-{	
+void main(void) {
+
 	if( ubo.param.x <= gl_InvocationID) return;
 
-	for(int i = 0; i < gl_in.length(); i++)
-	{
+	for(int i = 0; i < gl_in.length(); i++){
+
+		outPostion = (ubo.model*gl_in[i].gl_Position).xyz;
+		outCameraPostion = vec3(ubo.cameraPos[gl_InvocationID]);
 		outColor = inColor[i];
 		outTexCoord = inTexCoord[i];
-		
-		//outNormal = normalize( vec3(ubo.view[gl_InvocationID] * ubo.model * vec4(inNormal[i],0)));
-		outNormal = normalize( vec3(ubo.normal[gl_InvocationID] * vec4(inNormal[i],0)));
-		//mat4 normalMatrix = transpose(inverse(ubo.view[gl_InvocationID] * ubo.model));
-		//outNormal = normalize( vec3(normalMatrix * vec4(inNormal[i],0)));
-		
-		vec4 posC = ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
-		outEye = vec3(-posC);
-		outLighttoVertex = vec3( ubo.view[gl_InvocationID] * light.pos - posC);
-		
-		gl_Position = ubo.proj[gl_InvocationID] * posC;
-		//gl_Position = ubo.proj[gl_InvocationID] *ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
-	
-		// Set the viewport index that the vertex will be emitted to
+		outNormal = normalize(vec3(ubo.model * vec4(inNormal[i], 0.0)));
+		outTangent = normalize(vec3(ubo.model * vec4(inTangent[i].xyz, 0.0)));
+		outBiTanget = cross(outNormal, outTangent) * inTangent[i].w;		
+		gl_Position = ubo.proj[gl_InvocationID] * ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
 		gl_ViewportIndex = gl_InvocationID;
 		gl_PrimitiveID = gl_PrimitiveIDIn;
 		EmitVertex();

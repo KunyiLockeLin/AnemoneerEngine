@@ -8,8 +8,8 @@ public:
 	QeViewport(QeGlobalKey& _key) {}
 	~QeViewport() {}
 
-	int currentNum = 1;
-	int targetCamera = 1;
+	int currentNum = 0;
+	int targetCamera = 0;
 	std::array<VkViewport, MAX_VIEWPORT_NUM> viewports;
 	std::array<VkRect2D, MAX_VIEWPORT_NUM>	scissors;
 	std::array<QeCamera*, MAX_VIEWPORT_NUM> cameras;

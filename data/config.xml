@@ -3,17 +3,17 @@
 	<engine>QueenEngine</engine>
 	<envir FPS="30" width="1280" height="720" />
 	<path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-	<defaultShader basevert="basev.spv" basegeom="baseg.spv" basefrag="basef.spv" pbrvert="pbrv.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv"/>
-	<billboard obj= "plane.obj" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
+	<defaultShader basevert="basev.spv" basegeom="baseg.spv" basefrag="basef.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv"/>
+	<billboard obj= "plane.gltf" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
 	
 	<activity1>
 		<ambientColor r="0.2" g="0.2" b="0.2"/>
 		<models>
-			<e obj= "box.obj" posX="1" posY="1" posZ="1" />
-			<e obj= "ball.obj" posX="-1" posY="-1" posZ="-1" />
+			<e obj= "box.gltf" posX="1" posY="1" posZ="1" />
+			<e obj= "ball.gltf" posX="-1" posY="-1" posZ="-1" />
 		</models>
 		<lights>
-			<e show="1" type="0" posX="10" posY="0" posZ="0" rotateCenterX="5" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="1000" coneAngle="90" speed="30"/>
+			<e show="1" type="0" posX="5" posY="0" posZ="0" rotateCenterX="2" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="1000" coneAngle="90" speed="30"/>
 		</lights>
 	</activity1>
 </confing>

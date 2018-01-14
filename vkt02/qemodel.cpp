@@ -106,20 +106,13 @@ void QeModel::init(const char* _filename) {
 	buffersSize[0]	= sizeof(QeUniformBufferObject);
 	buffers[1]		= lightBuffer;
 	buffersSize[1]	= sizeof(QeDataLight);
+	buffers[2]		= modelData->pMaterial->materialBuffer;
+	samplersp[0]	= modelData->pMaterial->pDiffuseMap->textureSampler;
+	imageViews[0]	= modelData->pMaterial->pDiffuseMap->textureImageView;
 
-	if (modelData->pMaterial != nullptr) {
-		buffers[2]		= modelData->pMaterial->materialBuffer;
-		buffersSize[2]	= sizeof(QeDataMaterial);
-		samplersp[0]	= modelData->pMaterial->pDiffuseMap->textureSampler;
-		imageViews[0]	= modelData->pMaterial->pDiffuseMap->textureImageView;
-	}
-	else if (modelData->pPBRMaterial != nullptr) {
-		buffers[2]		= modelData->pPBRMaterial->materialBuffer;
-		buffersSize[2]	= sizeof(QeDataPBRMaterial);
-		samplersp[0]	= modelData->pPBRMaterial->pBaseColorMap->textureSampler;
-		imageViews[0]	= modelData->pPBRMaterial->pBaseColorMap->textureImageView;
-	}
-
+	if (modelData->pMaterial->type == eMaterialNormal)		buffersSize[2]	= sizeof(QeDataMaterial);
+	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2]	= sizeof(QeDataPBRMaterial);
+	
 	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
 
 	pos = QeVector3f(0, 0, 0);
@@ -134,38 +127,38 @@ void QeModel::setProperty(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
-		if (modelData->pMaterial != nullptr) {
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert");
-			if (c != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(c);
-		}
-		else if (modelData->pPBRMaterial != nullptr) {
+		if ( modelData->pMaterial->type == eMaterialNormal )
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert");			
+		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrvert");
-			if (c != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(c);
-	}}
+			if(c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert");
+		}
+		if (c != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(c);
+	}
 	else	modelData->pMaterial->pShaderVert = AST->getShader(c);
 
 	c = AST->getXMLValue(_property, 1, "shadergeom");
 	if (c == nullptr) {
-		if (modelData->pMaterial != nullptr) {
+		if (modelData->pMaterial->type == eMaterialNormal)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom");
-			if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
-		}
-		else if (modelData->pPBRMaterial != nullptr) {
+		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
-			if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
-	}}
+			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom");
+		}
+		if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
+	}
 	else	modelData->pMaterial->pShaderGeom = AST->getShader(c);
 
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
-		if (modelData->pMaterial != nullptr) {
+		if (modelData->pMaterial->type == eMaterialNormal)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basefrag");
-			if (c != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(c);
-		}
-		else if (modelData->pPBRMaterial != nullptr) {
+		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");
-			if (c != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(c);
-	}}
+			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basefrag");
+		}
+		if (c != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(c);
+	}
 	else	modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	
 	createSwapChain();
@@ -217,8 +210,8 @@ void QeModel::updateUniformBuffer() {
 	QeDataLight* light = &OBJMGR->getLight(0)->data;
 	VLK->setMemory(lightBufferMemory, (void*)light, sizeof(*light));
 
-	if (modelData->pMaterial != nullptr)	
+	if (modelData->pMaterial->type == eMaterialNormal)	
 		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
-	else if (modelData->pPBRMaterial != nullptr)
-		VLK->setMemory(modelData->pPBRMaterial->materialBufferMemory, (void*)&modelData->pPBRMaterial->value, sizeof(modelData->pPBRMaterial->value));
+	else if (modelData->pMaterial->type == eMaterialPBR)
+		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->pbrValue, sizeof(modelData->pMaterial->pbrValue));
 }
