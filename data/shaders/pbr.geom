@@ -35,6 +35,7 @@ layout(location = 3) out vec3 outTangent;
 layout(location = 4) out vec3 outBiTanget;
 layout(location = 5) out vec3 outPostion;
 layout(location = 6) out vec3 outCameraPostion;
+layout(location = 7) out vec3 outLighttoVertex;
 
 
 void main(void) {
@@ -49,8 +50,10 @@ void main(void) {
 		outTexCoord = inTexCoord[i];
 		outNormal = normalize(vec3(ubo.model * vec4(inNormal[i], 0.0)));
 		outTangent = normalize(vec3(ubo.model * vec4(inTangent[i].xyz, 0.0)));
-		outBiTanget = cross(outNormal, outTangent) * inTangent[i].w;		
-		gl_Position = ubo.proj[gl_InvocationID] * ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
+		outBiTanget = cross(outNormal, outTangent) * inTangent[i].w;	
+		outLighttoVertex = vec3(light.pos) - outPostion;
+
+		gl_Position = ubo.proj[gl_InvocationID] * ubo.view[gl_InvocationID] * vec4(outPostion,1);
 		gl_ViewportIndex = gl_InvocationID;
 		gl_PrimitiveID = gl_PrimitiveIDIn;
 		EmitVertex();

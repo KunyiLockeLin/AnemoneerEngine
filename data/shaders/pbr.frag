@@ -42,6 +42,7 @@ layout(location = 3) in vec3 inTangent;
 layout(location = 4) in vec3 inBiTanget;
 layout(location = 5) in vec3 inPostion;
 layout(location = 6) in vec3 inCameraPostion;
+layout(location = 7) in vec3 inLighttoVertex;
 
 layout(location = 0) out vec4 outColor;
 
@@ -84,10 +85,23 @@ void main() {
 	mat3 tbn = mat3(t, b, ng);
 	// neeed normal map
 	vec3 n = tbn[2].xyz; 
+	
+	float lightType		 = light.param.x;
+	float lightIntensity = light.param.y;
+	float lightConeAngle = light.param.z;
+	float fDist2		 = pow(length(inLighttoVertex),2);
+	float attenuation	 = lightIntensity/fDist2;
+	vec3  lightDirection;
 
-	vec3 lightDirection;
-	if( light.param.x == 0 || light.param.x == 2 )	lightDirection = normalize(vec3(light.pos)-inPostion);
-	else if( light.param.x == 1 )					lightDirection = normalize(vec3(light.dir));
+	if( lightType == 0 )		lightDirection = normalize(inLighttoVertex);
+	else if( lightType == 1 )	lightDirection = normalize(vec3(light.dir));
+	else if( lightType == 2 ){
+
+		lightDirection = normalize(inLighttoVertex);
+		float lightToSurfaceAngle = degrees(acos( dot( -inLighttoVertex, normalize(vec3(light.dir)) ) ));
+
+		if( lightToSurfaceAngle>lightConeAngle ) attenuation = 0;
+	}
 
     vec3 v = normalize(inCameraPostion - inPostion);
     vec3 l = normalize(lightDirection);    
@@ -116,12 +130,13 @@ void main() {
 	// Calculation of analytical lighting contribution
     vec3 diffuseContrib = (1.0 - F) * diffuseColor / M_PI;
     vec3 specContrib = F * G * D / (4.0 * NdotL * NdotV);
-	vec3 color = NdotL * vec3(light.color) * (diffuseContrib + specContrib);
+	vec3 color = NdotL * vec3(light.color) * attenuation* (diffuseContrib + specContrib) + vec3(ubo.ambientColor*baseColor)*0.5;
 
 	// need image based lighting map
 	// need occlusion map
 	// need emissive map
 
 	vec3 gamma = vec3(1.0/2.2);
-	outColor = vec4(pow(color,gamma), baseColor.a);
+	//outColor = vec4(pow(color,gamma), baseColor.a);
+	outColor = vec4(pow(color,gamma), baseColor.a)*baseColor.a;
 }

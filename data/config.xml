@@ -13,7 +13,7 @@
 			<e obj= "ball.gltf" posX="-1" posY="-1" posZ="-1" />
 		</models>
 		<lights>
-			<e show="1" type="0" posX="5" posY="0" posZ="0" rotateCenterX="2" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="1000" coneAngle="90" speed="30"/>
+			<e show="1" type="0" posX="7" posY="0" posZ="0" rotateCenterX="2" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>
 		</lights>
 	</activity1>
 </confing>
