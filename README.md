@@ -16,7 +16,7 @@
   - Support mutli-viewports.
   - Support simple light and camera control.
   - Support vertex, geometry, fragment shader.
-  - Support tranditional lighting and PBR(Physically-Based Rendering)
+  - Support Phong shading and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map.
   - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
