@@ -15,20 +15,18 @@
   - Comptuer Graphics's power is by Vulkan. VulkanSDK is only the third party llibrary.
   - Support mutli-viewports.
   - Support simple light and camera control.
-  - Run vertex, geometry, fragment shader.
-  - For model  - obj, mtl.
+  - Support vertex, geometry, fragment shader.
+  - Support tranditional lighting and PBR(Physically-Based Rendering)
+  - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
   - Math library.
   
 # ToDoList:
-  - Replace .obj and .mlt files to .glTF.
-  - Physically-Based Rendering (PBR)
   - Skeletal animation.
   - Memory Management and Object Management are weak.
   - Attach obj.
-  - Normal map and specular map.
   - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - Separate different libraries.
   - bounding Box
@@ -36,6 +34,7 @@
   - Frustum Culling
   - Room
   - Terrian system
+  - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - HDR
   - Shadow
   - reflection and CubeMap
