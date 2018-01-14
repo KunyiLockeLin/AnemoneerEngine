@@ -27,7 +27,6 @@
   - Skeletal animation.
   - Memory Management and Object Management are weak.
   - Attach obj.
-  - Normal map and specular map.
   - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - Separate different libraries.
   - bounding Box
@@ -35,6 +34,7 @@
   - Frustum Culling
   - Room
   - Terrian system
+  - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - HDR
   - Shadow
   - reflection and CubeMap
