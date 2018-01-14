@@ -184,11 +184,11 @@
   <ItemGroup>
     <None Include="..\data\shaders\base.frag" />
     <None Include="..\data\shaders\base.geom" />
+    <None Include="..\data\shaders\base.vert" />
     <None Include="..\data\shaders\billboard.frag" />
     <None Include="..\data\shaders\billboard.geom" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />
-    <None Include="..\data\shaders\pbr.vert" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml" />

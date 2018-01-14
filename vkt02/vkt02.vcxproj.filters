@@ -130,7 +130,7 @@
     <None Include="..\data\shaders\pbr.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\pbr.vert">
+    <None Include="..\data\shaders\base.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

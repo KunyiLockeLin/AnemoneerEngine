@@ -159,6 +159,9 @@ void QeModel::setProperty(QeAssetXML* _property) {
 	if (c != nullptr)	pos.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "posZ");
 	if (c != nullptr)	pos.z = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "speed");
+	if (c != nullptr)	speed = atoi(c);
 }
 
 void QeModel::createDescriptorBuffer() {
@@ -168,7 +171,7 @@ void QeModel::createDescriptorBuffer() {
 
 void QeModel::update(float time) {
 
-	rotateFace( time*50 );
+	if(speed != 0)	rotateFace( time*speed );
 	updateUniformBuffer();
 }
 

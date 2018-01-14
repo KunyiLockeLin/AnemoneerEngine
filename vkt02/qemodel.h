@@ -21,6 +21,7 @@ public:
 	float face;
 	float up;
 	QeVector3f size;
+	int speed=0;
 
 	QeAssetModel* modelData;
 
