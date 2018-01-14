@@ -1,5 +1,27 @@
 #include "qeheader.h"
 
+QeHuffmanTree::~QeHuffmanTree() {
+	if (tree != nullptr) {
+		delete tree;
+		tree = nullptr;
+	}
+}
+
+QeHuffmanTree2::~QeHuffmanTree2() {
+	if (codes != nullptr) {
+		delete codes;
+		codes = nullptr;
+	}
+	if (codeBits != nullptr) {
+		delete codeBits;
+		codeBits = nullptr;
+	}
+	if (values != nullptr) {
+		delete values;
+		values = nullptr;
+	}
+}
+
 int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft, bool bNegative) {
 
 	size_t bytes;

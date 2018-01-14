@@ -1,5 +1,17 @@
 #include "qeheader.h"
 
+ QeVulkan::~QeVulkan() {
+	cleanupSwapChain();
+	vkDestroySurfaceKHR(VLK->instance, WIN->surface, nullptr);
+	vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+	vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
+	vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
+	vkDestroyCommandPool(device, commandPool, nullptr);
+	vkDestroyDevice(device, nullptr);
+	DestroyDebugReportCallbackEXT(instance, callback, nullptr);
+	vkDestroyInstance(instance, nullptr);
+}
+
 void QeVulkan::init() {
 	createInstance();
 	setupDebugCallback();
@@ -31,19 +43,15 @@ void QeVulkan::deviceWaitIdle() {
 
 VkResult QeVulkan::CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {
 	auto func = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
-	if (func != nullptr) {
-		return func(instance, pCreateInfo, pAllocator, pCallback);
-	}
-	else {
-		return VK_ERROR_EXTENSION_NOT_PRESENT;
-	}
+	
+	if (func != nullptr)	return func(instance, pCreateInfo, pAllocator, pCallback);
+	else					return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
 void QeVulkan::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator) {
 	auto func = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
-	if (func != nullptr) {
-		func(instance, callback, pAllocator);
-	}
+	
+	if (func != nullptr)	func(instance, callback, pAllocator);
 }
 
 void QeVulkan::drawFrame() {
@@ -93,12 +101,11 @@ void QeVulkan::drawFrame() {
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 		recreateSwapChain();
-	}
-	else if (result != VK_SUCCESS) {
+
+	else if (result != VK_SUCCESS)
 		throw std::runtime_error("failed to present swap chain image!");
-	}
 
 	vkQueueWaitIdle(presentQueue);
 }
@@ -110,36 +117,17 @@ void QeVulkan::cleanupSwapChain() {
 
 	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
 		vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
+		vkDestroyImageView(device, swapChainImageViews[i], nullptr);
 	}
 	vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
 
-	//vkDestroyPipeline(device, graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 	vkDestroyRenderPass(device, renderPass, nullptr);
 
-	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-		vkDestroyImageView(device, swapChainImageViews[i], nullptr);
-	}
-
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 
-	OBJMGR->cleanupSwapChain();
+	if(OBJMGR != nullptr)	OBJMGR->cleanupSwapChain();
 }
-
-void QeVulkan::cleanup() {
-	cleanupSwapChain();
-
-	//vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-	//vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-	//vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
-	//vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
-	//vkDestroyCommandPool(device, commandPool, nullptr);
-	//vkDestroyDevice(device, nullptr);
-	//DestroyDebugReportCallbackEXT(instance, callback, nullptr);
-	//WIN->cleanup();
-	//vkDestroyInstance(instance, nullptr);
-}
-
 
 void QeVulkan::recreateSwapChain() {
 	deviceWaitIdle();
@@ -162,10 +150,9 @@ void QeVulkan::recreateSwapChain() {
 }
 
 void QeVulkan::createInstance() {
-	if (enableValidationLayers && !checkValidationLayerSupport()) {
+	if (enableValidationLayers && !checkValidationLayerSupport())
 		throw std::runtime_error("validation layers requested, but not available!");
-	}
-
+	
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = AST->getXMLValue(2, AST->CONFIG, "title");
@@ -186,13 +173,10 @@ void QeVulkan::createInstance() {
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
 	}
-	else {
-		createInfo.enabledLayerCount = 0;
-	}
+	else	createInfo.enabledLayerCount = 0;
 
-	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
+	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
 		throw std::runtime_error("failed to create instance!");
-	}
 }
 
 void QeVulkan::setupDebugCallback() {
@@ -203,9 +187,8 @@ void QeVulkan::setupDebugCallback() {
 	createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
 	createInfo.pfnCallback = debugCallback;
 
-	if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS) {
+	if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS)
 		throw std::runtime_error("failed to set up debug callback!");
-	}
 }
 
 void QeVulkan::pickPhysicalDevice() {
@@ -1183,12 +1166,9 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule* vertShader, VkShader
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 	VkPipeline graphicsPipeline;
-	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
 		throw std::runtime_error("failed to create graphics pipeline!");
-	}
-
-	//vkDestroyShaderModule(device, fragShaderModule, nullptr);
-	//vkDestroyShaderModule(device, vertShaderModule, nullptr);
+	
 	return graphicsPipeline;
 }
 
@@ -1287,8 +1267,7 @@ void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSi
 	copyBufferToImage(stagingBuffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
 	transitionImageLayout(image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	vkDestroyBuffer(device, stagingBuffer, nullptr);
-	vkFreeMemory(device, stagingBufferMemory, nullptr);
+	destroyBufferMemory(stagingBuffer, stagingBufferMemory);
 }
 
 void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory){
@@ -1303,10 +1282,25 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 
 	copyBuffer(stagingBuffer, buffer, bufferSize);
 
-	vkDestroyBuffer(device, stagingBuffer, nullptr);
-	vkFreeMemory(device, stagingBufferMemory, nullptr);
+	destroyBufferMemory(stagingBuffer, stagingBufferMemory);
 }
 
 void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
+}
+
+void QeVulkan::destroyBufferMemory(VkBuffer& buffer, VkDeviceMemory& memory) {
+	vkDestroyBuffer(device, buffer, nullptr);
+	vkFreeMemory(device, memory, nullptr);
+}
+
+void QeVulkan::destroyShaderModule(VkShaderModule& shaderModule) {
+	vkDestroyShaderModule(device, shaderModule, nullptr);
+}
+
+void QeVulkan::destroyImage(VkImage& image, VkDeviceMemory& imageMemory, VkImageView& imageView, VkSampler& sampler) {
+	vkDestroyImage(device, image, nullptr);
+	vkFreeMemory(device, imageMemory, nullptr);
+	vkDestroyImageView(device, imageView, nullptr);
+	vkDestroySampler(device, sampler, nullptr);
 }

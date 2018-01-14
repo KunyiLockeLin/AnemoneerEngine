@@ -1,7 +1,6 @@
 #include "qeheader.h"
 
 
-
 void QueenEngine::run() {
 	lastTime = std::chrono::high_resolution_clock::now();
 
@@ -12,7 +11,6 @@ void QueenEngine::run() {
 	currentActivity->init();
 
 	mainLoop();
-	cleanup();
 }
 
 
@@ -34,18 +32,4 @@ void QueenEngine::mainLoop() {
 		}
 	}
 	VLK->deviceWaitIdle();
-}
-
-void QueenEngine::cleanup() {
-	//cleanupSwapChain();
-
-	//vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-	//vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-	//vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
-	//vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
-	//vkDestroyCommandPool(device, commandPool, nullptr);
-	//vkDestroyDevice(device, nullptr);
-	//DestroyDebugReportCallbackEXT(instance, callback, nullptr);
-	//WIN->cleanup();
-	//vkDestroyInstance(instance, nullptr);
 }

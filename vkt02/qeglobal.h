@@ -18,7 +18,7 @@ private:
 	QeGlobalKey	key;
 
 public:
-	~QeGlobal() {}
+	~QeGlobal();
 	static QeGlobal&	getInstance();
 	QueenEngine*		engine;
 	QeVulkan*			vulkan;

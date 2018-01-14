@@ -20,14 +20,17 @@ struct QeAssetModel {
 
 	std::vector<QeVertex> vertices;
 	std::vector<uint32_t> indices;
+	size_t indexSize;
 
 	VkBuffer vertexBuffer;
 	VkBuffer indexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 	VkDeviceMemory indexBufferMemory;
-	size_t indexSize;
 
 	QeAssetMaterial* pMaterial;
+
+	QeAssetModel();
+	~QeAssetModel();
 };
 
 enum QeMaterialType {
@@ -60,6 +63,9 @@ struct QeAssetMaterial {
 	QeAssetShader* pShaderVert;
 	QeAssetShader* pShaderGeom;
 	QeAssetShader* pShaderFrag;
+
+	QeAssetMaterial();
+	~QeAssetMaterial();
 };
 
 struct QeAssetImage {
@@ -68,11 +74,14 @@ struct QeAssetImage {
 	VkDeviceMemory textureImageMemory;
 	VkImageView textureImageView;
 	VkSampler textureSampler;
+
+	~QeAssetImage();
 };
 
 struct QeAssetShader {
 
 	VkShaderModule shader;
+	~QeAssetShader();
 };
 
 
@@ -92,6 +101,8 @@ struct QeAssetXML {
 	std::vector<std::string> eKeys;
 	std::vector<std::string> eVaules;
 	std::vector<QeAssetXML*> nexts;
+
+	~QeAssetXML();
 };
 
 struct QeAssetJSON {
@@ -103,6 +114,8 @@ struct QeAssetJSON {
 	std::vector<std::vector<std::string>> eArrayValues;
 	std::vector<std::string> eKeysforArrayNodes;
 	std::vector<std::vector<QeAssetJSON*>> eArrayNodes;
+
+	~QeAssetJSON();
 };
 
 
@@ -119,7 +132,7 @@ public:
 	std::map<std::string, QeAssetImage*> astTextures;
 
 	QeAsset(QeGlobalKey& _key) {}
-	~QeAsset() {}
+	~QeAsset();
 
 	QeAssetJSON* getJSON(const char* _filePath);
 	const char*	 getJSONValue(int length, ...);

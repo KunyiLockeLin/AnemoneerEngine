@@ -20,7 +20,6 @@ public:
 	void init();
 	
 	std::string getWindowTitle();
-	void cleanup();
 
 	TCHAR* convert(std::string _s); 
 	void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

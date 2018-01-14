@@ -1,6 +1,106 @@
 #include "qeheader.h"
 
 
+QeAssetModel::QeAssetModel():pMaterial(nullptr){}
+QeAssetModel::~QeAssetModel() {
+	VLK->destroyBufferMemory(vertexBuffer, vertexBufferMemory);
+	VLK->destroyBufferMemory(indexBuffer, indexBufferMemory);
+	pMaterial = nullptr;
+}
+
+QeAssetMaterial::QeAssetMaterial(): pDiffuseMap(nullptr), pShaderVert(nullptr), pShaderGeom(nullptr), pShaderFrag(nullptr){}
+QeAssetMaterial::~QeAssetMaterial() {
+	VLK->destroyBufferMemory(materialBuffer, materialBufferMemory);
+	pDiffuseMap = nullptr;
+	pShaderVert = nullptr;
+	pShaderGeom = nullptr;
+	pShaderFrag = nullptr;
+}
+
+QeAssetImage::~QeAssetImage() {
+	VLK->destroyImage(textureImage, textureImageMemory, textureImageView, textureSampler);
+}
+
+QeAssetShader::~QeAssetShader() {
+	VLK->destroyShaderModule(shader);
+}
+
+QeAssetXML::~QeAssetXML() {
+
+	std::vector<QeAssetXML*>::iterator it = nexts.begin();
+	while (it != nexts.end()) {
+		if ((*it) != nullptr) delete (*it);
+		++it;
+	}
+	nexts.clear();
+}
+
+QeAssetJSON::~QeAssetJSON() {
+
+	std::vector<QeAssetJSON*>::iterator it = eNodes.begin();
+	while (it != eNodes.end()) {
+		if ((*it) != nullptr) delete (*it);
+		++it;
+	}
+	eNodes.clear();
+
+	std::vector<std::vector<QeAssetJSON*>>::iterator it1 = eArrayNodes.begin();
+	while (it1 != eArrayNodes.end()) {
+		it = it1->begin();
+		while (it != it1->end()) {
+			if ((*it) != nullptr) delete (*it);
+			++it;
+		}
+		++it1;
+	}
+	eArrayNodes.clear();
+}
+
+QeAsset::~QeAsset() {
+
+	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.begin();
+	while (it != astXMLs.end()) {
+		if ((it->second) != nullptr) delete (it->second);
+		++it;
+	}
+	astXMLs.clear();
+
+	std::map<std::string, QeAssetJSON*>::iterator it1 = astJSONs.begin();
+	while (it1 != astJSONs.end()) {
+		if ((it1->second) != nullptr) delete (it1->second);
+		++it1;
+	}
+	astJSONs.clear();
+
+	std::map<std::string, QeAssetModel*>::iterator it2 = astModels.begin();
+	while (it2 != astModels.end()) {
+		if ((it2->second) != nullptr) delete (it2->second);
+		++it2;
+	}
+	astModels.clear();
+
+	std::map<std::string, QeAssetMaterial*>::iterator it3 = astMaterials.begin();
+	while (it3 != astMaterials.end()) {
+		if ((it3->second) != nullptr) delete (it3->second);
+		++it3;
+	}
+	astMaterials.clear();
+
+	std::map<std::string, QeAssetShader*>::iterator it4 = astShaders.begin();
+	while (it4 != astShaders.end()) {
+		if ((it4->second) != nullptr) delete (it4->second);
+		++it4;
+	}
+	astShaders.clear();
+
+	std::map<std::string, QeAssetImage*>::iterator it5 = astTextures.begin();
+	while (it5 != astTextures.end()) {
+		if ((it5->second) != nullptr) delete (it5->second);
+		++it5;
+	}
+	astTextures.clear();
+}
+
 VkVertexInputBindingDescription QeVertex::getBindingDescription() {
 	VkVertexInputBindingDescription bindingDescription = {};
 	bindingDescription.binding = 0;
@@ -534,9 +634,10 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 	VLK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertexBuffer, model->vertexBufferMemory);
 	VLK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->indexBuffer, model->indexBufferMemory);
 	
-	if (model->pMaterial->type == eMaterialPBR) {
+	if (model->pMaterial->type == eMaterialPBR ) {
 		VLK->createUniformBuffer(sizeof(QeDataPBRMaterial), model->pMaterial->materialBuffer, model->pMaterial->materialBufferMemory);
 		VLK->setMemory(model->pMaterial->materialBufferMemory, (void*)&model->pMaterial->pbrValue, sizeof(model->pMaterial->pbrValue));
+		astMaterials[_filePath] = model->pMaterial;
 	}
 	
 	astModels[_filePath] = model;
@@ -630,14 +731,14 @@ void QeAsset::imageFillto32bits(std::vector<unsigned char>* data, int bytes) {
 QeAssetShader* QeAsset::getShader(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetShader);
-	std::map<std::string, QeAssetShader*>::iterator it = astShaders.find(_filePath.c_str());
+	std::map<std::string, QeAssetShader*>::iterator it = astShaders.find(_filePath);
 	if (it != astShaders.end())	return it->second;
 
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 
 	QeAssetShader* shader = new QeAssetShader();
 	shader->shader = VLK->createShaderModel((void*)buffer.data(), int(buffer.size()));
-	astShaders[_filename] = shader;
+	astShaders[_filePath] = shader;
 	return shader;
 }
 

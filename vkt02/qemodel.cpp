@@ -1,5 +1,12 @@
 #include "qeheader.h"
 
+QeModel::~QeModel() {
+
+	VLK->destroyBufferMemory(uboBuffer, uboBufferMemory);
+	VLK->destroyBufferMemory(lightBuffer, lightBufferMemory);
+	cleanupSwapChain();
+	vkDestroyDescriptorPool( VLK->device, descriptorPool, nullptr);
+}
 
 void QeModel::cleanupSwapChain() {
 	vkDestroyPipeline(VLK->device, graphicsPipeline, nullptr);
@@ -7,23 +14,6 @@ void QeModel::cleanupSwapChain() {
 
 void QeModel::createSwapChain() {
 	graphicsPipeline = VLK->createGraphicsPipeline(&modelData->pMaterial->pShaderVert->shader, &modelData->pMaterial->pShaderGeom->shader, &modelData->pMaterial->pShaderFrag->shader);
-}
-
-void QeModel::cleanup() {
-	//vkDestroySampler(QE->device, textureSampler, nullptr);
-	//vkDestroyImageView(QE->device, textureImageView, nullptr);
-
-	//vkDestroyImage(QE->device, textureImage, nullptr);
-	//vkFreeMemory(QE->device, textureImageMemory, nullptr);
-
-	//vkDestroyBuffer(QE->device, uniformBuffer, nullptr);
-	//vkFreeMemory(QE->device, uniformBufferMemory, nullptr);
-	//vkFreeCommandBuffers(QE->device, QE->commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
-	//vkDestroyBuffer(QE->device, modelData.indexBuffer, nullptr);
-	//vkFreeMemory(QE->device, indexBufferMemory, nullptr);
-
-	//vkDestroyBuffer(QE->device, modelData.vertexBuffer, nullptr);
-	//vkFreeMemory(QE->device, vertexBufferMemory, nullptr);
 }
 
 void QeModel::setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size) {

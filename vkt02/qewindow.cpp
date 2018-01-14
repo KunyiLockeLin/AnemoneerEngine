@@ -1,9 +1,9 @@
 #include "qeheader.h"
 
+
 bool QeWindow::isWinodowShouldClose() {
 	return bClosed;
 }
-
 
 void QeWindow::getWindowSize(int& width, int& height) {
 
@@ -152,11 +152,6 @@ std::string QeWindow::getWindowTitle()
 
 	return windowTitle;
 }
-
-void QeWindow::cleanup() {
-	vkDestroySurfaceKHR(VLK->instance, surface, nullptr);
-}
-
 
 void QeWindow::update(float time) {
 

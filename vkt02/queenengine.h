@@ -15,6 +15,5 @@ public:
 	std::chrono::steady_clock::time_point lastTime;
 
 	void mainLoop();
-	void cleanup();
 };
 

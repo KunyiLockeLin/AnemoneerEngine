@@ -6,9 +6,7 @@ struct QeHuffmanTree
 	unsigned int* tree;
 	unsigned int numcodes;
 
-	~QeHuffmanTree() {
-		if (tree != nullptr) delete tree;
-	}
+	~QeHuffmanTree();
 };
 
 struct QeHuffmanTree2
@@ -18,11 +16,7 @@ struct QeHuffmanTree2
 	unsigned int* values;
 	size_t size;
 
-	~QeHuffmanTree2() {
-		if (codes != nullptr)		delete codes;
-		if (codeBits != nullptr)	delete codeBits;
-		if (values != nullptr)		delete values;
-	}
+	~QeHuffmanTree2();
 };
 
 class QeEncode

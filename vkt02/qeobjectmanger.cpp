@@ -1,5 +1,57 @@
 #include "qeheader.h"
 
+
+QeObjectManger::~QeObjectManger() {
+	std::map<int, QeCamera*>::iterator it = mgrCameras.begin();
+	while (it != mgrCameras.end()) {
+		if ((it->second) != nullptr) delete (it->second);
+		++it;
+	}
+	mgrCameras.clear();
+
+	std::map<int, QeLight*>::iterator it1 = mgrLights.begin();
+	while (it1 != mgrLights.end()) {
+		if ((it1->second) != nullptr) delete (it1->second);
+		++it1;
+	}
+	mgrLights.clear();
+
+	std::map<int, QeActivity*>::iterator it2 = mgrActivitys.begin();
+	while (it2 != mgrActivitys.end()) {
+		if ((it2->second) != nullptr) delete (it2->second);
+		++it2;
+	}
+	mgrActivitys.clear();
+
+	std::vector<QeModel*>::iterator it3 = mgrInactiveModels.begin();
+	while (it3 != mgrInactiveModels.end()) {
+		if ((*it3) != nullptr) delete (*it3);
+		++it3;
+	}
+	mgrInactiveModels.clear();
+
+	it3 = mgrActiveModels.begin();
+	while (it3 != mgrActiveModels.end()) {
+		if ((*it3) != nullptr) delete (*it3);
+		++it3;
+	}
+	mgrActiveModels.clear();
+
+	it3 = mgrInactiveBillboards.begin();
+	while (it3 != mgrInactiveBillboards.end()) {
+		if ((*it3) != nullptr) delete (*it3);
+		++it3;
+	}
+	mgrInactiveBillboards.clear();
+
+	it3 = mgrActiveBillboards.begin();
+	while (it3 != mgrActiveBillboards.end()) {
+		if ((*it3) != nullptr) delete (*it3);
+		++it3;
+	}
+	mgrActiveBillboards.clear();
+}
+
 QeCamera* QeObjectManger::getCamera(int _id) {
 
 	std::map<int, QeCamera*>::iterator it = mgrCameras.find(_id);

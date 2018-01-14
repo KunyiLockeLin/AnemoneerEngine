@@ -26,7 +26,7 @@ public:
 	std::vector<QeModel*> mgrActiveBillboards;
 
 	QeObjectManger(QeGlobalKey& _key) {}
-	~QeObjectManger() {}
+	~QeObjectManger();
 	
 	QeCamera* getCamera(int _id);
 	QeLight* getLight(int _id, QeAssetXML* _property = nullptr);

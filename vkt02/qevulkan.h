@@ -22,7 +22,7 @@ class QeVulkan
 {
 public:
 	QeVulkan(QeGlobalKey& _key) {}
-	~QeVulkan() {}
+	~QeVulkan();
 
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_LUNARG_standard_validation"
@@ -74,11 +74,10 @@ public:
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
-	VkSemaphore textOverlayComplete;
+	//VkSemaphore textOverlayComplete;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 
 	void cleanupSwapChain();
-	void cleanup();
 
 	void recreateSwapChain();
 	void createInstance();
@@ -140,5 +139,7 @@ public:
 	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-
+	void destroyBufferMemory(VkBuffer &buffer, VkDeviceMemory &memory);
+	void destroyShaderModule(VkShaderModule& shaderModule);
+	void destroyImage(VkImage& image, VkDeviceMemory& imageMemory, VkImageView& imageView, VkSampler& sampler);
 };
