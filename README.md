@@ -26,7 +26,6 @@
   
 # ToDoList:
   - Skeletal animation.
-  - Memory Management and Object Management are weak.
   - Attach obj.
   - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - Separate different libraries.
