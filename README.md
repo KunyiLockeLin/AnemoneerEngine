@@ -17,6 +17,7 @@
   - Support simple light and camera control.
   - Support vertex, geometry, fragment shader.
   - Support tranditional lighting and PBR(Physically-Based Rendering)
+  - Support diffuse/baseColor map.
   - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
@@ -37,7 +38,7 @@
   - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - HDR
   - Shadow
-  - reflection and CubeMap
+  - reflection and cube map
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
