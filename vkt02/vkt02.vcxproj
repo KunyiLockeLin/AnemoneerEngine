@@ -182,6 +182,7 @@
     <ClInclude Include="qewindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\data\models\animation.gltf" />
     <None Include="..\data\shaders\base.frag" />
     <None Include="..\data\shaders\base.geom" />
     <None Include="..\data\shaders\base.vert" />

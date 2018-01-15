@@ -133,6 +133,9 @@
     <None Include="..\data\shaders\base.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\models\animation.gltf">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

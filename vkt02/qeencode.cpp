@@ -347,8 +347,15 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	"MAT3" 		9
 	"MAT4" 		16
 	*/
-	unsigned char bufferViews[12];
-	memset(bufferViews, 0xFF, 12*sizeof(char));
+	std::vector<QeAssetJSON*>* jaccessors = AST->getJSONArrayNodes(json, 1, "accessors");
+	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
+	size_t size = jbufferViews->size();
+	unsigned char index;
+	unsigned int offset, count, length, componentType;
+
+
+	unsigned char bufferViews[256];
+	memset(bufferViews, 0xFF, 256 * sizeof(char));
 	const char* c = AST->getJSONValue(json, 3, "meshes", "primitives", "indices");
 	if (c != nullptr) bufferViews[0] = atoi(c); 
 
@@ -370,81 +377,119 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "WEIGHTS_0");
 	if (c != nullptr) bufferViews[6] = atoi(c);
 
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "WEIGHTS_0");
+	if (c != nullptr) bufferViews[6] = atoi(c);
 
-	std::vector<QeAssetJSON*>* jaccessors	= AST->getJSONArrayNodes(json, 1, "accessors");
-	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
-	unsigned char index;
-	unsigned int offset, length, componentType;
+	c = AST->getJSONValue(json, 2, "skins", "inverseBindMatrices");
+	if (c != nullptr) {
+		bufferViews[7] = atoi(c);
+		std::vector<std::string>* jboneID = AST->getJSONArrayValues(json, 2, "skins", "joints");
+		size_t size = jboneID->size();
+		model->animations.resize(size);
 
-	size_t size = jbufferViews->size();
-	size_t i, j;
-	QeVertex vet;
-	for ( i = 0;i<size; ++i ) {
-		index  = atoi(AST->getJSONValue((*jaccessors)[i], 1, "bufferView"));
-		length = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteLength"));
-		offset = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteOffset"));
-		componentType = atoi(AST->getJSONValue((*jaccessors)[i], 1, "componentType"));
+		std::vector<QeAssetJSON*>* jboneName = AST->getJSONArrayNodes(json, 1, "nodes");
+		std::vector<QeAssetJSON*>* janimation = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
 
-		if(index == bufferViews[0]){ // indices
+		unsigned char inputID;
+		unsigned char outputID;
 
-			if (componentType == 5121) {
-				unsigned char* dataPos = (unsigned char*)(binData + offset);
-				model->indexSize = length;
-				for (j = 0; j < length; ++j) model->indices.push_back(*(dataPos + j));
-			}
-			else if (componentType == 5123) {
-				length /= 2;
-				unsigned short int* dataPos = (unsigned short int*)(binData + offset);
-				model->indexSize = length;
-				for (j = 0; j < length; ++j) model->indices.push_back(*(dataPos + j));
-			}
-			else if (componentType == 5125) {
-				length /= 4;
-				unsigned int* dataPos = (unsigned int*)(binData + offset);
-				model->indexSize = length;
-				for (j = 0; j < length; ++j) model->indices.push_back(*(dataPos + j));
-			}
-		}
-		else if (index == bufferViews[1]) { // position
-			length /= (4*3);
-			QeVector3f* dataPos = (QeVector3f*)(binData + offset);
-			if (model->vertices.size() < length)	model->vertices.resize(length);
-			for (j = 0; j < length; ++j) {
-				model->vertices[j].pos = *(dataPos + j);
-				model->vertices[j].color = { 1.0f, 1.0f, 1.0f };
-			}
-		}
-		else if (index == bufferViews[2]) { // normal
-			length /= (4*3);
-			QeVector3f* dataPos = (QeVector3f*)(binData + offset);
-			if (model->vertices.size() < length)	model->vertices.resize(length);
-			for (j = 0; j < length; ++j) model->vertices[j].normal = *(dataPos + j);
-		}
-		else if (index == bufferViews[3]) { // texcoord
-			length /= (4*2);
-			QeVector2f* dataPos = (QeVector2f*)(binData + offset);
-			if (model->vertices.size() < length)	model->vertices.resize(length);
-			for (j = 0; j < length; ++j) model->vertices[j].texCoord = *(dataPos + j);
-		}
-		else if (index == bufferViews[4]) { // tangent
-			length /= (4 * 4);
-			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
-			if (model->vertices.size() < length)	model->vertices.resize(length);
-			for (j = 0; j < length; ++j) model->vertices[j].tangent = *(dataPos + j);
-		}
-		else if (index == bufferViews[5]) { // joint
-			length /= (4 * 2);
-			QeVector4s* dataPos = (QeVector4s*)(binData + offset);
-			model->joints.resize(length);
-			for (j = 0; j < length; ++j) model->joints[j] = *(dataPos + j);
-		}
-		else if (index == bufferViews[6]) { // weight
-			length /= (4 * 4);
-			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
-			model->weights.resize(length);
-			for (j = 0; j < length; ++j) model->weights[j] = *(dataPos + j);
+		for (size_t i = 0; i < size; ++i) {
+			model->animations[i].id = atoi((*jboneID)[i].c_str());
+			model->animations[i].name = AST->getJSONValue((*jboneName)[model->animations[i].id], 1, "name");
+			
+			inputID = atoi(AST->getJSONValue((*janimation)[i*2], 1, "input"));
+			count = atoi(AST->getJSONValue((*jaccessors)[inputID], 1, "count"));
+			offset = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteOffset"));
+			length = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteLength"));
+			model->animations[i].translationInput.resize(count);
+			memcpy(model->animations[i].translationInput.data(), binData + offset, length);
+
+			outputID = atoi(AST->getJSONValue((*janimation)[i*2], 1, "output"));
+			count = atoi(AST->getJSONValue((*jaccessors)[outputID], 1, "count"));
+			offset = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteOffset"));
+			length = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteLength"));
+			model->animations[i].translationOutput.resize(count);
+			memcpy(model->animations[i].translationOutput.data(), binData + offset, length);
+
+			inputID = atoi(AST->getJSONValue((*janimation)[i*2+1], 1, "input"));
+			count = atoi(AST->getJSONValue((*jaccessors)[inputID], 1, "count"));
+			offset = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteOffset"));
+			length = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteLength"));
+			model->animations[i].rotationInput.resize(count);
+			memcpy(model->animations[i].rotationInput.data(), binData + offset, length);
+
+			outputID = atoi(AST->getJSONValue((*janimation)[i*2+1], 1, "output"));
+			count = atoi(AST->getJSONValue((*jaccessors)[outputID], 1, "count"));
+			offset = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteOffset"));
+			length = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteLength"));
+			model->animations[i].rotationOutput.resize(count);
+			memcpy(model->animations[i].rotationOutput.data(), binData + offset, length);
 		}
 	}
+
+	size_t i, j;
+	for (i = 0; i < size; ++i) {
+		index = atoi(AST->getJSONValue((*jaccessors)[i], 1, "bufferView"));
+		count = atoi(AST->getJSONValue((*jaccessors)[i], 1, "count"));
+		componentType = atoi(AST->getJSONValue((*jaccessors)[i], 1, "componentType"));
+		offset = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteOffset"));
+		length = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteLength"));
+
+		if (index == bufferViews[0]) { // indices
+			if (componentType == 5121) {
+				unsigned char* dataPos = (unsigned char*)(binData + offset);
+				model->indexSize = count;
+				for (j = 0; j < count; ++j) model->indices.push_back(*(dataPos + j));
+			}
+			else if (componentType == 5123) {
+				unsigned short int* dataPos = (unsigned short int*)(binData + offset);
+				model->indexSize = count;
+				for (j = 0; j < count; ++j) model->indices.push_back(*(dataPos + j));
+			}
+			else if (componentType == 5125) {
+				unsigned int* dataPos = (unsigned int*)(binData + offset);
+				model->indexSize = count;
+				for (j = 0; j < count; ++j) model->indices.push_back(*(dataPos + j));
+		}}
+		else if (index == bufferViews[1]) { // position
+			QeVector3f* dataPos = (QeVector3f*)(binData + offset);
+			if (model->vertices.size() < count)	model->vertices.resize(count);
+			for (j = 0; j < count; ++j) {
+				model->vertices[j].pos = *(dataPos + j);
+				model->vertices[j].color = { 1.0f, 1.0f, 1.0f };
+		}}
+		else if (index == bufferViews[2]) { // normal
+			QeVector3f* dataPos = (QeVector3f*)(binData + offset);
+			if (model->vertices.size() < count)	model->vertices.resize(count);
+			for (j = 0; j < count; ++j) model->vertices[j].normal = *(dataPos + j);
+		}
+		else if (index == bufferViews[3]) { // texcoord
+			QeVector2f* dataPos = (QeVector2f*)(binData + offset);
+			if (model->vertices.size() < count)	model->vertices.resize(count);
+			for (j = 0; j < count; ++j) model->vertices[j].texCoord = *(dataPos + j);
+		}
+		else if (index == bufferViews[4]) { // tangent
+			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
+			if (model->vertices.size() < count)	model->vertices.resize(count);
+			for (j = 0; j < count; ++j) model->vertices[j].tangent = *(dataPos + j);
+		}
+		else if (index == bufferViews[5]) { // joint
+			QeVector4s* dataPos = (QeVector4s*)(binData + offset);
+			model->joints.resize(count);
+			//for (j = 0; j < count; ++j) model->joints[j] = *(dataPos + j);
+			memcpy(model->joints.data(), dataPos, length);
+		}
+		else if (index == bufferViews[6]) { // weight
+			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
+			model->weights.resize(count);
+			//for (j = 0; j < count; ++j) model->weights[j] = *(dataPos + j);
+			memcpy(model->weights.data(), dataPos, length);
+		}
+		else if (index == bufferViews[7]) { // inverseBindMatrices  bone matrices
+			QeMatrix4x4f* dataPos = (QeMatrix4x4f*)(binData + offset);
+			for (j = 0; j < count; ++j) model->animations[j].mat4 = *(dataPos + j);
+	}}
+
 	// material
 	QeAssetMaterial *pMaterial = new QeAssetMaterial();
 	pMaterial->type = eMaterialPBR;

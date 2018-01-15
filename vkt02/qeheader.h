@@ -52,6 +52,7 @@ struct QeDataLight;
 struct QeHuffmanTree;
 struct QeAssetXML;
 struct QeAssetJSON;
+struct QeSkeleton;
 class QeEncode;
 class QeMath;
 class QeAsset;
