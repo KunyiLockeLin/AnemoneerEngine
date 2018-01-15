@@ -9,8 +9,8 @@
 	<activity1>
 		<ambientColor r="0.2" g="0.2" b="0.2"/>
 		<models>
-			<e obj= "animation.gltf" speed="-50" posX="2" posY="2" posZ="-3" />
-			<e obj= "animation.gltf" speed="50" posX="-2" posY="-2" posZ="-3" />
+			<e obj= "animation.gltf" speed="-50" posX="2" posY="2" posZ="-3" action="1" />
+			<e obj= "animation.gltf" speed="50" posX="-2" posY="-2" posZ="-3" action="2" />
 		</models>
 		<lights>
 			<e show="1" type="0" posX="5" posY="0" posZ="0" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>
