@@ -59,6 +59,11 @@ struct QeVector3f {
 	QeVector3f operator*(const float& other);
 };
 
+struct QeVector4s {
+	short int x, y, z, w;
+	QeVector4s();
+};
+
 struct QeVector4f {
 	float x, y, z, w;
 
@@ -67,6 +72,7 @@ struct QeVector4f {
 	QeVector4f(const QeVector3f& other, float _w);
 
 	QeVector4f& operator=(const QeVector3f& other);
+	QeVector4f& operator=(const QeVector4s& other);
 	QeVector4f& operator+=(const QeVector3f& other);
 	QeVector4f operator+(const QeVector3f& other);
 	QeVector4f operator-(const QeVector3f& other);

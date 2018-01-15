@@ -347,17 +347,34 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	"MAT3" 		9
 	"MAT4" 		16
 	*/
-	unsigned char bufferViews[5];
-	bufferViews[0] = atoi(AST->getJSONValue(json, 3, "meshes", "primitives", "indices"));
-	bufferViews[1] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "POSITION"));
-	bufferViews[2] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "NORMAL"));
-	bufferViews[3] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TEXCOORD_0"));
-	bufferViews[4] = atoi(AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TANGENT"));
+	unsigned char bufferViews[12];
+	memset(bufferViews, 0xFF, 12*sizeof(char));
+	const char* c = AST->getJSONValue(json, 3, "meshes", "primitives", "indices");
+	if (c != nullptr) bufferViews[0] = atoi(c); 
+
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "POSITION");
+	if (c != nullptr) bufferViews[1] = atoi(c);
+
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "NORMAL");
+	if (c != nullptr) bufferViews[2] = atoi(c); 
+
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TEXCOORD_0");
+	if (c != nullptr) bufferViews[3] = atoi(c);
+
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "TANGENT");
+	if (c != nullptr) bufferViews[4] = atoi(c);
+
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "JOINTS_0");
+	if (c != nullptr) bufferViews[5] = atoi(c);
+
+	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "WEIGHTS_0");
+	if (c != nullptr) bufferViews[6] = atoi(c);
+
 
 	std::vector<QeAssetJSON*>* jaccessors	= AST->getJSONArrayNodes(json, 1, "accessors");
 	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
 	unsigned char index;
-	unsigned int offset, length;
+	unsigned int offset, length, componentType;
 
 	size_t size = jbufferViews->size();
 	size_t i, j;
@@ -366,9 +383,9 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		index  = atoi(AST->getJSONValue((*jaccessors)[i], 1, "bufferView"));
 		length = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteLength"));
 		offset = atoi(AST->getJSONValue((*jbufferViews)[i], 1, "byteOffset"));
+		componentType = atoi(AST->getJSONValue((*jaccessors)[i], 1, "componentType"));
 
 		if(index == bufferViews[0]){ // indices
-			int componentType = atoi(AST->getJSONValue((*jaccessors)[i], 1, "componentType"));
 
 			if (componentType == 5121) {
 				unsigned char* dataPos = (unsigned char*)(binData + offset);
@@ -415,6 +432,18 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 			if (model->vertices.size() < length)	model->vertices.resize(length);
 			for (j = 0; j < length; ++j) model->vertices[j].tangent = *(dataPos + j);
 		}
+		else if (index == bufferViews[5]) { // joint
+			length /= (4 * 2);
+			QeVector4s* dataPos = (QeVector4s*)(binData + offset);
+			model->joints.resize(length);
+			for (j = 0; j < length; ++j) model->joints[j] = *(dataPos + j);
+		}
+		else if (index == bufferViews[6]) { // weight
+			length /= (4 * 4);
+			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
+			model->weights.resize(length);
+			for (j = 0; j < length; ++j) model->weights[j] = *(dataPos + j);
+		}
 	}
 	// material
 	QeAssetMaterial *pMaterial = new QeAssetMaterial();
@@ -435,10 +464,14 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	}
 	pMaterial->pbrValue.metallicRoughness.x = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor")));
 	pMaterial->pbrValue.metallicRoughness.y = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor")));
-	//pMaterial->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert"));
-	//pMaterial->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom"));
-	//pMaterial->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag"));
 
+	// skeletal animation
+	/*
+	JOINTS_0 5
+	WEIGHTS_0 6
+	skins inverseBindMatrices 7
+	animations samplers input 8 10 output 9 11
+	*/
 	return model;
 }
 
@@ -454,9 +487,6 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 	mtl1.specular.w = 1;
 	mtl1.emissive.w = 1;
 	char diffuseMapPath[512];
-	//char sv[512] = "";
-	//char sg[512] = "";
-	//char sf[512] = "";
 	char *context;
 	char* line = strtok_s(buffer, "\n", &context);
 
@@ -470,22 +500,12 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 		else if (strncmp(line, "Ke ", 3) == 0)	sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
 		else if (strncmp(line, "Ni ", 3) == 0)	sscanf_s(line, "Ni %f", &(mtl1.param.y));
 		else if (strncmp(line, "d ", 2) == 0)	sscanf_s(line, "d %f", &(mtl1.param.z));
-		//else if (strncmp(line, "sv ", 3) == 0)	sscanf_s(line, "sv %s", sv, (unsigned int) sizeof(sv));
-		//else if (strncmp(line, "sg ", 3) == 0)	sscanf_s(line, "sg %s", sg, (unsigned int) sizeof(sg));
-		//else if (strncmp(line, "sf ", 3) == 0)	sscanf_s(line, "sf %s", sf, (unsigned int) sizeof(sf));
-
+	
 		line = strtok_s(NULL, "\n", &context);
 	}
 
 	mtl->value = mtl1;
-
 	if (strlen(diffuseMapPath) != 0)	mtl->pDiffuseMap = AST->getImage(diffuseMapPath);
-	//if (strlen(sv) == 0)	mtl->pShaderVert = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert"));
-	//else					mtl->pShaderVert = AST->getShader(sv);
-	//if (strlen(sg) == 0)	mtl->pShaderGeom = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom"));
-	//else					mtl->pShaderGeom = AST->getShader(sg);
-	//if (strlen(sf) == 0)	mtl->pShaderFrag = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag"));
-	//else					mtl->pShaderFrag = AST->getShader(sf);
 
 	return mtl;
 }

@@ -29,12 +29,8 @@ struct QeAssetModel {
 
 	QeAssetMaterial* pMaterial;
 
-	/*
-	JOINTS_0 5
-	WEIGHTS_0 6
-	skins inverseBindMatrices 7
-	animations samplers input 8 10 output 9 11
-	 */
+	std::vector<QeVector4f> joints;
+	std::vector<QeVector4f> weights;
 
 	QeAssetModel();
 	~QeAssetModel();
