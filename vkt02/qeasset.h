@@ -19,6 +19,7 @@ struct QeVertex {
 struct QeSkeleton {
 
 	unsigned char id;
+	std::vector<unsigned char> children;
 	const char* name;
 	QeVector3f translation;
 	QeVector3f rotation;

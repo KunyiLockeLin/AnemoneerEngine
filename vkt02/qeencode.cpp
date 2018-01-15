@@ -349,7 +349,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	*/
 	std::vector<QeAssetJSON*>* jaccessors = AST->getJSONArrayNodes(json, 1, "accessors");
 	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
-	size_t size = jbufferViews->size();
+	size_t size, size1, size2;
 	unsigned char index;
 	unsigned int offset, count, length, componentType;
 	size_t i, j, k;
@@ -384,32 +384,38 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	if (c != nullptr) {
 		bufferViews[7] = atoi(c);
 		std::vector<std::string>* jboneID = AST->getJSONArrayValues(json, 2, "skins", "joints");
-		size_t size = jboneID->size();
+		size = jboneID->size();
 		model->animations.resize(size);
 
 		std::vector<QeAssetJSON*>* jboneName = AST->getJSONArrayNodes(json, 1, "nodes");
-		std::vector<std::string>* pos;
+		std::vector<std::string>* sv;
 
 		for ( i = 0; i < size; ++i) {
 			model->animations[i].id = atoi((*jboneID)[i].c_str());
 			model->animations[i].name = AST->getJSONValue((*jboneName)[model->animations[i].id], 1, "name");
-			pos = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "translation");
-			if (pos != nullptr) {
-				model->animations[i].translation.x = float(atof((*pos)[0].c_str()));
-				model->animations[i].translation.y = float(atof((*pos)[1].c_str()));
-				model->animations[i].translation.z = float(atof((*pos)[2].c_str()));
+			sv = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "child");
+			if (sv != nullptr) {
+				size1 = sv->size();
+				model->animations[i].children.resize(size1);
+				for (j = 0; j < size1; ++j)	model->animations[i].children[j] = atoi((*sv)[0].c_str());
 			}
-			pos = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "rotation");
-			if (pos != nullptr) {
-				model->animations[i].rotation.x = float(atof((*pos)[0].c_str()));
-				model->animations[i].rotation.y = float(atof((*pos)[1].c_str()));
-				model->animations[i].rotation.z = float(atof((*pos)[2].c_str()));
+			sv = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "translation");
+			if (sv != nullptr) {
+				model->animations[i].translation.x = float(atof((*sv)[0].c_str()));
+				model->animations[i].translation.y = float(atof((*sv)[1].c_str()));
+				model->animations[i].translation.z = float(atof((*sv)[2].c_str()));
+			}
+			sv = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "rotation");
+			if (sv != nullptr) {
+				model->animations[i].rotation.x = float(atof((*sv)[0].c_str()));
+				model->animations[i].rotation.y = float(atof((*sv)[1].c_str()));
+				model->animations[i].rotation.z = float(atof((*sv)[2].c_str()));
 			}
 		}
 
 		std::vector<QeAssetJSON*>* jchannels = AST->getJSONArrayNodes(json, 2, "animations", "channels");
 		std::vector<QeAssetJSON*>* jsmaplers = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
-		size_t size1 = jchannels->size();
+		size1 = jchannels->size();
 		const char* path = nullptr;
 
 		for ( i = 0; i < size1; ++i) {
@@ -448,6 +454,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 					}
 					break;
 	}}}}
+	size = jbufferViews->size();
 
 	for (i = 0; i < size; ++i) {
 		index = atoi(AST->getJSONValue((*jaccessors)[i], 1, "bufferView"));
