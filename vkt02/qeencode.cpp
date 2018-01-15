@@ -385,31 +385,31 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		bufferViews[7] = atoi(c);
 		std::vector<std::string>* jboneID = AST->getJSONArrayValues(json, 2, "skins", "joints");
 		size = jboneID->size();
-		model->animations.resize(size);
+		model->jointsAnimation.resize(size);
 
 		std::vector<QeAssetJSON*>* jboneName = AST->getJSONArrayNodes(json, 1, "nodes");
 		std::vector<std::string>* sv;
 
 		for ( i = 0; i < size; ++i) {
-			model->animations[i].id = atoi((*jboneID)[i].c_str());
-			model->animations[i].name = AST->getJSONValue((*jboneName)[model->animations[i].id], 1, "name");
-			sv = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "child");
+			model->jointsAnimation[i].id = atoi((*jboneID)[i].c_str());
+			model->jointsAnimation[i].name = AST->getJSONValue((*jboneName)[model->jointsAnimation[i].id], 1, "name");
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "child");
 			if (sv != nullptr) {
 				size1 = sv->size();
-				model->animations[i].children.resize(size1);
-				for (j = 0; j < size1; ++j)	model->animations[i].children[j] = atoi((*sv)[0].c_str());
+				model->jointsAnimation[i].children.resize(size1);
+				for (j = 0; j < size1; ++j)	model->jointsAnimation[i].children[j] = atoi((*sv)[0].c_str());
 			}
-			sv = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "translation");
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "translation");
 			if (sv != nullptr) {
-				model->animations[i].translation.x = float(atof((*sv)[0].c_str()));
-				model->animations[i].translation.y = float(atof((*sv)[1].c_str()));
-				model->animations[i].translation.z = float(atof((*sv)[2].c_str()));
+				model->jointsAnimation[i].translation.x = float(atof((*sv)[0].c_str()));
+				model->jointsAnimation[i].translation.y = float(atof((*sv)[1].c_str()));
+				model->jointsAnimation[i].translation.z = float(atof((*sv)[2].c_str()));
 			}
-			sv = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "rotation");
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "rotation");
 			if (sv != nullptr) {
-				model->animations[i].rotation.x = float(atof((*sv)[0].c_str()));
-				model->animations[i].rotation.y = float(atof((*sv)[1].c_str()));
-				model->animations[i].rotation.z = float(atof((*sv)[2].c_str()));
+				model->jointsAnimation[i].rotation.x = float(atof((*sv)[0].c_str()));
+				model->jointsAnimation[i].rotation.y = float(atof((*sv)[1].c_str()));
+				model->jointsAnimation[i].rotation.z = float(atof((*sv)[2].c_str()));
 			}
 		}
 
@@ -422,7 +422,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 			j = atoi(AST->getJSONValue((*jchannels)[i], 2, "target", "node"));
 
 			for (k = 0; k< size ; ++k) {
-				if (model->animations[k].id == j) {
+				if (model->jointsAnimation[k].id == j) {
 
 					path = AST->getJSONValue((*jchannels)[i], 2, "target", "path");
 					index = atoi(AST->getJSONValue((*jsmaplers)[i], 1, "input"));
@@ -431,12 +431,12 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 					length = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteLength"));
 
 					if (strncmp(path, "translation", 11) == 0) {
-						model->animations[k].translationInput.resize(count);
-						memcpy(model->animations[k].translationInput.data(), binData + offset, length);
+						model->jointsAnimation[k].translationInput.resize(count);
+						memcpy(model->jointsAnimation[k].translationInput.data(), binData + offset, length);
 					}
 					else if (strncmp(path, "rotation", 8) == 0) {
-						model->animations[k].rotationInput.resize(count);
-						memcpy(model->animations[k].rotationInput.data(), binData + offset, length);
+						model->jointsAnimation[k].rotationInput.resize(count);
+						memcpy(model->jointsAnimation[k].rotationInput.data(), binData + offset, length);
 					}
 
 					index = atoi(AST->getJSONValue((*jsmaplers)[i], 1, "output"));
@@ -445,12 +445,12 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 					length = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteLength"));
 					
 					if (strncmp(path, "translation", 11) == 0) {
-						model->animations[k].translationOutput.resize(count);
-						memcpy(model->animations[k].translationOutput.data(), binData + offset, length);
+						model->jointsAnimation[k].translationOutput.resize(count);
+						memcpy(model->jointsAnimation[k].translationOutput.data(), binData + offset, length);
 					}
 					else if (strncmp(path, "rotation", 8) == 0) {
-						model->animations[k].rotationOutput.resize(count);
-						memcpy(model->animations[k].rotationOutput.data(), binData + offset, length);
+						model->jointsAnimation[k].rotationOutput.resize(count);
+						memcpy(model->jointsAnimation[k].rotationOutput.data(), binData + offset, length);
 					}
 					break;
 	}}}}
@@ -515,7 +515,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		}
 		else if (index == bufferViews[7]) { // inverseBindMatrices  bone matrices
 			QeMatrix4x4f* dataPos = (QeMatrix4x4f*)(binData + offset);
-			for (j = 0; j < count; ++j) model->animations[j].mat4 = *(dataPos + j);
+			for (j = 0; j < count; ++j) model->jointsAnimation[j].matrix = *(dataPos + j);
 	}}
 
 	// material

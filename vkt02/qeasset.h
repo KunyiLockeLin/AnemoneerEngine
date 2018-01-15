@@ -16,14 +16,14 @@ struct QeVertex {
 	bool operator==(const QeVertex& other) const; 
 };
 
-struct QeSkeleton {
+struct QeDataJoint {
 
 	unsigned char id;
 	std::vector<unsigned char> children;
 	const char* name;
 	QeVector3f translation;
 	QeVector3f rotation;
-	QeMatrix4x4f mat4;
+	QeMatrix4x4f matrix;
 	std::vector<float> translationInput;
 	std::vector<QeVector3f> translationOutput;
 	std::vector<float> rotationInput;
@@ -45,10 +45,10 @@ struct QeAssetModel {
 
 	std::vector<QeVector4s> joints;
 	std::vector<QeVector4f> weights;
-	std::vector<QeSkeleton> animations;
+	std::vector<QeDataJoint> jointsAnimation;
 	unsigned char animationNum;
-	std::vector<unsigned int> animationStartFrames;
-	std::vector<unsigned int> animationEndFrames;
+	std::vector<float> animationStartFrames;
+	std::vector<float> animationEndFrames;
 
 	QeAssetModel();
 	~QeAssetModel();

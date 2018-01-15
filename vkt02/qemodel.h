@@ -19,7 +19,7 @@ public:
 
 	unsigned char state; // 0000 stop, 0001 play, 0010 pause, 0100 auto next, 1000 auto replay
 	unsigned char cuurentAction;
-	unsigned int cuurentFrames;
+	float cuurentFrames;
 
 	QeVector3f pos;
 	float face;
