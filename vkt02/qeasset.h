@@ -20,6 +20,8 @@ struct QeSkeleton {
 
 	unsigned char id;
 	const char* name;
+	QeVector3f translation;
+	QeVector3f rotation;
 	QeMatrix4x4f mat4;
 	std::vector<float> translationInput;
 	std::vector<QeVector3f> translationOutput;
@@ -40,7 +42,7 @@ struct QeAssetModel {
 
 	QeAssetMaterial* pMaterial;
 
-	std::vector<QeVector4f> joints;
+	std::vector<QeVector4s> joints;
 	std::vector<QeVector4f> weights;
 	std::vector<QeSkeleton> animations;
 	unsigned char animationNum;

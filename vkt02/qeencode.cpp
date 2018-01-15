@@ -389,14 +389,26 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 
 		std::vector<QeAssetJSON*>* jboneName = AST->getJSONArrayNodes(json, 1, "nodes");
 		std::vector<QeAssetJSON*>* janimation = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
-
+		std::vector<std::string>* pos;
 		unsigned char inputID;
 		unsigned char outputID;
 
 		for (size_t i = 0; i < size; ++i) {
 			model->animations[i].id = atoi((*jboneID)[i].c_str());
 			model->animations[i].name = AST->getJSONValue((*jboneName)[model->animations[i].id], 1, "name");
-			
+			pos = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "translation");
+			if (pos!= nullptr) {
+				model->animations[i].translation.x = float(atof((*pos)[0].c_str()));
+				model->animations[i].translation.y = float(atof((*pos)[1].c_str()));
+				model->animations[i].translation.z = float(atof((*pos)[2].c_str()));
+			}
+			pos = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "rotation");
+			if (pos != nullptr) {
+				model->animations[i].rotation.x = float(atof((*pos)[0].c_str()));
+				model->animations[i].rotation.y = float(atof((*pos)[1].c_str()));
+				model->animations[i].rotation.z = float(atof((*pos)[2].c_str()));
+			}
+
 			inputID = atoi(AST->getJSONValue((*janimation)[i*2], 1, "input"));
 			count = atoi(AST->getJSONValue((*jaccessors)[inputID], 1, "count"));
 			offset = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteOffset"));
@@ -510,13 +522,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	pMaterial->pbrValue.metallicRoughness.x = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor")));
 	pMaterial->pbrValue.metallicRoughness.y = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor")));
 
-	// skeletal animation
-	/*
-	JOINTS_0 5
-	WEIGHTS_0 6
-	skins inverseBindMatrices 7
-	animations samplers input 8 10 output 9 11
-	*/
+
 	return model;
 }
 
