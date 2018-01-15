@@ -352,7 +352,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	size_t size = jbufferViews->size();
 	unsigned char index;
 	unsigned int offset, count, length, componentType;
-
+	size_t i, j, k;
 
 	unsigned char bufferViews[256];
 	memset(bufferViews, 0xFF, 256 * sizeof(char));
@@ -388,16 +388,13 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		model->animations.resize(size);
 
 		std::vector<QeAssetJSON*>* jboneName = AST->getJSONArrayNodes(json, 1, "nodes");
-		std::vector<QeAssetJSON*>* janimation = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
 		std::vector<std::string>* pos;
-		unsigned char inputID;
-		unsigned char outputID;
 
-		for (size_t i = 0; i < size; ++i) {
+		for ( i = 0; i < size; ++i) {
 			model->animations[i].id = atoi((*jboneID)[i].c_str());
 			model->animations[i].name = AST->getJSONValue((*jboneName)[model->animations[i].id], 1, "name");
 			pos = AST->getJSONArrayValues((*jboneName)[model->animations[i].id], 1, "translation");
-			if (pos!= nullptr) {
+			if (pos != nullptr) {
 				model->animations[i].translation.x = float(atof((*pos)[0].c_str()));
 				model->animations[i].translation.y = float(atof((*pos)[1].c_str()));
 				model->animations[i].translation.z = float(atof((*pos)[2].c_str()));
@@ -408,38 +405,50 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->animations[i].rotation.y = float(atof((*pos)[1].c_str()));
 				model->animations[i].rotation.z = float(atof((*pos)[2].c_str()));
 			}
-
-			inputID = atoi(AST->getJSONValue((*janimation)[i*2], 1, "input"));
-			count = atoi(AST->getJSONValue((*jaccessors)[inputID], 1, "count"));
-			offset = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteOffset"));
-			length = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteLength"));
-			model->animations[i].translationInput.resize(count);
-			memcpy(model->animations[i].translationInput.data(), binData + offset, length);
-
-			outputID = atoi(AST->getJSONValue((*janimation)[i*2], 1, "output"));
-			count = atoi(AST->getJSONValue((*jaccessors)[outputID], 1, "count"));
-			offset = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteOffset"));
-			length = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteLength"));
-			model->animations[i].translationOutput.resize(count);
-			memcpy(model->animations[i].translationOutput.data(), binData + offset, length);
-
-			inputID = atoi(AST->getJSONValue((*janimation)[i*2+1], 1, "input"));
-			count = atoi(AST->getJSONValue((*jaccessors)[inputID], 1, "count"));
-			offset = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteOffset"));
-			length = atoi(AST->getJSONValue((*jbufferViews)[inputID], 1, "byteLength"));
-			model->animations[i].rotationInput.resize(count);
-			memcpy(model->animations[i].rotationInput.data(), binData + offset, length);
-
-			outputID = atoi(AST->getJSONValue((*janimation)[i*2+1], 1, "output"));
-			count = atoi(AST->getJSONValue((*jaccessors)[outputID], 1, "count"));
-			offset = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteOffset"));
-			length = atoi(AST->getJSONValue((*jbufferViews)[outputID], 1, "byteLength"));
-			model->animations[i].rotationOutput.resize(count);
-			memcpy(model->animations[i].rotationOutput.data(), binData + offset, length);
 		}
-	}
 
-	size_t i, j;
+		std::vector<QeAssetJSON*>* jchannels = AST->getJSONArrayNodes(json, 2, "animations", "channels");
+		std::vector<QeAssetJSON*>* jsmaplers = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
+		size_t size1 = jchannels->size();
+		const char* path = nullptr;
+
+		for ( i = 0; i < size1; ++i) {
+			j = atoi(AST->getJSONValue((*jchannels)[i], 2, "target", "node"));
+
+			for (k = 0; k< size ; ++k) {
+				if (model->animations[k].id == j) {
+
+					path = AST->getJSONValue((*jchannels)[i], 2, "target", "path");
+					index = atoi(AST->getJSONValue((*jsmaplers)[i], 1, "input"));
+					count = atoi(AST->getJSONValue((*jaccessors)[index], 1, "count"));
+					offset = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteOffset"));
+					length = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteLength"));
+
+					if (strncmp(path, "translation", 11) == 0) {
+						model->animations[k].translationInput.resize(count);
+						memcpy(model->animations[k].translationInput.data(), binData + offset, length);
+					}
+					else if (strncmp(path, "rotation", 8) == 0) {
+						model->animations[k].rotationInput.resize(count);
+						memcpy(model->animations[k].rotationInput.data(), binData + offset, length);
+					}
+
+					index = atoi(AST->getJSONValue((*jsmaplers)[i], 1, "output"));
+					count = atoi(AST->getJSONValue((*jaccessors)[index], 1, "count"));
+					offset = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteOffset"));
+					length = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteLength"));
+					
+					if (strncmp(path, "translation", 11) == 0) {
+						model->animations[k].translationOutput.resize(count);
+						memcpy(model->animations[k].translationOutput.data(), binData + offset, length);
+					}
+					else if (strncmp(path, "rotation", 8) == 0) {
+						model->animations[k].rotationOutput.resize(count);
+						memcpy(model->animations[k].rotationOutput.data(), binData + offset, length);
+					}
+					break;
+	}}}}
+
 	for (i = 0; i < size; ++i) {
 		index = atoi(AST->getJSONValue((*jaccessors)[i], 1, "bufferView"));
 		count = atoi(AST->getJSONValue((*jaccessors)[i], 1, "count"));
