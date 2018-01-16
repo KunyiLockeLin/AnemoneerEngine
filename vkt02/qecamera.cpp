@@ -97,6 +97,8 @@ void QeCamera::init(QeAssetXML* _property) {
 	type = eCameraThirdPerson;
 	speed = 0.5f;
 
+	if (_property == nullptr) return;
+
 	initProperty = _property;
 	const char* c;
 	

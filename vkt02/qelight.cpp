@@ -10,6 +10,8 @@ void QeLight::init(QeAssetXML* _property) {
 	rotateCenter = QeVector3f(0, 0, 0);
 	speed = 30;
 
+	if (_property == nullptr) return;
+
 	initProperty = _property;
 	const char* c;
 
