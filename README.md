@@ -50,3 +50,4 @@
   - https://github.com/KhronosGroup/glTF-Blender-Exporter
   - http://lodev.org/lodepng/
   - https://github.com/KhronosGroup/glTF-WebGL-PBR
+  - https://github.com/TheThinMatrix/OpenGL-Animation
