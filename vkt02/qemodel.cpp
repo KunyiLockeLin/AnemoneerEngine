@@ -251,7 +251,7 @@ void QeModel::updateAction(float time) {
 	bool bFinalFrame = false;
 	if ((currentActionFrame + 1) == modelData->animationEndFrames[currentActionID]) bFinalFrame = true;
 
-	float progessive = (currentActionTime- previousActionFrameTime)/(nextActionFrameTime-previousActionFrameTime);
+	float progessive = MATH->clamp((currentActionTime- previousActionFrameTime)/(nextActionFrameTime-previousActionFrameTime),0.f,1.f);
 
 	QeVector3f previousTranslation, nextTranslation, currentTranslation, currentScale;
 	QeVector4f previousRotation, nextRotation, currentRotation;
@@ -307,6 +307,7 @@ void QeModel::setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoi
 			for (size_t j = 0; j<size1 ;++j)
 				setChildrenJointTransform(jointsTransform, *modelData->jointsAnimation[i].children[j], jointsTransform[i]);
 
+			jointsTransform[i] = modelData->jointsAnimation[i].inverseBindMatrix*jointsTransform[i];
 			jointsTransform[i] = modelData->jointsAnimation[i].inverseBindMatrix*jointsTransform[i];
 			break;
 		}

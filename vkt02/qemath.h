@@ -136,7 +136,8 @@ public:
 	float fastSqrt(float _number);
 	bool inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat);
 	QeMatrix4x4f transpose(QeMatrix4x4f _mat);
-	int clamp( int in, int low, int high );
+	int clamp(int in, int low, int high);
+	float clamp(float in, float low, float high );
 	QeMatrix4x4f vectortoRoateMatrix(QeVector4f vector);
 	QeVector4f rotateMatrixtoVector(QeMatrix4x4f matrix);
 	QeVector4f interpolateDir(QeVector4f a, QeVector4f b, float blend);

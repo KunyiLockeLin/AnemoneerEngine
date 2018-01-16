@@ -585,7 +585,8 @@ QeMatrix4x4f QeMath::transpose(QeMatrix4x4f _mat) {
 	return _new;
 }
 
-int QeMath::clamp(int in, int low, int high) {	return in<low ? low : in > high ? high : in;	}
+int QeMath::clamp(int in, int low, int high) { return in<low ? low : in > high ? high : in; }
+float QeMath::clamp(float in, float low, float high) {	return in<low ? low : in > high ? high : in;	}
 
 QeMatrix4x4f QeMath::vectortoRoateMatrix(QeVector4f vector) {
 	QeMatrix4x4f matrix;
