@@ -128,4 +128,5 @@ public:
 	int clamp( int in, int low, int high );
 	QeMatrix4x4f vectortoRoateMatrix(QeVector4f vector);
 	QeVector4f rotateMatrixtoVector(QeMatrix4x4f matrix);
+	QeVector4f interpolate(QeVector4f a, QeVector4f b, float blend);
 };

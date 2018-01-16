@@ -632,3 +632,23 @@ QeVector4f QeMath::rotateMatrixtoVector(QeMatrix4x4f matrix) {
 	}
 	return ret;
 }
+
+QeVector4f QeMath::interpolate(QeVector4f a, QeVector4f b, float blend) {
+	QeVector4f ret = { 0, 0, 0, 1 };
+
+	float dot = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
+	float blend1 = 1.f - blend;
+	if (dot < 0) {
+		ret.w = blend1 * a.w + blend * -b.w;
+		ret.x = blend1 * a.x + blend * -b.x;
+		ret.y = blend1 * a.y + blend * -b.y;
+		ret.z = blend1 * a.z + blend * -b.z;
+	}
+	else {
+		ret.w = blend1 * a.w + blend * b.w;
+		ret.x = blend1 * a.x + blend * b.x;
+		ret.y = blend1 * a.y + blend * b.y;
+		ret.z = blend1 * a.z + blend * b.z;
+	}
+	return ret;
+}
