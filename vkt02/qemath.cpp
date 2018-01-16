@@ -257,6 +257,10 @@ bool QeVector3f::operator==(const QeVector3f& other) const {
 	return x == other.x && y == other.y && z == other.z;
 }
 
+bool QeVector3f::operator!=(const QeVector3f& other) const {
+	return !(*this == other);
+}
+
 QeVector3f& QeVector3f::operator=(const QeVector4f& other) {
 	x = other.x;
 	y = other.y;
@@ -325,6 +329,14 @@ QeVector4s::QeVector4s() :x(0), y(0), z(0), w(0) {}
 QeVector4f::QeVector4f() :x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 QeVector4f::QeVector4f(float _x, float _y, float _z, float _w) :x(_x), y(_y), z(_z), w(_w) {}
 QeVector4f::QeVector4f(const QeVector3f& other, float _w) :x(other.x), y(other.y), z(other.z), w(_w) {}
+
+bool QeVector4f::operator==(const QeVector4f& other) const {
+	return x == other.x && y == other.y && z == other.z && w == other.w;
+}
+
+bool QeVector4f::operator!=(const QeVector4f& other) const {
+	return !(*this == other);
+}
 
 QeVector4f& QeVector4f::operator=(const QeVector3f& other) {
 	x = other.x;

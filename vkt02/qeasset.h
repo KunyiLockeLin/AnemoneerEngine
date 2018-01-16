@@ -19,15 +19,18 @@ struct QeVertex {
 struct QeDataJoint {
 
 	unsigned char id;
-	std::vector<unsigned char> children;
+	std::vector<QeDataJoint*> children;
 	const char* name;
 	QeVector3f translation;
 	QeVector3f rotation;
-	QeMatrix4x4f matrix;
+	QeVector3f scale;
+	QeMatrix4x4f inverseBindMatrix;
 	std::vector<float> translationInput;
 	std::vector<QeVector3f> translationOutput;
 	std::vector<float> rotationInput;
 	std::vector<QeVector4f> rotationOutput;
+	std::vector<float> scaleInput;
+	std::vector<QeVector3f> scaleOutput;
 };
 
 struct QeAssetModel {
@@ -45,10 +48,11 @@ struct QeAssetModel {
 
 	std::vector<QeVector4s> joints;
 	std::vector<QeVector4f> weights;
+	//QeDataJoint* rootJoint;
 	std::vector<QeDataJoint> jointsAnimation;
 	unsigned char animationNum;
-	std::vector<float> animationStartFrames;
-	std::vector<float> animationEndFrames;
+	std::vector<unsigned int> animationStartFrames;
+	std::vector<unsigned int> animationEndFrames;
 
 	QeAssetModel();
 	~QeAssetModel();

@@ -17,7 +17,7 @@ class QeModel
 {
 public:
 
-	unsigned char state; // 0000 stop, 0001 play, 0010 pause, 0100 auto next, 1000 auto replay
+	unsigned char actionState; // 0000 stop, 0001 play, 0010 pause, 0100 auto next, 1000 auto replay
 	unsigned char cuurentAction;
 	float cuurentFrames;
 
@@ -60,5 +60,12 @@ public:
 	virtual void setMatModel();
 	void cleanupSwapChain();
 	void createSwapChain();
+
+	void playAction();
+	void playAction( unsigned int actionID, unsigned char playType );
+	void pauseAction();
+	void stopAction();
+	void updateAction();
+
 };
 

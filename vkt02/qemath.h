@@ -47,6 +47,8 @@ struct QeVector3f {
 	QeVector3f(float _x, float _y, float _z);
 
 	bool operator==(const QeVector3f& other)const;
+	bool operator!=(const QeVector3f& other)const;
+
 	QeVector3f& operator=(const QeVector4f& other);
 	QeVector3f& operator+=(const QeVector3f& other);
 	QeVector3f& operator-=(const QeVector3f& other);
@@ -70,6 +72,9 @@ struct QeVector4f {
 	QeVector4f();
 	QeVector4f(float _x, float _y, float _z, float _w);
 	QeVector4f(const QeVector3f& other, float _w);
+
+	bool operator==(const QeVector4f& other)const;
+	bool operator!=(const QeVector4f& other)const;
 
 	QeVector4f& operator=(const QeVector3f& other);
 	QeVector4f& operator=(const QeVector4s& other);

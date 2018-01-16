@@ -349,6 +349,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	*/
 	std::vector<QeAssetJSON*>* jaccessors = AST->getJSONArrayNodes(json, 1, "accessors");
 	std::vector<QeAssetJSON*>* jbufferViews = AST->getJSONArrayNodes(json, 1, "bufferViews");
+	std::vector<std::string>* sv;
 	size_t size, size1, size2;
 	unsigned char index;
 	unsigned int offset, count, length, componentType;
@@ -382,23 +383,19 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 
 	c = AST->getJSONValue(json, 2, "skins", "inverseBindMatrices");
 	if (c != nullptr) {
+
+		// skeletal animation
 		bufferViews[7] = atoi(c);
 		std::vector<std::string>* jboneID = AST->getJSONArrayValues(json, 2, "skins", "joints");
 		size = jboneID->size();
 		model->jointsAnimation.resize(size);
 
 		std::vector<QeAssetJSON*>* jboneName = AST->getJSONArrayNodes(json, 1, "nodes");
-		std::vector<std::string>* sv;
 
 		for ( i = 0; i < size; ++i) {
 			model->jointsAnimation[i].id = atoi((*jboneID)[i].c_str());
 			model->jointsAnimation[i].name = AST->getJSONValue((*jboneName)[model->jointsAnimation[i].id], 1, "name");
-			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "child");
-			if (sv != nullptr) {
-				size1 = sv->size();
-				model->jointsAnimation[i].children.resize(size1);
-				for (j = 0; j < size1; ++j)	model->jointsAnimation[i].children[j] = atoi((*sv)[0].c_str());
-			}
+
 			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "translation");
 			if (sv != nullptr) {
 				model->jointsAnimation[i].translation.x = float(atof((*sv)[0].c_str()));
@@ -411,7 +408,27 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->jointsAnimation[i].rotation.y = float(atof((*sv)[1].c_str()));
 				model->jointsAnimation[i].rotation.z = float(atof((*sv)[2].c_str()));
 			}
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "scale");
+			if (sv != nullptr) {
+				model->jointsAnimation[i].scale.x = float(atof((*sv)[0].c_str()));
+				model->jointsAnimation[i].scale.y = float(atof((*sv)[1].c_str()));
+				model->jointsAnimation[i].scale.z = float(atof((*sv)[2].c_str()));
+			}
 		}
+
+		for (i = 0; i < size; ++i) {
+
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "child");
+			if (sv != nullptr) {
+				size1 = sv->size();
+				model->jointsAnimation[i].children.resize(size1);
+				for (j = 0; j < size1; ++j) {
+					index = atoi((*sv)[j].c_str());
+					size2 = model->jointsAnimation.size();
+					for (k = 0; k<size2 ;++k ) {
+						if( index == model->jointsAnimation[k].id)
+							model->jointsAnimation[i].children[j] = &model->jointsAnimation[k];
+		}}}}
 
 		std::vector<QeAssetJSON*>* jchannels = AST->getJSONArrayNodes(json, 2, "animations", "channels");
 		std::vector<QeAssetJSON*>* jsmaplers = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
@@ -438,7 +455,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 						model->jointsAnimation[k].rotationInput.resize(count);
 						memcpy(model->jointsAnimation[k].rotationInput.data(), binData + offset, length);
 					}
-
+					else if (strncmp(path, "scale", 5) == 0) {
+						model->jointsAnimation[k].scaleInput.resize(count);
+						memcpy(model->jointsAnimation[k].scaleInput.data(), binData + offset, length);
+					}
 					index = atoi(AST->getJSONValue((*jsmaplers)[i], 1, "output"));
 					count = atoi(AST->getJSONValue((*jaccessors)[index], 1, "count"));
 					offset = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteOffset"));
@@ -452,8 +472,51 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 						model->jointsAnimation[k].rotationOutput.resize(count);
 						memcpy(model->jointsAnimation[k].rotationOutput.data(), binData + offset, length);
 					}
+					else if (strncmp(path, "scale", 5) == 0) {
+						model->jointsAnimation[k].scaleOutput.resize(count);
+						memcpy(model->jointsAnimation[k].scaleOutput.data(), binData + offset, length);
+					}
 					break;
-	}}}}
+		}}}
+
+		// If an action doesn't move for EMPTY_FRAMES frames, it means next action.
+		const unsigned char EMPTY_FRAMES = 5;
+		unsigned char notMoveFrameCounts = 0;
+
+		size = model->jointsAnimation[0].translationInput.size();
+		size1 = model->jointsAnimation[0].rotationInput.size();
+		if (size1 > size) size = size1;
+		size1 = model->jointsAnimation[0].scaleInput.size();
+		if (size1 > size) size = size1;
+
+		size1 = model->jointsAnimation.size();
+		model->animationStartFrames.push_back(0);
+
+		for (i = 1; i < size ; ++i) {
+			if (notMoveFrameCounts == EMPTY_FRAMES) {
+				notMoveFrameCounts = 0;
+				model->animationEndFrames.push_back(unsigned int(i - EMPTY_FRAMES)-1);
+				model->animationStartFrames.push_back(unsigned int(i));
+			}
+			for ( j = 0 ; j < size1 ; ++j ) {
+				if ( (i< model->jointsAnimation[j].translationOutput.size()) && (model->jointsAnimation[j].translationOutput[i] != model->jointsAnimation[j].translationOutput[i-1]) ) {
+					notMoveFrameCounts = 0;
+					break;
+				}
+				if ((i< model->jointsAnimation[j].rotationOutput.size()) && (model->jointsAnimation[j].rotationOutput[i] != model->jointsAnimation[j].rotationOutput[i-1]) ) {
+					notMoveFrameCounts = 0;
+					break;
+				}
+				if ((i< model->jointsAnimation[j].scaleOutput.size()) && (model->jointsAnimation[j].scaleOutput[i] != model->jointsAnimation[j].scaleOutput[i-1]) ) {
+					notMoveFrameCounts = 0;
+					break;
+				}
+			}
+			if (j == size1) ++notMoveFrameCounts;
+		}
+		model->animationEndFrames.push_back(unsigned int(i)-1);
+		model->animationNum = unsigned char(model->animationEndFrames.size());
+	}
 	size = jbufferViews->size();
 
 	for (i = 0; i < size; ++i) {
@@ -515,7 +578,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		}
 		else if (index == bufferViews[7]) { // inverseBindMatrices  bone matrices
 			QeMatrix4x4f* dataPos = (QeMatrix4x4f*)(binData + offset);
-			for (j = 0; j < count; ++j) model->jointsAnimation[j].matrix = *(dataPos + j);
+			for (j = 0; j < count; ++j) model->jointsAnimation[j].inverseBindMatrix = *(dataPos + j);
 	}}
 
 	// material
