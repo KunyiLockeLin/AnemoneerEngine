@@ -81,6 +81,7 @@ struct QeVector4f {
 	QeVector4f& operator+=(const QeVector3f& other);
 	QeVector4f operator+(const QeVector3f& other);
 	QeVector4f operator-(const QeVector3f& other);
+	QeVector4f operator/(const float& other);
 };
 
 struct QeMatrix4x4f {
@@ -118,9 +119,12 @@ public:
 	QeMatrix4x4f rotateZ(float _angle);
 	QeMatrix4x4f scale(QeVector3f _size);
 	QeVector3f normalize(QeVector3f _vec);
+	QeVector4f normalize(QeVector4f _vec);
 	float length(QeVector3f _vec);
+	float length(QeVector4f _vec);
 	float distance(QeVector3f _from, QeVector3f _to);
 	float dot(QeVector3f _vec1, QeVector3f _vec2);
+	float dot(QeVector4f _vec1, QeVector4f _vec2);
 	QeVector3f cross(QeVector3f _vec1, QeVector3f _vec2);
 	float fastSqrt(float _number);
 	bool inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat);
@@ -128,5 +132,7 @@ public:
 	int clamp( int in, int low, int high );
 	QeMatrix4x4f vectortoRoateMatrix(QeVector4f vector);
 	QeVector4f rotateMatrixtoVector(QeMatrix4x4f matrix);
-	QeVector4f interpolate(QeVector4f a, QeVector4f b, float blend);
+	QeVector4f interpolateDir(QeVector4f a, QeVector4f b, float blend);
+	QeVector3f interpolatePos(QeVector3f start, QeVector3f end, float progression);
+
 };

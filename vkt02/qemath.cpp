@@ -1,6 +1,7 @@
 ﻿#include "qeheader.h"
 
 float QeMath::dot(QeVector3f _vec1, QeVector3f _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
+float QeMath::dot(QeVector4f _vec1, QeVector4f _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
 
 QeVector3f QeMath::cross(QeVector3f _vec1, QeVector3f _vec2) {
 
@@ -12,10 +13,12 @@ QeVector3f QeMath::cross(QeVector3f _vec1, QeVector3f _vec2) {
 }
 
 QeVector3f QeMath::normalize(QeVector3f _vec) { return _vec / length(_vec); }
+QeVector4f QeMath::normalize(QeVector4f _vec) { return _vec / length(_vec); }
 
 float QeMath::distance(QeVector3f _from, QeVector3f _to) { return length(_to - _from); }
 
 float QeMath::length(QeVector3f _vec) { return fastSqrt(dot(_vec, _vec)); }
+float QeMath::length(QeVector4f _vec) { return fastSqrt(dot(_vec, _vec)); }
 
 float QeMath::fastSqrt(float _number) {
 
@@ -350,7 +353,6 @@ QeVector4f& QeVector4f::operator=(const QeVector4s& other) {
 	z = other.z;
 	return *this;
 }
-
 QeVector4f& QeVector4f::operator+=(const QeVector3f& other) {
 	x -= other.x;
 	y -= other.y;
@@ -373,6 +375,15 @@ QeVector4f QeVector4f::operator-(const QeVector3f& other) {
 	_new.z = z;
 	return _new;
 }
+QeVector4f QeVector4f::operator/(const float& other) {
+	QeVector4f _new;
+	_new.x = x / other;
+	_new.y = y / other;
+	_new.z = z / other;
+	_new.w = w / other;
+	return _new;
+}
+
 
 QeMatrix4x4f::QeMatrix4x4f() :_00(1.0f), _01(0.0f), _02(0.0f), _03(0.0f),
 		_10(0.0f), _11(1.0f), _12(0.0f), _13(0.0f),
@@ -633,8 +644,8 @@ QeVector4f QeMath::rotateMatrixtoVector(QeMatrix4x4f matrix) {
 	return ret;
 }
 
-QeVector4f QeMath::interpolate(QeVector4f a, QeVector4f b, float blend) {
-	QeVector4f ret = { 0, 0, 0, 1 };
+QeVector4f QeMath::interpolateDir(QeVector4f a, QeVector4f b, float blend) {
+	QeVector4f ret;
 
 	float dot = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
 	float blend1 = 1.f - blend;
@@ -650,5 +661,15 @@ QeVector4f QeMath::interpolate(QeVector4f a, QeVector4f b, float blend) {
 		ret.y = blend1 * a.y + blend * b.y;
 		ret.z = blend1 * a.z + blend * b.z;
 	}
+	normalize(ret);
+	return ret;
+}
+
+QeVector3f QeMath::interpolatePos(QeVector3f start, QeVector3f end, float progression) {
+
+	QeVector3f ret;
+	ret.x = start.x + (end.x - start.x) * progression;
+	ret.y = start.y + (end.y - start.y) * progression;
+	ret.z = start.z + (end.z - start.z) * progression;
 	return ret;
 }
