@@ -37,8 +37,8 @@
   - mix animation
   - frustum Culling
   - room
-  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - Separate different libraries.
+  - combine socket https://github.com/KunyiLockeLin/WebSocket_server
+  - separate different libraries.
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
