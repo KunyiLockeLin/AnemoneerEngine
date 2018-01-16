@@ -29,15 +29,15 @@
   - Attach obj
   - bounding Box
   - Collision
-  - Frustum Culling
-  - Room
   - Terrian system
-  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - Separate different libraries.
   - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - HDR
   - Shadow
   - reflection and cube map
+  - Frustum Culling
+  - Room
+  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
+  - Separate different libraries.
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
