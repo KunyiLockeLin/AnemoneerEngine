@@ -28,10 +28,10 @@ public:
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger();
 	
-	QeCamera* getCamera(int _id);
-	QeLight* getLight(int _id, QeAssetXML* _property = nullptr);
-	QeActivity* getActivity(int _id);
-	QeModel* getModel(const char* _name, QeAssetXML* _property=nullptr);
+	QeCamera* getCamera(int _id, QeAssetXML* _property);
+	QeLight* getLight(int _id, QeAssetXML* _property);
+	QeActivity* getActivity(int _id, QeAssetXML* _property);
+	QeModel* getModel(int _id, QeAssetXML* _property);
 	QeBillboard* getBillboard(int _id);
 	
 	void update(float _time);

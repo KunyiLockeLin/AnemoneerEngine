@@ -38,6 +38,7 @@ public:
 
 	VkPipeline graphicsPipeline;
 	VkDescriptorPool descriptorPool;
+	QeAssetXML* initProperty;
 
 	void createDescriptorBuffer();
 	void updateUniformBuffer();
@@ -46,8 +47,7 @@ public:
 	QeModel(QeObjectMangerKey& _key) {}
 	~QeModel();
 
-	void init(const char* _filename);
-	void setProperty(QeAssetXML* _property);
+	void init(QeAssetXML* _property);
 	void setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size);
 	void move(QeVector3f _pos);
 	void setPosition(QeVector3f _pos);

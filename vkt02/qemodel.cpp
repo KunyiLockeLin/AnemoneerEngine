@@ -79,41 +79,39 @@ void QeModel::setMatModel() {
 	ubo.model = mat;
 }
 
+void QeModel::init(QeAssetXML* _property) {
 
-void QeModel::init(const char* _filename) {
+	initProperty = _property;
 
-	modelData = AST->getModel(_filename);
+	const char* c = AST->getXMLValue(_property, 1, "obj");;
+	modelData = AST->getModel(c);
 	descriptorPool = VLK->createDescriptorPool();
 	descriptorSet = VLK->createDescriptorSet(descriptorPool);
 	createDescriptorBuffer();
-	
+
 	VkBuffer buffers[3];
 	int buffersSize[3];
 	VkSampler samplersp[1];
 	VkImageView imageViews[1];
 
-	buffers[0]		= uboBuffer;
-	buffersSize[0]	= sizeof(QeUniformBufferObject);
-	buffers[1]		= lightBuffer;
-	buffersSize[1]	= sizeof(QeDataLight);
-	buffers[2]		= modelData->pMaterial->materialBuffer;
-	samplersp[0]	= modelData->pMaterial->pDiffuseMap->textureSampler;
-	imageViews[0]	= modelData->pMaterial->pDiffuseMap->textureImageView;
+	buffers[0] = uboBuffer;
+	buffersSize[0] = sizeof(QeUniformBufferObject);
+	buffers[1] = lightBuffer;
+	buffersSize[1] = sizeof(QeDataLight);
+	buffers[2] = modelData->pMaterial->materialBuffer;
+	samplersp[0] = modelData->pMaterial->pDiffuseMap->textureSampler;
+	imageViews[0] = modelData->pMaterial->pDiffuseMap->textureImageView;
 
-	if (modelData->pMaterial->type == eMaterialNormal)		buffersSize[2]	= sizeof(QeDataMaterial);
-	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2]	= sizeof(QeDataPBRMaterial);
-	
+	if (modelData->pMaterial->type == eMaterialNormal)		buffersSize[2] = sizeof(QeDataMaterial);
+	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataPBRMaterial);
+
 	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
 
 	pos = QeVector3f(0, 0, 0);
 	face = 0.0f;
 	up = 0.0f;
 	size = QeVector3f(1, 1, 1);
-}
-
-void QeModel::setProperty(QeAssetXML* _property) {
-
-	const char* c;
+	speed = 30;
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
@@ -200,7 +198,7 @@ void QeModel::updateUniformBuffer() {
 	}
 	VLK->setMemory(uboBufferMemory,(void*)&ubo, sizeof(ubo));
 	
-	QeDataLight* light = &OBJMGR->getLight(0)->data;
+	QeDataLight* light = &OBJMGR->getLight(0,nullptr)->data;
 	VLK->setMemory(lightBufferMemory, (void*)light, sizeof(*light));
 
 	if (modelData->pMaterial->type == eMaterialNormal)	

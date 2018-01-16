@@ -3,18 +3,20 @@
 
 void QeViewport::init() {
 
-	for (int i = 0; i<MAX_VIEWPORT_NUM;++i ) {
+		for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
 		viewports[i].minDepth = 0.0f;
 		viewports[i].maxDepth = 1.0f;
-	}
-	
-	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
-		cameras[i] = OBJMGR->getCamera(i);
-		cameras[i]->init();
 	}
 
 	currentNum = 1;
 	updateViewport();
+}
+
+void QeViewport::initCamera(QeAssetXML* _property) {
+	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
+		cameras[i] = OBJMGR->getCamera(i, _property->nexts[0]);
+		cameras[i]->faspect = viewports[i].width / viewports[i].height;
+	}
 }
 
 void QeViewport::updateViewport() {
@@ -61,7 +63,6 @@ void QeViewport::updateViewport() {
 		scissors[i].extent.height = int(viewports[i].height);
 		scissors[i].offset.x = int(viewports[i].x);
 		scissors[i].offset.y = int(viewports[i].y);
-		cameras[i]->faspect = viewports[i].width / viewports[i].height;
 	}
 
 	viewportState = {};

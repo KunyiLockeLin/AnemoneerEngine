@@ -18,7 +18,7 @@ void QeCamera::rotatePos(float _angle, QeVector3f _axis) {
 	while (_angle < -360) _angle += 360;
 
 	QeVector3f vec = target - pos;
-	QeMatrix4x4f mat = MATH->rotate(_angle*rotateSpeed, _axis);
+	QeMatrix4x4f mat = MATH->rotate(_angle*speed, _axis);
 	mat *= MATH->translate(pos);
 	QeVector4f v4(vec, 1);
 	target = mat*v4;
@@ -29,7 +29,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	while (_angle < -360) _angle += 360;
 
 	QeVector3f vec = pos - target;
-	QeMatrix4x4f mat = MATH->rotate(_angle*rotateSpeed, _axis); 
+	QeMatrix4x4f mat = MATH->rotate(_angle*speed, _axis);
 	mat *= MATH->translate(target);
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
@@ -61,18 +61,18 @@ void QeCamera::move(QeVector3f _dir) {
 
 	// forward
 	if (_dir.z != 0) {
-		mat = MATH->translate(_face*_dir.z*moveSpeed);
+		mat = MATH->translate(_face*_dir.z*speed);
 	}
 
 	QeVector3f _surface = MATH->normalize(MATH->cross(_face, up));
 	//left
 	if (_dir.x != 0) {
-		mat = MATH->translate(_surface*_dir.x*moveSpeed);
+		mat = MATH->translate(_surface*_dir.x*speed);
 	}
 	//up
 	if (_dir.y != 0) {
 		QeVector3f _up1 = MATH->cross(_surface, _face);
-		mat = MATH->translate(_up1*_dir.y*moveSpeed);
+		mat = MATH->translate(_up1*_dir.y*speed);
 	}
 
 	QeVector4f v4(pos, 1);
@@ -86,14 +86,65 @@ void QeCamera::move(QeVector3f _dir) {
 	}
 }
 
-void QeCamera::init() {
+void QeCamera::init(QeAssetXML* _property) {
+
 	pos = QeVector3f(0, 10, 5);
 	target = QeVector3f(0, 0, 0);
 	up = QeVector3f(0, 0, 1);
 	fov = 45.0f;
 	fnear = 0.1f;
 	ffar = 1000.0f;
-	if( type == eCameraFirstPerson )	type = eCameraThirdPerson;
+	type = eCameraThirdPerson;
+	speed = 0.5f;
+
+	initProperty = _property;
+	const char* c;
+	
+	c = AST->getXMLValue(_property, 1, "type");
+	if (c != nullptr)	type = QeCameraType(atoi(c));
+	else				type = eCameraFirstPerson;
+
+	c = AST->getXMLValue(_property, 1, "posX");
+	if (c != nullptr)	pos.x = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "posY");
+	if (c != nullptr)	pos.y = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "posZ");
+	if (c != nullptr)	pos.z = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "targetX");
+	if (c != nullptr)	target.x = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "targetY");
+	if (c != nullptr)	target.y = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "targetZ");
+	if (c != nullptr)	target.z = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "upX");
+	if (c != nullptr)	up.x = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "upY");
+	if (c != nullptr)	up.y = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "upZ");
+	if (c != nullptr)	up.z = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "speed");
+	if (c != nullptr)	speed = float(atof(c));
+
+
+	c = AST->getXMLValue(_property, 1, "fov");
+	if (c != nullptr)	fov = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "near");
+	if (c != nullptr)	fnear = float(atof(c));
+	c = AST->getXMLValue(_property, 1, "far");
+	if (c != nullptr)	ffar = float(atof(c));
+}
+
+void QeCamera::reset() {
+
+	QeCameraType lastType = type;
+
+	init(initProperty); 
+
+	if (lastType == eCameraThirdPerson) type = eCameraFirstPerson;
 	else								type = eCameraFirstPerson;
 }
 

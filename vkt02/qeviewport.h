@@ -16,6 +16,7 @@ public:
 	VkPipelineViewportStateCreateInfo viewportState;
 
 	void init();
+	void initCamera(QeAssetXML* _property);
 	void addNewViewport();
 	void popViewport();
 	void updateViewport();

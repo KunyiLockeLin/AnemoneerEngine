@@ -22,8 +22,9 @@ public:
 	int speed = 0;
 	QeVector3f rotateCenter;
 	QeDataLight data;
-	void init();
-	void setProperty(QeAssetXML* _property);
+	QeAssetXML* initProperty;
+
+	void init(QeAssetXML* _property);
 	void update(float time);
 
 	QeBillboard* billboard;

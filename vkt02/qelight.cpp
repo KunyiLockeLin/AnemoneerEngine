@@ -1,15 +1,16 @@
 #include "qeheader.h"
 
-void QeLight::init() {
-	data.pos	= QeVector4f(0, 0, 0, 1);
-	data.dir	= QeVector4f(1, 1, 1, 1);
-	data.color	= QeVector4f(1, 1, 1, 1);
-	data.param	= QeVector4f(0, 1, 1, 1);
-	rotateCenter= QeVector3f(0, 0, 0);
-}
 
-void QeLight::setProperty(QeAssetXML* _property) {
+void QeLight::init(QeAssetXML* _property) {
 
+	data.pos = QeVector4f(0, 0, 0, 1);
+	data.dir = QeVector4f(1, 1, 1, 1);
+	data.color = QeVector4f(1, 1, 1, 1);
+	data.param = QeVector4f(0, 1, 1, 1);
+	rotateCenter = QeVector3f(0, 0, 0);
+	speed = 30;
+
+	initProperty = _property;
 	const char* c;
 
 	c = AST->getXMLValue(_property, 1, "r");

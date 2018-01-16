@@ -18,13 +18,14 @@ public:
 	float fnear;
 	float ffar;
 	float faspect = 1;
-	float rotateSpeed = 0.5f;
-	float moveSpeed = 0.5f;
+	float speed = 0.5f;
 	QeCameraType type;
+	QeAssetXML* initProperty;
 
 	QeCamera(QeObjectMangerKey& _key) {}
 	~QeCamera() {}
-	void init();
+	void init(QeAssetXML* _property);
+	void reset();
 	void switchType(QeCameraType _type);
 	void setCamera(QeVector3f _pos, QeVector3f _target, QeVector3f _up, float _fov, float _near, float _far );
 	void rotatePos(float _angle, QeVector3f _axis);
