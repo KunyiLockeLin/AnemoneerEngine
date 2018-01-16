@@ -3,7 +3,7 @@
 	<engine>QueenEngine</engine>
 	<envir FPS="30" width="1280" height="720" />
 	<path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-	<defaultShader basevert="basev.spv" basegeom="baseg.spv" basefrag="basef.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv"/>
+	<defaultShader basevert="basev.spv" basegeom="phongg.spv" basefrag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv"/>
 	<billboard obj= "plane.gltf" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
 	
 	<activity1>
