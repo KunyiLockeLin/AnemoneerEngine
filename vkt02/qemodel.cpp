@@ -308,7 +308,6 @@ void QeModel::setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoi
 				setChildrenJointTransform(jointsTransform, *modelData->jointsAnimation[i].children[j], jointsTransform[i]);
 
 			jointsTransform[i] = modelData->jointsAnimation[i].inverseBindMatrix*jointsTransform[i];
-			jointsTransform[i] = modelData->jointsAnimation[i].inverseBindMatrix*jointsTransform[i];
 			break;
 		}
 	}
