@@ -13,13 +13,25 @@ struct QeUniformBufferObject {
 	QeVector4f param; // 1:viewportNum, 2:billboardType,
 };
 
+enum QeActionType {
+	eActionTypeOnce,
+	eActionTypeReplay,
+	eActionTypeNext,
+};
+
+enum QeActionState {
+	eActionStateStop,
+	eActionStatePlay,
+	eActionStatePause,
+};
+
 class QeModel
 {
 public:
-
-	unsigned char actionState; // 0000 stop, 0001 play, 0010 pause, 0100 auto next, 1000 auto replay
+	QeActionState actionState;
+	QeActionType actionType;
 	unsigned char cuurentAction;
-	float cuurentFrames;
+	unsigned int  cuurentFrames;
 
 	QeVector3f pos;
 	float face;
@@ -61,11 +73,10 @@ public:
 	void cleanupSwapChain();
 	void createSwapChain();
 
+	bool setAction(unsigned int actionID, QeActionType playType);
 	void playAction();
-	void playAction( unsigned int actionID, unsigned char playType );
 	void pauseAction();
 	void stopAction();
 	void updateAction();
-
 };
 

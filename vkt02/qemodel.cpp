@@ -170,6 +170,7 @@ void QeModel::createDescriptorBuffer() {
 void QeModel::update(float time) {
 
 	if(speed != 0)	rotateFace( time*speed );
+	updateAction();
 	updateUniformBuffer();
 }
 
@@ -206,3 +207,18 @@ void QeModel::updateUniformBuffer() {
 	else if (modelData->pMaterial->type == eMaterialPBR)
 		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->valuePBR, sizeof(modelData->pMaterial->valuePBR));
 }
+
+bool QeModel::setAction(unsigned int actionID, QeActionType type) {
+	if (actionID <= modelData->animationNum) {
+		cuurentAction = actionID;
+		cuurentFrames = modelData->animationStartFrames[cuurentAction];
+		actionType = type;
+		return true;
+	}
+	return false;
+}
+
+void QeModel::playAction()	{	actionState = eActionStatePlay; }
+void QeModel::pauseAction() {	actionState = eActionStatePause; }
+void QeModel::stopAction()	{	actionState = eActionStateStop; }
+void QeModel::updateAction() {}
