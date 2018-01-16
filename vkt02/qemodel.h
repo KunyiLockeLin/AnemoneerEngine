@@ -8,9 +8,11 @@ struct QeUniformBufferObject {
 	QeMatrix4x4f view[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f proj[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f normal[MAX_VIEWPORT_NUM];
-	QeVector4f cameraPos[MAX_VIEWPORT_NUM];
-	QeVector4f ambientColor;
-	QeVector4f param; // 1:viewportNum, 2:billboardType,
+	QeMatrix4x4f joints[3];
+	QeVector4f	jointIDs;
+	QeVector4f	cameraPos[MAX_VIEWPORT_NUM];
+	QeVector4f	ambientColor;
+	QeVector4f	param; // 1:viewportNum, 2:billboardType,
 };
 
 enum QeActionType {
@@ -28,10 +30,12 @@ enum QeActionState {
 class QeModel
 {
 public:
-	QeActionState actionState;
-	QeActionType actionType;
-	unsigned char cuurentAction;
-	unsigned int  cuurentFrames;
+	QeActionState	actionState;
+	QeActionType	actionType;
+	unsigned char	currentActionID;
+	unsigned int	currentActionFrame;
+	float			currentActionTime;
+	//std::vector<QeMatrix4x4f> currentJointsTransform;
 
 	QeVector3f pos;
 	float face;
@@ -74,9 +78,10 @@ public:
 	void createSwapChain();
 
 	bool setAction(unsigned int actionID, QeActionType playType);
-	void playAction();
-	void pauseAction();
-	void stopAction();
-	void updateAction();
+	void actionPlay();
+	void actionPause();
+	void actionStop();
+	void updateAction(float time);
+	void setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 };
 

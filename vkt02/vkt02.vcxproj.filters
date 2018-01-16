@@ -112,12 +112,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\shaders\base.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
-    <None Include="..\data\shaders\base.geom">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\billboard.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -135,6 +129,12 @@
     </None>
     <None Include="..\data\models\animation.gltf">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\data\shaders\phong.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\phong.geom">
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

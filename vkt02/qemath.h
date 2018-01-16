@@ -66,6 +66,12 @@ struct QeVector4s {
 	QeVector4s();
 };
 
+struct QeVector4i{
+	int x, y, z, w;
+	QeVector4i();
+	QeVector4i& operator=(const QeVector4s& other);
+};
+
 struct QeVector4f {
 	float x, y, z, w;
 
@@ -118,6 +124,7 @@ public:
 	QeMatrix4x4f rotateY(float _angle);
 	QeMatrix4x4f rotateZ(float _angle);
 	QeMatrix4x4f scale(QeVector3f _size);
+	QeMatrix4x4f transform(QeVector3f tanslation, QeVector4f rotation, QeVector3f scale);
 	QeVector3f normalize(QeVector3f _vec);
 	QeVector4f normalize(QeVector4f _vec);
 	float length(QeVector3f _vec);

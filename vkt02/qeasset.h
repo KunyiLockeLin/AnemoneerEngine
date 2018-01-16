@@ -9,10 +9,12 @@ struct QeVertex {
 	QeVector2f texCoord;
 	QeVector3f normal;
 	QeVector4f tangent;
+	QeVector4i joint;
+	QeVector4f weight;
 
 	QeVertex() {}
 	static VkVertexInputBindingDescription getBindingDescription();
-	static std::array<VkVertexInputAttributeDescription, 5> getAttributeDescriptions();
+	static std::array<VkVertexInputAttributeDescription, 7> getAttributeDescriptions();
 	bool operator==(const QeVertex& other) const; 
 };
 
@@ -23,14 +25,14 @@ struct QeDataJoint {
 	const char* name;
 	QeVector3f translation;
 	QeVector3f rotation;
-	QeVector3f scale;
+	//QeVector3f scale;
 	QeMatrix4x4f inverseBindMatrix;
 	std::vector<float> translationInput;
 	std::vector<QeVector3f> translationOutput;
 	std::vector<float> rotationInput;
 	std::vector<QeVector4f> rotationOutput;
-	std::vector<float> scaleInput;
-	std::vector<QeVector3f> scaleOutput;
+	//std::vector<float> scaleInput;
+	//std::vector<QeVector3f> scaleOutput;
 };
 
 struct QeAssetModel {
@@ -46,9 +48,7 @@ struct QeAssetModel {
 
 	QeAssetMaterial* pMaterial;
 
-	std::vector<QeVector4s> joints;
-	std::vector<QeVector4f> weights;
-	//QeDataJoint* rootJoint;
+	QeDataJoint* rootJoint;
 	std::vector<QeDataJoint> jointsAnimation;
 	unsigned char animationNum;
 	std::vector<unsigned int> animationStartFrames;

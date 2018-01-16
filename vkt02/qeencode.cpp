@@ -395,6 +395,8 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		for ( i = 0; i < size; ++i) {
 			model->jointsAnimation[i].id = atoi((*jboneID)[i].c_str());
 			model->jointsAnimation[i].name = AST->getJSONValue((*jboneName)[model->jointsAnimation[i].id], 1, "name");
+			
+			if (strncmp(model->jointsAnimation[i].name, "Armature_root", 13) == 0) model->rootJoint = &model->jointsAnimation[i];
 
 			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "translation");
 			if (sv != nullptr) {
@@ -408,17 +410,17 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->jointsAnimation[i].rotation.y = float(atof((*sv)[1].c_str()));
 				model->jointsAnimation[i].rotation.z = float(atof((*sv)[2].c_str()));
 			}
-			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "scale");
-			if (sv != nullptr) {
-				model->jointsAnimation[i].scale.x = float(atof((*sv)[0].c_str()));
-				model->jointsAnimation[i].scale.y = float(atof((*sv)[1].c_str()));
-				model->jointsAnimation[i].scale.z = float(atof((*sv)[2].c_str()));
-			}
+			//sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "scale");
+			//if (sv != nullptr) {
+			//	model->jointsAnimation[i].scale.x = float(atof((*sv)[0].c_str()));
+			//	model->jointsAnimation[i].scale.y = float(atof((*sv)[1].c_str()));
+			//	model->jointsAnimation[i].scale.z = float(atof((*sv)[2].c_str()));
+			//}
 		}
 
 		for (i = 0; i < size; ++i) {
 
-			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "child");
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "children");
 			if (sv != nullptr) {
 				size1 = sv->size();
 				model->jointsAnimation[i].children.resize(size1);
@@ -455,10 +457,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 						model->jointsAnimation[k].rotationInput.resize(count);
 						memcpy(model->jointsAnimation[k].rotationInput.data(), binData + offset, length);
 					}
-					else if (strncmp(path, "scale", 5) == 0) {
-						model->jointsAnimation[k].scaleInput.resize(count);
-						memcpy(model->jointsAnimation[k].scaleInput.data(), binData + offset, length);
-					}
+					//else if (strncmp(path, "scale", 5) == 0) {
+					//	model->jointsAnimation[k].scaleInput.resize(count);
+					//	memcpy(model->jointsAnimation[k].scaleInput.data(), binData + offset, length);
+					//}
 					index = atoi(AST->getJSONValue((*jsmaplers)[i], 1, "output"));
 					count = atoi(AST->getJSONValue((*jaccessors)[index], 1, "count"));
 					offset = atoi(AST->getJSONValue((*jbufferViews)[index], 1, "byteOffset"));
@@ -472,10 +474,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 						model->jointsAnimation[k].rotationOutput.resize(count);
 						memcpy(model->jointsAnimation[k].rotationOutput.data(), binData + offset, length);
 					}
-					else if (strncmp(path, "scale", 5) == 0) {
-						model->jointsAnimation[k].scaleOutput.resize(count);
-						memcpy(model->jointsAnimation[k].scaleOutput.data(), binData + offset, length);
-					}
+					//else if (strncmp(path, "scale", 5) == 0) {
+					//	model->jointsAnimation[k].scaleOutput.resize(count);
+					//	memcpy(model->jointsAnimation[k].scaleOutput.data(), binData + offset, length);
+					//}
 					break;
 		}}}
 
@@ -484,10 +486,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		unsigned char notMoveFrameCounts = 0;
 
 		size = model->jointsAnimation[0].translationInput.size();
-		size1 = model->jointsAnimation[0].rotationInput.size();
-		if (size1 > size) size = size1;
-		size1 = model->jointsAnimation[0].scaleInput.size();
-		if (size1 > size) size = size1;
+		//size1 = model->jointsAnimation[0].rotationInput.size();
+		//if (size1 > size) size = size1;
+		//size1 = model->jointsAnimation[0].scaleInput.size();
+		//if (size1 > size) size = size1;
 
 		size1 = model->jointsAnimation.size();
 		model->animationStartFrames.push_back(0);
@@ -499,18 +501,18 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->animationStartFrames.push_back(unsigned int(i));
 			}
 			for ( j = 0 ; j < size1 ; ++j ) {
-				if ( (i< model->jointsAnimation[j].translationOutput.size()) && (model->jointsAnimation[j].translationOutput[i] != model->jointsAnimation[j].translationOutput[i-1]) ) {
+				if ( /*(i< model->jointsAnimation[j].translationOutput.size()) &&*/ (model->jointsAnimation[j].translationOutput[i] != model->jointsAnimation[j].translationOutput[i-1]) ) {
 					notMoveFrameCounts = 0;
 					break;
 				}
-				if ((i< model->jointsAnimation[j].rotationOutput.size()) && (model->jointsAnimation[j].rotationOutput[i] != model->jointsAnimation[j].rotationOutput[i-1]) ) {
+				if ( /*(i< model->jointsAnimation[j].rotationOutput.size()) &&*/ (model->jointsAnimation[j].rotationOutput[i] != model->jointsAnimation[j].rotationOutput[i-1]) ) {
 					notMoveFrameCounts = 0;
 					break;
 				}
-				if ((i< model->jointsAnimation[j].scaleOutput.size()) && (model->jointsAnimation[j].scaleOutput[i] != model->jointsAnimation[j].scaleOutput[i-1]) ) {
-					notMoveFrameCounts = 0;
-					break;
-				}
+				//if ((i< model->jointsAnimation[j].scaleOutput.size()) && (model->jointsAnimation[j].scaleOutput[i] != model->jointsAnimation[j].scaleOutput[i-1]) ) {
+				//	notMoveFrameCounts = 0;
+				//	break;
+				//}
 			}
 			if (j == size1) ++notMoveFrameCounts;
 		}
@@ -566,15 +568,19 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		}
 		else if (index == bufferViews[5]) { // joint
 			QeVector4s* dataPos = (QeVector4s*)(binData + offset);
-			model->joints.resize(count);
+			if (model->vertices.size() < count)	model->vertices.resize(count);
+			for (j = 0; j < count; ++j) model->vertices[j].joint = *(dataPos + j);
+			//model->joints.resize(count);
 			//for (j = 0; j < count; ++j) model->joints[j] = *(dataPos + j);
-			memcpy(model->joints.data(), dataPos, length);
+			//memcpy(model->joints.data(), dataPos, length);
 		}
 		else if (index == bufferViews[6]) { // weight
 			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
-			model->weights.resize(count);
+			if (model->vertices.size() < count)	model->vertices.resize(count);
+			for (j = 0; j < count; ++j) model->vertices[j].weight = *(dataPos + j);
+			//model->weights.resize(count);
 			//for (j = 0; j < count; ++j) model->weights[j] = *(dataPos + j);
-			memcpy(model->weights.data(), dataPos, length);
+			//memcpy(model->weights.data(), dataPos, length);
 		}
 		else if (index == bufferViews[7]) { // inverseBindMatrices  bone matrices
 			QeMatrix4x4f* dataPos = (QeMatrix4x4f*)(binData + offset);

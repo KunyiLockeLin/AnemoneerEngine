@@ -329,6 +329,7 @@ QeVector3f QeVector3f::operator*(const float& other) {
 	return _new;
 }
 QeVector4s::QeVector4s() :x(0), y(0), z(0), w(0) {}
+QeVector4i::QeVector4i() : x(0), y(0), z(0), w(0) {}
 QeVector4f::QeVector4f() :x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 QeVector4f::QeVector4f(float _x, float _y, float _z, float _w) :x(_x), y(_y), z(_z), w(_w) {}
 QeVector4f::QeVector4f(const QeVector3f& other, float _w) :x(other.x), y(other.y), z(other.z), w(_w) {}
@@ -348,6 +349,12 @@ QeVector4f& QeVector4f::operator=(const QeVector3f& other) {
 	return *this;
 }
 QeVector4f& QeVector4f::operator=(const QeVector4s& other) {
+	x = other.x;
+	y = other.y;
+	z = other.z;
+	return *this;
+}
+QeVector4i& QeVector4i::operator=(const QeVector4s& other) {
 	x = other.x;
 	y = other.y;
 	z = other.z;
@@ -671,5 +678,14 @@ QeVector3f QeMath::interpolatePos(QeVector3f start, QeVector3f end, float progre
 	ret.x = start.x + (end.x - start.x) * progression;
 	ret.y = start.y + (end.y - start.y) * progression;
 	ret.z = start.z + (end.z - start.z) * progression;
+	return ret;
+}
+
+QeMatrix4x4f QeMath::transform(QeVector3f tanslation, QeVector4f rotation, QeVector3f scale) {
+	
+	QeMatrix4x4f ret;
+	ret *= MATH->translate(tanslation);
+	ret *= MATH->vectortoRoateMatrix(rotation);
+	ret *= MATH->scale(scale);
 	return ret;
 }

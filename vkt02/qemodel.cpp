@@ -85,6 +85,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
+	//currentJointsTransform.resize( modelData->jointsAnimation.size() );
 	descriptorPool = VLK->createDescriptorPool();
 	descriptorSet = VLK->createDescriptorSet(descriptorPool);
 	createDescriptorBuffer();
@@ -107,11 +108,14 @@ void QeModel::init(QeAssetXML* _property) {
 
 	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
 
-	pos = QeVector3f(0, 0, 0);
+	pos = { 0, 0, 0 };
 	face = 0.0f;
 	up = 0.0f;
-	size = QeVector3f(1, 1, 1);
+	size = { 1, 1, 1 };
 	speed = 30;
+	currentActionID = 0;
+	actionType = eActionTypeOnce;
+	actionState = eActionStateStop;
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
@@ -160,6 +164,17 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);
+
+	c = AST->getXMLValue(_property, 1, "action");
+	if (c != nullptr) {
+		currentActionID = atoi(c);
+
+		c = AST->getXMLValue(_property, 1, "actionType");
+		if (c != nullptr)	actionType = QeActionType(atoi(c));
+
+		setAction(currentActionID, actionType);
+		actionPlay();
+	}
 }
 
 void QeModel::createDescriptorBuffer() {
@@ -170,7 +185,7 @@ void QeModel::createDescriptorBuffer() {
 void QeModel::update(float time) {
 
 	if(speed != 0)	rotateFace( time*speed );
-	updateAction();
+	updateAction(time);
 	updateUniformBuffer();
 }
 
@@ -210,15 +225,91 @@ void QeModel::updateUniformBuffer() {
 
 bool QeModel::setAction(unsigned int actionID, QeActionType type) {
 	if (actionID <= modelData->animationNum) {
-		cuurentAction = actionID;
-		cuurentFrames = modelData->animationStartFrames[cuurentAction];
+		currentActionID = actionID;
 		actionType = type;
 		return true;
 	}
 	return false;
 }
 
-void QeModel::playAction()	{	actionState = eActionStatePlay; }
-void QeModel::pauseAction() {	actionState = eActionStatePause; }
-void QeModel::stopAction()	{	actionState = eActionStateStop; }
-void QeModel::updateAction() {}
+void QeModel::actionPlay()	{
+	if ( (actionState == eActionStateStop || actionState == eActionStatePlay)&& currentActionID <= modelData->animationNum) {
+		currentActionFrame = modelData->animationStartFrames[currentActionID];
+		currentActionTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
+	}
+	actionState = eActionStatePlay; 
+}
+
+void QeModel::actionPause() {	actionState = eActionStatePause; }
+void QeModel::actionStop()	{	actionState = eActionStateStop; }
+
+void QeModel::updateAction(float time) {
+
+	if (actionState != eActionStatePlay) return;
+
+	float previousActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
+	float nextActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame + 1];
+	bool bFinalFrame = false;
+	if ((currentActionFrame + 2) == modelData->jointsAnimation[0].rotationInput.size()) bFinalFrame = true;
+
+	float progessive = (currentActionTime- previousActionFrameTime)/(nextActionFrameTime-previousActionFrameTime);
+
+	QeVector3f previousTranslation, nextTranslation, currentTranslation, currentScale;
+	QeVector4f previousRotation, nextRotation, currentRotation;
+	currentScale = {1,1,1};
+
+	//size_t size = currentJointsTransform.size();
+	size_t size = modelData->jointsAnimation.size();
+	ubo.jointIDs.w = 1;
+	ubo.jointIDs.x = modelData->jointsAnimation[0].id;
+	ubo.jointIDs.y = modelData->jointsAnimation[1].id;
+	ubo.jointIDs.z = modelData->jointsAnimation[2].id;
+
+	for (size_t i = 0;i<size;++i ) {
+		previousTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame];
+		nextTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame + 1];
+		currentTranslation = MATH->interpolatePos(previousTranslation, nextTranslation, progessive);
+
+		previousRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame];
+		nextRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame+1];
+		currentRotation = MATH->interpolateDir(previousRotation, nextRotation, progessive);
+		ubo.joints[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
+		//currentJointsTransform[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
+	}
+
+	QeMatrix4x4f mat;
+	setChildrenJointTransform(ubo.joints, *modelData->rootJoint, mat);
+	//setChildrenJointTransform(currentJointsTransform, *modelData->rootJoint, mat);
+
+	currentActionTime += time;
+	if (currentActionTime > nextActionFrameTime) {
+
+		if (bFinalFrame) {
+			if (actionType == eActionTypeOnce) actionStop();
+			else {
+				if (actionType == eActionTypeNext) {
+					++currentActionID;
+					if (currentActionID >= modelData->animationNum) currentActionID -= modelData->animationNum;
+				}
+				actionPlay();
+		}}
+		else	++currentActionFrame;
+}}
+
+void QeModel::setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoint& joint, QeMatrix4x4f &parentTransform) {
+
+	size_t size = modelData->jointsAnimation.size();
+
+	for (size_t i = 0; i<size ;++i ) {
+		if (modelData->jointsAnimation[i].id == joint.id) {
+			jointsTransform[i] *= parentTransform;
+			size_t size1 = modelData->jointsAnimation[i].children.size();
+
+			for (size_t j = 0; j<size1 ;++j)
+				setChildrenJointTransform(jointsTransform, *modelData->jointsAnimation[i].children[j], jointsTransform[i]);
+
+			jointsTransform[i] *= modelData->jointsAnimation[i].inverseBindMatrix;
+			break;
+		}
+	}
+}
