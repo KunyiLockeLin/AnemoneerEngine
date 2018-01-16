@@ -38,7 +38,7 @@
   - frustum Culling
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - separate different libraries.
+  - separate to different many libraries
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
