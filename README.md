@@ -27,15 +27,16 @@
 # ToDoList:
   - Skeletal animation
   - Attach obj
-  - bounding Box
-  - Collision
-  - Terrian system
-  - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - HDR
-  - Shadow
+  - bounding Box
+  - collision
+  - Terrian system
+  - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
+  - shadow
   - reflection and cube map
-  - Frustum Culling
-  - Room
+  - mix animation
+  - frustum Culling
+  - room
   - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - Separate different libraries.
  
