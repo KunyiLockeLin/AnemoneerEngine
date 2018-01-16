@@ -233,11 +233,10 @@ bool QeModel::setAction(unsigned int actionID, QeActionType type) {
 }
 
 void QeModel::actionPlay()	{
-	if ( (actionState == eActionStateStop || actionState == eActionStatePlay)&& currentActionID <= modelData->animationNum) {
-		currentActionFrame = modelData->animationStartFrames[currentActionID];
-		currentActionTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
-	}
-	actionState = eActionStatePlay; 
+
+	currentActionFrame = modelData->animationStartFrames[currentActionID];
+	currentActionTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
+	actionState = eActionStatePlay;
 }
 
 void QeModel::actionPause() {	actionState = eActionStatePause; }
@@ -250,7 +249,7 @@ void QeModel::updateAction(float time) {
 	float previousActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
 	float nextActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame + 1];
 	bool bFinalFrame = false;
-	if ((currentActionFrame + 2) == modelData->jointsAnimation[0].rotationInput.size()) bFinalFrame = true;
+	if ((currentActionFrame + 1) == modelData->animationEndFrames[currentActionID]) bFinalFrame = true;
 
 	float progessive = (currentActionTime- previousActionFrameTime)/(nextActionFrameTime-previousActionFrameTime);
 

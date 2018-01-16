@@ -9,7 +9,7 @@ struct QeVertex {
 	QeVector2f texCoord;
 	QeVector3f normal;
 	QeVector4f tangent;
-	QeVector4i joint;
+	QeVector4f joint;
 	QeVector4f weight;
 
 	QeVertex() {}

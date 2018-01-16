@@ -569,7 +569,14 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		else if (index == bufferViews[5]) { // joint
 			QeVector4s* dataPos = (QeVector4s*)(binData + offset);
 			if (model->vertices.size() < count)	model->vertices.resize(count);
-			for (j = 0; j < count; ++j) model->vertices[j].joint = *(dataPos + j);
+			for (j = 0; j < count; ++j)	model->vertices[j].joint = *(dataPos + j);
+
+			//for (j = 0; j < count; ++j) {
+			//	model->vertices[j].joint[0] = (dataPos + j)->x;
+			//	model->vertices[j].joint[1] = (dataPos + j)->y;
+			//	model->vertices[j].joint[2] = (dataPos + j)->z;
+			//	model->vertices[j].joint[3] = (dataPos + j)->w;
+			//}
 			//model->joints.resize(count);
 			//for (j = 0; j < count; ++j) model->joints[j] = *(dataPos + j);
 			//memcpy(model->joints.data(), dataPos, length);

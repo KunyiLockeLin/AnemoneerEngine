@@ -140,7 +140,7 @@ std::array<VkVertexInputAttributeDescription, 7> QeVertex::getAttributeDescripti
 
 	attributeDescriptions[5].binding = 0;
 	attributeDescriptions[5].location = 5;
-	attributeDescriptions[5].format = VK_FORMAT_R32G32B32A32_SINT;
+	attributeDescriptions[5].format = VK_FORMAT_R32G32B32A32_SFLOAT;
 	attributeDescriptions[5].offset = offsetof(QeVertex, joint);
 
 	attributeDescriptions[6].binding = 0;

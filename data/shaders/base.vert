@@ -20,7 +20,7 @@ layout(location = 1) in vec3 inColor;
 layout(location = 2) in vec2 inTexCoord;
 layout(location = 3) in vec3 inNormal;
 layout(location = 4) in vec4 inTangent;
-layout(location = 5) in ivec4 inJoint;
+layout(location = 5) in vec4 inJoint;
 layout(location = 6) in vec4 inWeight;
 
 layout(location = 0) out vec3 outColor;
@@ -37,7 +37,7 @@ void main()
 
 		for(int i=0;i<3;++i){
 
-			mat4 jointTransform = ubo.joints[inJoint[i]];
+			mat4 jointTransform = ubo.joints[int(inJoint[i])];
 			vec4 posePosition = jointTransform * vec4(inPosition, 1.0);
 			totalLocalPos += posePosition * inWeight[i];
 		
