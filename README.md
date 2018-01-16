@@ -25,15 +25,15 @@
   - Math library.
   
 # ToDoList:
-  - Skeletal animation.
-  - Attach obj.
-  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - Separate different libraries.
+  - Skeletal animation
+  - Attach obj
   - bounding Box
   - Collision
   - Frustum Culling
   - Room
   - Terrian system
+  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
+  - Separate different libraries.
   - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - HDR
   - Shadow
