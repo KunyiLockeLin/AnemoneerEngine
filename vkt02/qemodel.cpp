@@ -102,8 +102,8 @@ void QeModel::init(QeAssetXML* _property) {
 	samplersp[0] = modelData->pMaterial->pDiffuseMap->textureSampler;
 	imageViews[0] = modelData->pMaterial->pDiffuseMap->textureImageView;
 
-	if (modelData->pMaterial->type == eMaterialNormal)		buffersSize[2] = sizeof(QeDataMaterial);
-	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataPBRMaterial);
+	if (modelData->pMaterial->type == eMaterial)		buffersSize[2] = sizeof(QeDataMaterial);
+	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
 
 	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
 
@@ -115,11 +115,11 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
-		if ( modelData->pMaterial->type == eMaterialNormal )
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert");			
+		if ( modelData->pMaterial->type == eMaterial )
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");			
 		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrvert");
-			if(c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basevert");
+			if(c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");
 		}
 		if (c != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(c);
 	}
@@ -127,11 +127,11 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shadergeom");
 	if (c == nullptr) {
-		if (modelData->pMaterial->type == eMaterialNormal)
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom");
+		if (modelData->pMaterial->type == eMaterial)
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom");
 		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
-			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basegeom");
+			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom");
 		}
 		if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
 	}
@@ -139,11 +139,11 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
-		if (modelData->pMaterial->type == eMaterialNormal)
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basefrag");
+		if (modelData->pMaterial->type == eMaterial)
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
 		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");
-			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "basefrag");
+			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
 		}
 		if (c != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	}
@@ -201,8 +201,8 @@ void QeModel::updateUniformBuffer() {
 	QeDataLight* light = &OBJMGR->getLight(0,nullptr)->data;
 	VLK->setMemory(lightBufferMemory, (void*)light, sizeof(*light));
 
-	if (modelData->pMaterial->type == eMaterialNormal)	
+	if (modelData->pMaterial->type == eMaterial)	
 		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
 	else if (modelData->pMaterial->type == eMaterialPBR)
-		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->pbrValue, sizeof(modelData->pMaterial->pbrValue));
+		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->valuePBR, sizeof(modelData->pMaterial->valuePBR));
 }

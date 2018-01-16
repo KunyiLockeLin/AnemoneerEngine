@@ -635,8 +635,8 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 	VLK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->indexBuffer, model->indexBufferMemory);
 	
 	if (model->pMaterial->type == eMaterialPBR ) {
-		VLK->createUniformBuffer(sizeof(QeDataPBRMaterial), model->pMaterial->materialBuffer, model->pMaterial->materialBufferMemory);
-		VLK->setMemory(model->pMaterial->materialBufferMemory, (void*)&model->pMaterial->pbrValue, sizeof(model->pMaterial->pbrValue));
+		VLK->createUniformBuffer(sizeof(QeDataMaterialPBR), model->pMaterial->materialBuffer, model->pMaterial->materialBufferMemory);
+		VLK->setMemory(model->pMaterial->materialBufferMemory, (void*)&model->pMaterial->valuePBR, sizeof(model->pMaterial->valuePBR));
 		astMaterials[_filePath] = model->pMaterial;
 	}
 	

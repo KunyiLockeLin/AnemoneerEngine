@@ -59,7 +59,7 @@ struct QeAssetModel {
 };
 
 enum QeMaterialType {
-	eMaterialNormal,
+	eMaterial,
 	eMaterialPBR,
 };
 
@@ -71,7 +71,7 @@ struct QeDataMaterial {
 	QeVector4f param; // 1: specularExponent(1f), 2: refraction(1f), 3: alpha(1f),
 };
 
-struct QeDataPBRMaterial {
+struct QeDataMaterialPBR {
 	QeVector4f baseColor;
 	QeVector4f metallicRoughness;
 	QeVector4f emissive;
@@ -81,7 +81,7 @@ struct QeAssetMaterial {
 
 	QeMaterialType type;
 	QeDataMaterial value;
-	QeDataPBRMaterial pbrValue;
+	QeDataMaterialPBR valuePBR;
 	VkBuffer materialBuffer;
 	VkDeviceMemory materialBufferMemory;
 	QeAssetImage* pDiffuseMap; // baseColorMap
