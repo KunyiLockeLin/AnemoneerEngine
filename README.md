@@ -25,19 +25,20 @@
   - Math library.
   
 # ToDoList:
-  - Skeletal animation.
-  - Attach obj.
-  - Combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - Separate different libraries.
-  - bounding Box
-  - Collision
-  - Frustum Culling
-  - Room
-  - Terrian system
-  - Normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
+  - Skeletal animation
+  - Attach obj
   - HDR
-  - Shadow
+  - bounding Box
+  - collision
+  - Terrian system
+  - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
+  - shadow
   - reflection and cube map
+  - mix animation
+  - frustum Culling
+  - room
+  - combine socket https://github.com/KunyiLockeLin/WebSocket_server
+  - separate to different many libraries
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
