@@ -7,10 +7,10 @@ void QueenEngine::run() {
 	VLK->init();
 
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
-	const char* initActivityName = AST->getXMLValue(node, 1, "initActivity");
-	QeAssetXML* initActivityNode = AST->getXMLNode(node, 1, initActivityName);
+	const char* startActivityName = AST->getXMLValue(node, 1, "startActivity");
+	QeAssetXML* startActivityNode = AST->getXMLNode(node, 1, startActivityName);
 
-	currentActivity = OBJMGR->getActivity(0, initActivityNode);
+	currentActivity = OBJMGR->getActivity(0, startActivityNode);
 
 	mainLoop();
 }
