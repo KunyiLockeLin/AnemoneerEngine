@@ -26,6 +26,7 @@
   - Math library.
   
 # ToDoList:
+  - post processing shader
   - HDR
   - bounding Box
   - collision
