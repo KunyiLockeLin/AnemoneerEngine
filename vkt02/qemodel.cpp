@@ -81,10 +81,7 @@ void QeModel::setMatModel() {
 	if (attachID > 0) {
 		QeModel* model = OBJMGR->getModel(attachID,nullptr);
 		if (model != nullptr) {
-			//ubo.model = model->getAttachMatrix( attachSkeletonName )*ubo.model;
-			//ubo.model = ubo.model*model->getAttachMatrix(attachSkeletonName);
-			//ubo.model = model->getAttachMatrix(attachSkeletonName);
-			ubo.attach = model->getAttachMatrix(attachSkeletonName);
+			ubo.model = model->getAttachMatrix(attachSkeletonName)*ubo.model;
 		}
 	}
 }

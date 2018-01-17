@@ -9,7 +9,6 @@ struct QeUniformBufferObject {
 	QeMatrix4x4f proj[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f normal[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f joints[MAX_JOINT_NUM];
-	QeMatrix4x4f attach;
 	QeVector4f	cameraPos[MAX_VIEWPORT_NUM];
 	QeVector4f	ambientColor;
 	QeVector4f	param; // 1:viewportNum, 2:billboardType,

@@ -922,7 +922,10 @@ void QeVulkan::updateDrawCommandBuffers() {
 		vkBeginCommandBuffer(drawCommandBuffers[i], &beginInfo);
 		//vkResetCommandBuffer(drawCommandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 		std::array<VkClearValue, 2> clearValues = {};
-		clearValues[0].color = { 0.0f, 0.5f, 0.5f, 1.0f };
+		//if(QE->currentActivity!= nullptr)		
+		//	clearValues[0].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
+		//else
+		clearValues[0].color = { 0, 0.5f, 0.5f, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassInfo = {};
