@@ -1,20 +1,6 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-const int MAX_VIEWPORT_NUM = 9;
-const int MAX_JOINT_NUM = 20;
-
-layout( binding = 0) uniform QeUniformBufferObject {
-	mat4 model;
-    mat4 view[MAX_VIEWPORT_NUM];
-    mat4 proj[MAX_VIEWPORT_NUM];
-	mat4 normal[MAX_VIEWPORT_NUM];
-	mat4 joints[MAX_JOINT_NUM];
-	vec4 cameraPos[MAX_VIEWPORT_NUM];
-	vec4 ambientColor;
-	vec4 param; // 1: viewportNum, 2:billboardType
-} ubo;
-
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inColor;
 layout(location = 2) in vec2 inTexCoord;
