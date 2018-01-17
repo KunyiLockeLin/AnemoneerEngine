@@ -18,6 +18,7 @@
   - Support vertex, geometry, fragment shader.
   - Support Phong shading and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map.
+  - Support skeletal animation(Only for gltf).
   - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
@@ -25,7 +26,6 @@
   - Math library.
   
 # ToDoList:
-  - Skeletal animation
   - Attach obj
   - HDR
   - bounding Box
