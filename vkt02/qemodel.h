@@ -9,6 +9,7 @@ struct QeUniformBufferObject {
 	QeMatrix4x4f proj[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f normal[MAX_VIEWPORT_NUM];
 	QeMatrix4x4f joints[MAX_JOINT_NUM];
+	QeMatrix4x4f attach;
 	QeVector4f	cameraPos[MAX_VIEWPORT_NUM];
 	QeVector4f	ambientColor;
 	QeVector4f	param; // 1:viewportNum, 2:billboardType,
@@ -34,6 +35,8 @@ public:
 	unsigned char	currentActionID;
 	unsigned int	currentActionFrame;
 	float			currentActionTime;
+	QeMatrix4x4f	joints[MAX_JOINT_NUM];
+
 	float actionSpeed;
 
 	int id;
@@ -85,7 +88,7 @@ public:
 	void actionPause();
 	void actionStop();
 	void updateAction(float time);
-	void setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoint& joint, QeMatrix4x4f &parentTransform);
+	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
 };
 

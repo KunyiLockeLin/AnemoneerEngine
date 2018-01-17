@@ -10,6 +10,7 @@ layout( binding = 0) uniform QeUniformBufferObject {
     mat4 proj[MAX_VIEWPORT_NUM];
 	mat4 normal[MAX_VIEWPORT_NUM];
 	mat4 joints[MAX_JOINT_NUM];
+	mat4 attach;
 	vec4 cameraPos[MAX_VIEWPORT_NUM];
 	vec4 ambientColor;
 	vec4 param; // 1: viewportNum, 2:billboardType

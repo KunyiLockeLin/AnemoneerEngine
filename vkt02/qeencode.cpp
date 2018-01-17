@@ -408,6 +408,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->jointsAnimation[i].rotation.z = float(atof((*sv)[2].c_str()));
 				model->jointsAnimation[i].rotation.w = float(atof((*sv)[3].c_str()));
 			}
+			model->jointsAnimation[i].transform = MATH->transform(model->jointsAnimation[i].translation, model->jointsAnimation[i].rotation, QeVector3f(1,1,1));
 			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "scale");
 			if (sv != nullptr) {
 				model->jointsAnimation[i].scale.x = float(atof((*sv)[0].c_str()));
@@ -415,6 +416,8 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->jointsAnimation[i].scale.z = float(atof((*sv)[2].c_str()));
 			}*/
 		}
+		//QeMatrix4x4f mat;
+		//setChildrenJointTranform(model->rootJoint, mat);
 
 		for (i = 0; i < size; ++i) {
 

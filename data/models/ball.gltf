@@ -121,7 +121,7 @@
     ], 
     "images" : [
         {
-            "uri" : "stone.png"
+            "uri" : "wall.png"
         }
     ], 
     "materials" : [
@@ -130,15 +130,15 @@
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     1.0, 
-                    1.0, 
-                    1.0, 
+                    0.8414579033851624, 
+                    0.17398104071617126, 
                     1.0
                 ], 
                 "baseColorTexture" : {
                     "index" : 0
                 }, 
-                "metallicFactor" : 0.6000000, 
-                "roughnessFactor" : 0.80000000
+                "metallicFactor" : 0.4000000059604645, 
+                "roughnessFactor" : 0.800000011920929
             }
         }
     ], 

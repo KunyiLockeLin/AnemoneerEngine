@@ -81,7 +81,10 @@ void QeModel::setMatModel() {
 	if (attachID > 0) {
 		QeModel* model = OBJMGR->getModel(attachID,nullptr);
 		if (model != nullptr) {
-			ubo.model *= model->getAttachMatrix( attachSkeletonName );
+			//ubo.model = model->getAttachMatrix( attachSkeletonName )*ubo.model;
+			//ubo.model = ubo.model*model->getAttachMatrix(attachSkeletonName);
+			//ubo.model = model->getAttachMatrix(attachSkeletonName);
+			ubo.attach = model->getAttachMatrix(attachSkeletonName);
 		}
 	}
 }
@@ -100,7 +103,7 @@ QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
 
 	if (i == size) return ubo.model;
 
-	return ubo.model*ubo.joints[i];
+	return ubo.model*joints[i];
 }
 
 
@@ -303,11 +306,11 @@ void QeModel::updateAction(float time) {
 		previousRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame];
 		nextRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame+1];
 		currentRotation = MATH->interpolateDir(previousRotation, nextRotation, progessive);
-		ubo.joints[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
+		joints[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
 	}
 
 	QeMatrix4x4f mat;
-	setChildrenJointTransform(ubo.joints, *modelData->rootJoint, mat);
+	setChildrenJointTransform(*modelData->rootJoint, mat);
 
 	currentActionTime += time*actionSpeed;
 	if (currentActionTime > nextActionFrameTime) {
@@ -324,7 +327,7 @@ void QeModel::updateAction(float time) {
 		else	++currentActionFrame;
 }}
 
-void QeModel::setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoint& joint, QeMatrix4x4f &parentTransform) {
+void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parentTransform) {
 
 	size_t size = modelData->jointsAnimation.size();
 	QeVector3f scale(1,1,1);
@@ -332,13 +335,13 @@ void QeModel::setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoi
 	for (size_t i = 0; i<size ;++i ) {
 		if (modelData->jointsAnimation[i].id == joint.id) {
 
-			jointsTransform[i] = parentTransform*jointsTransform[i];
+			joints[i] = parentTransform*joints[i];
 
 			size_t size1 = modelData->jointsAnimation[i].children.size();
 			for (size_t j = 0; j<size1 ;++j)
-				setChildrenJointTransform(jointsTransform, *modelData->jointsAnimation[i].children[j], jointsTransform[i]);
+				setChildrenJointTransform( *modelData->jointsAnimation[i].children[j], joints[i]);
 			
-			jointsTransform[i] = jointsTransform[i]*modelData->jointsAnimation[i].inverseBindMatrix;
+			ubo.joints[i] = joints[i]*modelData->jointsAnimation[i].inverseBindMatrix;
 			break;
 		}
 	}
