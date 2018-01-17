@@ -142,6 +142,7 @@ void QeModel::init(QeAssetXML* _property) {
 	actionState = eActionStateStop;
 	attachID=0;
 	attachSkeletonName=nullptr;
+	actionSpeed = 1;
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
@@ -190,6 +191,9 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);
+
+	c = AST->getXMLValue(_property, 1, "actionSpeed");
+	if (c != nullptr)	actionSpeed = float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "action");
 	if (c != nullptr) {
@@ -305,7 +309,7 @@ void QeModel::updateAction(float time) {
 	QeMatrix4x4f mat;
 	setChildrenJointTransform(ubo.joints, *modelData->rootJoint, mat);
 
-	currentActionTime += time;
+	currentActionTime += time*actionSpeed;
 	if (currentActionTime > nextActionFrameTime) {
 
 		if (bFinalFrame) {

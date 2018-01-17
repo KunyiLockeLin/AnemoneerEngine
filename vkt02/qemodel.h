@@ -34,12 +34,14 @@ public:
 	unsigned char	currentActionID;
 	unsigned int	currentActionFrame;
 	float			currentActionTime;
+	float actionSpeed;
+
 	int id;
 	QeVector3f pos;
 	float face;
 	float up;
 	QeVector3f size;
-	int speed=0;
+	int speed;
 
 	int attachID;
 	const char* attachSkeletonName;
