@@ -19,6 +19,8 @@ class QeLight
 public:
 	QeLight(QeObjectMangerKey& _key) {}
 	~QeLight() {}
+
+	//size_t id;
 	int speed = 0;
 	QeVector3f rotateCenter;
 	QeDataLight data;

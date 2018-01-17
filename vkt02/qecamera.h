@@ -10,6 +10,8 @@ enum QeCameraType {
 class QeCamera
 {
 public:
+	//size_t id;
+
 	QeVector3f pos;
 	QeVector3f target;
 	QeVector3f up;

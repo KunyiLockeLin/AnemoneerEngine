@@ -34,12 +34,15 @@ public:
 	unsigned char	currentActionID;
 	unsigned int	currentActionFrame;
 	float			currentActionTime;
-
+	size_t id;
 	QeVector3f pos;
 	float face;
 	float up;
 	QeVector3f size;
 	int speed=0;
+
+	size_t attachID;
+	const char* attachSkeletonName;
 
 	QeAssetModel* modelData;
 

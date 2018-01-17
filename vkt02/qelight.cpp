@@ -15,6 +15,9 @@ void QeLight::init(QeAssetXML* _property) {
 	initProperty = _property;
 	const char* c;
 
+	//c = AST->getXMLValue(_property, 1, "id");
+	//if (c != nullptr)	id = atoi(c);
+
 	c = AST->getXMLValue(_property, 1, "r");
 	if (c != nullptr)	data.color.x = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "g");

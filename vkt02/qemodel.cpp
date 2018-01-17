@@ -115,6 +115,8 @@ void QeModel::init(QeAssetXML* _property) {
 	currentActionID = 0;
 	actionType = eActionTypeOnce;
 	actionState = eActionStateStop;
+	attachID=0;
+	attachSkeletonName=nullptr;
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
@@ -151,6 +153,9 @@ void QeModel::init(QeAssetXML* _property) {
 	
 	createSwapChain();
 
+	c = AST->getXMLValue(_property, 1, "id");
+	if (c != nullptr)	id = size_t(atoi(c));
+
 	c = AST->getXMLValue(_property, 1, "posX");
 	if (c != nullptr)	pos.x = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "posY");
@@ -171,6 +176,11 @@ void QeModel::init(QeAssetXML* _property) {
 		setAction(currentActionID, actionType);
 		actionPlay();
 	}
+
+	c = AST->getXMLValue(_property, 1, "attachid");
+	if (c != nullptr)	attachID = atoi(c);
+
+	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 
 void QeModel::createDescriptorBuffer() {

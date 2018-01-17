@@ -20,10 +20,8 @@ public:
 	std::map<int, QeCamera*> mgrCameras;
 	std::map<int, QeLight*> mgrLights;
 	std::map<int, QeActivity*> mgrActivitys;
-	std::vector<QeModel*> mgrInactiveModels;
-	std::vector<QeModel*> mgrActiveModels;
-	std::vector<QeModel*> mgrInactiveBillboards;
-	std::vector<QeModel*> mgrActiveBillboards;
+	std::map<int, QeModel*> mgrModels;
+	std::map<int, QeModel*> mgrBillboards;
 
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger();

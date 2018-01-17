@@ -10,8 +10,10 @@
 	<activity1>
 		<ambientColor r="0.2" g="0.2" b="0.2"/>
 		<models>
-			<e obj= "animation.gltf" speed="0" posX="0" posY="5" posZ="-3" action="0" actionType="2"/>
-			<e obj= "animation.gltf" speed="50" posX="0" posY="-5" posZ="-3" />
+			<e id="1" obj= "animation.gltf" speed="-10" posX="0" posY="3" posZ="-3" action="0" actionType="2" attachid="3" attachskeleton="Bone_1"/>
+			<e id="2" obj= "animation.gltf" speed="10" posX="0" posY="-3" posZ="-3" action="2" actionType="2" attachid="4" attachskeleton="Bone_2"/>
+      <e id="3" obj= "ball.gltf" speed="50" posX="3" posY="0" posZ="-3" />
+      <e id="4" obj= "box.gltf" speed="-50" posX="-3" posY="0" posZ="-3" />
 		</models>
 		<lights>
 			<e show="1" type="0" posX="10" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>

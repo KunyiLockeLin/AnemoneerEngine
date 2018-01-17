@@ -23,33 +23,19 @@ QeObjectManger::~QeObjectManger() {
 	}
 	mgrActivitys.clear();
 
-	std::vector<QeModel*>::iterator it3 = mgrInactiveModels.begin();
-	while (it3 != mgrInactiveModels.end()) {
-		if ((*it3) != nullptr) delete (*it3);
+	std::map<int, QeModel*>::iterator it3 = mgrModels.begin();
+	while (it3 != mgrModels.end()) {
+		if (it3->second != nullptr) delete (it3->second);
 		++it3;
 	}
-	mgrInactiveModels.clear();
+	mgrModels.clear();
 
-	it3 = mgrActiveModels.begin();
-	while (it3 != mgrActiveModels.end()) {
-		if ((*it3) != nullptr) delete (*it3);
+	it3 = mgrBillboards.begin();
+	while (it3 != mgrBillboards.end()) {
+		if (it3->second != nullptr) delete (it3->second);
 		++it3;
 	}
-	mgrActiveModels.clear();
-
-	it3 = mgrInactiveBillboards.begin();
-	while (it3 != mgrInactiveBillboards.end()) {
-		if ((*it3) != nullptr) delete (*it3);
-		++it3;
-	}
-	mgrInactiveBillboards.clear();
-
-	it3 = mgrActiveBillboards.begin();
-	while (it3 != mgrActiveBillboards.end()) {
-		if ((*it3) != nullptr) delete (*it3);
-		++it3;
-	}
-	mgrActiveBillboards.clear();
+	mgrBillboards.clear();
 }
 
 QeCamera* QeObjectManger::getCamera(int _id, QeAssetXML* _property) {
@@ -88,15 +74,12 @@ QeActivity* QeObjectManger::getActivity(int _id, QeAssetXML* _property) {
 
 QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 
-	QeModel* newModel = nullptr;
-	if (!mgrInactiveModels.empty()) {
-		newModel = mgrInactiveModels.back();
-		mgrInactiveModels.pop_back();
-	}
-	else	newModel = new QeModel(key);
+	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
+	if (it != mgrModels.end())	return it->second;
 
+	QeModel* newModel = new QeModel(key);
 	newModel->init(_property);
-	mgrActiveModels.push_back(newModel);
+	mgrModels[newModel->id] = newModel;
 
 	VLK->updateDrawCommandBuffers();
 	return newModel;
@@ -104,19 +87,17 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 
 QeBillboard* QeObjectManger::getBillboard(int _id) {
 
-	QeModel* newModel = nullptr;
-	if (!mgrInactiveBillboards.empty()) {
-		newModel = mgrInactiveBillboards.back();
-		mgrInactiveBillboards.pop_back();
-	}
-	else	newModel = new QeBillboard(key);
+	std::map<int, QeModel*>::iterator it = mgrBillboards.find(_id);
+	if (it != mgrBillboards.end())	return (QeBillboard*)it->second;
 
 	QeAssetXML* _property = AST->getXMLNode(2, AST->CONFIG, "billboard");
+
+	QeBillboard* newModel = new QeBillboard(key);
 	newModel->init(_property);
-	mgrActiveBillboards.push_back(newModel);
+	mgrBillboards[_id] = newModel;
 
 	VLK->updateDrawCommandBuffers();
-	return (QeBillboard*)newModel;
+	return newModel;
 }
 
 void QeObjectManger::update(float _time) {
@@ -133,15 +114,15 @@ void QeObjectManger::update(float _time) {
 		++it1;
 	}
 
-	std::vector<QeModel*>::iterator it2 = mgrActiveModels.begin();
-	while (it2 != mgrActiveModels.end()) {
-		(*it2)->update(_time);
+	std::map<int, QeModel*>::iterator it2 = mgrModels.begin();
+	while (it2 != mgrModels.end()) {
+		it2->second->update(_time);
 		++it2;
 	}
 
-	it2 = mgrActiveBillboards.begin();
-	while (it2 != mgrActiveBillboards.end()) {
-		(*it2)->update(_time);
+	it2 = mgrBillboards.begin();
+	while (it2 != mgrBillboards.end()) {
+		it2->second->update(_time);
 		++it2;
 	}
 }
@@ -149,30 +130,30 @@ void QeObjectManger::update(float _time) {
 
 void QeObjectManger::cleanupSwapChain() {
 
-	std::vector<QeModel*>::iterator it = mgrActiveModels.begin();
-	while (it != mgrActiveModels.end()) {
-		(*it)->cleanupSwapChain();
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
+	while (it != mgrModels.end()) {
+		it->second->cleanupSwapChain();
 		++it;
 	}
 
-	it = mgrActiveBillboards.begin();
-	while (it != mgrActiveBillboards.end()) {
-		(*it)->cleanupSwapChain();
+	it = mgrBillboards.begin();
+	while (it != mgrBillboards.end()) {
+		it->second->cleanupSwapChain();
 		++it;
 	}
 }
 
 void QeObjectManger::recreateSwapChain() {
 
-	std::vector<QeModel*>::iterator it = mgrActiveModels.begin();
-	while (it != mgrActiveModels.end()) {
-		(*it)->createSwapChain();
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
+	while (it != mgrModels.end()) {
+		it->second->createSwapChain();
 		++it;
 	}
 	
-	it = mgrActiveBillboards.begin();
-	while (it != mgrActiveBillboards.end()) {
-		(*it)->createSwapChain();
+	it = mgrBillboards.begin();
+	while (it != mgrBillboards.end()) {
+		it->second->createSwapChain();
 		++it;
 	}
 	VLK->updateDrawCommandBuffers();
@@ -180,7 +161,17 @@ void QeObjectManger::recreateSwapChain() {
 
 std::vector<QeModel*> QeObjectManger::getDrawObject() {
 
-	std::vector<QeModel*> vec = mgrActiveModels;
-	vec.insert(vec.end(),mgrActiveBillboards.begin(), mgrActiveBillboards.end());
+	std::vector<QeModel*> vec;
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
+	while (it != mgrModels.end()) {
+		vec.push_back(it->second);
+		++it;
+	}
+
+	it = mgrBillboards.begin();
+	while (it != mgrBillboards.end()) {
+		vec.push_back(it->second);
+		++it;
+	}
 	return vec;
 }

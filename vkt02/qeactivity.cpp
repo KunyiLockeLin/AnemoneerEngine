@@ -13,7 +13,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
 
 	node = AST->getXMLNode(_property, 1, "models");
-	for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(index, node->nexts[index]);
+	for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
 
 	node = AST->getXMLNode(_property, 1, "cameras");
 	VP->initCamera(node);

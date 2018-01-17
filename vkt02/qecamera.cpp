@@ -102,6 +102,9 @@ void QeCamera::init(QeAssetXML* _property) {
 	initProperty = _property;
 	const char* c;
 	
+	//c = AST->getXMLValue(_property, 1, "id");
+	//if (c != nullptr)	id = atoi(c);
+
 	c = AST->getXMLValue(_property, 1, "type");
 	if (c != nullptr)	type = QeCameraType(atoi(c));
 	else				type = eCameraFirstPerson;
