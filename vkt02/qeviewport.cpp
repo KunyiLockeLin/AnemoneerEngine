@@ -1,20 +1,16 @@
 #include "qeheader.h"
 
 
-void QeViewport::init() {
+void QeViewport::init(QeAssetXML* _property) {
 
 	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
 		viewports[i].minDepth = 0.0f;
 		viewports[i].maxDepth = 1.0f;
-		cameras[i] = OBJMGR->getCamera(i, nullptr);
+		cameras[i] = OBJMGR->getCamera(i, _property->nexts[0]);
 	}
 
 	currentNum = 1;
 	updateViewport();
-}
-
-void QeViewport::initCamera(QeAssetXML* _property) {
-	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i)	cameras[i]->init( _property->nexts[0]);
 }
 
 void QeViewport::updateViewport() {

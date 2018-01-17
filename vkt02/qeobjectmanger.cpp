@@ -83,7 +83,7 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	newModel->init(_property);
 	mgrModels[newModel->id] = newModel;
 
-	VLK->updateDrawCommandBuffers();
+	VLK->bUpdateDrawCommandBuffers = true;
 	return newModel;
 }
 
@@ -98,7 +98,7 @@ QeBillboard* QeObjectManger::getBillboard(int _id) {
 	newModel->init(_property);
 	mgrBillboards[_id] = newModel;
 
-	VLK->updateDrawCommandBuffers();
+	VLK->bUpdateDrawCommandBuffers = true;
 	return newModel;
 }
 
@@ -158,7 +158,7 @@ void QeObjectManger::recreateSwapChain() {
 		it->second->createSwapChain();
 		++it;
 	}
-	VLK->updateDrawCommandBuffers();
+	VLK->bUpdateDrawCommandBuffers = true;
 }
 
 std::vector<QeModel*> QeObjectManger::getDrawObject() {

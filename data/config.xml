@@ -8,7 +8,7 @@
 
   <initActivity>activity1</initActivity>
 	<activity1>
-		<ambientColor r="0.1" g="0.1" b="0.1"/>
+		<ambientColor r="0" g="0.3" b="0.3"/>
 		<models>
 			<e id="1" obj= "animation.gltf" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="0.2" action="0" actionType="2" />
 			<e id="2" obj= "animation.gltf" speed="10" posX="0" posY="-5" posZ="-3" actionSpeed="1" action="2" actionType="2" />

@@ -5,7 +5,7 @@ void QueenEngine::run() {
 	lastTime = std::chrono::high_resolution_clock::now();
 
 	VLK->init();
-	VP->init();
+
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
 	const char* initActivityName = AST->getXMLValue(node, 1, "initActivity");
 	QeAssetXML* initActivityNode = AST->getXMLNode(node, 1, initActivityName);

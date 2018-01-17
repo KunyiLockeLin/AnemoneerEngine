@@ -77,6 +77,8 @@ public:
 	//VkSemaphore textOverlayComplete;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 
+	bool bUpdateDrawCommandBuffers;
+
 	void cleanupSwapChain();
 
 	void recreateSwapChain();

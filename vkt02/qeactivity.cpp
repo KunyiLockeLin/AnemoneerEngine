@@ -5,7 +5,10 @@ void QeActivity::init(QeAssetXML* _property) {
 	initProperty = _property;
 	name = _property->key.c_str();
 
-	QeAssetXML* node = AST->getXMLNode(_property, 1, "ambientColor");
+	QeAssetXML* node = AST->getXMLNode(_property, 1, "cameras");
+	VP->init(node);
+
+	node = AST->getXMLNode(_property, 1, "ambientColor");
 	ambientColor = { float(atof(AST->getXMLValue(node, 1, "r"))),
 				float(atof(AST->getXMLValue(node, 1, "g"))), float(atof(AST->getXMLValue(node, 1, "b"))), 1.0f};
 
@@ -14,9 +17,6 @@ void QeActivity::init(QeAssetXML* _property) {
 
 	node = AST->getXMLNode(_property, 1, "models");
 	for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
-
-	node = AST->getXMLNode(_property, 1, "cameras");
-	VP->initCamera(node);
 }
 
 void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {
