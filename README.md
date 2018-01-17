@@ -52,3 +52,6 @@
   - http://lodev.org/lodepng/
   - https://github.com/KhronosGroup/glTF-WebGL-PBR
   - https://github.com/TheThinMatrix/OpenGL-Animation
+  - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_uniform_buffer_object.txt
+  - https://learnopengl.com/#!Advanced-OpenGL/Advanced-GLSL
+  - https://github.com/KhronosGroup/Vulkan-Docs/issues/274
