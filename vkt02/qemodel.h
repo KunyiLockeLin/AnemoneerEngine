@@ -34,14 +34,14 @@ public:
 	unsigned char	currentActionID;
 	unsigned int	currentActionFrame;
 	float			currentActionTime;
-	size_t id;
+	int id;
 	QeVector3f pos;
 	float face;
 	float up;
 	QeVector3f size;
 	int speed=0;
 
-	size_t attachID;
+	int attachID;
 	const char* attachSkeletonName;
 
 	QeAssetModel* modelData;
@@ -84,5 +84,6 @@ public:
 	void actionStop();
 	void updateAction(float time);
 	void setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoint& joint, QeMatrix4x4f &parentTransform);
+	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
 };
 

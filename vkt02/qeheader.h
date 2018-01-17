@@ -34,6 +34,7 @@
 //	VkPhysicalDeviceLimits::maxViewports  VLK->deviceProperties.limits.maxViewports;
 const int MAX_VIEWPORT_NUM = 9;
 const int MAX_JOINT_NUM = 20;
+const char BONE_ROOT_NAME[] = "Armature_root";
 
 struct QeVector2i;
 struct QeVector2f;

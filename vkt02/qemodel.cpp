@@ -77,7 +77,32 @@ void QeModel::setMatModel() {
 	mat *= MATH->scale(size);
 	
 	ubo.model = mat;
+
+	if (attachID > 0) {
+		QeModel* model = OBJMGR->getModel(attachID,nullptr);
+		if (model != nullptr) {
+			ubo.model *= model->getAttachMatrix( attachSkeletonName );
+		}
+	}
 }
+
+QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
+
+	if (attachSkeletonName == nullptr)	return ubo.model;
+
+	size_t size = modelData->jointsAnimation.size();
+	if( size == 0 ) return ubo.model;
+
+	size_t i;
+	for (i = 0; i<size ;++i ) {
+		if ( strcmp(attachSkeletonName, modelData->jointsAnimation[i].name) == 0) break;
+	}
+
+	if (i == size) return ubo.model;
+
+	return ubo.model*ubo.joints[i];
+}
+
 
 void QeModel::init(QeAssetXML* _property) {
 
@@ -154,7 +179,7 @@ void QeModel::init(QeAssetXML* _property) {
 	createSwapChain();
 
 	c = AST->getXMLValue(_property, 1, "id");
-	if (c != nullptr)	id = size_t(atoi(c));
+	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "posX");
 	if (c != nullptr)	pos.x = float(atof(c));
@@ -206,6 +231,7 @@ void QeModel::updateUniformBuffer() {
 	int size8 = sizeof(QeUniformBufferObject);
 	int size9 = sizeof(ubo);
 	setMatModel();
+
 	ubo.ambientColor = QE->currentActivity->ambientColor;
 	ubo.param.x = float(VP->currentNum);
 	for (int i = 0; i < VP->currentNum; ++i) {

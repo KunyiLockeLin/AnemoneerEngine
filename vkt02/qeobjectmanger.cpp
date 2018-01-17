@@ -77,6 +77,8 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return it->second;
 
+	if (_property == nullptr) return nullptr;
+
 	QeModel* newModel = new QeModel(key);
 	newModel->init(_property);
 	mgrModels[newModel->id] = newModel;

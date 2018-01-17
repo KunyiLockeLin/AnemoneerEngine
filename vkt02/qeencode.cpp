@@ -378,9 +378,6 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "WEIGHTS_0");
 	if (c != nullptr) bufferViews[6] = atoi(c);
 
-	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "WEIGHTS_0");
-	if (c != nullptr) bufferViews[6] = atoi(c);
-
 	c = AST->getJSONValue(json, 2, "skins", "inverseBindMatrices");
 	if (c != nullptr) {
 
@@ -396,7 +393,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 			model->jointsAnimation[i].id = atoi((*jboneID)[i].c_str());
 			model->jointsAnimation[i].name = AST->getJSONValue((*jboneName)[model->jointsAnimation[i].id], 1, "name");
 			
-			if (strncmp(model->jointsAnimation[i].name, "Armature_root", 13) == 0) model->rootJoint = &model->jointsAnimation[i];
+			if (strncmp(model->jointsAnimation[i].name, BONE_ROOT_NAME, 13) == 0) model->rootJoint = &model->jointsAnimation[i];
 
 			/*sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "translation");
 			if (sv != nullptr) {
@@ -585,10 +582,29 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		else if (index == bufferViews[6]) { // weight
 			QeVector4f* dataPos = (QeVector4f*)(binData + offset);
 			if (model->vertices.size() < count)	model->vertices.resize(count);
-			for (j = 0; j < count; ++j) model->vertices[j].weight = *(dataPos + j);
-			//model->weights.resize(count);
-			//for (j = 0; j < count; ++j) model->weights[j] = *(dataPos + j);
-			//memcpy(model->weights.data(), dataPos, length);
+			float totalWeight = 1;
+			int lastWeight = 0;
+			for (j = 0; j < count; ++j) {
+				model->vertices[j].weight = *(dataPos + j);
+				totalWeight = 1;
+				if (model->vertices[j].weight.x > 0) {
+					totalWeight -= model->vertices[j].weight.x;
+					lastWeight = 0;
+				}
+				if (model->vertices[j].weight.y > 0) {
+					totalWeight -= model->vertices[j].weight.y;
+					lastWeight = 1;
+				}
+				if (model->vertices[j].weight.z > 0) {
+					totalWeight -= model->vertices[j].weight.z;
+					lastWeight = 2;
+				}
+				if (model->vertices[j].weight.w > 0) {
+					totalWeight -= model->vertices[j].weight.w;
+					lastWeight = 3;
+				}
+				*(((float*)(&model->vertices[j].weight)) + lastWeight) += totalWeight;
+			}
 		}
 		else if (index == bufferViews[7]) { // inverseBindMatrices  bone matrices
 			QeMatrix4x4f* dataPos = (QeMatrix4x4f*)(binData + offset);
