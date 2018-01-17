@@ -30,6 +30,7 @@
   - bounding Box
   - collision
   - Terrian system
+  - Dynamic Decals
   - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
   - reflection and cube map
@@ -51,3 +52,6 @@
   - http://lodev.org/lodepng/
   - https://github.com/KhronosGroup/glTF-WebGL-PBR
   - https://github.com/TheThinMatrix/OpenGL-Animation
+  - https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_uniform_buffer_object.txt
+  - https://learnopengl.com/#!Advanced-OpenGL/Advanced-GLSL
+  - https://github.com/KhronosGroup/Vulkan-Docs/issues/274
