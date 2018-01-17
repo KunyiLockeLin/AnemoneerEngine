@@ -651,9 +651,9 @@ QeMatrix4x4f QeMath::rotate(QeVector4f vector) {
 QeVector4f QeMath::interpolateDir(QeVector4f a, QeVector4f b, float blend) {
 	QeVector4f ret;
 
-	float dot = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
+	float dotf = dot(a, b);
 	float blend1 = 1.f - blend;
-	if (dot < 0) {
+	if (dotf < 0) {
 		ret.w = blend1 * a.w + blend * -b.w;
 		ret.x = blend1 * a.x + blend * -b.x;
 		ret.y = blend1 * a.y + blend * -b.y;
