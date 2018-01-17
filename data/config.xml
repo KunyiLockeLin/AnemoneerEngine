@@ -11,13 +11,13 @@
 		<ambientColor r="0.2" g="0.2" b="0.2"/>
 		<models>
 			<e obj= "animation.gltf" speed="0" posX="0" posY="5" posZ="-3" action="0" actionType="2"/>
-			<e obj= "animation.gltf" speed="0" posX="0" posY="-5" posZ="-3" />
+			<e obj= "animation.gltf" speed="50" posX="0" posY="-5" posZ="-3" />
 		</models>
 		<lights>
-			<e show="1" type="0" posX="10" posY="0" posZ="0" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>
+			<e show="1" type="0" posX="10" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>
 		</lights>
     <cameras>
-      <e type="0" posX="30" posY="0" posZ="0" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
+      <e type="0" posX="30" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
     </cameras>
 	</activity1>
 </confing>

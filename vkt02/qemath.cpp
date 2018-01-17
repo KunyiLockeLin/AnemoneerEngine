@@ -588,41 +588,37 @@ QeMatrix4x4f QeMath::transpose(QeMatrix4x4f _mat) {
 int QeMath::clamp(int in, int low, int high) { return in<low ? low : in > high ? high : in; }
 float QeMath::clamp(float in, float low, float high) {	return in<low ? low : in > high ? high : in;	}
 
-QeMatrix4x4f QeMath::vectortoRoateMatrix(QeVector4f vector) {
+QeMatrix4x4f QeMath::rotate(QeVector4f vector) {
+
 	QeMatrix4x4f matrix;
+	float xx = vector.x * vector.x;
 	float xy = vector.x * vector.y;
 	float xz = vector.x * vector.z;
 	float xw = vector.x * vector.w;
+	float yy = vector.y * vector.y;
 	float yz = vector.y * vector.z;
 	float yw = vector.y * vector.w;
+	float zz = vector.z * vector.z;
 	float zw = vector.z * vector.w;
-	float xSquared = vector.x * vector.x;
-	float ySquared = vector.y * vector.y;
-	float zSquared = vector.z * vector.z;
-	matrix._00 = 1 - 2 * (ySquared + zSquared);
-	matrix._01 = 2 * (xy - zw);
-	matrix._02 = 2 * (xz + yw);
-	matrix._03 = 0;
-	matrix._10 = 2 * (xy + zw);
-	matrix._11 = 1 - 2 * (xSquared + zSquared);
-	matrix._12 = 2 * (yz - xw);
-	matrix._13 = 0;
-	matrix._20 = 2 * (xz - yw);
-	matrix._21 = 2 * (yz + xw);
-	matrix._22 = 1 - 2 * (xSquared + ySquared);
-	matrix._23 = 0;
-	matrix._30 = 0;
-	matrix._31 = 0;
-	matrix._32 = 0;
-	matrix._33 = 1;
+	
+	matrix._00 = 1 - 2 * (yy + zz);
+	matrix._01 = 2 * (xy + zw);
+	matrix._02 = 2 * (xz - yw);
+	matrix._10 = 2 * (xy - zw);
+	matrix._11 = 1 - 2 * (xx + zz);
+	matrix._12 = 2 * (yz + xw);
+	matrix._20 = 2 * (xz + yw);
+	matrix._21 = 2 * (yz - xw);
+	matrix._22 = 1 - 2 * (xx + yy);
+	
 	return matrix;
 }
 
-QeVector4f QeMath::rotateMatrixtoVector(QeMatrix4x4f matrix) {
+/*QeVector4f QeMath::rotate(QeMatrix4x4f matrix) {
 	QeVector4f ret;
-	float diagonal = matrix._00 + matrix._11 + matrix._22;
-	if (diagonal > 0) {
-		float w4 = fastSqrt(diagonal + 1) * 2;
+	float trace = matrix._00 + matrix._11 + matrix._22;
+	if (trace  > 0) {
+		float w4 = fastSqrt(trace + 1) * 2;
 		ret.w = w4 / 4;
 		ret.x = (matrix._21 - matrix._12) / w4;
 		ret.y = (matrix._02 - matrix._20) / w4;
@@ -650,7 +646,7 @@ QeVector4f QeMath::rotateMatrixtoVector(QeMatrix4x4f matrix) {
 		ret.z = z4 / 4;
 	}
 	return ret;
-}
+}*/
 
 QeVector4f QeMath::interpolateDir(QeVector4f a, QeVector4f b, float blend) {
 	QeVector4f ret;
@@ -686,7 +682,7 @@ QeMatrix4x4f QeMath::transform(QeVector3f tanslation, QeVector4f rotation, QeVec
 	
 	QeMatrix4x4f ret;
 	ret *= MATH->translate(tanslation);
-	ret *= MATH->vectortoRoateMatrix(rotation);
+	ret *= MATH->rotate(rotation);
 	ret *= MATH->scale(scale);
 	return ret;
 }

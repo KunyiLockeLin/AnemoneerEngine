@@ -298,15 +298,17 @@ void QeModel::updateAction(float time) {
 void QeModel::setChildrenJointTransform(QeMatrix4x4f* jointsTransform, QeDataJoint& joint, QeMatrix4x4f &parentTransform) {
 
 	size_t size = modelData->jointsAnimation.size();
+	QeVector3f scale(1,1,1);
 
 	for (size_t i = 0; i<size ;++i ) {
 		if (modelData->jointsAnimation[i].id == joint.id) {
-			jointsTransform[i] *= parentTransform;
-			size_t size1 = modelData->jointsAnimation[i].children.size();
 
+			jointsTransform[i] = parentTransform*jointsTransform[i];
+
+			size_t size1 = modelData->jointsAnimation[i].children.size();
 			for (size_t j = 0; j<size1 ;++j)
 				setChildrenJointTransform(jointsTransform, *modelData->jointsAnimation[i].children[j], jointsTransform[i]);
-
+			
 			jointsTransform[i] = modelData->jointsAnimation[i].inverseBindMatrix*jointsTransform[i];
 			break;
 		}

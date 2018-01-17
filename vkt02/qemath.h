@@ -123,6 +123,8 @@ public:
 	QeMatrix4x4f rotateX(float _angle);
 	QeMatrix4x4f rotateY(float _angle);
 	QeMatrix4x4f rotateZ(float _angle);
+	QeMatrix4x4f rotate(QeVector4f vector);
+	//QeVector4f rotate(QeMatrix4x4f matrix);
 	QeMatrix4x4f scale(QeVector3f _size);
 	QeMatrix4x4f transform(QeVector3f tanslation, QeVector4f rotation, QeVector3f scale);
 	QeVector3f normalize(QeVector3f _vec);
@@ -138,8 +140,6 @@ public:
 	QeMatrix4x4f transpose(QeMatrix4x4f _mat);
 	int clamp(int in, int low, int high);
 	float clamp(float in, float low, float high );
-	QeMatrix4x4f vectortoRoateMatrix(QeVector4f vector);
-	QeVector4f rotateMatrixtoVector(QeMatrix4x4f matrix);
 	QeVector4f interpolateDir(QeVector4f a, QeVector4f b, float blend);
 	QeVector3f interpolatePos(QeVector3f start, QeVector3f end, float progression);
 

@@ -398,7 +398,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 			
 			if (strncmp(model->jointsAnimation[i].name, "Armature_root", 13) == 0) model->rootJoint = &model->jointsAnimation[i];
 
-			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "translation");
+			/*sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "translation");
 			if (sv != nullptr) {
 				model->jointsAnimation[i].translation.x = float(atof((*sv)[0].c_str()));
 				model->jointsAnimation[i].translation.y = float(atof((*sv)[1].c_str()));
@@ -409,13 +409,14 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 				model->jointsAnimation[i].rotation.x = float(atof((*sv)[0].c_str()));
 				model->jointsAnimation[i].rotation.y = float(atof((*sv)[1].c_str()));
 				model->jointsAnimation[i].rotation.z = float(atof((*sv)[2].c_str()));
+				model->jointsAnimation[i].rotation.w = float(atof((*sv)[3].c_str()));
 			}
-			//sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "scale");
-			//if (sv != nullptr) {
-			//	model->jointsAnimation[i].scale.x = float(atof((*sv)[0].c_str()));
-			//	model->jointsAnimation[i].scale.y = float(atof((*sv)[1].c_str()));
-			//	model->jointsAnimation[i].scale.z = float(atof((*sv)[2].c_str()));
-			//}
+			sv = AST->getJSONArrayValues((*jboneName)[model->jointsAnimation[i].id], 1, "scale");
+			if (sv != nullptr) {
+				model->jointsAnimation[i].scale.x = float(atof((*sv)[0].c_str()));
+				model->jointsAnimation[i].scale.y = float(atof((*sv)[1].c_str()));
+				model->jointsAnimation[i].scale.z = float(atof((*sv)[2].c_str()));
+			}*/
 		}
 
 		for (i = 0; i < size; ++i) {

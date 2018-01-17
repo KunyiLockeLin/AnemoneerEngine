@@ -23,9 +23,10 @@ struct QeDataJoint {
 	unsigned char id;
 	std::vector<QeDataJoint*> children;
 	const char* name;
-	QeVector3f translation;
-	QeVector3f rotation;
+	//QeVector3f translation;
+	//QeVector4f rotation;
 	//QeVector3f scale;
+	//QeMatrix4x4f transform;
 	QeMatrix4x4f inverseBindMatrix;
 	std::vector<float> translationInput;
 	std::vector<QeVector3f> translationOutput;
