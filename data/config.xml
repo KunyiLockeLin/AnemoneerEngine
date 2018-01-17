@@ -3,23 +3,24 @@
 	<engine>QueenEngine</engine>
 	<envir FPS="30" width="1280" height="720" />
 	<path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-	<defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" geom="phongg.spv" frag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv"/>
-	<billboard obj= "plane.gltf" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
-
+	<defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" geom="phongg.spv" frag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" postfrag="grayf.spv"/>
+  <defaultCamera type="0" posX="15" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
+  <defaultLight show="1" type="0" posX="7" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>
+	<defaultAmbientColor r="0" g="0.3" b="0.3"/>
+  <billboard obj= "plane.gltf" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
   <initActivity>activity1</initActivity>
-	<activity1>
-		<ambientColor r="0" g="0.3" b="0.3"/>
+  
+  <activity1>
 		<models>
 			<e id="1" obj= "animation.gltf" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="0.2" action="0" actionType="2" />
 			<e id="2" obj= "animation.gltf" speed="10" posX="0" posY="-5" posZ="-3" actionSpeed="1" action="2" actionType="2" />
       <e id="3" obj= "ball.gltf" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_001"/>
       <e id="4" obj= "box.gltf" speed="-100" posX="-1" posY="-1" posZ="0" attachid="2" attachskeleton="Armature_Bone_002"/>
 		</models>
-		<lights>
-			<e show="1" type="0" posX="7" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="50"/>
-		</lights>
-    <cameras>
-      <e type="0" posX="15" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
-    </cameras>
+    <ambientColor/>
+		<lights/>
+    <cameras/>
+    <postShader/>
 	</activity1>
+
 </confing>

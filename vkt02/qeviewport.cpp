@@ -6,7 +6,7 @@ void QeViewport::init(QeAssetXML* _property) {
 	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
 		viewports[i].minDepth = 0.0f;
 		viewports[i].maxDepth = 1.0f;
-		cameras[i] = OBJMGR->getCamera(i, _property->nexts[0]);
+		cameras[i] = OBJMGR->getCamera(i, _property);
 	}
 
 	currentNum = 1;
