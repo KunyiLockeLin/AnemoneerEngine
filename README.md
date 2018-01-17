@@ -30,6 +30,7 @@
   - bounding Box
   - collision
   - Terrian system
+  - Dynamic Decals
   - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
   - reflection and cube map
