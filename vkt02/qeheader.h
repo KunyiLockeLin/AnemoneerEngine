@@ -33,6 +33,7 @@
 
 //	VkPhysicalDeviceLimits::maxViewports  VLK->deviceProperties.limits.maxViewports;
 const int MAX_VIEWPORT_NUM = 9;
+const int MAX_JOINT_NUM = 20;
 
 struct QeVector2i;
 struct QeVector2f;

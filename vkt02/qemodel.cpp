@@ -85,7 +85,6 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
-	//currentJointsTransform.resize( modelData->jointsAnimation.size() );
 	descriptorPool = VLK->createDescriptorPool();
 	descriptorSet = VLK->createDescriptorSet(descriptorPool);
 	createDescriptorBuffer();
@@ -119,12 +118,11 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
-		if ( modelData->pMaterial->type == eMaterial )
+		if ( modelData->animationNum==0 )
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");			
-		else if (modelData->pMaterial->type == eMaterialPBR) {
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrvert");
-			if(c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");
-		}
+		else
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "skeletonvert");
+		
 		if (c != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(c);
 	}
 	else	modelData->pMaterial->pShaderVert = AST->getShader(c);
@@ -133,10 +131,9 @@ void QeModel::init(QeAssetXML* _property) {
 	if (c == nullptr) {
 		if (modelData->pMaterial->type == eMaterial)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom");
-		else if (modelData->pMaterial->type == eMaterialPBR) {
+		else if (modelData->pMaterial->type == eMaterialPBR) 
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
-			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom");
-		}
+		
 		if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
 	}
 	else	modelData->pMaterial->pShaderGeom = AST->getShader(c);
@@ -147,7 +144,6 @@ void QeModel::init(QeAssetXML* _property) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
 		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");
-			if (c == nullptr) c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
 		}
 		if (c != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	}
@@ -257,12 +253,7 @@ void QeModel::updateAction(float time) {
 	QeVector4f previousRotation, nextRotation, currentRotation;
 	currentScale = {1,1,1};
 
-	//size_t size = currentJointsTransform.size();
 	size_t size = modelData->jointsAnimation.size();
-	ubo.jointIDs.w = 1;
-	ubo.jointIDs.x = modelData->jointsAnimation[0].id;
-	ubo.jointIDs.y = modelData->jointsAnimation[1].id;
-	ubo.jointIDs.z = modelData->jointsAnimation[2].id;
 
 	for (size_t i = 0;i<size;++i ) {
 		previousTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame];
@@ -273,12 +264,10 @@ void QeModel::updateAction(float time) {
 		nextRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame+1];
 		currentRotation = MATH->interpolateDir(previousRotation, nextRotation, progessive);
 		ubo.joints[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
-		//currentJointsTransform[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
 	}
 
 	QeMatrix4x4f mat;
 	setChildrenJointTransform(ubo.joints, *modelData->rootJoint, mat);
-	//setChildrenJointTransform(currentJointsTransform, *modelData->rootJoint, mat);
 
 	currentActionTime += time;
 	if (currentActionTime > nextActionFrameTime) {

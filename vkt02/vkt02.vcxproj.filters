@@ -136,6 +136,9 @@
     <None Include="..\data\shaders\phong.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\skeleton.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

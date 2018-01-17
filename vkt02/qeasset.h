@@ -51,7 +51,7 @@ struct QeAssetModel {
 
 	QeDataJoint* rootJoint;
 	std::vector<QeDataJoint> jointsAnimation;
-	unsigned char animationNum;
+	unsigned char animationNum = 0;
 	std::vector<unsigned int> animationStartFrames;
 	std::vector<unsigned int> animationEndFrames;
 

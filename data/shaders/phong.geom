@@ -2,6 +2,7 @@
 #extension GL_ARB_viewport_array : enable
 
 const int MAX_VIEWPORT_NUM = 9;
+const int MAX_JOINT_NUM = 20;
 
 layout (triangles, invocations = MAX_VIEWPORT_NUM) in;
 layout (triangle_strip, max_vertices = 3) out;
@@ -11,8 +12,7 @@ layout( binding = 0) uniform QeUniformBufferObject {
     mat4 view[MAX_VIEWPORT_NUM];
     mat4 proj[MAX_VIEWPORT_NUM];
 	mat4 normal[MAX_VIEWPORT_NUM];
-	mat4 joints[3];
-	vec4 jointIDs;
+	mat4 joints[MAX_JOINT_NUM];
 	vec4 cameraPos[MAX_VIEWPORT_NUM];
 	vec4 ambientColor;
 	vec4 param; // 1: viewportNum, 2:billboardType
