@@ -32,7 +32,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	node = AST->getXMLNode(_property, 1, "postShader");
 	if (node == nullptr || node->eKeys.size() == 0) node = AST->getXMLNode(2, AST->CONFIG, "defaultPostprocessing");
 	if (node != nullptr && node->eKeys.size() > 0) {
-		//VK->bPost = true;
+		VK->bPost = true;
 		VK->bUpdateDrawCommandBuffers = true;
 		c = AST->getXMLValue(node, 1, "vert");
 		if (c != nullptr) VK->pPostVert = AST->getShader(c);

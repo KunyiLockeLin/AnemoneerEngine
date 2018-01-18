@@ -107,13 +107,13 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
-	descriptorSet = VK->createDescriptorSet();
+	descriptorSet = VK->createDescriptorSet(VK->modelDescriptorSetLayout);
 	//createDescriptorBuffer();
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
 
 	VkBuffer buffers[3];
 	int buffersSize[3];
-	VkSampler samplersp[1];
+	VkSampler samplers[1];
 	VkImageView imageViews[1];
 
 	buffers[0] = uboBuffer.buffer;
@@ -124,14 +124,14 @@ void QeModel::init(QeAssetXML* _property) {
 	buffers[1] = light->uboBuffer.buffer;
 	buffersSize[1] = sizeof(QeDataLight);
 	buffers[2] = modelData->pMaterial->uboBuffer.buffer;
-	samplersp[0] = modelData->pMaterial->pDiffuseMap->sampler;
+	samplers[0] = modelData->pMaterial->pDiffuseMap->sampler;
 	imageViews[0] = modelData->pMaterial->pDiffuseMap->buffer.view;
 
 	if (modelData->pMaterial->type == eMaterial)		buffersSize[2] = sizeof(QeDataMaterial);
 	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
 
 	VK->updateDescriptorSet(buffers, buffersSize, VK->modelDescriptorSetBufferNumber, 
-		samplersp, imageViews, VK->modelDescriptorSetTextureNumber, descriptorSet);
+		samplers, imageViews, VK->modelDescriptorSetTextureNumber, descriptorSet);
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;

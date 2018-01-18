@@ -77,6 +77,9 @@ public:
 	VkImage depthImage;
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
+	VkImage colorImage;
+	VkDeviceMemory colorImageMemory;
+	VkImageView colorImageView;
 
 	VkCommandPool commandPool;
 
@@ -96,7 +99,7 @@ public:
 	VkPipelineLayout modelPipelineLayout;
 
 	bool bPost = false, bInitPost = false;
-	const int postDescriptorSetBufferNumber = 0;
+	const int postDescriptorSetBufferNumber = 3;
 	const int postDescriptorSetTextureNumber = 1;
 	VkDescriptorSetLayout postDescriptorSetLayout;
 	VkDescriptorSet postDescriptorSet;
@@ -159,7 +162,7 @@ public:
 
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 	void createDescriptorPool();
-	VkDescriptorSet createDescriptorSet();
+	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
 	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);

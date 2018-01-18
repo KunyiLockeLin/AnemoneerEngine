@@ -297,8 +297,7 @@ void QeVulkan::createSwapChain() {
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
 	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
 
-	//uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-	uint32_t imageCount = swapChainSupport.capabilities.minImageCount;
+	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
 		imageCount = swapChainSupport.capabilities.maxImageCount;
 
@@ -978,7 +977,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 		}
 
 		if (bPost) {
-			vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipelineLayout, 0, 1, &postDescriptorSet, 0, NULL);
+			vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipelineLayout, 0, 1, &postDescriptorSet, 0, nullptr);
 			vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipeline);
 			vkCmdDraw(drawCommandBuffers[i], 3, 1, 0, 0);
 		}
@@ -1017,8 +1016,8 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 	return surface;
 }
 
-VkDescriptorSet QeVulkan::createDescriptorSet() {
-	VkDescriptorSetLayout layouts[] = { modelDescriptorSetLayout };
+VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout) {
+	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
@@ -1316,11 +1315,42 @@ void QeVulkan::initPostProcessing() {
 	createDescriptorSetLayout(postDescriptorSetLayout, postDescriptorSetBufferNumber, postDescriptorSetTextureNumber);
 	createPipelineLayout(postPipelineLayout, postDescriptorSetLayout);
 
-	postDescriptorSet = VK->createDescriptorSet();
-	postSampler = VK->createTextureSampler();
-	updateDescriptorSet(nullptr, nullptr, postDescriptorSetBufferNumber, &postSampler, 
-		swapChainImageViews.data(), postDescriptorSetTextureNumber, postDescriptorSet);
+	postDescriptorSet = createDescriptorSet(postDescriptorSetLayout);
+	postSampler = createTextureSampler();
+	int width, height;
+	WIN->getWindowSize(width,height);
+	int imageSize = width*height * 4;
+	unsigned char *data = new unsigned char[imageSize];
+	memset( data, 0xFF, imageSize);
+	VK->createImageData(data, VK_FORMAT_R8G8B8A8_UNORM, imageSize, width, height, colorImage, colorImageMemory);
+	colorImageView = VK->createImageView(colorImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	
+	/////
+	VkBuffer buffers[3];
+	int buffersSize[3];
+	VkSampler samplers[1];
+	VkImageView imageViews[1];
 
-	postPipeline = VK->createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader);
+	QeModel* model = OBJMGR->getModel(1, nullptr);
+	buffers[0] = model->uboBuffer.buffer;
+	buffersSize[0] = sizeof(QeUniformBufferObject);
+
+	QeLight* light = OBJMGR->getLight(0, nullptr);
+
+	buffers[1] = light->uboBuffer.buffer;
+	buffersSize[1] = sizeof(QeDataLight);
+	buffers[2] = model->modelData->pMaterial->uboBuffer.buffer;
+	//samplers[0] = model->modelData->pMaterial->pDiffuseMap->sampler;
+	//imageViews[0] = modelData->pMaterial->pDiffuseMap->buffer.view;
+	samplers[0] = postSampler;
+	imageViews[0] = colorImageView;
+	if (model->modelData->pMaterial->type == eMaterial)			buffersSize[2] = sizeof(QeDataMaterial);
+	else if (model->modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
+	////
+
+	 updateDescriptorSet(buffers, buffersSize, postDescriptorSetBufferNumber, samplers,
+		imageViews, postDescriptorSetTextureNumber, postDescriptorSet);
+
+	postPipeline = createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader);
 	bInitPost = true;
 }
