@@ -132,8 +132,8 @@ void QeModel::init(QeAssetXML* _property) {
 	if (modelData->pMaterial->type == eMaterial)		buffersSize[2] = sizeof(QeDataMaterial);
 	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
 
-	VK->updateDescriptorSet(buffers, buffersSize, VK->modelRender->descriptorSetBufferNumber, 
-		samplersp, imageViews, VK->modelRender->descriptorSetTextureNumber, descriptorSet);
+	VK->updateDescriptorSet(buffers, buffersSize, VK->descriptorSetBufferNumber, 
+		samplersp, imageViews, VK->descriptorSetTextureNumber, descriptorSet);
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;

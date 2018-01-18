@@ -19,7 +19,7 @@ QeVKImageBuffer::~QeVKImageBuffer(){
  QeVulkan::~QeVulkan() {
 	cleanupSwapChain();
 	vkDestroySurfaceKHR(instance, WIN->surface, nullptr);
-	vkDestroyDescriptorSetLayout(VK->device, modelRender->descriptorSetLayout, nullptr);
+	vkDestroyDescriptorSetLayout(VK->device, descriptorSetLayout, nullptr);
 	
 	//if (modelRender != nullptr) delete modelRender;
 	//modelRender = nullptr;
@@ -41,9 +41,9 @@ void QeVulkan::init() {
 	
 	pickPhysicalDevice();
 	createLogicalDevice();
-	modelRender = new QeModelRender();
+	//modelRender = new QeModelRender();
 
-	createDescriptorSetLayout(modelRender->descriptorSetBufferNumber, modelRender->descriptorSetTextureNumber);
+	createDescriptorSetLayout(descriptorSetBufferNumber, descriptorSetTextureNumber);
 	createPipeline();
 	createCommandPool();
 
@@ -122,7 +122,6 @@ void QeVulkan::drawFrame() {
 	VkSwapchainKHR swapChains[] = { swapChain };
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = swapChains;
-
 	presentInfo.pImageIndices = &imageIndex;
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
@@ -137,9 +136,9 @@ void QeVulkan::drawFrame() {
 }
 
 void QeVulkan::cleanupSwapChain() {
-	vkDestroyImageView(device, modelRender->depth.view, nullptr);
-	vkDestroyImage(device, modelRender->depth.image, nullptr);
-	vkFreeMemory(device, modelRender->depth.memory, nullptr);
+	vkDestroyImageView(device, depthImageView, nullptr);
+	vkDestroyImage(device, depthImage, nullptr);
+	vkFreeMemory(device, depthImageMemory, nullptr);
 
 	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
 		vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
@@ -147,8 +146,8 @@ void QeVulkan::cleanupSwapChain() {
 	}
 	vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
 
-	vkDestroyPipelineLayout(device, modelRender->pipelineLayout, nullptr);
-	vkDestroyRenderPass(device, modelRender->renderPass, nullptr);
+	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+	vkDestroyRenderPass(device, renderPass, nullptr);
 
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 
@@ -406,7 +405,7 @@ void QeVulkan::createRenderPass() {
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &modelRender->renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 }
@@ -435,7 +434,7 @@ void QeVulkan::createDescriptorSetLayout( int bufNum, int texNum ) {
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 	layoutInfo.pBindings = bindings.data();
 
-	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &modelRender->descriptorSetLayout) != VK_SUCCESS) {
+	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
@@ -445,9 +444,9 @@ void QeVulkan::createPipeline() {
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;
-	pipelineLayoutInfo.pSetLayouts = &modelRender->descriptorSetLayout;
+	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
-	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &modelRender->pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 }
@@ -458,12 +457,12 @@ void QeVulkan::createFramebuffers() {
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
 		std::array<VkImageView, 2> attachments = {
 			swapChainImageViews[i],
-			modelRender->depth.view
+			depthImageView
 		};
 
 		VkFramebufferCreateInfo framebufferInfo = {};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = modelRender->renderPass;
+		framebufferInfo.renderPass = renderPass;
 		framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 		framebufferInfo.pAttachments = attachments.data();
 		framebufferInfo.width = swapChainExtent.width;
@@ -493,10 +492,10 @@ void QeVulkan::createDepthResources() {
 	VkFormat depthFormat = findDepthFormat();
 
 	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, 
-		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, modelRender->depth.image, modelRender->depth.memory);
-	modelRender->depth.view = createImageView(modelRender->depth.image, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+	depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 
-	transitionImageLayout(modelRender->depth.image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
@@ -957,7 +956,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 
 		VkRenderPassBeginInfo renderPassInfo = {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = modelRender->renderPass;
+		renderPassInfo.renderPass = renderPass;
 		renderPassInfo.framebuffer = swapChainFramebuffers[i];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = swapChainExtent;
@@ -987,7 +986,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 
 void QeVulkan::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model) {
 
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, modelRender->pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &model.modelData->vertex.buffer, offsets);
@@ -1015,7 +1014,7 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 }
 
 VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorPool& descriptorPool) {
-	VkDescriptorSetLayout layouts[] = { modelRender->descriptorSetLayout };
+	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
@@ -1189,8 +1188,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule* vertShader, VkShader
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
-	pipelineInfo.layout = modelRender->pipelineLayout;
-	pipelineInfo.renderPass = modelRender->renderPass;
+	pipelineInfo.layout = pipelineLayout;
+	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 

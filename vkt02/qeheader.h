@@ -74,6 +74,7 @@ class QeObjectManger;
 class QeActivity;
 class QeVulkan;
 
+
 #include "qeencode.h"
 #include "qemath.h"
 #include "qevulkan.h"

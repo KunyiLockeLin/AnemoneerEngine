@@ -33,8 +33,7 @@ struct QeVKImageBuffer {
 	~QeVKImageBuffer();
 };
 
-
-struct QeModelRender {
+/*struct QeModelRender {
 
 	const int descriptorSetBufferNumber = 3;
 	const int descriptorSetTextureNumber = 1;
@@ -53,8 +52,12 @@ struct QePostRender {
 
 	VkRenderPass renderPass;
 	VkDescriptorSetLayout descriptorSetLayout;
+	VkDescriptorSet descriptorSet;
 	VkPipelineLayout pipelineLayout;
-};
+	VkPipeline pipeline;
+	QeAssetImage screenImage;
+
+};*/
 
 class QeVulkan
 {
@@ -97,8 +100,15 @@ public:
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	QeModelRender* modelRender;
-	//QePostRender* postRender;
+
+	const int descriptorSetBufferNumber = 3;
+	const int descriptorSetTextureNumber = 1;
+	VkRenderPass renderPass;
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkPipelineLayout pipelineLayout;
+	VkImage depthImage;
+	VkDeviceMemory depthImageMemory;
+	VkImageView depthImageView;
 
 	VkCommandPool commandPool;
 
