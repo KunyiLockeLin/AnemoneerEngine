@@ -35,6 +35,9 @@
 const int MAX_VIEWPORT_NUM = 9;
 const int MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
+const int MAX_DESCRIPTOR_UNIFORM_NUM = 500;
+const int MAX_DESCRIPTOR_SAMPLER_NUM = 500;
+const int MAX_DESCRIPTOR_NUM = 100;
 
 struct QeVKBuffer;
 struct QeVKImageBuffer;

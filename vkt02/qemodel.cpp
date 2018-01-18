@@ -1,16 +1,15 @@
 #include "qeheader.h"
 
 QeModel::~QeModel() {
-	cleanupSwapChain();
-	vkDestroyDescriptorPool( VK->device, descriptorPool, nullptr);
+	cleanupPipeline();
 }
 
-void QeModel::cleanupSwapChain() {
-	vkDestroyPipeline(VK->device, graphicsPipeline, nullptr);
+void QeModel::cleanupPipeline() {
+	vkDestroyPipeline(VK->device, pipeline, nullptr);
 }
 
-void QeModel::createSwapChain() {
-	graphicsPipeline = VK->createGraphicsPipeline(&modelData->pMaterial->pShaderVert->shader, 
+void QeModel::createPipeline() {
+	pipeline = VK->createPipeline(&modelData->pMaterial->pShaderVert->shader, 
 		&modelData->pMaterial->pShaderGeom->shader, &modelData->pMaterial->pShaderFrag->shader);
 }
 
@@ -108,8 +107,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
-	descriptorPool = VK->createDescriptorPool();
-	descriptorSet = VK->createDescriptorSet(descriptorPool);
+	descriptorSet = VK->createDescriptorSet();
 	//createDescriptorBuffer();
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
 
@@ -132,8 +130,8 @@ void QeModel::init(QeAssetXML* _property) {
 	if (modelData->pMaterial->type == eMaterial)		buffersSize[2] = sizeof(QeDataMaterial);
 	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
 
-	VK->updateDescriptorSet(buffers, buffersSize, VK->descriptorSetBufferNumber, 
-		samplersp, imageViews, VK->descriptorSetTextureNumber, descriptorSet);
+	VK->updateDescriptorSet(buffers, buffersSize, VK->modelDescriptorSetBufferNumber, 
+		samplersp, imageViews, VK->modelDescriptorSetTextureNumber, descriptorSet);
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;
@@ -180,7 +178,7 @@ void QeModel::init(QeAssetXML* _property) {
 	}
 	else	modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	
-	createSwapChain();
+	createPipeline();
 
 	c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);

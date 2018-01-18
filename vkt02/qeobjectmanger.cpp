@@ -130,32 +130,32 @@ void QeObjectManger::update(float _time) {
 }
 
 
-void QeObjectManger::cleanupSwapChain() {
+void QeObjectManger::cleanupPipeline() {
 
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		it->second->cleanupSwapChain();
+		it->second->cleanupPipeline();
 		++it;
 	}
 
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
-		it->second->cleanupSwapChain();
+		it->second->cleanupPipeline();
 		++it;
 	}
 }
 
-void QeObjectManger::recreateSwapChain() {
+void QeObjectManger::recreatePipeline() {
 
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		it->second->createSwapChain();
+		it->second->createPipeline();
 		++it;
 	}
 	
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
-		it->second->createSwapChain();
+		it->second->createPipeline();
 		++it;
 	}
 	VK->bUpdateDrawCommandBuffers = true;

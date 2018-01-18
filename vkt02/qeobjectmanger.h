@@ -34,8 +34,8 @@ public:
 	
 	void update(float _time);
 
-	void cleanupSwapChain();
-	void recreateSwapChain();
+	void cleanupPipeline();
+	void recreatePipeline();
 
 	std::vector<QeModel*> getDrawObject();
 };

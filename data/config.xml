@@ -3,7 +3,8 @@
   <engine>QueenEngine</engine>
   <envir FPS="30" width="1280" height="720" />
   <path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-  <defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" geom="phongg.spv" frag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" postvert="postv.spv" postfrag="postf.spv"/>
+  <defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" geom="phongg.spv" frag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" />
+  <defaultPostprocessing vert="basev.spv" frag="phongf.spv" />
   <defaultCamera type="0" posX="15" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
   <defaultLight show="1" type="0" posX="7" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="50"/>
   <defaultAmbientColor r="0" g="0.3" b="0.3"/>
@@ -20,7 +21,7 @@
     <ambientColor/>
     <lights/>
     <cameras/>
-    <postShader/>
+    <postprocessing/>
   </activity1>
 
 </confing>

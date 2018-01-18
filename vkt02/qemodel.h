@@ -51,12 +51,10 @@ public:
 	QeAssetModel* modelData;
 
 	VkDescriptorSet descriptorSet;
+	VkPipeline pipeline;
+
 	QeUniformBufferObject ubo;
 	QeVKBuffer uboBuffer;
-
-
-	VkPipeline graphicsPipeline;
-	VkDescriptorPool descriptorPool;
 	QeAssetXML* initProperty;
 
 	void updateUniformBuffer();
@@ -76,8 +74,8 @@ public:
 	void enlarge(QeVector3f _size);
 	void setSize(QeVector3f _size);
 	virtual void setMatModel();
-	void cleanupSwapChain();
-	void createSwapChain();
+	void cleanupPipeline();
+	void createPipeline();
 
 	bool setAction(unsigned int actionID, QeActionType playType);
 	void actionPlay();

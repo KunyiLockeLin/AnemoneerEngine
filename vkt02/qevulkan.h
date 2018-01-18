@@ -33,31 +33,6 @@ struct QeVKImageBuffer {
 	~QeVKImageBuffer();
 };
 
-/*struct QeModelRender {
-
-	const int descriptorSetBufferNumber = 3;
-	const int descriptorSetTextureNumber = 1;
-	VkRenderPass renderPass;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkPipelineLayout pipelineLayout;
-
-	QeVKImageBuffer depth;
-	//~QeModelRender();
-};
-
-struct QePostRender {
-
-	const int descriptorSetBufferNumber = 1;
-	const int descriptorSetTextureNumber = 1;
-
-	VkRenderPass renderPass;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkDescriptorSet descriptorSet;
-	VkPipelineLayout pipelineLayout;
-	VkPipeline pipeline;
-	QeAssetImage screenImage;
-
-};*/
 
 class QeVulkan
 {
@@ -94,18 +69,11 @@ public:
 	VkQueue presentQueue;
 
 	VkSwapchainKHR swapChain;
-	std::vector<VkImage> swapChainImages;
-	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+	VkFormat swapChainImageFormat;
+	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
-
-
-	const int descriptorSetBufferNumber = 3;
-	const int descriptorSetTextureNumber = 1;
-	VkRenderPass renderPass;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkPipelineLayout pipelineLayout;
 	VkImage depthImage;
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
@@ -119,6 +87,25 @@ public:
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 
 	bool bUpdateDrawCommandBuffers;
+	VkDescriptorPool descriptorPool;
+	VkRenderPass renderPass;
+
+	const int modelDescriptorSetBufferNumber = 3;
+	const int modelDescriptorSetTextureNumber = 1;
+	VkDescriptorSetLayout modelDescriptorSetLayout;
+	VkPipelineLayout modelPipelineLayout;
+
+	bool bPost = false, bInitPost = false;
+	const int postDescriptorSetBufferNumber = 0;
+	const int postDescriptorSetTextureNumber = 1;
+	VkDescriptorSetLayout postDescriptorSetLayout;
+	VkDescriptorSet postDescriptorSet;
+	VkPipelineLayout postPipelineLayout;
+	VkPipeline postPipeline;
+	VkSampler postSampler;
+	QeAssetShader* pPostVert = nullptr;
+	QeAssetShader* pPostGeom = nullptr;
+	QeAssetShader* pPostFrag = nullptr;
 
 	void cleanupSwapChain();
 
@@ -129,10 +116,10 @@ public:
 	void createLogicalDevice();
 
 	void createSwapChain();
-	void createImageViews();
+	void createSwapChainImageViews();
 	void createRenderPass();
-	void createDescriptorSetLayout(int bufNum, int texNum);
-	void createPipeline();
+	void createDescriptorSetLayout(VkDescriptorSetLayout& descriptorSetLayout, int bufNum, int texNum);
+	void createPipelineLayout(VkPipelineLayout& pipelineLayout, VkDescriptorSetLayout& descriptorSetLayout);
 	void createFramebuffers();
 	void createCommandPool();
 	void createDepthResources();
@@ -171,9 +158,9 @@ public:
 	void updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model);
 
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
-	VkDescriptorPool createDescriptorPool();
-	VkDescriptorSet createDescriptorSet(VkDescriptorPool& descriptorPool);
-	VkPipeline createGraphicsPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE);
+	void createDescriptorPool();
+	VkDescriptorSet createDescriptorSet();
+	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
@@ -182,4 +169,5 @@ public:
 	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void initPostProcessing();
 };

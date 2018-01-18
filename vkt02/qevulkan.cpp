@@ -19,11 +19,8 @@ QeVKImageBuffer::~QeVKImageBuffer(){
  QeVulkan::~QeVulkan() {
 	cleanupSwapChain();
 	vkDestroySurfaceKHR(instance, WIN->surface, nullptr);
-	vkDestroyDescriptorSetLayout(VK->device, descriptorSetLayout, nullptr);
-	
-	//if (modelRender != nullptr) delete modelRender;
-	//modelRender = nullptr;
-
+	vkDestroyDescriptorSetLayout(device, modelDescriptorSetLayout, nullptr);
+	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
 	vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 	vkDestroyCommandPool(device, commandPool, nullptr);
@@ -34,6 +31,8 @@ QeVKImageBuffer::~QeVKImageBuffer(){
 }
 
 void QeVulkan::init() {
+	bPost = false;
+	bInitPost = false;
 	createInstance();
 	setupDebugCallback();
 
@@ -41,14 +40,13 @@ void QeVulkan::init() {
 	
 	pickPhysicalDevice();
 	createLogicalDevice();
-	//modelRender = new QeModelRender();
-
-	createDescriptorSetLayout(descriptorSetBufferNumber, descriptorSetTextureNumber);
-	createPipeline();
+	createDescriptorPool();
+	createDescriptorSetLayout( modelDescriptorSetLayout, modelDescriptorSetBufferNumber, modelDescriptorSetTextureNumber);
+	createPipelineLayout(modelPipelineLayout, modelDescriptorSetLayout);
 	createCommandPool();
 
 	createSwapChain();
-	createImageViews();
+	createSwapChainImageViews();
 	createRenderPass();
 	createDepthResources();
 	createFramebuffers();
@@ -146,12 +144,12 @@ void QeVulkan::cleanupSwapChain() {
 	}
 	vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
 
-	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+	vkDestroyPipelineLayout(device, modelPipelineLayout, nullptr);
 	vkDestroyRenderPass(device, renderPass, nullptr);
 
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 
-	if(OBJMGR != nullptr)	OBJMGR->cleanupSwapChain();
+	if(OBJMGR != nullptr)	OBJMGR->cleanupPipeline();
 }
 
 void QeVulkan::recreateSwapChain() {
@@ -159,16 +157,16 @@ void QeVulkan::recreateSwapChain() {
 
 	cleanupSwapChain();
 
-	createPipeline();
+	createPipelineLayout(modelPipelineLayout, modelDescriptorSetLayout);
 	createSwapChain();
-	createImageViews();
+	createSwapChainImageViews();
 	createRenderPass();
 	createDepthResources();
 	createFramebuffers();
 	createDrawCommandBuffers();
 
 	VP->updateViewport();
-	OBJMGR->recreateSwapChain();
+	OBJMGR->recreatePipeline();
 	//createGraphicsPipeline();
 	//createCommandBuffers(*model);
 	//createCommandBuffers(*model1);
@@ -299,10 +297,10 @@ void QeVulkan::createSwapChain() {
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
 	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
 
-	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+	//uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+	uint32_t imageCount = swapChainSupport.capabilities.minImageCount;
+	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
 		imageCount = swapChainSupport.capabilities.maxImageCount;
-	}
 
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -344,7 +342,7 @@ void QeVulkan::createSwapChain() {
 	swapChainExtent = extent;
 }
 
-void QeVulkan::createImageViews() {
+void QeVulkan::createSwapChainImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
 
 	for (uint32_t i = 0; i < swapChainImages.size(); i++) {
@@ -410,7 +408,7 @@ void QeVulkan::createRenderPass() {
 	}
 }
 
-void QeVulkan::createDescriptorSetLayout( int bufNum, int texNum ) {
+void QeVulkan::createDescriptorSetLayout(VkDescriptorSetLayout& descriptorSetLayout, int bufNum, int texNum) {
 	
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
 	bindings.resize( bufNum+texNum );
@@ -439,7 +437,7 @@ void QeVulkan::createDescriptorSetLayout( int bufNum, int texNum ) {
 	}
 }
 
-void QeVulkan::createPipeline() {
+void QeVulkan::createPipelineLayout(VkPipelineLayout& pipelineLayout, VkDescriptorSetLayout& descriptorSetLayout) {
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -937,6 +935,8 @@ void QeVulkan::createDrawCommandBuffers() {
 
 void QeVulkan::updateDrawCommandBuffers() {
 
+	if ( bPost && !bInitPost ) initPostProcessing();
+
 	std::vector<QeModel*> models = OBJMGR->getDrawObject();
 
 	for (size_t i = 0; i < drawCommandBuffers.size(); i++) {
@@ -976,22 +976,26 @@ void QeVulkan::updateDrawCommandBuffers() {
 			updateDrawCommandBufferModel(drawCommandBuffers[i], **it);
 			++it;
 		}
-		vkCmdEndRenderPass(drawCommandBuffers[i]);
 
-		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to record command buffer!");
+		if (bPost) {
+			vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipelineLayout, 0, 1, &postDescriptorSet, 0, NULL);
+			vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipeline);
+			vkCmdDraw(drawCommandBuffers[i], 3, 1, 0, 0);
 		}
+
+		vkCmdEndRenderPass(drawCommandBuffers[i]);
+		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS)	throw std::runtime_error("failed to record command buffer!");
 	}
 }
 
 void QeVulkan::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model) {
 
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, modelPipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &model.modelData->vertex.buffer, offsets);
 	vkCmdBindIndexBuffer(drawCommandBuffer, model.modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.graphicsPipeline);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.pipeline);
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 }
@@ -1013,8 +1017,8 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 	return surface;
 }
 
-VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorPool& descriptorPool) {
-	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
+VkDescriptorSet QeVulkan::createDescriptorSet() {
+	VkDescriptorSetLayout layouts[] = { modelDescriptorSetLayout };
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
@@ -1038,32 +1042,28 @@ void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) 
 }
 
 
-VkDescriptorPool QeVulkan::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 4> poolSizes = {};
+void QeVulkan::createDescriptorPool() {
+	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = 1;
+	poolSizes[0].descriptorCount = MAX_DESCRIPTOR_UNIFORM_NUM;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = 1;
-	poolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[2].descriptorCount = 1;
-	poolSizes[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[3].descriptorCount = 1;
+	poolSizes[1].descriptorCount = MAX_DESCRIPTOR_SAMPLER_NUM;
+	//poolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	//poolSizes[2].descriptorCount = 1000;
+	//poolSizes[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	//poolSizes[3].descriptorCount = 1000;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = 1;
+	poolInfo.maxSets = MAX_DESCRIPTOR_NUM;
 
-	VkDescriptorPool descriptorPool;
-	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS)
 		throw std::runtime_error("failed to create descriptor pool!");
-	}
-
-	return descriptorPool;
 }
 
-VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest) {
+VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -1188,7 +1188,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(VkShaderModule* vertShader, VkShader
 	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
-	pipelineInfo.layout = pipelineLayout;
+	pipelineInfo.layout = modelPipelineLayout;
 	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -1309,4 +1309,18 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 
 void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
+}
+
+void QeVulkan::initPostProcessing() {
+	
+	createDescriptorSetLayout(postDescriptorSetLayout, postDescriptorSetBufferNumber, postDescriptorSetTextureNumber);
+	createPipelineLayout(postPipelineLayout, postDescriptorSetLayout);
+
+	postDescriptorSet = VK->createDescriptorSet();
+	postSampler = VK->createTextureSampler();
+	updateDescriptorSet(nullptr, nullptr, postDescriptorSetBufferNumber, &postSampler, 
+		swapChainImageViews.data(), postDescriptorSetTextureNumber, postDescriptorSet);
+
+	postPipeline = VK->createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader);
+	bInitPost = true;
 }
