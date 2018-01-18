@@ -31,11 +31,13 @@
 #define KEY_S 0x53
 #define KEY_W 0x57
 
-//	VkPhysicalDeviceLimits::maxViewports  VLK->deviceProperties.limits.maxViewports;
+//	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
 const int MAX_VIEWPORT_NUM = 9;
 const int MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
 
+struct QeVKBuffer;
+struct QeVKImageBuffer;
 struct QeVector2i;
 struct QeVector2f;
 struct QeVector3i;
@@ -74,8 +76,8 @@ class QeVulkan;
 
 #include "qeencode.h"
 #include "qemath.h"
-#include "qeasset.h"
 #include "qevulkan.h"
+#include "qeasset.h"
 #include "qemodel.h"
 #include "qebillboard.h"
 #include "qecamera.h"

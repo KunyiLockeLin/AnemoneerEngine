@@ -52,16 +52,13 @@ public:
 
 	VkDescriptorSet descriptorSet;
 	QeUniformBufferObject ubo;
-	VkBuffer uboBuffer;
-	VkDeviceMemory uboBufferMemory;
-	VkBuffer lightBuffer;
-	VkDeviceMemory lightBufferMemory;
+	QeVKBuffer uboBuffer;
+
 
 	VkPipeline graphicsPipeline;
 	VkDescriptorPool descriptorPool;
 	QeAssetXML* initProperty;
 
-	void createDescriptorBuffer();
 	void updateUniformBuffer();
 	virtual void update(float time);
 	

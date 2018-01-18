@@ -16,6 +16,9 @@ public:
 	QeVector3f target;
 	QeVector3f up;
 	QeVector2i lastMousePos;
+	QeMatrix4x4f view;
+	QeMatrix4x4f projection;
+
 	float fov;
 	float fnear;
 	float ffar;

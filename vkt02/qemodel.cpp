@@ -1,19 +1,17 @@
 #include "qeheader.h"
 
 QeModel::~QeModel() {
-
-	VLK->destroyBufferMemory(uboBuffer, uboBufferMemory);
-	VLK->destroyBufferMemory(lightBuffer, lightBufferMemory);
 	cleanupSwapChain();
-	vkDestroyDescriptorPool( VLK->device, descriptorPool, nullptr);
+	vkDestroyDescriptorPool( VK->device, descriptorPool, nullptr);
 }
 
 void QeModel::cleanupSwapChain() {
-	vkDestroyPipeline(VLK->device, graphicsPipeline, nullptr);
+	vkDestroyPipeline(VK->device, graphicsPipeline, nullptr);
 }
 
 void QeModel::createSwapChain() {
-	graphicsPipeline = VLK->createGraphicsPipeline(&modelData->pMaterial->pShaderVert->shader, &modelData->pMaterial->pShaderGeom->shader, &modelData->pMaterial->pShaderFrag->shader);
+	graphicsPipeline = VK->createGraphicsPipeline(&modelData->pMaterial->pShaderVert->shader, 
+		&modelData->pMaterial->pShaderGeom->shader, &modelData->pMaterial->pShaderFrag->shader);
 }
 
 void QeModel::setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size) {
@@ -110,27 +108,32 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
-	descriptorPool = VLK->createDescriptorPool();
-	descriptorSet = VLK->createDescriptorSet(descriptorPool);
-	createDescriptorBuffer();
+	descriptorPool = VK->createDescriptorPool();
+	descriptorSet = VK->createDescriptorSet(descriptorPool);
+	//createDescriptorBuffer();
+	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
 
 	VkBuffer buffers[3];
 	int buffersSize[3];
 	VkSampler samplersp[1];
 	VkImageView imageViews[1];
 
-	buffers[0] = uboBuffer;
+	buffers[0] = uboBuffer.buffer;
 	buffersSize[0] = sizeof(QeUniformBufferObject);
-	buffers[1] = lightBuffer;
+
+	QeLight* light = OBJMGR->getLight(0, nullptr);
+
+	buffers[1] = light->uboBuffer.buffer;
 	buffersSize[1] = sizeof(QeDataLight);
-	buffers[2] = modelData->pMaterial->materialBuffer;
-	samplersp[0] = modelData->pMaterial->pDiffuseMap->textureSampler;
-	imageViews[0] = modelData->pMaterial->pDiffuseMap->textureImageView;
+	buffers[2] = modelData->pMaterial->uboBuffer.buffer;
+	samplersp[0] = modelData->pMaterial->pDiffuseMap->sampler;
+	imageViews[0] = modelData->pMaterial->pDiffuseMap->buffer.view;
 
 	if (modelData->pMaterial->type == eMaterial)		buffersSize[2] = sizeof(QeDataMaterial);
 	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
 
-	VLK->updateDescriptorSet(buffers, buffersSize, VLK->descriptorSetBufferNumber, samplersp, imageViews, VLK->descriptorSetTextureNumber, descriptorSet);
+	VK->updateDescriptorSet(buffers, buffersSize, VK->modelRender->descriptorSetBufferNumber, 
+		samplersp, imageViews, VK->modelRender->descriptorSetTextureNumber, descriptorSet);
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;
@@ -212,11 +215,6 @@ void QeModel::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 
-void QeModel::createDescriptorBuffer() {
-	VLK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer, uboBufferMemory);
-	VLK->createUniformBuffer(sizeof(QeDataLight), lightBuffer, lightBufferMemory);
-}
-
 void QeModel::update(float time) {
 
 	if(speed != 0)	rotateFace( time*speed );
@@ -225,7 +223,7 @@ void QeModel::update(float time) {
 }
 
 void QeModel::updateUniformBuffer() {
-	int size1 = sizeof(float);
+	/*int size1 = sizeof(float);
 	int size2 = sizeof(int);
 	int size3 = sizeof(QeVector3f);
 	int size4 = sizeof(QeVector4f);
@@ -233,14 +231,14 @@ void QeModel::updateUniformBuffer() {
 	int size6 = sizeof(QeMatrix4x4f);
 	int size7 = sizeof(QeMatrix4x4f)*9;
 	int size8 = sizeof(QeUniformBufferObject);
-	int size9 = sizeof(ubo);
+	int size9 = sizeof(ubo);*/
 	setMatModel();
 
 	ubo.ambientColor = QE->currentActivity->ambientColor;
 	ubo.param.x = float(VP->currentNum);
 	for (int i = 0; i < VP->currentNum; ++i) {
-		ubo.view[i] = VP->cameras[i]->getMatView();
-		ubo.proj[i] = VP->cameras[i]->getMatProjection();
+		ubo.view[i] = VP->cameras[i]->view;
+		ubo.proj[i] = VP->cameras[i]->projection;
 
 		QeMatrix4x4f mat = ubo.view[i]* ubo.model;
 		MATH->inverse(mat, mat);
@@ -248,15 +246,15 @@ void QeModel::updateUniformBuffer() {
 		ubo.cameraPos[i] = VP->cameras[i]->pos;
 		ubo.cameraPos[i].w = 1;
 	}
-	VLK->setMemory(uboBufferMemory,(void*)&ubo, sizeof(ubo));
+	VK->setMemory(uboBuffer.memory,(void*)&ubo, sizeof(ubo));
 	
-	QeDataLight* light = &OBJMGR->getLight(0,nullptr)->data;
-	VLK->setMemory(lightBufferMemory, (void*)light, sizeof(*light));
+	//QeLight* light = OBJMGR->getLight(0,nullptr);
+	//VK->setMemory(light->uboBuffer.memory, (void*)(&(light->data)), sizeof(light->data));
 
-	if (modelData->pMaterial->type == eMaterial)	
-		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
-	else if (modelData->pMaterial->type == eMaterialPBR)
-		VLK->setMemory(modelData->pMaterial->materialBufferMemory, (void*)&modelData->pMaterial->valuePBR, sizeof(modelData->pMaterial->valuePBR));
+	//if (modelData->pMaterial->type == eMaterial)	
+	//	VK->setMemory(modelData->pMaterial->uboBuffer.memory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
+	//else if (modelData->pMaterial->type == eMaterialPBR)
+	//	VK->setMemory(modelData->pMaterial->uboBuffer.memory, (void*)&modelData->pMaterial->valuePBR, sizeof(modelData->pMaterial->valuePBR));
 }
 
 bool QeModel::setAction(unsigned int actionID, QeActionType type) {

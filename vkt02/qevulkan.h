@@ -17,6 +17,44 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
+struct QeVKBuffer {
+	VkBuffer buffer;
+	VkDeviceMemory memory;
+
+	~QeVKBuffer();
+};
+
+struct QeVKImageBuffer {
+
+	VkImage image;
+	VkDeviceMemory memory;
+	VkImageView view;
+
+	~QeVKImageBuffer();
+};
+
+
+struct QeModelRender {
+
+	const int descriptorSetBufferNumber = 3;
+	const int descriptorSetTextureNumber = 1;
+	VkRenderPass renderPass;
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkPipelineLayout pipelineLayout;
+
+	QeVKImageBuffer depth;
+	//~QeModelRender();
+};
+
+struct QePostRender {
+
+	const int descriptorSetBufferNumber = 1;
+	const int descriptorSetTextureNumber = 1;
+
+	VkRenderPass renderPass;
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkPipelineLayout pipelineLayout;
+};
 
 class QeVulkan
 {
@@ -37,9 +75,6 @@ public:
 #else
 	const bool enableValidationLayers = true;
 #endif
-
-	const int descriptorSetBufferNumber = 3;
-	const int descriptorSetTextureNumber = 1;
 
 	void init();
 	void update(float time);
@@ -62,15 +97,11 @@ public:
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	VkRenderPass renderPass;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkPipelineLayout pipelineLayout;
+	QeModelRender* modelRender;
+	//QePostRender* postRender;
 
 	VkCommandPool commandPool;
 
-	VkImage depthImage;
-	VkDeviceMemory depthImageMemory;
-	VkImageView depthImageView;
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
@@ -141,7 +172,4 @@ public:
 	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void destroyBufferMemory(VkBuffer &buffer, VkDeviceMemory &memory);
-	void destroyShaderModule(VkShaderModule& shaderModule);
-	void destroyImage(VkImage& image, VkDeviceMemory& imageMemory, VkImageView& imageView, VkSampler& sampler);
 };

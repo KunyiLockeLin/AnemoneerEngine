@@ -27,7 +27,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		bClosed = true;
 		break;
 	case WM_EXITSIZEMOVE:
-		VLK->recreateSwapChain();
+		VK->recreateSwapChain();
 		break;
 	default:
 		QE->currentActivity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
@@ -135,13 +135,13 @@ void QeWindow::init() {
 	SetForegroundWindow(window);
 	SetFocus(window);
 
-	surface = VLK->createSurface(window, windowInstance);
+	surface = VK->createSurface(window, windowInstance);
 	bClosed = false;
 }
 
 std::string QeWindow::getWindowTitle()
 {
-	std::string device(VLK->deviceProperties.deviceName);
+	std::string device(VK->deviceProperties.deviceName);
 	std::string windowTitle;
 	windowTitle = AST->getXMLValue(2, AST->CONFIG, "title");
 	windowTitle.append(" - ");

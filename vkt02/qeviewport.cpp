@@ -15,8 +15,8 @@ void QeViewport::init(QeAssetXML* _property) {
 
 void QeViewport::updateViewport() {
 	
-	int width = VLK->swapChainExtent.width;
-	int height = VLK->swapChainExtent.height;
+	int width = VK->swapChainExtent.width;
+	int height = VK->swapChainExtent.height;
 	
 	int xNum;
 	int yNum;
@@ -83,7 +83,7 @@ void QeViewport::popViewport() {
 	scissors[currentNum].offset.x = 0;
 	scissors[currentNum].offset.y = 0;
 	*/
-	VLK->recreateSwapChain();
+	VK->recreateSwapChain();
 }
 
 void QeViewport::addNewViewport() {
@@ -92,7 +92,7 @@ void QeViewport::addNewViewport() {
 
 	++currentNum;
 
-	VLK->recreateSwapChain();
+	VK->recreateSwapChain();
 }
 
 void QeViewport::setTargetCamera( int index ) {

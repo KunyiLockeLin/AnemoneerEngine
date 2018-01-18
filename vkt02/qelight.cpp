@@ -9,7 +9,8 @@ void QeLight::init(QeAssetXML* _property) {
 	data.param = QeVector4f(0, 1, 1, 1);
 	rotateCenter = QeVector3f(0, 0, 0);
 	speed = 30;
-
+	VK->createUniformBuffer(sizeof(QeDataLight), uboBuffer.buffer, uboBuffer.memory);
+	billboard = nullptr;
 	if (_property == nullptr) return;
 
 	initProperty = _property;
@@ -24,15 +25,6 @@ void QeLight::init(QeAssetXML* _property) {
 	if (c != nullptr)	data.color.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "b");
 	if (c != nullptr)	data.color.z = float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "show");
-	if (c != nullptr && atoi(c) == 1) {
-		billboard = OBJMGR->getBillboard(0);
-		if(billboard->modelData->pMaterial->type == eMaterial)
-			billboard->modelData->pMaterial->value.diffuse = data.color;
-		else if (billboard->modelData->pMaterial->type == eMaterialPBR)
-			billboard->modelData->pMaterial->valuePBR.baseColor = data.color;
-	}
 
 	c = AST->getXMLValue(_property, 1, "posX");
 	if (c != nullptr)	data.pos.x = float(atof(c));
@@ -64,6 +56,9 @@ void QeLight::init(QeAssetXML* _property) {
 	if (c != nullptr)	data.param.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "coneAngle");
 	if (c != nullptr)	data.param.z = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "show");
+	if (c != nullptr && atoi(c) == 1) bShow = true;
 }
 
 void QeLight::update(float time) {
@@ -76,5 +71,20 @@ void QeLight::update(float time) {
 		pos = mat*pos;
 		data.pos = pos + rotateCenter;
 	}
-	if (billboard != nullptr) billboard->pos = data.pos;
+	if (bShow) {
+		if (billboard == nullptr) {
+			billboard = OBJMGR->getBillboard(0);
+			if (billboard->modelData->pMaterial->type == eMaterial) {
+				billboard->modelData->pMaterial->value.diffuse = data.color;
+				VK->setMemory(billboard->modelData->pMaterial->uboBuffer.memory, (void*)&billboard->modelData->pMaterial->value, sizeof(billboard->modelData->pMaterial->value));
+			}
+			else if (billboard->modelData->pMaterial->type == eMaterialPBR) {
+				billboard->modelData->pMaterial->valuePBR.baseColor = data.color;
+				VK->setMemory(billboard->modelData->pMaterial->uboBuffer.memory, (void*)&billboard->modelData->pMaterial->valuePBR, sizeof(billboard->modelData->pMaterial->valuePBR));
+			}
+		}
+		billboard->pos = data.pos;
+	}
+
+	VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data));
 }

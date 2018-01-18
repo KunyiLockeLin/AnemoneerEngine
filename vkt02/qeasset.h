@@ -42,10 +42,8 @@ struct QeAssetModel {
 	std::vector<uint32_t> indices;
 	size_t indexSize;
 
-	VkBuffer vertexBuffer;
-	VkBuffer indexBuffer;
-	VkDeviceMemory vertexBufferMemory;
-	VkDeviceMemory indexBufferMemory;
+	QeVKBuffer vertex;
+	QeVKBuffer index;
 
 	QeAssetMaterial* pMaterial;
 
@@ -78,13 +76,20 @@ struct QeDataMaterialPBR {
 	QeVector4f emissive;
 };
 
+struct QeAssetImage {
+
+	QeVKImageBuffer buffer;
+	VkSampler sampler;
+
+	~QeAssetImage();
+};
+
 struct QeAssetMaterial {
 
 	QeMaterialType type;
 	QeDataMaterial value;
 	QeDataMaterialPBR valuePBR;
-	VkBuffer materialBuffer;
-	VkDeviceMemory materialBufferMemory;
+	QeVKBuffer	uboBuffer;
 	QeAssetImage* pDiffuseMap; // baseColorMap
 	QeAssetShader* pShaderVert;
 	QeAssetShader* pShaderGeom;
@@ -94,22 +99,11 @@ struct QeAssetMaterial {
 	~QeAssetMaterial();
 };
 
-struct QeAssetImage {
-
-	VkImage textureImage;
-	VkDeviceMemory textureImageMemory;
-	VkImageView textureImageView;
-	VkSampler textureSampler;
-
-	~QeAssetImage();
-};
-
 struct QeAssetShader {
 
 	VkShaderModule shader;
 	~QeAssetShader();
 };
-
 
 enum QeAssetType {
 	eAssetModel,

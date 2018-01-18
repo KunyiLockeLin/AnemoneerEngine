@@ -4,7 +4,7 @@
 void QueenEngine::run() {
 	lastTime = std::chrono::high_resolution_clock::now();
 
-	VLK->init();
+	VK->init();
 
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
 	const char* startActivityName = AST->getXMLValue(node, 1, "startActivity");
@@ -29,9 +29,9 @@ void QueenEngine::mainLoop() {
 			
 			currentActivity->update(time);
 			VP->update(time);
-			VLK->update(time);
+			VK->update(time);
 			WIN->update(time);
 		}
 	}
-	VLK->deviceWaitIdle();
+	VK->deviceWaitIdle();
 }

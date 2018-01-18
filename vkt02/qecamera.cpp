@@ -157,18 +157,10 @@ void QeCamera::update(float time) {
 
 	//rotatePos(timec,  QeVector3f(0,0,1) );
 	//rotateTarget(timec, QeVector3f(0, 0, 1));
+	view = MATH->lookAt(pos, target, up);
+	projection = MATH->perspective(fov, faspect, fnear, ffar);
 }
 
 void QeCamera::switchType(QeCameraType _type) {
 	type = _type;
-}
-
-QeMatrix4x4f QeCamera::getMatView() {
-	return MATH->lookAt( pos, target, up );
-}
-
-QeMatrix4x4f QeCamera::getMatProjection() {
-
-	QeMatrix4x4f _proj = MATH->perspective( fov, faspect, fnear, ffar);
-	return _proj;
 }

@@ -2,15 +2,10 @@
 
 
 QeAssetModel::QeAssetModel():pMaterial(nullptr){}
-QeAssetModel::~QeAssetModel() {
-	VLK->destroyBufferMemory(vertexBuffer, vertexBufferMemory);
-	VLK->destroyBufferMemory(indexBuffer, indexBufferMemory);
-	pMaterial = nullptr;
-}
+QeAssetModel::~QeAssetModel() {	pMaterial = nullptr;	}
 
 QeAssetMaterial::QeAssetMaterial(): pDiffuseMap(nullptr), pShaderVert(nullptr), pShaderGeom(nullptr), pShaderFrag(nullptr){}
 QeAssetMaterial::~QeAssetMaterial() {
-	VLK->destroyBufferMemory(materialBuffer, materialBufferMemory);
 	pDiffuseMap = nullptr;
 	pShaderVert = nullptr;
 	pShaderGeom = nullptr;
@@ -18,11 +13,11 @@ QeAssetMaterial::~QeAssetMaterial() {
 }
 
 QeAssetImage::~QeAssetImage() {
-	VLK->destroyImage(textureImage, textureImageMemory, textureImageView, textureSampler);
+	vkDestroySampler(VK->device, sampler, nullptr);
 }
 
 QeAssetShader::~QeAssetShader() {
-	VLK->destroyShaderModule(shader);
+	vkDestroyShaderModule(VK->device, shader, nullptr);
 }
 
 QeAssetXML::~QeAssetXML() {
@@ -641,12 +636,12 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 		break;
 	}
 
-	VLK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertexBuffer, model->vertexBufferMemory);
-	VLK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->indexBuffer, model->indexBufferMemory);
+	VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory);
+	VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory);
 	
 	if (model->pMaterial->type == eMaterialPBR ) {
-		VLK->createUniformBuffer(sizeof(QeDataMaterialPBR), model->pMaterial->materialBuffer, model->pMaterial->materialBufferMemory);
-		VLK->setMemory(model->pMaterial->materialBufferMemory, (void*)&model->pMaterial->valuePBR, sizeof(model->pMaterial->valuePBR));
+		VK->createUniformBuffer(sizeof(QeDataMaterialPBR), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
+		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->valuePBR, sizeof(model->pMaterial->valuePBR));
 		astMaterials[_filePath] = model->pMaterial;
 	}
 	
@@ -665,8 +660,8 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());;
 
-	VLK->createUniformBuffer(sizeof(QeDataMaterial), mtl->materialBuffer, mtl->materialBufferMemory);
-	VLK->setMemory(mtl->materialBufferMemory, (void*)&mtl->value, sizeof(mtl->value));
+	VK->createUniformBuffer(sizeof(QeDataMaterial), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
+	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
 
 	astMaterials[_filePath] = mtl;
 
@@ -712,10 +707,10 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 	if (bytes != 4)	imageFillto32bits(&data, bytes);
 
 	QeAssetImage* image = new QeAssetImage();
-	VLK->createImageData((void*)data.data(), format, data.size(), width, height, image->textureImage, image->textureImageMemory);
-	image->textureImageView = VLK->createImageView(image->textureImage, format, VK_IMAGE_ASPECT_COLOR_BIT);
+	VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, image->buffer.memory);
+	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT);
 
-	image->textureSampler = VLK->createTextureSampler();
+	image->sampler = VK->createTextureSampler();
 	astTextures[_filePath] = image;
 	return image;
 }
@@ -747,7 +742,7 @@ QeAssetShader* QeAsset::getShader(const char* _filename) {
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 
 	QeAssetShader* shader = new QeAssetShader();
-	shader->shader = VLK->createShaderModel((void*)buffer.data(), int(buffer.size()));
+	shader->shader = VK->createShaderModel((void*)buffer.data(), int(buffer.size()));
 	astShaders[_filePath] = shader;
 	return shader;
 }

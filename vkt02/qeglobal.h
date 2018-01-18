@@ -32,7 +32,7 @@ public:
 
 #define GLB		QeGlobal::getInstance()
 #define QE		GLB.engine
-#define VLK		GLB.vulkan
+#define VK		GLB.vulkan
 #define WIN		GLB.window
 #define VP		GLB.viewport
 #define MATH	GLB.math

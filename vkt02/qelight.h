@@ -21,10 +21,13 @@ public:
 	~QeLight() {}
 
 	//size_t id;
+	bool bShow = false;
 	int speed = 0;
 	QeVector3f rotateCenter;
 	QeDataLight data;
 	QeAssetXML* initProperty;
+
+	QeVKBuffer uboBuffer;
 
 	void init(QeAssetXML* _property);
 	void update(float time);
