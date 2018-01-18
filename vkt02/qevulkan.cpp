@@ -41,8 +41,8 @@ void QeVulkan::init() {
 	pickPhysicalDevice();
 	createLogicalDevice();
 	createDescriptorPool();
-	createDescriptorSetLayout( modelDescriptorSetLayout, modelDescriptorSetBufferNumber, modelDescriptorSetTextureNumber);
-	createPipelineLayout(modelPipelineLayout, modelDescriptorSetLayout);
+	modelDescriptorSetLayout = createDescriptorSetLayout( modelDescriptorSetBufferNumber, modelDescriptorSetTextureNumber);
+	modelPipelineLayout = createPipelineLayout( modelDescriptorSetLayout);
 	createCommandPool();
 
 	createSwapChain();
@@ -58,6 +58,7 @@ void QeVulkan::init() {
 void QeVulkan::update(float time) {
 	if (bUpdateDrawCommandBuffers)	updateDrawCommandBuffers();
 	bUpdateDrawCommandBuffers = false;
+	if (bPost) updatePostProcessing();
 	drawFrame();
 }
 
@@ -157,7 +158,7 @@ void QeVulkan::recreateSwapChain() {
 
 	cleanupSwapChain();
 
-	createPipelineLayout(modelPipelineLayout, modelDescriptorSetLayout);
+	modelPipelineLayout = createPipelineLayout( modelDescriptorSetLayout);
 	createSwapChain();
 	createSwapChainImageViews();
 	createRenderPass();
@@ -407,7 +408,7 @@ void QeVulkan::createRenderPass() {
 	}
 }
 
-void QeVulkan::createDescriptorSetLayout(VkDescriptorSetLayout& descriptorSetLayout, int bufNum, int texNum) {
+VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout( int bufNum, int texNum) {
 	
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
 	bindings.resize( bufNum+texNum );
@@ -431,21 +432,25 @@ void QeVulkan::createDescriptorSetLayout(VkDescriptorSetLayout& descriptorSetLay
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 	layoutInfo.pBindings = bindings.data();
 
-	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+	VkDescriptorSetLayout descriptorSetLayout;
+	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
 		throw std::runtime_error("failed to create descriptor set layout!");
-	}
+
+	return descriptorSetLayout;
 }
 
-void QeVulkan::createPipelineLayout(VkPipelineLayout& pipelineLayout, VkDescriptorSetLayout& descriptorSetLayout) {
+VkPipelineLayout QeVulkan::createPipelineLayout( VkDescriptorSetLayout& descriptorSetLayout) {
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;
 	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
-	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+	VkPipelineLayout pipelineLayout;
+	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
 		throw std::runtime_error("failed to create pipeline layout!");
-	}
+
+	return pipelineLayout;
 }
 
 void QeVulkan::createFramebuffers() {
@@ -1062,7 +1067,7 @@ void QeVulkan::createDescriptorPool() {
 		throw std::runtime_error("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest) {
+VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest, VkBool32 bVetex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -1094,14 +1099,22 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	auto bindingDescription = QeVertex::getBindingDescription();
-	auto attributeDescriptions = QeVertex::getAttributeDescriptions();
 
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-
+	if (bVetex) {
+		auto bindingDescription = QeVertex::getBindingDescription();
+		auto attributeDescriptions = QeVertex::getAttributeDescriptions();
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	}
+	else
+	{
+		vertexInputInfo.vertexBindingDescriptionCount = 0;
+		vertexInputInfo.vertexAttributeDescriptionCount = 0;
+		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+	}
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -1114,8 +1127,15 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	//rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
-	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	
+	if (bVetex) {
+		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	}
+	else {
+		rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+	}
 	rasterizer.depthBiasEnable = VK_FALSE;
 
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
@@ -1312,8 +1332,8 @@ void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, V
 
 void QeVulkan::initPostProcessing() {
 	
-	createDescriptorSetLayout(postDescriptorSetLayout, postDescriptorSetBufferNumber, postDescriptorSetTextureNumber);
-	createPipelineLayout(postPipelineLayout, postDescriptorSetLayout);
+	postDescriptorSetLayout = createDescriptorSetLayout( postDescriptorSetBufferNumber, postDescriptorSetTextureNumber);
+	postPipelineLayout = createPipelineLayout( postDescriptorSetLayout);
 
 	postDescriptorSet = createDescriptorSet(postDescriptorSetLayout);
 	postSampler = createTextureSampler();
@@ -1321,7 +1341,7 @@ void QeVulkan::initPostProcessing() {
 	WIN->getWindowSize(width,height);
 	int imageSize = width*height * 4;
 	unsigned char *data = new unsigned char[imageSize];
-	memset( data, 0xFF, imageSize);
+	memset( data, 0xaa, imageSize);
 	VK->createImageData(data, VK_FORMAT_R8G8B8A8_UNORM, imageSize, width, height, colorImage, colorImageMemory);
 	colorImageView = VK->createImageView(colorImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	
@@ -1351,6 +1371,12 @@ void QeVulkan::initPostProcessing() {
 	 updateDescriptorSet(buffers, buffersSize, postDescriptorSetBufferNumber, samplers,
 		imageViews, postDescriptorSetTextureNumber, postDescriptorSet);
 
-	postPipeline = createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader);
+	postPipeline = createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader, FALSE, FALSE, FALSE);
 	bInitPost = true;
+}
+
+void QeVulkan::updatePostProcessing(){
+
+	//VK->setMemory(uboBuffer.memory, (void*)&ubo, sizeof(ubo));
+	//setMemory(  );
 }

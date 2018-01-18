@@ -121,8 +121,8 @@ public:
 	void createSwapChain();
 	void createSwapChainImageViews();
 	void createRenderPass();
-	void createDescriptorSetLayout(VkDescriptorSetLayout& descriptorSetLayout, int bufNum, int texNum);
-	void createPipelineLayout(VkPipelineLayout& pipelineLayout, VkDescriptorSetLayout& descriptorSetLayout);
+	VkDescriptorSetLayout createDescriptorSetLayout( int bufNum, int texNum);
+	VkPipelineLayout createPipelineLayout( VkDescriptorSetLayout& descriptorSetLayout);
 	void createFramebuffers();
 	void createCommandPool();
 	void createDepthResources();
@@ -163,7 +163,7 @@ public:
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE);
+	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE, VkBool32 bVetex = VK_TRUE);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
@@ -173,4 +173,5 @@ public:
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void initPostProcessing();
+	void updatePostProcessing();
 };

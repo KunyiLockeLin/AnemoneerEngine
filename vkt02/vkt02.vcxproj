@@ -190,6 +190,8 @@
     <None Include="..\data\shaders\pbr.geom" />
     <None Include="..\data\shaders\phong.frag" />
     <None Include="..\data\shaders\phong.geom" />
+    <None Include="..\data\shaders\post.frag" />
+    <None Include="..\data\shaders\post.vert" />
     <None Include="..\data\shaders\skeleton.vert" />
   </ItemGroup>
   <ItemGroup>
