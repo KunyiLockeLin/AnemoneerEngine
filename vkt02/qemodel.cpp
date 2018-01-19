@@ -339,3 +339,15 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 		}
 	}
 }
+
+void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->modelPipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+	vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+}

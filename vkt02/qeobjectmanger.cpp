@@ -161,19 +161,18 @@ void QeObjectManger::recreatePipeline() {
 	VK->bUpdateDrawCommandBuffers = true;
 }
 
-std::vector<QeModel*> QeObjectManger::getDrawObject() {
 
-	std::vector<QeModel*> vec;
+void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+	
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		vec.push_back(it->second);
+		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
 	}
 
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
-		vec.push_back(it->second);
+		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
 	}
-	return vec;
 }

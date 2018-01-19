@@ -37,6 +37,6 @@ public:
 	void cleanupPipeline();
 	void recreatePipeline();
 
-	std::vector<QeModel*> getDrawObject();
+	void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 };
 

@@ -1,7 +1,7 @@
 <confing>
   <title>VulkanText</title>
   <engine>QueenEngine</engine>
-  <envir FPS="30" width="1280" height="720" />
+  <envir FPS="30" width="1024" height="600" />
   <path model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   <defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" geom="phongg.spv" frag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" />
   <defaultPostprocessing vert="postv.spv" frag="postf.spv" />

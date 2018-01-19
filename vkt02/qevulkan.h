@@ -158,7 +158,6 @@ public:
 	void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator);
 
 	void drawFrame();
-	void updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model);
 
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 	void createDescriptorPool();

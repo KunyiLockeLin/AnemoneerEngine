@@ -941,7 +941,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 
 	if ( bPost && !bInitPost ) initPostProcessing();
 
-	std::vector<QeModel*> models = OBJMGR->getDrawObject();
+	//std::vector<QeModel*> models = OBJMGR->getDrawObject();
 
 	for (size_t i = 0; i < drawCommandBuffers.size(); i++) {
 		VkCommandBufferBeginInfo beginInfo = {};
@@ -974,12 +974,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 		vkCmdSetScissor(drawCommandBuffers[i], 0, VP->currentNum, VP->scissors.data());
 		vkCmdSetLineWidth(drawCommandBuffers[i], 1.0f);
 
-		std::vector<QeModel*>::iterator it = models.begin();
-
-		while (it != models.end()) {
-			updateDrawCommandBufferModel(drawCommandBuffers[i], **it);
-			++it;
-		}
+		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
 
 		if (bPost) {
 			vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipelineLayout, 0, 1, &postDescriptorSet, 0, nullptr);
@@ -990,18 +985,6 @@ void QeVulkan::updateDrawCommandBuffers() {
 		vkCmdEndRenderPass(drawCommandBuffers[i]);
 		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS)	throw std::runtime_error("failed to record command buffer!");
 	}
-}
-
-void QeVulkan::updateDrawCommandBufferModel(VkCommandBuffer& drawCommandBuffer, QeModel& model) {
-
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, modelPipelineLayout, 0, 1, &model.descriptorSet, 0, nullptr);
-
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &model.modelData->vertex.buffer, offsets);
-	vkCmdBindIndexBuffer(drawCommandBuffer, model.modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model.pipeline);
-	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(model.modelData->indexSize), 1, 0, 0, 0);
-	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 }
 
 VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
