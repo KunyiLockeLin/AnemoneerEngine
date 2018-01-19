@@ -40,6 +40,7 @@
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to different many libraries
+  - debug
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
