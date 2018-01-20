@@ -13,11 +13,10 @@
     
 # Feature:
   - Comptuer Graphics's power is by Vulkan. VulkanSDK is a only third party llibrary.
-  - Support mutli-viewports.
+  - Support mutli-viewports, post processing.
   - Support simple light and camera control.
   - Support vertex, geometry, and fragment shader.
   - Support Phong shading and PBR(Physically-Based Rendering)
-  - Support post processing
   - Support diffuse/baseColor map.
   - Support skeletal animation(Only for gltf) and attach obj.
   - For model  - obj, mtl, gltf.
@@ -28,13 +27,13 @@
   
 # ToDoList:
   - HDR
+  - mirror
   - bounding Box
   - collision
   - Terrian system
   - Dynamic Decals
-  - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
+  - normal map, specular map, cube map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
-  - reflection and cube map
   - mix animation
   - frustum Culling
   - room
