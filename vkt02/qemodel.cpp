@@ -148,7 +148,7 @@ void QeModel::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "shadergeom");
 	if (c == nullptr) {
 		if (modelData->pMaterial->type == eMaterialPhong)
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom");
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phonggeom");
 		else if (modelData->pMaterial->type == eMaterialPBR) 
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
 		
@@ -159,7 +159,7 @@ void QeModel::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
 		if (modelData->pMaterial->type == eMaterialPhong)
-			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
+			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phongfrag");
 		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");
 		}
