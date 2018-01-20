@@ -17,6 +17,7 @@
   - Support simple light and camera control.
   - Support vertex, geometry, and fragment shader.
   - Support Phong shading and PBR(Physically-Based Rendering)
+  - Support post processing
   - Support diffuse/baseColor map.
   - Support skeletal animation(Only for gltf) and attach obj.
   - For model  - obj, mtl, gltf.
@@ -26,7 +27,6 @@
   - Math library.
   
 # ToDoList:
-  - post processing shader
   - HDR
   - bounding Box
   - collision
