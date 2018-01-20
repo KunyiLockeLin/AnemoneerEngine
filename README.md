@@ -46,6 +46,7 @@
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
   - https://renderdoc.org/vulkan-in-30-minutes.html
   - https://vulkan-tutorial.com/
+  - https://github.com/PacktPublishing/Vulkan-Cookbook
   - https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
