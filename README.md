@@ -13,7 +13,7 @@
     
 # Feature:
   - Comptuer Graphics's power is by Vulkan. VulkanSDK is a only third party llibrary.
-  - Support mutli-viewports, post processing.
+  - Support mutli-viewports, post-processing.
   - Support simple light and camera control.
   - Support vertex, geometry, and fragment shader.
   - Support Phong shading and PBR(Physically-Based Rendering)
