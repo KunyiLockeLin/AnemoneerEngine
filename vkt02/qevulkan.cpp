@@ -49,6 +49,15 @@ void QeVulkan::init() {
 	createSwapChainImageViews();
 	createRenderPass();
 	createDepthResources();
+
+	int width, height;
+	WIN->getWindowSize(width,height);
+	int imageSize = width*height * 4;
+	unsigned char *data = new unsigned char[imageSize];
+	memset( data, 0xaa, imageSize); 
+	createImageData(data, VK_FORMAT_B8G8R8A8_UNORM, imageSize, width, height, colorImage, colorImageMemory);
+	colorImageView = createImageView(colorImage, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+
 	createFramebuffers();
 	createSemaphores();
 	createDrawCommandBuffers();
@@ -58,7 +67,7 @@ void QeVulkan::init() {
 void QeVulkan::update(float time) {
 	if (bUpdateDrawCommandBuffers)	updateDrawCommandBuffers();
 	bUpdateDrawCommandBuffers = false;
-	if (bPost) updatePostProcessing();
+
 	drawFrame();
 }
 
@@ -108,9 +117,8 @@ void QeVulkan::drawFrame() {
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
 		throw std::runtime_error("failed to submit draw command buffer!");
-	}
 
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -125,11 +133,9 @@ void QeVulkan::drawFrame() {
 
 	result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
-		recreateSwapChain();
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)	recreateSwapChain();
 
-	else if (result != VK_SUCCESS)
-		throw std::runtime_error("failed to present swap chain image!");
+	else if (result != VK_SUCCESS)	throw std::runtime_error("failed to present swap chain image!");
 
 	vkQueueWaitIdle(presentQueue);
 }
@@ -311,7 +317,7 @@ void QeVulkan::createSwapChain() {
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
 	createInfo.imageExtent = extent;
 	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT| VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 
 	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 	uint32_t queueFamilyIndices[] = { (uint32_t)indices.graphicsFamily, (uint32_t)indices.presentFamily };
@@ -351,17 +357,32 @@ void QeVulkan::createSwapChainImageViews() {
 }
 
 void QeVulkan::createRenderPass() {
-	VkAttachmentDescription colorAttachment = {};
-	colorAttachment.format = swapChainImageFormat;
-	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	VkAttachmentDescription colorAttachment1 = {};
+	//colorAttachment1.flags = 0;
+	colorAttachment1.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+	colorAttachment1.format = swapChainImageFormat;
+	colorAttachment1.samples = VK_SAMPLE_COUNT_1_BIT;
+	colorAttachment1.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	colorAttachment1.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	colorAttachment1.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	colorAttachment1.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	colorAttachment1.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	colorAttachment1.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+	VkAttachmentDescription colorAttachment2 = {};
+	//colorAttachment2.flags = 0;
+	colorAttachment2.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+	colorAttachment2.format = swapChainImageFormat;
+	colorAttachment2.samples = VK_SAMPLE_COUNT_1_BIT;
+	colorAttachment2.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	colorAttachment2.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	colorAttachment2.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	colorAttachment2.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	colorAttachment2.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	colorAttachment2.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 	VkAttachmentDescription depthAttachment = {};
+	//depthAttachment.flags = 0;
 	depthAttachment.format = findDepthFormat();
 	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -371,35 +392,55 @@ void QeVulkan::createRenderPass() {
 	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	VkAttachmentReference colorAttachmentRef = {};
-	colorAttachmentRef.attachment = 0;
-	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	VkAttachmentReference colorAttachmentRef1 = {};
+	colorAttachmentRef1.attachment = 0;
+	colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 	VkAttachmentReference depthAttachmentRef = {};
 	depthAttachmentRef.attachment = 1;
 	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	VkSubpassDescription subpass = {};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
-	subpass.pDepthStencilAttachment = &depthAttachmentRef;
+	VkAttachmentReference inputAttachmentRef = {};
+	inputAttachmentRef.attachment = 0;
+	inputAttachmentRef.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+	VkAttachmentReference colorAttachmentRef2 = {};
+	colorAttachmentRef2.attachment = 2;
+	colorAttachmentRef2.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+	VkSubpassDescription subpass1 = {};
+	subpass1.flags = 0;
+	subpass1.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass1.colorAttachmentCount = 1;
+	subpass1.pColorAttachments = &colorAttachmentRef1;
+	subpass1.pDepthStencilAttachment = &depthAttachmentRef;
+	
+	VkSubpassDescription subpass2 = {};
+	subpass2.flags = 0;
+	subpass2.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass2.inputAttachmentCount = 1;
+	subpass2.pInputAttachments = &inputAttachmentRef;
+	subpass2.colorAttachmentCount = 1;
+	subpass2.pColorAttachments = &colorAttachmentRef2;
 
 	VkSubpassDependency dependency = {};
-	dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-	dependency.dstSubpass = 0;
+	dependency.srcSubpass = 0;
+	dependency.dstSubpass = 1;
 	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.srcAccessMask = 0;
-	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	dependency.dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+	dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+	dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 
-	std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+	std::array<VkAttachmentDescription, 3> attachments = { colorAttachment1, depthAttachment, colorAttachment2 };
+	std::array<VkSubpassDescription, 2> subpasses = { subpass1, subpass2 };
+
 	VkRenderPassCreateInfo renderPassInfo = {};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 	renderPassInfo.pAttachments = attachments.data();
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
+	renderPassInfo.subpassCount = static_cast<uint32_t>(subpasses.size());;
+	renderPassInfo.pSubpasses = subpasses.data();
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
@@ -411,7 +452,7 @@ void QeVulkan::createRenderPass() {
 VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout( int bufNum, int texNum) {
 	
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
-	bindings.resize( bufNum+texNum );
+	bindings.resize( bufNum+texNum +1);
 
 	for (int i = 0; i<bufNum;++i ) {
 		bindings[i].binding = i;
@@ -427,6 +468,13 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout( int bufNum, int texNu
 		bindings[bufNum + i].pImmutableSamplers = nullptr;
 		bindings[bufNum + i].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	}
+
+	bindings[bufNum + texNum].binding = bufNum + texNum;
+	bindings[bufNum + texNum].descriptorCount = 1;
+	bindings[bufNum + texNum].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+	bindings[bufNum + texNum].pImmutableSamplers = nullptr;
+	bindings[bufNum + texNum].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -457,9 +505,11 @@ void QeVulkan::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-		std::array<VkImageView, 2> attachments = {
-			swapChainImageViews[i],
-			depthImageView
+		std::array<VkImageView, 3> attachments = {
+			//swapChainImageViews[i],
+			colorImageView,
+			depthImageView,
+			swapChainImageViews[i]
 		};
 
 		VkFramebufferCreateInfo framebufferInfo = {};
@@ -628,9 +678,7 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 	}
 	else	throw std::invalid_argument("unsupported layout transition!");
 
-	vkCmdPipelineBarrier(commandBuffer,
-		sourceStage, destinationStage,
-		0, 0, nullptr, 0, nullptr, 1, &barrier );
+	vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier );
 
 	endSingleTimeCommands(commandBuffer);
 }
@@ -941,8 +989,6 @@ void QeVulkan::updateDrawCommandBuffers() {
 
 	if ( bPost && !bInitPost ) initPostProcessing();
 
-	//std::vector<QeModel*> models = OBJMGR->getDrawObject();
-
 	for (size_t i = 0; i < drawCommandBuffers.size(); i++) {
 		VkCommandBufferBeginInfo beginInfo = {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -951,11 +997,15 @@ void QeVulkan::updateDrawCommandBuffers() {
 
 		vkBeginCommandBuffer(drawCommandBuffers[i], &beginInfo);
 		//vkResetCommandBuffer(drawCommandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
-		std::array<VkClearValue, 2> clearValues = {};
-		if(QE->currentActivity!= nullptr)		
+		std::array<VkClearValue, 3> clearValues = {};
+		if (QE->currentActivity != nullptr) {
 			clearValues[0].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
-		else
+			clearValues[2].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
+		}
+		else {
 			clearValues[0].color = { 0, 0.5f, 0.5f, 1.0f };
+			clearValues[2].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
+		}
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassInfo = {};
@@ -976,6 +1026,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 
 		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
 
+		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
 		if (bPost) {
 			vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipelineLayout, 0, 1, &postDescriptorSet, 0, nullptr);
 			vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postPipeline);
@@ -1030,11 +1081,13 @@ void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) 
 
 
 void QeVulkan::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 2> poolSizes = {};
+	std::array<VkDescriptorPoolSize, 3> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = MAX_DESCRIPTOR_UNIFORM_NUM;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	poolSizes[1].descriptorCount = MAX_DESCRIPTOR_SAMPLER_NUM;
+	poolSizes[2].type = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+	poolSizes[2].descriptorCount = MAX_DESCRIPTOR_SAMPLER_NUM;
 	//poolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	//poolSizes[2].descriptorCount = 1000;
 	//poolSizes[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -1050,7 +1103,7 @@ void QeVulkan::createDescriptorPool() {
 		throw std::runtime_error("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest, VkBool32 bVetex) {
+VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest, VkBool32 bVetex, uint8_t subpassIndex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -1192,7 +1245,7 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = modelPipelineLayout;
 	pipelineInfo.renderPass = renderPass;
-	pipelineInfo.subpass = 0;
+	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 	VkPipeline graphicsPipeline;
@@ -1290,7 +1343,7 @@ void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSi
 
 	setMemory(staging.memory, data, imageSize);
 	
-	createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, imageMemory);
+	createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, imageMemory);
 
 	transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	copyBufferToImage(staging.buffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
@@ -1320,46 +1373,59 @@ void QeVulkan::initPostProcessing() {
 
 	postDescriptorSet = createDescriptorSet(postDescriptorSetLayout);
 	postSampler = createTextureSampler();
-	int width, height;
-	WIN->getWindowSize(width,height);
-	int imageSize = width*height * 4;
-	unsigned char *data = new unsigned char[imageSize];
-	memset( data, 0xaa, imageSize);
-	VK->createImageData(data, VK_FORMAT_R8G8B8A8_UNORM, imageSize, width, height, colorImage, colorImageMemory);
-	colorImageView = VK->createImageView(colorImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	
 	/////
-	VkBuffer buffers[3];
-	int buffersSize[3];
-	VkSampler samplers[1];
-	VkImageView imageViews[1];
+	//VkBuffer buffers[3];
+	//int buffersSize[3];
+	//VkSampler samplers[1];
+	//VkImageView imageViews[1];
 
-	QeModel* model = OBJMGR->getModel(1, nullptr);
-	buffers[0] = model->uboBuffer.buffer;
-	buffersSize[0] = sizeof(QeUniformBufferObject);
+	//QeModel* model = OBJMGR->getModel(1, nullptr);
+	//buffers[0] = model->uboBuffer.buffer;
+	//buffersSize[0] = sizeof(QeUniformBufferObject);
 
-	QeLight* light = OBJMGR->getLight(0, nullptr);
+	//QeLight* light = OBJMGR->getLight(0, nullptr);
 
-	buffers[1] = light->uboBuffer.buffer;
-	buffersSize[1] = sizeof(QeDataLight);
-	buffers[2] = model->modelData->pMaterial->uboBuffer.buffer;
+	//buffers[1] = light->uboBuffer.buffer;
+	//buffersSize[1] = sizeof(QeDataLight);
+	//buffers[2] = model->modelData->pMaterial->uboBuffer.buffer;
 	//samplers[0] = model->modelData->pMaterial->pDiffuseMap->sampler;
 	//imageViews[0] = modelData->pMaterial->pDiffuseMap->buffer.view;
-	samplers[0] = postSampler;
-	imageViews[0] = colorImageView;
-	if (model->modelData->pMaterial->type == eMaterial)			buffersSize[2] = sizeof(QeDataMaterial);
-	else if (model->modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
+	//samplers[0] = postSampler;
+	//imageViews[0] = colorImageView;
+	//imageViews[0] = swapChainImageViews[1];
+
+	//if (model->modelData->pMaterial->type == eMaterial)			buffersSize[2] = sizeof(QeDataMaterial);
+	//else if (model->modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
 	////
 
-	 updateDescriptorSet(buffers, buffersSize, postDescriptorSetBufferNumber, samplers,
-		imageViews, postDescriptorSetTextureNumber, postDescriptorSet);
+	 //updateDescriptorSet(buffers, buffersSize, postDescriptorSetBufferNumber, samplers,
+	//	imageViews, postDescriptorSetTextureNumber, postDescriptorSet);
 
-	postPipeline = createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader, FALSE, FALSE, FALSE);
+	int bufferNum = 0;
+	int texNum = 1;
+
+	std::vector<VkWriteDescriptorSet> descriptorWrites;
+	descriptorWrites.resize(bufferNum+texNum);
+	std::vector<VkDescriptorImageInfo> imgInfos;
+	imgInfos.resize(texNum);
+
+	for (int i = 0; i < texNum; ++i) {
+
+		imgInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imgInfos[i].sampler = VK_NULL_HANDLE;
+		imgInfos[i].imageView = colorImageView;
+		
+		descriptorWrites[bufferNum + i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[bufferNum + i].dstSet = postDescriptorSet;
+		descriptorWrites[bufferNum + i].dstBinding = 4;
+		descriptorWrites[bufferNum + i].dstArrayElement = 0;
+		descriptorWrites[bufferNum + i].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+		descriptorWrites[bufferNum + i].descriptorCount = 1;
+		descriptorWrites[bufferNum + i].pImageInfo = &imgInfos[i];
+	}
+	vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+	postPipeline = createPipeline(&pPostVert->shader, &pPostGeom->shader, &pPostFrag->shader, FALSE, FALSE, FALSE, 1);
 	bInitPost = true;
-}
-
-void QeVulkan::updatePostProcessing(){
-
-	//VK->setMemory(uboBuffer.memory, (void*)&ubo, sizeof(ubo));
-	//setMemory(  );
 }

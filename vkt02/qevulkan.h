@@ -162,7 +162,7 @@ public:
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE, VkBool32 bVetex = VK_TRUE);
+	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE, VkBool32 bVetex = VK_TRUE, uint8_t subpassIndex = 0);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
@@ -172,5 +172,4 @@ public:
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void initPostProcessing();
-	void updatePostProcessing();
 };
