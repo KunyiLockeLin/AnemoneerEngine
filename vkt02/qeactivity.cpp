@@ -32,16 +32,17 @@ void QeActivity::init(QeAssetXML* _property) {
 	node = AST->getXMLNode(_property, 1, "postShader");
 	if (node == nullptr || node->eKeys.size() == 0) node = AST->getXMLNode(2, AST->CONFIG, "defaultPostprocessing");
 	if (node != nullptr && node->eKeys.size() > 0) {
-		VK->bPost = true;
-		VK->bUpdateDrawCommandBuffers = true;
+
 		c = AST->getXMLValue(node, 1, "vert");
-		if (c != nullptr) VK->pPostVert = AST->getShader(c);
+		if (c != nullptr) VK->pPostProcessingVert = AST->getShader(c);
 		c = AST->getXMLValue(node, 1, "geom");
-		if (c != nullptr) VK->pPostGeom = AST->getShader(c);
+		if (c != nullptr) VK->pPostProcessingGeom = AST->getShader(c);
 		c = AST->getXMLValue(node, 1, "frag");
-		if (c != nullptr) VK->pPostFrag = AST->getShader(c);
+		if (c != nullptr) VK->pPostProcessingFrag = AST->getShader(c);
 	}
-	else VK->bPost = false;
+
+	VK->initPostProcessing();
+	VK->bUpdateDrawCommandBuffers = true;
 }
 
 void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {

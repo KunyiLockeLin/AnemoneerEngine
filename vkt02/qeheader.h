@@ -32,12 +32,13 @@
 #define KEY_W 0x57
 
 //	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
-const int MAX_VIEWPORT_NUM = 9;
-const int MAX_JOINT_NUM = 20;
+const uint8_t MAX_VIEWPORT_NUM = 9;
+const uint8_t MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
-const int MAX_DESCRIPTOR_UNIFORM_NUM = 500;
-const int MAX_DESCRIPTOR_SAMPLER_NUM = 500;
-const int MAX_DESCRIPTOR_NUM = 100;
+const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = 512;
+const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = 512;
+const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = 64;
+const uint16_t MAX_DESCRIPTOR_NUM = 128;
 
 struct QeVKBuffer;
 struct QeVKImageBuffer;

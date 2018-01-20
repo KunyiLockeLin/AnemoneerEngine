@@ -18,21 +18,39 @@ struct SwapChainSupportDetails {
 };
 
 struct QeVKBuffer {
-	VkBuffer buffer;
-	VkDeviceMemory memory;
+	VkBuffer buffer = VK_NULL_HANDLE;
+	VkDeviceMemory memory = VK_NULL_HANDLE;
 
 	~QeVKBuffer();
 };
 
 struct QeVKImageBuffer {
 
-	VkImage image;
-	VkDeviceMemory memory;
-	VkImageView view;
+	VkImage image = VK_NULL_HANDLE;
+	VkDeviceMemory memory = VK_NULL_HANDLE;
+	VkImageView view = VK_NULL_HANDLE;
 
 	~QeVKImageBuffer();
 };
 
+
+struct QeDataDescriptorSet {
+
+	// descriptorSetBufferNumber
+	VkBuffer	uboBuffer = VK_NULL_HANDLE;
+	uint64_t	uboSize = 0;
+	VkBuffer	lightBuffer = VK_NULL_HANDLE;
+	uint64_t	lightSize = 0;
+	VkBuffer	materialBuffer = VK_NULL_HANDLE;
+	uint64_t	materialSize = 0;
+
+	// descriptorSetImageNumber
+	VkImageView diffuseMapImageViews = VK_NULL_HANDLE;
+	VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
+
+	// descriptorSetInputAttachmentNumber
+	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
+};
 
 class QeVulkan
 {
@@ -74,15 +92,11 @@ public:
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
-	VkImage depthImage;
-	VkDeviceMemory depthImageMemory;
-	VkImageView depthImageView;
-	VkImage colorImage;
-	VkDeviceMemory colorImageMemory;
-	VkImageView colorImageView;
+
+	QeVKImageBuffer depthImage;
+	QeVKImageBuffer sceneImage;
 
 	VkCommandPool commandPool;
-
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
@@ -93,22 +107,18 @@ public:
 	VkDescriptorPool descriptorPool;
 	VkRenderPass renderPass;
 
-	const int modelDescriptorSetBufferNumber = 3;
-	const int modelDescriptorSetTextureNumber = 1;
-	VkDescriptorSetLayout modelDescriptorSetLayout;
-	VkPipelineLayout modelPipelineLayout;
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkPipelineLayout pipelineLayout;
 
-	bool bPost = false, bInitPost = false;
-	const int postDescriptorSetBufferNumber = 3;
-	const int postDescriptorSetTextureNumber = 1;
-	VkDescriptorSetLayout postDescriptorSetLayout;
-	VkDescriptorSet postDescriptorSet;
-	VkPipelineLayout postPipelineLayout;
-	VkPipeline postPipeline;
-	VkSampler postSampler;
-	QeAssetShader* pPostVert = nullptr;
-	QeAssetShader* pPostGeom = nullptr;
-	QeAssetShader* pPostFrag = nullptr;
+	const uint8_t descriptorSetBufferNumber = 3;
+	const uint8_t descriptorSetImageNumber = 1;
+	const uint8_t descriptorSetInputAttachmentNumber = 1;
+
+	VkDescriptorSet postprocessingDescriptorSet;
+	VkPipeline		postprocessingPipeline;
+	QeAssetShader*	pPostProcessingVert = nullptr;
+	QeAssetShader*	pPostProcessingGeom = nullptr;
+	QeAssetShader*	pPostProcessingFrag = nullptr;
 
 	void cleanupSwapChain();
 
@@ -121,11 +131,11 @@ public:
 	void createSwapChain();
 	void createSwapChainImageViews();
 	void createRenderPass();
-	VkDescriptorSetLayout createDescriptorSetLayout( int bufNum, int texNum);
+	VkDescriptorSetLayout createDescriptorSetLayout();
 	VkPipelineLayout createPipelineLayout( VkDescriptorSetLayout& descriptorSetLayout);
 	void createFramebuffers();
 	void createCommandPool();
-	void createDepthResources();
+	void createSceneDepthImage();
 	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
@@ -164,7 +174,7 @@ public:
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
 	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE, VkBool32 bVetex = VK_TRUE, uint8_t subpassIndex = 0);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
-	void updateDescriptorSet(VkBuffer* buffers, int* buffersSize, int bufferNum, VkSampler* samplers, VkImageView* imageViews, int texNum, VkDescriptorSet& descriptorSet);
+	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
 	VkSampler createTextureSampler();
 

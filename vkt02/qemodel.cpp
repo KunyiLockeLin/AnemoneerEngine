@@ -107,31 +107,26 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
-	descriptorSet = VK->createDescriptorSet(VK->modelDescriptorSetLayout);
+	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 	//createDescriptorBuffer();
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
 
-	VkBuffer buffers[3];
-	int buffersSize[3];
-	VkSampler samplers[1];
-	VkImageView imageViews[1];
+	QeDataDescriptorSet data;
 
-	buffers[0] = uboBuffer.buffer;
-	buffersSize[0] = sizeof(QeUniformBufferObject);
-
+	data.uboBuffer = uboBuffer.buffer;
+	data.uboSize = sizeof(QeUniformBufferObject);
 	QeLight* light = OBJMGR->getLight(0, nullptr);
+	data.lightBuffer = light->uboBuffer.buffer;
+	data.lightSize = sizeof(QeDataLight);
 
-	buffers[1] = light->uboBuffer.buffer;
-	buffersSize[1] = sizeof(QeDataLight);
-	buffers[2] = modelData->pMaterial->uboBuffer.buffer;
-	samplers[0] = modelData->pMaterial->pDiffuseMap->sampler;
-	imageViews[0] = modelData->pMaterial->pDiffuseMap->buffer.view;
+	data.materialBuffer = modelData->pMaterial->uboBuffer.buffer;
+	if (modelData->pMaterial->type == eMaterial)			data.materialSize = sizeof(QeDataMaterial);
+	else if (modelData->pMaterial->type == eMaterialPBR)	data.materialSize = sizeof(QeDataMaterialPBR);
 
-	if (modelData->pMaterial->type == eMaterial)		buffersSize[2] = sizeof(QeDataMaterial);
-	else if (modelData->pMaterial->type == eMaterialPBR)	buffersSize[2] = sizeof(QeDataMaterialPBR);
+	data.diffuseMapImageViews = modelData->pMaterial->pDiffuseMap->buffer.view;
+	data.diffueMapSamplers = modelData->pMaterial->pDiffuseMap->sampler;
 
-	VK->updateDescriptorSet(buffers, buffersSize, VK->modelDescriptorSetBufferNumber, 
-		samplers, imageViews, VK->modelDescriptorSetTextureNumber, descriptorSet);
+	VK->updateDescriptorSet(data, descriptorSet);
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;
@@ -342,7 +337,7 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 
 void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->modelPipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
