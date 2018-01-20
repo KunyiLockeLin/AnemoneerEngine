@@ -625,15 +625,17 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	pMaterial->pDiffuseMap = AST->getImage(baseColorTexturePath);
 
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
-	if (baseColorJ != nullptr) {
-		pMaterial->valuePBR.baseColor.x = float(atof((*baseColorJ)[0].c_str()));
-		pMaterial->valuePBR.baseColor.y = float(atof((*baseColorJ)[1].c_str()));
-		pMaterial->valuePBR.baseColor.z = float(atof((*baseColorJ)[2].c_str()));
-		pMaterial->valuePBR.baseColor.w = float(atof((*baseColorJ)[3].c_str()));
-	}
-	pMaterial->valuePBR.metallicRoughness.x = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor")));
-	pMaterial->valuePBR.metallicRoughness.y = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor")));
+	QeDataMaterialPBR mtl;
 
+	if (baseColorJ != nullptr) {
+		mtl.baseColor.x = float(atof((*baseColorJ)[0].c_str()));
+		mtl.baseColor.y = float(atof((*baseColorJ)[1].c_str()));
+		mtl.baseColor.z = float(atof((*baseColorJ)[2].c_str()));
+		mtl.baseColor.w = float(atof((*baseColorJ)[3].c_str()));
+	}
+	mtl.metallicRoughness.x = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor")));
+	mtl.metallicRoughness.y = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor")));
+	pMaterial->value.pbr = mtl;
 
 	return model;
 }
@@ -643,8 +645,8 @@ QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
 QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 
 	QeAssetMaterial* mtl = new QeAssetMaterial();
-	mtl->type = eMaterial;
-	QeDataMaterial mtl1;
+	mtl->type = eMaterialPhong;
+	QeDataMaterialPhong mtl1;
 	mtl1.ambient.w = 1;
 	mtl1.diffuse.w = 1;
 	mtl1.specular.w = 1;
@@ -667,7 +669,7 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 		line = strtok_s(NULL, "\n", &context);
 	}
 
-	mtl->value = mtl1;
+	mtl->value.phong = mtl1;
 	if (strlen(diffuseMapPath) != 0)	mtl->pDiffuseMap = AST->getImage(diffuseMapPath);
 
 	return mtl;

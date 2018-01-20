@@ -10,7 +10,7 @@ layout (location = 0) out vec4 outColor;
 void main() 
 {
 	outColor = subpassLoad(inputAttachment);
-	outColor.r = (outColor.r+outColor.g +outColor.b)/3; 
-	outColor.g = outColor.r;
-	outColor.b = outColor.r; 
+	//outColor.r = (outColor.r+outColor.g +outColor.b)/3; 
+	//outColor.g = outColor.r;
+	//outColor.b = outColor.r; 
 }

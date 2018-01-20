@@ -58,11 +58,11 @@ struct QeAssetModel {
 };
 
 enum QeMaterialType {
-	eMaterial,
+	eMaterialPhong,
 	eMaterialPBR,
 };
 
-struct QeDataMaterial {
+struct QeDataMaterialPhong {
 	QeVector4f diffuse;
 	QeVector4f ambient;
 	QeVector4f specular;
@@ -76,6 +76,13 @@ struct QeDataMaterialPBR {
 	QeVector4f emissive;
 };
 
+struct QeDataMaterial {
+	union{
+		QeDataMaterialPhong phong;
+		QeDataMaterialPBR pbr;
+	};
+};
+
 struct QeAssetImage {
 
 	QeVKImageBuffer buffer;
@@ -87,8 +94,13 @@ struct QeAssetImage {
 struct QeAssetMaterial {
 
 	QeMaterialType type;
-	QeDataMaterial value;
-	QeDataMaterialPBR valuePBR;
+	
+	union QeDataMaterial {
+		QeDataMaterialPhong phong;
+		QeDataMaterialPBR pbr;
+		QeDataMaterial() {}
+	}value;
+
 	QeVKBuffer	uboBuffer;
 	QeAssetImage* pDiffuseMap; // baseColorMap
 	QeAssetShader* pShaderVert;

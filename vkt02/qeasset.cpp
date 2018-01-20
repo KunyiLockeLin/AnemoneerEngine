@@ -640,8 +640,8 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 	VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory);
 	
 	if (model->pMaterial->type == eMaterialPBR ) {
-		VK->createUniformBuffer(sizeof(QeDataMaterialPBR), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
-		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->valuePBR, sizeof(model->pMaterial->valuePBR));
+		VK->createUniformBuffer(sizeof(model->pMaterial->value), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
+		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value));
 		astMaterials[_filePath] = model->pMaterial;
 	}
 	
@@ -660,7 +660,7 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());;
 
-	VK->createUniformBuffer(sizeof(QeDataMaterial), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
+	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
 	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
 
 	astMaterials[_filePath] = mtl;

@@ -27,6 +27,12 @@ QeVKImageBuffer::~QeVKImageBuffer(){
 	}
 }
 
+QeDataDescriptorSet::QeDataDescriptorSet() {
+	uboSize = sizeof(QeUniformBufferObject);
+	lightSize = sizeof(QeDataLight);
+	materialSize = sizeof(QeDataMaterial);
+}
+
  QeVulkan::~QeVulkan() {
 	cleanupSwapChain();
 	vkDestroySurfaceKHR(instance, WIN->surface, nullptr);

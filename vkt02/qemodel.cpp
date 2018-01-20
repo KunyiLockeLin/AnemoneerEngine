@@ -114,15 +114,9 @@ void QeModel::init(QeAssetXML* _property) {
 	QeDataDescriptorSet data;
 
 	data.uboBuffer = uboBuffer.buffer;
-	data.uboSize = sizeof(QeUniformBufferObject);
 	QeLight* light = OBJMGR->getLight(0, nullptr);
 	data.lightBuffer = light->uboBuffer.buffer;
-	data.lightSize = sizeof(QeDataLight);
-
 	data.materialBuffer = modelData->pMaterial->uboBuffer.buffer;
-	if (modelData->pMaterial->type == eMaterial)			data.materialSize = sizeof(QeDataMaterial);
-	else if (modelData->pMaterial->type == eMaterialPBR)	data.materialSize = sizeof(QeDataMaterialPBR);
-
 	data.diffuseMapImageViews = modelData->pMaterial->pDiffuseMap->buffer.view;
 	data.diffueMapSamplers = modelData->pMaterial->pDiffuseMap->sampler;
 
@@ -153,7 +147,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shadergeom");
 	if (c == nullptr) {
-		if (modelData->pMaterial->type == eMaterial)
+		if (modelData->pMaterial->type == eMaterialPhong)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "geom");
 		else if (modelData->pMaterial->type == eMaterialPBR) 
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
@@ -164,7 +158,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
-		if (modelData->pMaterial->type == eMaterial)
+		if (modelData->pMaterial->type == eMaterialPhong)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
 		else if (modelData->pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");

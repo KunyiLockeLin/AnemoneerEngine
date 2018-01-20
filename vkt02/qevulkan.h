@@ -50,6 +50,8 @@ struct QeDataDescriptorSet {
 
 	// descriptorSetInputAttachmentNumber
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
+
+	QeDataDescriptorSet();
 };
 
 class QeVulkan
