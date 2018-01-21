@@ -20,6 +20,7 @@
   - Support Phong shading and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map.
   - Support skeletal animation(Only for gltf), attach obj and billboards.
+  - Support Log output.
   - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
@@ -41,7 +42,6 @@
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to different many libraries
-  - debug tool
  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
