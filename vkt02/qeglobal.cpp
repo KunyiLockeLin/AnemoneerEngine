@@ -1,11 +1,34 @@
 #include "qeheader.h"
 
 
-QeGlobal::QeGlobal():engine( new QueenEngine(key) ), window(new QeWindow(key)), viewport(new QeViewport(key)), 
-vulkan(new QeVulkan(key)), math( new QeMath(key) ), asset( new QeAsset(key) ), objMgr(new QeObjectManger(key)), 
-encode(new QeEncode(key)) {}
+QeGlobal::QeGlobal() { init(); }
+
+void QeGlobal::init() {
+	if (engine == nullptr)		engine = new QueenEngine(key);
+	if (window == nullptr)		window = new QeWindow(key);
+	if (viewport == nullptr)	viewport = new QeViewport(key);
+	if (vulkan == nullptr)		vulkan = new QeVulkan(key);
+	if (math == nullptr)		math = new QeMath(key);
+	if (asset == nullptr)		asset = new QeAsset(key);
+	if (objMgr == nullptr)		objMgr = new QeObjectManger(key);
+	if (encode == nullptr)		encode = new QeEncode(key);
+}
 
 QeGlobal::~QeGlobal() {
+	
+	cleanup();
+	if (vulkan != nullptr) {
+		delete vulkan;
+		vulkan = nullptr;
+	}
+	if (window != nullptr) {
+		delete window;
+		window = nullptr;
+	}
+}
+
+void QeGlobal::cleanup() {
+
 	if (math != nullptr) {
 		delete math;
 		math = nullptr;
@@ -26,14 +49,6 @@ QeGlobal::~QeGlobal() {
 		delete objMgr;
 		objMgr = nullptr;
 	}
-	if (vulkan != nullptr) {
-		delete vulkan;
-		vulkan = nullptr;
-	}
-	if (window != nullptr) {
-		delete window;
-		window = nullptr;
-	}
 	if (engine != nullptr) {
 		delete engine;
 		engine = nullptr;
@@ -41,3 +56,5 @@ QeGlobal::~QeGlobal() {
 }
 
 QeGlobal& QeGlobal::getInstance() { static QeGlobal _s; return _s; }
+
+void QeGlobal::restart() { cleanup(); init(); WIN->resize(); }

@@ -1,9 +1,6 @@
 #include "qeheader.h"
 
 
-bool QeWindow::isWinodowShouldClose() {
-	return bClosed;
-}
 
 void QeWindow::getWindowSize(int& width, int& height) {
 
@@ -13,21 +10,32 @@ void QeWindow::getWindowSize(int& width, int& height) {
 	height = rect.bottom - rect.top;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
+
 	WIN->handleMessages(hWnd, uMsg, wParam, lParam);
 	return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
+void QeWindow::resize() {
+	RECT windowRect;
+	windowRect.right = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "width"));
+	windowRect.bottom = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "height"));
+	windowRect.left = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right) / 2;
+	windowRect.top = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom) / 2;;
+
+	SetWindowPos(window, 0, windowRect.left, windowRect.top, windowRect.right- windowRect.left, windowRect.bottom- windowRect.top, SWP_NOZORDER );
+	VK->bRecreateRender = true;
+}
+
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	int a = 0;
 	switch (uMsg) {
 	case WM_CLOSE:
-		bClosed = true;
+		QE->bClosed = true;
 		break;
 	case WM_EXITSIZEMOVE:
-		VK->recreateSwapChain();
+		VK->bRecreateRender = true;
 		break;
 	default:
 		QE->currentActivity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
@@ -36,6 +44,9 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 }
 
 void QeWindow::init() {
+
+	if (bInit) return;
+	bInit = true;
 
 	windowInstance = GetModuleHandle(nullptr);
 
@@ -134,13 +145,9 @@ void QeWindow::init() {
 	ShowWindow(window, SW_SHOW);
 	SetForegroundWindow(window);
 	SetFocus(window);
-
-	surface = VK->createSurface(window, windowInstance);
-	bClosed = false;
 }
 
-std::string QeWindow::getWindowTitle()
-{
+std::string QeWindow::getWindowTitle(){
 	std::string device(VK->deviceProperties.deviceName);
 	std::string windowTitle;
 	windowTitle = AST->getXMLValue(2, AST->CONFIG, "title");
@@ -164,7 +171,7 @@ void QeWindow::update(float time) {
 
 		switch (msg.message) {
 		case WM_QUIT:
-			bClosed = true;
+			QE->bClosed = true;
 			break;
 		}
 	}

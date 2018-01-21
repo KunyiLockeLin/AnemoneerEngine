@@ -10,7 +10,8 @@ public:
 	void run();
 
 	QeActivity* currentActivity = nullptr;
-
+	bool bClosed;
+	bool bRestart;
 	int currentFPS;
 	std::chrono::steady_clock::time_point lastTime;
 

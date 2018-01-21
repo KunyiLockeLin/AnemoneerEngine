@@ -63,6 +63,9 @@
     <ClCompile Include="qeencode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qerender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeencode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qerender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

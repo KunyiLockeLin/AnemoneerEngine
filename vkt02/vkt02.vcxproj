@@ -153,6 +153,7 @@
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
+    <ClCompile Include="qerender.cpp" />
     <ClCompile Include="qevulkan.cpp" />
     <ClCompile Include="qeencode.cpp" />
     <ClCompile Include="queenengine.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qeobjectmanger.h" />
+    <ClInclude Include="qerender.h" />
     <ClInclude Include="qevulkan.h" />
     <ClInclude Include="qeencode.h" />
     <ClInclude Include="queenengine.h" />

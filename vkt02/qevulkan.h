@@ -73,7 +73,7 @@ public:
 #else
 	const bool enableValidationLayers = true;
 #endif
-
+	bool bInit = false;
 	void init();
 	void update(float time);
 	void deviceWaitIdle();
@@ -84,6 +84,7 @@ public:
 
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkPhysicalDeviceProperties deviceProperties;
+	VkSurfaceKHR surface;
 
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
@@ -106,6 +107,7 @@ public:
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 
 	bool bUpdateDrawCommandBuffers;
+	bool bRecreateRender;
 	VkDescriptorPool descriptorPool;
 	VkRenderPass renderPass;
 
@@ -117,14 +119,14 @@ public:
 	const uint8_t descriptorSetInputAttachmentNumber = 1;
 
 	VkDescriptorSet postprocessingDescriptorSet;
-	VkPipeline		postprocessingPipeline;
+	VkPipeline		postprocessingPipeline  = VK_NULL_HANDLE;
 	QeAssetShader*	pPostProcessingVert = nullptr;
 	QeAssetShader*	pPostProcessingGeom = nullptr;
 	QeAssetShader*	pPostProcessingFrag = nullptr;
 
-	void cleanupSwapChain();
-
-	void recreateSwapChain();
+	void createRender();
+	void cleanupRender();
+	void recreateRender();
 	void createInstance();
 	void setupDebugCallback();
 	void pickPhysicalDevice();
@@ -183,5 +185,5 @@ public:
 	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void initPostProcessing();
+	void updatePostProcessing();
 };

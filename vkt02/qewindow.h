@@ -8,17 +8,13 @@ public:
 	QeWindow(QeGlobalKey& _key) {}
 	~QeWindow() {}
 
-	//int currentWidth = 0;
-	//int currentHeight = 0;
-	bool isWinodowShouldClose();
 	void getWindowSize(int& width, int& height);
 	void update(float time);
 	HWND window;
 	HINSTANCE windowInstance;
-	VkSurfaceKHR surface;
-	bool bClosed;
+	bool bInit = false;
 	void init();
-	
+	void resize();
 	std::string getWindowTitle();
 
 	TCHAR* convert(std::string _s); 

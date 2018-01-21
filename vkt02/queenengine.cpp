@@ -2,8 +2,10 @@
 
 
 void QueenEngine::run() {
+	bClosed = false;
+	bRestart = false;
 	lastTime = std::chrono::high_resolution_clock::now();
-
+	WIN->init();
 	VK->init();
 
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
@@ -17,7 +19,7 @@ void QueenEngine::run() {
 
 
 void QueenEngine::mainLoop() {
-	while (!WIN->isWinodowShouldClose()) {
+	while (!bClosed && !bRestart) {
 
 		std::chrono::steady_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0f;

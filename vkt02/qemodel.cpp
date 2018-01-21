@@ -108,7 +108,7 @@ void QeModel::init(QeAssetXML* _property) {
 	const char* c = AST->getXMLValue(_property, 1, "obj");;
 	modelData = AST->getModel(c);
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
-	//createDescriptorBuffer();
+
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
 
 	QeDataDescriptorSet data;

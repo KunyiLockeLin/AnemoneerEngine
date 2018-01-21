@@ -16,18 +16,20 @@ class QeGlobal
 private:
 	QeGlobal();
 	QeGlobalKey	key;
-
+	void init();
+	void cleanup();
 public:
 	~QeGlobal();
+	void restart();
 	static QeGlobal&	getInstance();
-	QueenEngine*		engine;
-	QeVulkan*			vulkan;
-	QeWindow*			window;
-	QeViewport*			viewport;
-	QeMath*				math;
-	QeAsset*			asset;
-	QeObjectManger*		objMgr;
-	QeEncode*			encode;
+	QueenEngine*		engine = nullptr;
+	QeVulkan*			vulkan = nullptr;
+	QeWindow*			window = nullptr;
+	QeViewport*			viewport = nullptr;
+	QeMath*				math = nullptr;
+	QeAsset*			asset = nullptr;
+	QeObjectManger*		objMgr = nullptr;
+	QeEncode*			encode = nullptr;
 };
 
 #define GLB		QeGlobal::getInstance()

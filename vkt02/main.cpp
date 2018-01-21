@@ -4,7 +4,11 @@
 int main() {
 	
 	try {
-		QE->run();
+		while (1) {
+			QE->run();
+			if (!QE->bRestart)	break;
+			else				GLB.restart();
+		}
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;

@@ -83,7 +83,7 @@ void QeViewport::popViewport() {
 	scissors[currentNum].offset.x = 0;
 	scissors[currentNum].offset.y = 0;
 	*/
-	VK->recreateSwapChain();
+	VK->bRecreateRender = true;
 }
 
 void QeViewport::addNewViewport() {
@@ -91,8 +91,7 @@ void QeViewport::addNewViewport() {
 	if (currentNum >= MAX_VIEWPORT_NUM) return;
 
 	++currentNum;
-
-	VK->recreateSwapChain();
+	VK->bRecreateRender = true;
 }
 
 void QeViewport::setTargetCamera( int index ) {

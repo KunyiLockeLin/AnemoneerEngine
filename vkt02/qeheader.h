@@ -30,6 +30,8 @@
 #define KEY_R 0x52
 #define KEY_S 0x53
 #define KEY_W 0x57
+#define KEY_L 0x4C
+
 
 //	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
 const uint8_t MAX_VIEWPORT_NUM = 9;

@@ -40,9 +40,8 @@ void QeActivity::init(QeAssetXML* _property) {
 		c = AST->getXMLValue(node, 1, "frag");
 		if (c != nullptr) VK->pPostProcessingFrag = AST->getShader(c);
 	}
-
-	VK->initPostProcessing();
 	VK->bUpdateDrawCommandBuffers = true;
+	VK->updatePostProcessing();
 }
 
 void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {
@@ -52,7 +51,10 @@ void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) 
 	case WM_KEYDOWN:
 		switch (_input2) {
 		case VK_ESCAPE:
-			WIN->bClosed = true;
+			QE->bClosed = true;
+			break;
+		case KEY_L:
+			QE->bRestart = true;
 			break;
 		case VK_NUMPAD1:
 		case VK_NUMPAD2:
