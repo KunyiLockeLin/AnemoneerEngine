@@ -26,7 +26,8 @@ void QeActivity::init(QeAssetXML* _property) {
 	else	for ( int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
 
 	node = AST->getXMLNode(_property, 1, "models");
-	for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
+	if (node != nullptr && node->nexts.size() > 0) 
+		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
 
 	node = AST->getXMLNode(_property, 1, "postShader");
 	if (node == nullptr || node->eKeys.size() == 0) node = AST->getXMLNode(2, AST->CONFIG, "defaultPostprocessing");

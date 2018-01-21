@@ -3,7 +3,7 @@
 #include "qeheader.h"
 
 
-namespace  QEString {
+/*namespace  QEString {
 
 	std::string operator+(std::string const &a, const int &b);
 	std::string operator+(std::string const &a, const size_t &b);
@@ -15,7 +15,7 @@ namespace  QEString {
 	std::string operator+=(std::string const &a, const float &b);
 	std::string operator+=(std::string const &a, const double &b);
 	std::string operator+=(std::string const &a, const char *b);
-};
+};*/
 
 
 class QeGlobalKey

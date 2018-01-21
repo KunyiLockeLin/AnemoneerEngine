@@ -64,7 +64,6 @@ void QeVulkan::init() {
 	bInit = true;
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = false;
-	//createPipeline(0,0,0);
 	createInstance();
 	setupDebugCallback();
 
@@ -582,6 +581,7 @@ VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, 
 	}
 
 	LOG("failed to find supported format!");
+	return VK_FORMAT_UNDEFINED;
 }
 
 VkFormat QeVulkan::findDepthFormat() {
@@ -794,6 +794,7 @@ uint32_t QeVulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pro
 	}
 
 	LOG("failed to find suitable memory type!");
+	return VK_NULL_HANDLE;
 }
 
 void QeVulkan::createSemaphores() {
@@ -966,7 +967,6 @@ bool QeVulkan::checkValidationLayerSupport() {
 
 VKAPI_ATTR VkBool32 VKAPI_CALL QeVulkan::debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char* layerPrefix, const char* msg, void* userData) {
 	LOG("validation layer: " + msg );
-
 	return VK_FALSE;
 }
 
@@ -1121,6 +1121,7 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	if (bVetex) {
+		std::string s = "";  // Magic line!!!! If it's removed, attributeDescriptions would become bad value and shutdown.
 		VkVertexInputBindingDescription bindingDescription = QeVertex::getBindingDescription();
 		std::array<VkVertexInputAttributeDescription, 7> attributeDescriptions = QeVertex::getAttributeDescriptions();
 		vertexInputInfo.vertexBindingDescriptionCount = 1;

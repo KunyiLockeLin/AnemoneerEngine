@@ -14,7 +14,7 @@ void QeLog::init()
 		time(&rawtime);
 		localtime_s(&timeinfo, &rawtime);
 
-		strftime(buffer, sizeof(buffer), "%y%m%d%I%M%S", &timeinfo);
+		strftime(buffer, sizeof(buffer), "%y%m%d%H%M", &timeinfo);
 		outputPath = AST->getXMLValue(3, AST->CONFIG, "path", "log");
 		outputPath += "log";
 		outputPath += buffer;
@@ -37,7 +37,7 @@ void QeLog::print(std::string& msg) {
 	time(&rawtime);
 	localtime_s(&timeinfo, &rawtime);
 
-	strftime(buffer, sizeof(buffer), "%y%m%d%I%M%S: ", &timeinfo);
+	strftime(buffer, sizeof(buffer), "%y%m%d%H%M: ", &timeinfo);
 	std::string s = buffer;
 	s += msg;
 
