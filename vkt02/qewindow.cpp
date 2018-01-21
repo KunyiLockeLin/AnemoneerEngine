@@ -67,9 +67,8 @@ void QeWindow::init() {
 	wndClass.lpszClassName = convert(AST->getXMLValue(2, AST->CONFIG, "title"));
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
-	if (!RegisterClassEx(&wndClass))
-	{
-		std::cout << "Could not register window class!\n";
+	if (!RegisterClassEx(&wndClass)){
+		LOG( "Could not register window class!");
 		fflush(stdout);
 		exit(1);
 	}
@@ -139,7 +138,7 @@ void QeWindow::init() {
 	//}
 
 	if (!window) {
-		std::cout << "Could not create window!\n";
+		LOG( "Could not create window!" );
 		fflush(stdout);
 		exit(1);
 	}
