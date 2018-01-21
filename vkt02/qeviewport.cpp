@@ -63,9 +63,9 @@ void QeViewport::updateViewport() {
 	viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = currentNum;
-	//viewportState.pViewports = viewports.data();
+	viewportState.pViewports = viewports.data();
 	viewportState.scissorCount = currentNum;
-	//viewportState.pScissors = scissors.data();			
+	viewportState.pScissors = scissors.data();			
 }
 
 void QeViewport::popViewport() {

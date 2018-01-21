@@ -29,33 +29,32 @@ enum QeActionState {
 class QeModel
 {
 public:
-	QeActionState	actionState;
-	QeActionType	actionType;
-	unsigned char	currentActionID;
-	unsigned int	currentActionFrame;
-	float			currentActionTime;
+	QeActionState	actionState = eActionStateStop;
+	QeActionType	actionType = eActionTypeOnce;
+	unsigned char	currentActionID = 0;
+	unsigned int	currentActionFrame = 0;
+	float			currentActionTime = 0.f;
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
+	float actionSpeed = 0.f;
 
-	float actionSpeed;
-
-	int id;
+	int id = 0;
 	QeVector3f pos;
-	float face;
-	float up;
+	float face = 0.f;
+	float up = 0.f;
 	QeVector3f size;
-	int speed;
+	int speed = 0;
 
-	int attachID;
-	const char* attachSkeletonName;
+	int attachID = 0;
+	const char* attachSkeletonName = nullptr;
 
-	QeAssetModel* modelData;
+	QeAssetModel* modelData = nullptr;
 
-	VkDescriptorSet descriptorSet;
-	VkPipeline pipeline;
+	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+	VkPipeline pipeline = VK_NULL_HANDLE;
 
 	QeUniformBufferObject ubo;
 	QeVKBuffer uboBuffer;
-	QeAssetXML* initProperty;
+	QeAssetXML* initProperty = nullptr;
 
 	void updateUniformBuffer();
 	virtual void update(float time);
@@ -64,15 +63,15 @@ public:
 	~QeModel();
 
 	void init(QeAssetXML* _property);
-	void setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size);
-	void move(QeVector3f _pos);
-	void setPosition(QeVector3f _pos);
+	void setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size);
+	void move(QeVector3f& _pos);
+	void setPosition(QeVector3f& _pos);
 	void rotateFace( float _face);
 	void setFace(float _face);
 	void rotateUp(float _up);
 	void setUp(float _up);
-	void enlarge(QeVector3f _size);
-	void setSize(QeVector3f _size);
+	void enlarge(QeVector3f& _size);
+	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
 	void cleanupPipeline();
 	void createPipeline();

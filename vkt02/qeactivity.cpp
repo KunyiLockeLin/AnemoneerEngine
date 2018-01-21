@@ -4,7 +4,7 @@
 void QeActivity::init(QeAssetXML* _property) {
 	initProperty = _property;
 	name = _property->key.c_str();
-	const char* c;
+
 	QeAssetXML* node = AST->getXMLNode(_property, 1, "ambientColor");
 	if (node == nullptr || node->eKeys.size() == 0)	node = AST->getXMLNode(2, AST->CONFIG, "defaultAmbientColor");
 
@@ -18,13 +18,12 @@ void QeActivity::init(QeAssetXML* _property) {
 	}
 	else	VP->init(node->nexts[0]);
 
-	int index;
 	node = AST->getXMLNode(_property, 1, "lights");
 	if (node == nullptr || node->nexts.size() == 0) {
 		node = AST->getXMLNode(2, AST->CONFIG, "defaultLight");	
 		OBJMGR->getLight(0, node);
 	}
-	else	for (index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
+	else	for ( int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
 
 	node = AST->getXMLNode(_property, 1, "models");
 	for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
@@ -33,7 +32,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	if (node == nullptr || node->eKeys.size() == 0) node = AST->getXMLNode(2, AST->CONFIG, "defaultPostprocessing");
 	if (node != nullptr && node->eKeys.size() > 0) {
 
-		c = AST->getXMLValue(node, 1, "vert");
+		const char* c = AST->getXMLValue(node, 1, "vert");
 		if (c != nullptr) VK->pPostProcessingVert = AST->getShader(c);
 		c = AST->getXMLValue(node, 1, "geom");
 		if (c != nullptr) VK->pPostProcessingGeom = AST->getShader(c);

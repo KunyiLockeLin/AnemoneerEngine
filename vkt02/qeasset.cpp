@@ -1,10 +1,8 @@
 #include "qeheader.h"
 
 
-QeAssetModel::QeAssetModel():pMaterial(nullptr){}
 QeAssetModel::~QeAssetModel() {	pMaterial = nullptr;	}
 
-QeAssetMaterial::QeAssetMaterial(): pDiffuseMap(nullptr), pShaderVert(nullptr), pShaderGeom(nullptr), pShaderFrag(nullptr){}
 QeAssetMaterial::~QeAssetMaterial() {
 	pDiffuseMap = nullptr;
 	pShaderVert = nullptr;
@@ -194,7 +192,7 @@ const char*	 QeAsset::getJSONValue(int length, ...) {
 
 	const char* ret = getJSONValue(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -209,7 +207,7 @@ const char*	 QeAsset::getJSONValue(QeAssetJSON* source, int length, ...) {
 
 	const char* ret = getJSONValue(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -270,7 +268,7 @@ QeAssetJSON* QeAsset::getJSONNode(int length, ...) {
 
 	source = getJSONNode(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return source;
 }
 
@@ -286,7 +284,7 @@ QeAssetJSON* QeAsset::getJSONNode(QeAssetJSON* source, int length, ...) {
 
 	source = getJSONNode(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return source;
 }
 
@@ -336,7 +334,7 @@ std::vector<std::string>*	QeAsset::getJSONArrayValues(int length, ...) {
 
 	std::vector<std::string>* ret = getJSONArrayValues(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -351,7 +349,7 @@ std::vector<std::string>*	QeAsset::getJSONArrayValues(QeAssetJSON* source, int l
 
 	std::vector<std::string>* ret = getJSONArrayValues(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -412,7 +410,7 @@ std::vector<QeAssetJSON*>*	QeAsset::getJSONArrayNodes(int length, ...) {
 
 	std::vector<QeAssetJSON*>* ret = getJSONArrayNodes(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -427,7 +425,7 @@ std::vector<QeAssetJSON*>*	QeAsset::getJSONArrayNodes(QeAssetJSON* source, int l
 
 	std::vector<QeAssetJSON*>* ret = getJSONArrayNodes(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -495,7 +493,7 @@ const char* QeAsset::getXMLValue(int length, ...) {
 
 	const char* ret = getXMLValue(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -511,7 +509,7 @@ const char* QeAsset::getXMLValue(QeAssetXML* source, int length, ...) {
 
 	const char* ret = getXMLValue(source, keys1, length+1);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return ret;
 }
 
@@ -563,7 +561,7 @@ QeAssetXML* QeAsset::getXMLNode(int length, ...) {
 
 	source = getXMLNode(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return source;
 }
 
@@ -579,7 +577,7 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, int length, ...) {
 
 	source = getXMLNode(source, keys1, length);
 	va_end(keys);
-	delete keys1;
+	delete[] keys1;
 	return source;
 }
 
@@ -716,8 +714,7 @@ QeAssetImage* QeAsset::getImage(const char* _filename) {
 }
 
 void QeAsset::imageFillto32bits(std::vector<unsigned char>* data, int bytes) {
-	int fileIndex = 0;
-	int dataIndex = 0;
+
 	unsigned char c = 0xff;
 
 	size_t size = data->size();
@@ -770,5 +767,5 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 		rtn = getXMLValue(3, CONFIG, "path", "texture");
 		break;
 	}
-	return rtn.append(_filename).c_str();
+	return rtn.append(_filename);
 }

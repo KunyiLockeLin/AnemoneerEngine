@@ -3,18 +3,18 @@
 
 struct QeHuffmanTree
 {
-	unsigned int* tree;
-	unsigned int numcodes;
+	unsigned int* tree = nullptr;
+	unsigned int numcodes = 0;
 
 	~QeHuffmanTree();
 };
 
 struct QeHuffmanTree2
 {
-	unsigned int* codes;
-	unsigned int* codeBits;
-	unsigned int* values;
-	size_t size;
+	unsigned int* codes = nullptr;
+	unsigned int* codeBits = nullptr;
+	unsigned int* values = nullptr;
+	size_t size = 0;
 
 	~QeHuffmanTree2();
 };

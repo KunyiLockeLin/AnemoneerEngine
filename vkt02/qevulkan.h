@@ -106,8 +106,8 @@ public:
 	//VkSemaphore textOverlayComplete;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 
-	bool bUpdateDrawCommandBuffers;
-	bool bRecreateRender;
+	bool bUpdateDrawCommandBuffers = false;
+	bool bRecreateRender = false;
 	VkDescriptorPool descriptorPool;
 	VkRenderPass renderPass;
 
@@ -158,7 +158,7 @@ public:
 	void createSemaphores();
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
+	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	bool isDeviceSuitable(VkPhysicalDevice device);

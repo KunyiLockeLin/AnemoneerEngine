@@ -13,17 +13,17 @@ void QeModel::createPipeline() {
 		&modelData->pMaterial->pShaderGeom->shader, &modelData->pMaterial->pShaderFrag->shader);
 }
 
-void QeModel::setPosFaceUpSize(QeVector3f _pos, float _face, float _up, QeVector3f _size) {
+void QeModel::setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size) {
 	pos = _pos;
 	face = _face;
 	up = _up;
 	size = _size;
 }
 
-void QeModel::move(QeVector3f _pos) {
+void QeModel::move(QeVector3f& _pos) {
 	pos += _pos;
 }
-void QeModel::setPosition(QeVector3f _pos) {
+void QeModel::setPosition(QeVector3f& _pos) {
 	pos = _pos;
 }
 
@@ -55,10 +55,10 @@ void QeModel::setUp(float _up) {
 	while (up < -360) up += 360;
 }
 
-void QeModel::enlarge(QeVector3f _size) {
+void QeModel::enlarge(QeVector3f& _size) {
 	size += _size;
 }
-void QeModel::setSize(QeVector3f _size) {
+void QeModel::setSize(QeVector3f& _size) {
 	size = _size;
 }
 

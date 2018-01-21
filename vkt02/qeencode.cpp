@@ -37,7 +37,6 @@ int QeEncode::readBits(const unsigned char* stream, size_t *bitPointer, size_t r
 			bits = 7 - bits;
 			move = readCount - move - 1;
 		}
-		int bit = (*(stream + bytes) >> bits & 1);
 		ret += ((*(stream + bytes) >> bits & 1) << move);
 		(*bitPointer)++;
 	}
@@ -87,7 +86,7 @@ QeAssetJSON* QeEncode::decodeJSON(const char* buffer, int &index) {
 	*/
 	const char keys[] = "{}\":[],";
 	QeAssetJSON* node = new QeAssetJSON();
-	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
+	int lastIndex = index, currentIndex = index, lastKey = 0, currentKey;
 	char* newChar = nullptr;
 	std::vector<std::string> *vsBuffer = nullptr;
 	bool bValue = false;
@@ -919,14 +918,14 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 			}
 		}
 	}
-	if (mcusType != nullptr) delete mcusType;
-	if (mcusQuan != nullptr) delete mcusQuan;
-	if (mcusSize != nullptr) delete mcusSize;
+	if (mcusType != nullptr) delete[] mcusType;
+	if (mcusQuan != nullptr) delete[] mcusQuan;
+	if (mcusSize != nullptr) delete[] mcusSize;
 	if (huffmanTreeIndex != nullptr) delete huffmanTreeIndex;
 
 	if (mcuDatas != nullptr) {
 		for (i = 0; i < colorNum; ++i)	if(mcuDatas[i] != nullptr) delete mcuDatas[i];
-		delete mcuDatas;
+		delete[] mcuDatas;
 	}
 	return ret;
 }
@@ -1369,9 +1368,9 @@ void QeEncode::buildHuffmanTree(QeHuffmanTree* tree, const unsigned int* bitlen,
 	for (i = 0; i < tree->numcodes * 2; ++i)
 		if (tree->tree[i] == UINT_MAX)	tree->tree[i] = 0;
 
-	if (tree1d != nullptr) delete tree1d;
-	if (blcount != nullptr)	 delete blcount;
-	if (nextcode != nullptr) delete nextcode;
+	if (tree1d != nullptr)	 delete[] tree1d;
+	if (blcount != nullptr)	 delete[] blcount;
+	if (nextcode != nullptr) delete[] nextcode;
 }
 
 void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* treeLL, QeHuffmanTree* treeD, unsigned char* in, size_t* bitPointer) {

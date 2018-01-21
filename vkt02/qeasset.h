@@ -20,9 +20,9 @@ struct QeVertex {
 
 struct QeDataJoint {
 
-	unsigned char id;
+	unsigned char id = 0;
 	std::vector<QeDataJoint*> children;
-	const char* name;
+	const char* name = nullptr;
 	//QeVector3f translation;
 	//QeVector4f rotation;
 	//QeVector3f scale;
@@ -40,20 +40,18 @@ struct QeAssetModel {
 
 	std::vector<QeVertex> vertices;
 	std::vector<uint32_t> indices;
-	size_t indexSize;
+	size_t indexSize = 0;
 
 	QeVKBuffer vertex;
 	QeVKBuffer index;
 
-	QeAssetMaterial* pMaterial;
-
-	QeDataJoint* rootJoint;
+	QeAssetMaterial* pMaterial = nullptr;
+	QeDataJoint* rootJoint = nullptr;
 	std::vector<QeDataJoint> jointsAnimation;
 	unsigned char animationNum = 0;
 	std::vector<unsigned int> animationStartFrames;
 	std::vector<unsigned int> animationEndFrames;
 
-	QeAssetModel();
 	~QeAssetModel();
 };
 
@@ -86,14 +84,14 @@ struct QeDataMaterial {
 struct QeAssetImage {
 
 	QeVKImageBuffer buffer;
-	VkSampler sampler;
+	VkSampler sampler=VK_NULL_HANDLE;
 
 	~QeAssetImage();
 };
 
 struct QeAssetMaterial {
 
-	QeMaterialType type;
+	QeMaterialType type = eMaterialPhong;
 	
 	union QeDataMaterial {
 		QeDataMaterialPhong phong;
@@ -107,13 +105,12 @@ struct QeAssetMaterial {
 	QeAssetShader* pShaderGeom;
 	QeAssetShader* pShaderFrag;
 
-	QeAssetMaterial();
 	~QeAssetMaterial();
 };
 
 struct QeAssetShader {
 
-	VkShaderModule shader;
+	VkShaderModule shader = VK_NULL_HANDLE;
 	~QeAssetShader();
 };
 

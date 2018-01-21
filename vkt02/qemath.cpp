@@ -1,9 +1,9 @@
 ﻿#include "qeheader.h"
 
-float QeMath::dot(QeVector3f _vec1, QeVector3f _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
-float QeMath::dot(QeVector4f _vec1, QeVector4f _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
+float QeMath::dot(QeVector3f& _vec1, QeVector3f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
+float QeMath::dot(QeVector4f& _vec1, QeVector4f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
 
-QeVector3f QeMath::cross(QeVector3f _vec1, QeVector3f _vec2) {
+QeVector3f QeMath::cross(QeVector3f& _vec1, QeVector3f& _vec2) {
 
 	QeVector3f _rtn;
 	_rtn.x = _vec1.y * _vec2.z - _vec1.z * _vec2.y;
@@ -12,13 +12,13 @@ QeVector3f QeMath::cross(QeVector3f _vec1, QeVector3f _vec2) {
 	return _rtn;
 }
 
-QeVector3f QeMath::normalize(QeVector3f _vec) { return _vec / length(_vec); }
-QeVector4f QeMath::normalize(QeVector4f _vec) { return _vec / length(_vec); }
+QeVector3f QeMath::normalize(QeVector3f& _vec) { return _vec / length(_vec); }
+QeVector4f QeMath::normalize(QeVector4f& _vec) { return _vec / length(_vec); }
 
-float QeMath::distance(QeVector3f _from, QeVector3f _to) { return length(_to - _from); }
+float QeMath::distance(QeVector3f& _from, QeVector3f& _to) { return length(_to - _from); }
 
-float QeMath::length(QeVector3f _vec) { return fastSqrt(dot(_vec, _vec)); }
-float QeMath::length(QeVector4f _vec) { return fastSqrt(dot(_vec, _vec)); }
+float QeMath::length(QeVector3f& _vec) { return fastSqrt(dot(_vec, _vec)); }
+float QeMath::length(QeVector4f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 
 float QeMath::fastSqrt(float _number) {
 
@@ -40,7 +40,7 @@ float QeMath::fastSqrt(float _number) {
 }
 
 
-QeMatrix4x4f QeMath::lookAt(QeVector3f _pos, QeVector3f _target, QeVector3f _up) {
+QeMatrix4x4f QeMath::lookAt(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up) {
 
 	QeMatrix4x4f _rtn;
 	QeVector3f _face = normalize(_target - _pos);
@@ -80,7 +80,7 @@ QeMatrix4x4f QeMath::perspective(float _fov, float _aspect, float _near, float _
 	return _rtn;
 }
 
-QeMatrix4x4f QeMath::translate(QeVector3f _pos) {
+QeMatrix4x4f QeMath::translate(QeVector3f& _pos) {
 
 	QeMatrix4x4f _rtn;
 	_rtn._30 = _pos.x;
@@ -153,7 +153,7 @@ QeMatrix4x4f QeMath::rotateZ(float _angle) {
 	return _rtn;
 }
 
-QeMatrix4x4f QeMath::scale(QeVector3f _size) {
+QeMatrix4x4f QeMath::scale(QeVector3f& _size) {
 
 	QeMatrix4x4f _rtn;
 	_rtn._00 = _size.x;
@@ -435,7 +435,7 @@ QeMatrix4x4f& QeMatrix4x4f::operator/=(const float& other) {
 	for (int i = 0; i<16; i++)	((float *)this)[i] /= other;
 	return *this;
 }
-bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
+bool QeMath::inverse(QeMatrix4x4f& _inMat, QeMatrix4x4f& _outMat) {
 
 	QeMatrix4x4f _new(0);
 
@@ -560,7 +560,7 @@ bool QeMath::inverse(QeMatrix4x4f _inMat, QeMatrix4x4f& _outMat) {
 	return true;
 }
 
-QeMatrix4x4f QeMath::transpose(QeMatrix4x4f _mat) {
+QeMatrix4x4f QeMath::transpose(QeMatrix4x4f& _mat) {
 	
 	QeMatrix4x4f _new(0);
 	_new._00 = _mat._00;
@@ -588,7 +588,7 @@ QeMatrix4x4f QeMath::transpose(QeMatrix4x4f _mat) {
 int QeMath::clamp(int in, int low, int high) { return in<low ? low : in > high ? high : in; }
 float QeMath::clamp(float in, float low, float high) {	return in<low ? low : in > high ? high : in;	}
 
-QeMatrix4x4f QeMath::rotate(QeVector4f vector) {
+QeMatrix4x4f QeMath::rotate(QeVector4f& vector) {
 
 	QeMatrix4x4f matrix;
 	float xx = vector.x * vector.x;
@@ -648,7 +648,7 @@ QeMatrix4x4f QeMath::rotate(QeVector4f vector) {
 	return ret;
 }*/
 
-QeVector4f QeMath::interpolateDir(QeVector4f a, QeVector4f b, float blend) {
+QeVector4f QeMath::interpolateDir(QeVector4f& a, QeVector4f& b, float blend) {
 	QeVector4f ret;
 
 	float dotf = dot(a, b);
@@ -669,7 +669,7 @@ QeVector4f QeMath::interpolateDir(QeVector4f a, QeVector4f b, float blend) {
 	return ret;
 }
 
-QeVector3f QeMath::interpolatePos(QeVector3f start, QeVector3f end, float progression) {
+QeVector3f QeMath::interpolatePos(QeVector3f& start, QeVector3f& end, float progression) {
 
 	QeVector3f ret;
 	ret.x = start.x + (end.x - start.x) * progression;
@@ -678,7 +678,7 @@ QeVector3f QeMath::interpolatePos(QeVector3f start, QeVector3f end, float progre
 	return ret;
 }
 
-QeMatrix4x4f QeMath::transform(QeVector3f tanslation, QeVector4f rotation, QeVector3f scale) {
+QeMatrix4x4f QeMath::transform(QeVector3f& tanslation, QeVector4f& rotation, QeVector3f& scale) {
 	
 	QeMatrix4x4f ret;
 	ret *= MATH->translate(tanslation);

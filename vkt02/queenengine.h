@@ -10,9 +10,9 @@ public:
 	void run();
 
 	QeActivity* currentActivity = nullptr;
-	bool bClosed;
-	bool bRestart;
-	int currentFPS;
+	bool bClosed = false;
+	bool bRestart = false;
+	int currentFPS = 0;
 	std::chrono::steady_clock::time_point lastTime;
 
 	void mainLoop();
