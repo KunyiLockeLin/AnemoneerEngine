@@ -19,7 +19,7 @@
   - Support vertex, geometry, and fragment shader.
   - Support Phong shading and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map.
-  - Support skeletal animation(Only for gltf) and attach obj.
+  - Support skeletal animation(Only for gltf), attach obj and billboards.
   - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
