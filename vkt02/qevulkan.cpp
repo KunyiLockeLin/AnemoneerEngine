@@ -1120,8 +1120,9 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+
 	if (bVetex) {
-		std::string s = "";  // Magic line!!!! If it's removed, attributeDescriptions would become bad value and shutdown.
+		std::string s = "";  // Magic line!!!! If it's removed, attributeDescriptions would become bad value and shutdown in release mode.
 		VkVertexInputBindingDescription bindingDescription = QeVertex::getBindingDescription();
 		std::array<VkVertexInputAttributeDescription, 7> attributeDescriptions = QeVertex::getAttributeDescriptions();
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
