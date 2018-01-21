@@ -7,12 +7,15 @@
 #include <cstdlib> 
 #include <string>  
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <stdexcept>
 #include <algorithm>
 #include <memory>
 #include <cmath>
 #include <chrono>
+#include <ctime>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include <array>
@@ -80,6 +83,7 @@ class QeObjectMangerKey;
 class QeObjectManger;
 class QeActivity;
 class QeVulkan;
+class QeLog;
 
 
 #include "qeencode.h"
@@ -96,3 +100,4 @@ class QeVulkan;
 #include "qeglobal.h"
 #include "qeobjectmanger.h"
 #include "qeactivity.h"
+#include "qelog.h"

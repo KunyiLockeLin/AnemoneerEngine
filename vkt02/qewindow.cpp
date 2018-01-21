@@ -48,6 +48,8 @@ void QeWindow::init() {
 	if (bInit) return;
 	bInit = true;
 
+	if (!DEBUG->isConsole()) FreeConsole();
+
 	windowInstance = GetModuleHandle(nullptr);
 
 	WNDCLASSEX wndClass;

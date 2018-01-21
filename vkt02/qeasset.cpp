@@ -466,14 +466,15 @@ QeAssetXML* QeAsset::getXML(const char* _filePath) {
 
 	if (it != astXMLs.end())	return it->second;
 
-	std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
-	if (!file.is_open()) return nullptr;
+	//std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
+	//if (!file.is_open()) return nullptr;
 
 	std::vector<char> buffer = loadFile(_filePath);
 
 	int index = 0;
 	QeAssetXML* head = ENCODE->decodeXML(buffer.data(), index);
 	astXMLs[_filePath] = head;
+
 	return head;
 }
 

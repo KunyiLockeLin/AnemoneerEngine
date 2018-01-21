@@ -5,6 +5,7 @@ void QueenEngine::run() {
 	bClosed = false;
 	bRestart = false;
 	lastTime = std::chrono::high_resolution_clock::now();
+	DEBUG->init();
 	WIN->init();
 	VK->init();
 

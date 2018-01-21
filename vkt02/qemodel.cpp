@@ -105,7 +105,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	initProperty = _property;
 
-	const char* c = AST->getXMLValue(_property, 1, "obj");;
+	const char* c = AST->getXMLValue(_property, 1, "obj");
 	modelData = AST->getModel(c);
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
@@ -155,7 +155,7 @@ void QeModel::init(QeAssetXML* _property) {
 		if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
 	}
 	else	modelData->pMaterial->pShaderGeom = AST->getShader(c);
-
+	
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
 		if (modelData->pMaterial->type == eMaterialPhong)

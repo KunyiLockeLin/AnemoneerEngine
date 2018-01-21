@@ -68,11 +68,11 @@ public:
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 
-#ifdef NDEBUG
-	const bool enableValidationLayers = false;
-#else
-	const bool enableValidationLayers = true;
-#endif
+//#ifdef NDEBUG
+//	const bool enableValidationLayers = true;
+//#else
+//	const bool enableValidationLayers = true;
+//#endif
 	bool bInit = false;
 	void init();
 	void update(float time);

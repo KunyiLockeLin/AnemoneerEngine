@@ -1,17 +1,71 @@
 #include "qeheader.h"
 
 
+namespace  QEString {
+	std::string operator+(std::string const &a, const int &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+(std::string const &a, const size_t &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+(std::string const &a, const float &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+(std::string const &a, const double &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+(std::string const &a, const char *b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+=(std::string const &a, const char *b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+=(std::string const &a, const int &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+=(std::string const &a, const size_t &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+=(std::string const &a, const float &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+	std::string operator+=(std::string const &a, const double &b){
+		std::ostringstream oss;
+		oss << a << b;
+		return oss.str();
+	}
+};
+
 QeGlobal::QeGlobal() { init(); }
 
 void QeGlobal::init() {
 	if (engine == nullptr)		engine = new QueenEngine(key);
 	if (window == nullptr)		window = new QeWindow(key);
 	if (viewport == nullptr)	viewport = new QeViewport(key);
-	if (vulkan == nullptr)		vulkan = new QeVulkan(key);
 	if (math == nullptr)		math = new QeMath(key);
 	if (asset == nullptr)		asset = new QeAsset(key);
 	if (objMgr == nullptr)		objMgr = new QeObjectManger(key);
 	if (encode == nullptr)		encode = new QeEncode(key);
+	if (vulkan == nullptr)		vulkan = new QeVulkan(key);
+	if (log == nullptr)			log = new QeLog(key);
 }
 
 QeGlobal::~QeGlobal() {
@@ -52,6 +106,10 @@ void QeGlobal::cleanup() {
 	if (engine != nullptr) {
 		delete engine;
 		engine = nullptr;
+	}
+	if (log != nullptr) {
+		delete log;
+		log = nullptr;
 	}
 }
 

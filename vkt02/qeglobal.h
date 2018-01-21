@@ -3,6 +3,21 @@
 #include "qeheader.h"
 
 
+namespace  QEString {
+
+	std::string operator+(std::string const &a, const int &b);
+	std::string operator+(std::string const &a, const size_t &b);
+	std::string operator+(std::string const &a, const float &b);
+	std::string operator+(std::string const &a, const double &b);
+	std::string operator+(std::string const &a, const char *b);
+	std::string operator+=(std::string const &a, const int &b);
+	std::string operator+=(std::string const &a, const size_t &b);
+	std::string operator+=(std::string const &a, const float &b);
+	std::string operator+=(std::string const &a, const double &b);
+	std::string operator+=(std::string const &a, const char *b);
+};
+
+
 class QeGlobalKey
 {
 	friend class QeGlobal;
@@ -30,6 +45,7 @@ public:
 	QeAsset*			asset = nullptr;
 	QeObjectManger*		objMgr = nullptr;
 	QeEncode*			encode = nullptr;
+	QeLog*				log = nullptr;
 };
 
 #define GLB		QeGlobal::getInstance()
@@ -41,3 +57,5 @@ public:
 #define AST		GLB.asset
 #define OBJMGR	GLB.objMgr
 #define ENCODE	GLB.encode
+#define DEBUG	GLB.log
+#define LOG(msg) GLB.log->print( std::string("")+msg )

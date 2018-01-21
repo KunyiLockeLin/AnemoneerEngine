@@ -11,7 +11,7 @@ int main() {
 		}
 	}
 	catch (const std::runtime_error& e) {
-		std::cerr << e.what() << std::endl;
+		LOG(e.what());
 		return EXIT_FAILURE;
 	}
 

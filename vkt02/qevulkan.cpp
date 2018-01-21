@@ -64,7 +64,7 @@ void QeVulkan::init() {
 	bInit = true;
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = false;
-
+	//createPipeline(0,0,0);
 	createInstance();
 	setupDebugCallback();
 
@@ -123,9 +123,7 @@ void QeVulkan::drawFrame() {
 		bRecreateRender = true;
 		return;
 	}
-	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-		throw std::runtime_error("failed to acquire swap chain image!");
-	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image!");
 
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -143,8 +141,7 @@ void QeVulkan::drawFrame() {
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
-		throw std::runtime_error("failed to submit draw command buffer!");
+	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)	LOG("failed to submit draw command buffer!");
 
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -161,7 +158,7 @@ void QeVulkan::drawFrame() {
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)	bRecreateRender = true;
 
-	else if (result != VK_SUCCESS)	throw std::runtime_error("failed to present swap chain image!");
+	else if (result != VK_SUCCESS)	LOG("failed to present swap chain image!");
 
 	vkQueueWaitIdle(presentQueue);
 }
@@ -212,8 +209,7 @@ void QeVulkan::recreateRender() {
 }
 
 void QeVulkan::createInstance() {
-	if (enableValidationLayers && !checkValidationLayerSupport())
-		throw std::runtime_error("validation layers requested, but not available!");
+	if (DEBUG->isDebug() && !checkValidationLayerSupport())	LOG("validation layers requested, but not available!");
 	
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -231,35 +227,31 @@ void QeVulkan::createInstance() {
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 	createInfo.ppEnabledExtensionNames = extensions.data();
 
-	if (enableValidationLayers) {
+	if (DEBUG->isDebug()) {
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
 	}
 	else	createInfo.enabledLayerCount = 0;
 
-	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
-		throw std::runtime_error("failed to create instance!");
+	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)	LOG("failed to create instance!");
 }
 
 void QeVulkan::setupDebugCallback() {
-	if (!enableValidationLayers) return;
+	if (!DEBUG->isDebug()) return;
 
 	VkDebugReportCallbackCreateInfoEXT createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 	createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
 	createInfo.pfnCallback = debugCallback;
 
-	if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS)
-		throw std::runtime_error("failed to set up debug callback!");
+	if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS)	LOG("failed to set up debug callback!");
 }
 
 void QeVulkan::pickPhysicalDevice() {
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
-	if (deviceCount == 0) {
-		throw std::runtime_error("failed to find GPUs with Vulkan support!");
-	}
+	if (deviceCount == 0)	LOG("failed to find GPUs with Vulkan support!");
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
 	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
@@ -270,7 +262,7 @@ void QeVulkan::pickPhysicalDevice() {
 			break;
 	}}
 
-	if (physicalDevice == VK_NULL_HANDLE)	throw std::runtime_error("failed to find a suitable GPU!");
+	if (physicalDevice == VK_NULL_HANDLE)	LOG("failed to find a suitable GPU!");
 
 	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 	//vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
@@ -310,14 +302,13 @@ void QeVulkan::createLogicalDevice() {
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 	createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-	if (enableValidationLayers) {
+	if (DEBUG->isDebug()) {
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
 	}
 	else	createInfo.enabledLayerCount = 0;
 
-	if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS)	
-		throw std::runtime_error("failed to create logical device!");
+	if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS)	LOG("failed to create logical device!");
 
 	vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
 	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
@@ -362,9 +353,7 @@ void QeVulkan::createSwapChain() {
 	createInfo.presentMode = presentMode;
 	createInfo.clipped = VK_TRUE;
 
-	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create swap chain!");
-	}
+	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)	LOG("failed to create swap chain!");
 
 	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
@@ -470,9 +459,7 @@ void QeVulkan::createRenderPass() {
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create render pass!");
-	}
+	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)	LOG("failed to create render pass!");
 }
 
 VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
@@ -513,8 +500,7 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 	layoutInfo.pBindings = bindings.data();
 
 	VkDescriptorSetLayout descriptorSetLayout;
-	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
-		throw std::runtime_error("failed to create descriptor set layout!");
+	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)	LOG("failed to create descriptor set layout!");
 
 	return descriptorSetLayout;
 }
@@ -527,8 +513,7 @@ VkPipelineLayout QeVulkan::createPipelineLayout( VkDescriptorSetLayout& descript
 	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
 	VkPipelineLayout pipelineLayout;
-	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
-		throw std::runtime_error("failed to create pipeline layout!");
+	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)	LOG("failed to create pipeline layout!");
 
 	return pipelineLayout;
 }
@@ -553,9 +538,7 @@ void QeVulkan::createFramebuffers() {
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
 
-		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create framebuffer!");
-		}
+		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)	LOG("failed to create framebuffer!");
 	}
 }
 
@@ -567,9 +550,7 @@ void QeVulkan::createCommandPool() {
 	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
 	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create graphics command pool!");
-	}
+	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
 void QeVulkan::createSceneDepthImage() {
@@ -600,7 +581,7 @@ VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, 
 		}
 	}
 
-	throw std::runtime_error("failed to find supported format!");
+	LOG("failed to find supported format!");
 }
 
 VkFormat QeVulkan::findDepthFormat() {
@@ -628,9 +609,7 @@ VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAsp
 	viewInfo.subresourceRange.layerCount = 1;
 
 	VkImageView imageView;
-	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create texture image view!");
-	}
+	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) LOG("failed to create texture image view!");
 
 	return imageView;
 }
@@ -651,9 +630,7 @@ void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkI
 	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create image!");
-	}
+	if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) LOG("failed to create image!");
 
 	VkMemoryRequirements memRequirements;
 	vkGetImageMemoryRequirements(device, image, &memRequirements);
@@ -663,9 +640,7 @@ void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkI
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-	if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate image memory!");
-	}
+	if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) LOG("failed to allocate image memory!");
 
 	vkBindImageMemory(device, image, imageMemory, 0);
 }
@@ -713,7 +688,7 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 		destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 	}
-	else	throw std::invalid_argument("unsupported layout transition!");
+	else	LOG("unsupported layout transition!");
 
 	vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier );
 
@@ -750,9 +725,7 @@ void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemor
 	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create buffer!");
-	}
+	if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) LOG("failed to create buffer!");
 
 	VkMemoryRequirements memRequirements;
 	vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -762,9 +735,7 @@ void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemor
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-	if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate buffer memory!");
-	}
+	if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) LOG("failed to allocate buffer memory!");
 
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
@@ -822,7 +793,7 @@ uint32_t QeVulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pro
 		}
 	}
 
-	throw std::runtime_error("failed to find suitable memory type!");
+	LOG("failed to find suitable memory type!");
 }
 
 void QeVulkan::createSemaphores() {
@@ -831,7 +802,7 @@ void QeVulkan::createSemaphores() {
 
 	if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
 		vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS)
-		throw std::runtime_error("failed to create semaphores!");
+		LOG("failed to create semaphores!");
 }
 
 VkSurfaceFormatKHR QeVulkan::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
@@ -951,13 +922,8 @@ QueueFamilyIndices QeVulkan::findQueueFamilies(VkPhysicalDevice device) {
 		VkBool32 presentSupport = VK_FALSE;
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
 
-		if (queueFamily.queueCount > 0 && presentSupport) {
-			indices.presentFamily = i;
-		}
-
-		if (indices.isComplete()) {
-			break;
-		}
+		if (queueFamily.queueCount > 0 && presentSupport)	indices.presentFamily = i;
+		if (indices.isComplete())	break;
 
 		i++;
 	}
@@ -969,7 +935,7 @@ std::vector<const char*> QeVulkan::getRequiredExtensions() {
 
 	std::vector<const char*> extensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
 
-	if (enableValidationLayers) {
+	if (DEBUG->isDebug()) {
 		extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 	}
 
@@ -992,17 +958,14 @@ bool QeVulkan::checkValidationLayerSupport() {
 				break;
 			}
 		}
-
-		if (!layerFound) {
-			return false;
-		}
+		if (!layerFound)	return false;
 	}
 
 	return true;
 }
 
 VKAPI_ATTR VkBool32 VKAPI_CALL QeVulkan::debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char* layerPrefix, const char* msg, void* userData) {
-	std::cerr << "validation layer: " << msg << std::endl;
+	LOG("validation layer: " + msg );
 
 	return VK_FALSE;
 }
@@ -1016,9 +979,7 @@ void QeVulkan::createDrawCommandBuffers() {
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = (uint32_t)drawCommandBuffers.size();
 
-	if (vkAllocateCommandBuffers(device, &allocInfo, drawCommandBuffers.data()) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate command buffers!");
-	}
+	if (vkAllocateCommandBuffers(device, &allocInfo, drawCommandBuffers.data()) != VK_SUCCESS) LOG("failed to allocate command buffers!");
 }
 
 
@@ -1067,7 +1028,7 @@ void QeVulkan::updateDrawCommandBuffers() {
 		vkCmdDraw(drawCommandBuffers[i], 3, 1, 0, 0);
 
 		vkCmdEndRenderPass(drawCommandBuffers[i]);
-		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS)	throw std::runtime_error("failed to record command buffer!");
+		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 	}
 }
 
@@ -1081,10 +1042,7 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 	VkSurfaceKHR surface;
 	err = vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
 
-	if (err != VK_SUCCESS) {
-		std::cout << "Could not create surface!\n";
-	}
-
+	if (err != VK_SUCCESS) LOG("Could not create surface!");
 	return surface;
 }
 
@@ -1097,9 +1055,7 @@ VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorSetLayout& descriptorS
 	allocInfo.pSetLayouts = layouts;
 
 	VkDescriptorSet descriptorSet;
-	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor set!");
-	}
+	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
 
 	return descriptorSet;
 }
@@ -1129,8 +1085,7 @@ void QeVulkan::createDescriptorPool() {
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.maxSets = MAX_DESCRIPTOR_NUM;
 
-	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS)
-		throw std::runtime_error("failed to create descriptor pool!");
+	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
 VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha, VkBool32 bDepthTest, VkBool32 bVetex, uint8_t subpassIndex) {
@@ -1162,20 +1117,18 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 		fragShaderStageInfo.pName = "main";
 		shaderStages.push_back(fragShaderStageInfo);
 	}
+
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-
-
 	if (bVetex) {
-		auto bindingDescription = QeVertex::getBindingDescription();
-		auto attributeDescriptions = QeVertex::getAttributeDescriptions();
+		VkVertexInputBindingDescription bindingDescription = QeVertex::getBindingDescription();
+		std::array<VkVertexInputAttributeDescription, 7> attributeDescriptions = QeVertex::getAttributeDescriptions();
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
 		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 	}
-	else
-	{
+	else {
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
 		vertexInputInfo.vertexAttributeDescriptionCount = 0;
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
@@ -1278,9 +1231,8 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-	VkPipeline graphicsPipeline = VK_NULL_HANDLE;
-	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
-		throw std::runtime_error("failed to create graphics pipeline!");
+	VkPipeline graphicsPipeline;
+	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");
 	
 	return graphicsPipeline;
 }
@@ -1291,11 +1243,11 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 	uint64_t i = 0;
 	uint8_t index = 0;
 	uint8_t* pos = (uint8_t*)&data;
-	std::vector<uint8_t> bindID;
-	std::vector<VkBuffer> buffers;
-	std::vector<uint64_t> bufferSizes;
+	std::vector<uint8_t>	 bindID;
+	std::vector<VkBuffer>	 buffers;
+	std::vector<uint64_t>	 bufferSizes;
 	std::vector<VkImageView> imageViews;
-	std::vector<VkSampler> samplers;
+	std::vector<VkSampler>	 samplers;
 	std::vector<VkImageView> attachImageViews;
 
 	uint64_t sizeBuffer = sizeof(VkBuffer) + sizeof(uint64_t);
@@ -1343,12 +1295,15 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		bufInfos[i].range = bufferSizes[i];
 
 		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[index].pNext = nullptr;
 		descriptorWrites[index].dstSet = descriptorSet;
 		descriptorWrites[index].dstBinding = bindID[index];
 		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		descriptorWrites[index].descriptorCount = 1;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[index].pImageInfo = nullptr;
 		descriptorWrites[index].pBufferInfo = &bufInfos[i];
+		descriptorWrites[index].pTexelBufferView = nullptr;
 	}
 	
 	std::vector<VkDescriptorImageInfo> imgInfos;
@@ -1360,12 +1315,15 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		imgInfos[i].imageView = imageViews[i];
 		
 		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[index].pNext = nullptr;
 		descriptorWrites[index].dstSet = descriptorSet;
 		descriptorWrites[index].dstBinding = bindID[index];
 		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[index].descriptorCount = 1;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[index].pImageInfo = &imgInfos[i];
+		descriptorWrites[index].pBufferInfo = nullptr;
+		descriptorWrites[index].pTexelBufferView = nullptr;
 	}
 
 	std::vector<VkDescriptorImageInfo> attachInfos;
@@ -1377,12 +1335,15 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		attachInfos[i].imageView = attachImageViews[i];
 
 		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[index].pNext = nullptr;
 		descriptorWrites[index].dstSet = descriptorSet;
 		descriptorWrites[index].dstBinding = bindID[index];
 		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 		descriptorWrites[index].descriptorCount = 1;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 		descriptorWrites[index].pImageInfo = &attachInfos[i];
+		descriptorWrites[index].pBufferInfo = nullptr;
+		descriptorWrites[index].pTexelBufferView = nullptr;
 	}
 
 	vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
@@ -1395,8 +1356,7 @@ VkShaderModule QeVulkan::createShaderModel(void* data, VkDeviceSize size) {
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(data);
 	
 	VkShaderModule shader;
-	if (vkCreateShaderModule(device, &createInfo, nullptr, &shader) != VK_SUCCESS)
-		throw std::runtime_error("failed to create shader module!");
+	if (vkCreateShaderModule(device, &createInfo, nullptr, &shader) != VK_SUCCESS) LOG("failed to create shader module!");
 
 	return shader;
 }
@@ -1418,9 +1378,8 @@ VkSampler QeVulkan::createTextureSampler() {
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 	VkSampler sampler;
-	if (vkCreateSampler(VK->device, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create texture sampler!");
-	}
+	if (vkCreateSampler(VK->device, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) LOG("failed to create texture sampler!");
+	
 	return sampler;
 }
 
@@ -1459,7 +1418,7 @@ void QeVulkan::updatePostProcessing() {
 	QeDataDescriptorSet data;
 	data.inputAttachImageViews = sceneImage.view;
 	updateDescriptorSet(data, postprocessingDescriptorSet);
-
+	
 	if(postprocessingPipeline == VK_NULL_HANDLE)
 		postprocessingPipeline = createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, FALSE, FALSE, 1);
 }

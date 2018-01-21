@@ -921,7 +921,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t si
 	if (mcusType != nullptr) delete[] mcusType;
 	if (mcusQuan != nullptr) delete[] mcusQuan;
 	if (mcusSize != nullptr) delete[] mcusSize;
-	if (huffmanTreeIndex != nullptr) delete huffmanTreeIndex;
+	if (huffmanTreeIndex != nullptr) delete[] huffmanTreeIndex;
 
 	if (mcuDatas != nullptr) {
 		for (i = 0; i < colorNum; ++i)	if(mcuDatas[i] != nullptr) delete mcuDatas[i];

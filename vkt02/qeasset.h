@@ -12,7 +12,6 @@ struct QeVertex {
 	QeVector4f joint;
 	QeVector4f weight;
 
-	QeVertex() {}
 	static VkVertexInputBindingDescription getBindingDescription();
 	static std::array<VkVertexInputAttributeDescription, 7> getAttributeDescriptions();
 	bool operator==(const QeVertex& other) const; 
@@ -79,6 +78,7 @@ struct QeDataMaterial {
 		QeDataMaterialPhong phong;
 		QeDataMaterialPBR pbr;
 	};
+	QeDataMaterial() {}
 };
 
 struct QeAssetImage {
@@ -92,18 +92,13 @@ struct QeAssetImage {
 struct QeAssetMaterial {
 
 	QeMaterialType type = eMaterialPhong;
-	
-	union QeDataMaterial {
-		QeDataMaterialPhong phong;
-		QeDataMaterialPBR pbr;
-		QeDataMaterial() {}
-	}value;
-
 	QeVKBuffer	uboBuffer;
-	QeAssetImage* pDiffuseMap; // baseColorMap
-	QeAssetShader* pShaderVert;
-	QeAssetShader* pShaderGeom;
-	QeAssetShader* pShaderFrag;
+	QeAssetImage* pDiffuseMap = nullptr; // baseColorMap
+	QeAssetShader* pShaderVert = nullptr;
+	QeAssetShader* pShaderGeom = nullptr;
+	QeAssetShader* pShaderFrag = nullptr;
+	
+	QeDataMaterial value;
 
 	~QeAssetMaterial();
 };

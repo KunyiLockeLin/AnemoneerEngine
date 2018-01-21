@@ -133,11 +133,16 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +157,7 @@
     <ClCompile Include="qeasset.cpp" />
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
+    <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
     <ClCompile Include="qerender.cpp" />
     <ClCompile Include="qevulkan.cpp" />
@@ -170,6 +176,7 @@
     <ClInclude Include="qeasset.h" />
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
+    <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
     <ClInclude Include="qerender.h" />
     <ClInclude Include="qevulkan.h" />
