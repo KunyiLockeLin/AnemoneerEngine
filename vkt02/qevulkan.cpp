@@ -60,6 +60,8 @@ QeDataDescriptorSet::QeDataDescriptorSet() {
 
 void QeVulkan::init() {
 
+	initPostProcessing();
+
 	if (bInit) return;
 	bInit = true;
 	bUpdateDrawCommandBuffers = true;
@@ -1413,6 +1415,16 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 
 void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
+}
+
+void QeVulkan::initPostProcessing() {
+
+	pPostProcessingVert = nullptr;
+	pPostProcessingGeom = nullptr;
+	pPostProcessingFrag = nullptr;
+
+	if (postprocessingPipeline != VK_NULL_HANDLE) 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
+	postprocessingPipeline = VK_NULL_HANDLE;
 }
 
 void QeVulkan::updatePostProcessing() {

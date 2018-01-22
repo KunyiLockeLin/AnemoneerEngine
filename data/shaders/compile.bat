@@ -7,7 +7,8 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V billboard.frag -o billboardf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V pbr.geom -o pbrg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V pbr.frag -o pbrf.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V post.vert -o postv.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V post.geom -o postg.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V post.frag -o postf.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.vert -o postprocessingv.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.geom -o postprocessingg.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.frag -o postprocessingf.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V grayscale.frag -o grayscalef.spv
 pause

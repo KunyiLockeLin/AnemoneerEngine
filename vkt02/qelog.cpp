@@ -37,7 +37,7 @@ void QeLog::print(std::string& msg) {
 	time(&rawtime);
 	localtime_s(&timeinfo, &rawtime);
 
-	strftime(buffer, sizeof(buffer), "%y%m%d%H%M: ", &timeinfo);
+	strftime(buffer, sizeof(buffer), "%H%M: ", &timeinfo);
 	std::string s = buffer;
 	s += msg;
 

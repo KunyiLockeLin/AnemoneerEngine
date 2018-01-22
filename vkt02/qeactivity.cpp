@@ -29,8 +29,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	if (node != nullptr && node->nexts.size() > 0) 
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
 
-	node = AST->getXMLNode(_property, 1, "postShader");
-	if (node == nullptr || node->eKeys.size() == 0) node = AST->getXMLNode(2, AST->CONFIG, "defaultPostprocessing");
+	node = AST->getXMLNode(_property, 1, "postprocessing");
 	if (node != nullptr && node->eKeys.size() > 0) {
 
 		const char* c = AST->getXMLValue(node, 1, "vert");
@@ -40,6 +39,25 @@ void QeActivity::init(QeAssetXML* _property) {
 		c = AST->getXMLValue(node, 1, "frag");
 		if (c != nullptr) VK->pPostProcessingFrag = AST->getShader(c);
 	}
+	if (node == nullptr || node->eKeys.size() == 0 
+		|| VK->pPostProcessingVert == nullptr || VK->pPostProcessingGeom == nullptr || VK->pPostProcessingFrag) {
+		node = AST->getXMLNode(2, AST->CONFIG, "defaultPostprocessing");
+
+		const char* c = nullptr;
+		if (VK->pPostProcessingVert == nullptr) {
+			c = AST->getXMLValue(node, 1, "vert");
+			VK->pPostProcessingVert = AST->getShader(c);
+		}
+		if (VK->pPostProcessingGeom == nullptr) {
+			c = AST->getXMLValue(node, 1, "geom");
+			VK->pPostProcessingGeom = AST->getShader(c);
+		}
+		if (VK->pPostProcessingFrag == nullptr) {
+			c = AST->getXMLValue(node, 1, "frag");
+			VK->pPostProcessingFrag = AST->getShader(c);
+		}
+	}
+
 	VK->bUpdateDrawCommandBuffers = true;
 	VK->updatePostProcessing();
 }

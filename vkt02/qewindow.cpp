@@ -41,12 +41,15 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	case WM_EXITSIZEMOVE:
 		VK->bRecreateRender = true;
 		break;
+	case WM_COMMAND:
+		if (wParam == VK_ESCAPE) {
+			QE->bClosed = true;
+			break;
+		}
 	default:
 
 		switch (wParam) {
-		case VK_ESCAPE:
-			QE->bClosed = true;
-			break;
+
 		case KEY_C:
 			SetWindowText(commandBox, L"");
 			ShowWindow(commandBox, SW_SHOW);
