@@ -1,16 +1,7 @@
 # Vulkan
 
   - enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
-  - Setting: data/config.xml
-  - Input:
-    - "+" : Add new viewport. The maximum number of viewport is nine.
-    - "-" : Substract the last viewport.
-    - "1"~"9" : Choose a viewport to control its camera.
-    - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
-    - "c" : turn on command mode.
-      - "resetcamera [p1]" : Initialize the camera. p1 is camera mode. 0 is third person. 1 is first person. If p1 is empty, it means not to change the camera mode.
-      - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. 
-      
+  
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
 # Feature:
@@ -27,7 +18,16 @@
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
   - Math library.
-  
+  - Setting: data/config.xml
+  - Input:
+    - "+" : Add new viewport. The maximum number of viewport is nine.
+    - "-" : Substract the last viewport.
+    - "1"~"9" : Choose a viewport to control its camera.
+    - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
+    - "c" : turn on command mode.
+      - "resetcamera [p1]" : Initialize the camera. p1 is camera mode. 0 is third person. 1 is first person. If p1 is empty, it means not to change the camera mode.
+      - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. 
+      
 # ToDoList:
   - multiple render
   - HDR
