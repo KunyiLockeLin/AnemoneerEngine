@@ -13,7 +13,7 @@
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
 # Feature:
-  - Comptuer Graphics's power is by Vulkan. VulkanSDK is a only third party llibrary.
+  - Comptuer Graphics's power is by Vulkan. VulkanSDK is a only third party llibrary. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing.
   - Support simple light and camera control.
   - Support vertex, geometry, and fragment shader.
