@@ -10,9 +10,9 @@
   <defaultLight show="1" type="0" posX="10" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="50"/>
   <defaultAmbientColor r="0" g="0.5" b="0.5"/>
   <billboard obj= "plane.gltf" shadergeom= "billboardg.spv" shaderfrag= "billboardf.spv"/>
-  <startActivity>activity1</startActivity>
-  
-  <activity1>
+  <startScene>scene1</startScene>
+
+  <scene1>
     <models>
       <e id="1" obj= "animation.gltf" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="0.2" action="0" actionType="2" />
       <e id="2" obj= "animation.gltf" speed="10" posX="0" posY="-5" posZ="-3" actionSpeed="1" action="2" actionType="2" />
@@ -23,9 +23,9 @@
     <lights/>
     <cameras/>
     <postprocessing/>
-  </activity1>
-  
-  <activity2>
+  </scene1>
+
+  <scene2>
     <models>
       <e id="1" obj= "animation.gltf" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="0.2" action="0" actionType="2" />
       <e id="4" obj= "box.gltf" speed="-100" posX="-1" posY="-1" posZ="0" attachid="1" attachskeleton="Armature_Bone_002"/>
@@ -36,5 +36,6 @@
     </lights>
     <cameras/>
     <postprocessing/>
-  </activity2>
+  </scene2>
+
 </confing>

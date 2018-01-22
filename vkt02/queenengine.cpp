@@ -12,7 +12,7 @@ void QueenEngine::run() {
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
 
 	if(activityName.empty())
-		activityName = AST->getXMLValue(node, 1, "startActivity");
+		activityName = AST->getXMLValue(node, 1, "startScene");
 	
 	QeAssetXML* startActivityNode = AST->getXMLNode(node, 1, activityName.c_str());
 	currentActivity = OBJMGR->getActivity(0, startActivityNode);
