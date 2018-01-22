@@ -29,6 +29,7 @@
       - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. 
       
 # ToDoList:
+  - PBR lighting isn't smooth.
   - multiple render
   - HDR
   - mirror
