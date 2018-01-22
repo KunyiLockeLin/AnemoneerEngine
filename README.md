@@ -1,15 +1,7 @@
 # Vulkan
 
   - enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
-  - Setting: data/config.xml
-  - Input:
-    - "+" : Add new viewport. The maximum number of viewport is nine.
-    - "-" : Substract the last viewport.
-    - "1"~"9" : Choose a viewport to control its camera.
-    - "R" : Reset the camera.
-    - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
-    - "l" : Restart the program.
-    
+  
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
 # Feature:
@@ -20,16 +12,26 @@
   - Support Phong shading and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map.
   - Support skeletal animation(Only for gltf), attach obj and billboards.
-  - Support Log output.
+  - Support Log output, and command.
   - For model  - obj, mtl, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
   - Math library.
-  
+  - Setting: data/config.xml
+  - Input:
+    - "+" : Add new viewport. The maximum number of viewport is nine.
+    - "-" : Substract the last viewport.
+    - "1"~"9" : Choose a viewport to control its camera.
+    - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
+    - "c" : turn on command mode.
+      - "resetcamera [p1]" : Initialize the camera. p1 is camera mode. 0 is third person. 1 is first person. If p1 is empty, it means not to change the camera mode.
+      - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. 
+      
 # ToDoList:
-  - HDR
+  - PBR lighting isn't smooth.
   - multiple render
+  - HDR
   - mirror
   - bounding Box
   - collision
@@ -41,8 +43,9 @@
   - frustum Culling
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - separate to different many libraries
- 
+  - separate to many different libraries
+  - release mode crash.
+  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
   - https://renderdoc.org/vulkan-in-30-minutes.html
