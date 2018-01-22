@@ -29,8 +29,8 @@
   - Math library.
   
 # ToDoList:
-  - HDR
   - multiple render
+  - HDR
   - mirror
   - bounding Box
   - collision
