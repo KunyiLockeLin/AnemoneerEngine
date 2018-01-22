@@ -31,8 +31,8 @@
 # ToDoList:
   - PBR lighting isn't smooth.
   - multiple render
-  - HDR
   - mirror
+  - HDR
   - bounding Box
   - collision
   - Terrian system
