@@ -45,6 +45,7 @@
   - frustum Culling
   - select object
   - room
+  - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
   
