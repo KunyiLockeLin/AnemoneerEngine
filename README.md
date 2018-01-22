@@ -1,5 +1,4 @@
 # Vulkan
-
   - enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
   
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
@@ -33,6 +32,8 @@
   - multiple render
   - mirror
 ---
+  - release mode crash.
+  - camera control modification
   - HDR
   - bounding Box
   - collision
@@ -46,8 +47,6 @@
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
-  - release mode crash.
-  - camera control modification
   
 # Reference:
   - https://vulkan-tutorial.com/
