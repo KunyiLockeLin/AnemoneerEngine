@@ -48,12 +48,13 @@
   - camera control modification
   
 # Reference:
-  - https://www.khronos.org/blog/beginners-guide-to-vulkan
-  - https://renderdoc.org/vulkan-in-30-minutes.html
   - https://vulkan-tutorial.com/
   - https://github.com/PacktPublishing/Vulkan-Cookbook
-  - https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
   - https://github.com/SaschaWillems/Vulkan
+  - https://www.khronos.org/blog/beginners-guide-to-vulkan
+  - https://renderdoc.org/vulkan-in-30-minutes.html
+  - https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
+  - https://github.com/LunarG/VulkanSamples
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
   - https://github.com/KhronosGroup/glTF-Blender-Exporter
