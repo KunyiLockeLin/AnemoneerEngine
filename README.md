@@ -26,13 +26,13 @@
     - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
     - "c" : turn on command mode.
       - "resetcamera [p1]" : Initialize the camera. p1 is camera mode. 0 is third person. 1 is first person. If p1 is empty, it means not to change the camera mode.
-      - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. 
+      - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has scene1, scene2, and scene3.
       
 # ToDoList:
   - PBR lighting isn't smooth.
   - multiple render
-  - HDR
   - mirror
+  - HDR
   - bounding Box
   - collision
   - Terrian system
@@ -45,14 +45,17 @@
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
   - release mode crash.
+  - camera control modification
   
 # Reference:
-  - https://www.khronos.org/blog/beginners-guide-to-vulkan
-  - https://renderdoc.org/vulkan-in-30-minutes.html
   - https://vulkan-tutorial.com/
   - https://github.com/PacktPublishing/Vulkan-Cookbook
-  - https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
   - https://github.com/SaschaWillems/Vulkan
+  - https://github.com/pandurangkatkar/Vulkan-1
+  - https://www.khronos.org/blog/beginners-guide-to-vulkan
+  - https://renderdoc.org/vulkan-in-30-minutes.html
+  - https://github.com/KhronosGroup/Khronosdotorg/blob/master/api/vulkan/resources.md
+  - https://github.com/LunarG/VulkanSamples
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
   - https://github.com/KhronosGroup/glTF-Blender-Exporter
