@@ -20,8 +20,8 @@
   - Math library.
   - Setting: data/config.xml
   - Input:
-    - "+" : Add new viewport. The maximum number of viewport is nine.
-    - "-" : Substract the last viewport.
+    - "+" : Add a new viewport. The maximum number of viewport is nine.
+    - "-" : Remove the last viewport.
     - "1"~"9" : Choose a viewport to control its camera.
     - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
     - "c" : turn on command mode.
@@ -41,6 +41,7 @@
   - shadow
   - mix animation
   - frustum Culling
+  - select object
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
