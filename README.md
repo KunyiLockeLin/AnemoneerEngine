@@ -44,7 +44,8 @@
   - room
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
- 
+  - release mode crash.
+  
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
   - https://renderdoc.org/vulkan-in-30-minutes.html
