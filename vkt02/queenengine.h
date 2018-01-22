@@ -9,6 +9,7 @@ public:
 	~QueenEngine() {}
 	void run();
 
+	std::string activityName = "";
 	QeActivity* currentActivity = nullptr;
 	bool bClosed = false;
 	bool bRestart = false;

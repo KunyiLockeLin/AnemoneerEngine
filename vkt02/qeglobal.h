@@ -46,6 +46,7 @@ public:
 	QeObjectManger*		objMgr = nullptr;
 	QeEncode*			encode = nullptr;
 	QeLog*				log = nullptr;
+	QeCommand*			command = nullptr;
 };
 
 #define GLB		QeGlobal::getInstance()
@@ -59,3 +60,4 @@ public:
 #define ENCODE	GLB.encode
 #define DEBUG	GLB.log
 #define LOG(msg) GLB.log->print( std::string("")+msg )
+#define CMD(msg) GLB.command->inputCommand( msg )

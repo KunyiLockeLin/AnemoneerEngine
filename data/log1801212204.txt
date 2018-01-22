@@ -1,0 +1,1 @@
+1801212204: Could not create window!

@@ -8,15 +8,20 @@ public:
 	QeWindow(QeGlobalKey& _key) {}
 	~QeWindow() {}
 
+	HINSTANCE windowInstance;
+	HWND window;
+	HWND commandBox;
+	WNDPROC DefEditProc;
+
 	void getWindowSize(int& width, int& height);
 	void update(float time);
-	HWND window;
-	HINSTANCE windowInstance;
 	bool bInit = false;
 	void init();
 	void resize();
 	std::string getWindowTitle();
 
-	TCHAR* convert(std::string _s); 
+	std::wstring chartowchar(std::string s);
+	std::string wchartochar(std::wstring s);
 	void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void sendCommand();
 };

@@ -66,6 +66,7 @@ void QeGlobal::init() {
 	if (encode == nullptr)		encode = new QeEncode(key);
 	if (vulkan == nullptr)		vulkan = new QeVulkan(key);
 	if (log == nullptr)			log = new QeLog(key);
+	if (command == nullptr)		command = new QeCommand(key);
 }
 
 QeGlobal::~QeGlobal() {
@@ -78,6 +79,10 @@ QeGlobal::~QeGlobal() {
 	if (window != nullptr) {
 		delete window;
 		window = nullptr;
+	}
+	if (engine != nullptr) {
+		delete engine;
+		engine = nullptr;
 	}
 }
 
@@ -103,13 +108,13 @@ void QeGlobal::cleanup() {
 		delete objMgr;
 		objMgr = nullptr;
 	}
-	if (engine != nullptr) {
-		delete engine;
-		engine = nullptr;
-	}
 	if (log != nullptr) {
 		delete log;
 		log = nullptr;
+	}
+	if (command != nullptr) {
+		delete command;
+		command = nullptr;
 	}
 }
 

@@ -144,13 +144,7 @@ void QeCamera::init(QeAssetXML* _property) {
 }
 
 void QeCamera::reset() {
-
-	QeCameraType lastType = type;
-
 	init(initProperty); 
-
-	if (lastType == eCameraThirdPerson) type = eCameraFirstPerson;
-	else								type = eCameraFirstPerson;
 }
 
 void QeCamera::update(float time) {

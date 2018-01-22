@@ -27,6 +27,7 @@
 #include <vulkan/vulkan.hpp>
 
 #define KEY_A 0x41
+#define KEY_C 0x43
 #define KEY_D 0x44
 #define KEY_E 0x45
 #define KEY_Q 0x51
@@ -84,6 +85,7 @@ class QeObjectManger;
 class QeActivity;
 class QeVulkan;
 class QeLog;
+class QeCommand;
 
 
 #include "qeencode.h"
@@ -101,3 +103,4 @@ class QeLog;
 #include "qeobjectmanger.h"
 #include "qeactivity.h"
 #include "qelog.h"
+#include "qecommand.h"

@@ -50,12 +50,7 @@ void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) 
 
 	case WM_KEYDOWN:
 		switch (_input2) {
-		case VK_ESCAPE:
-			QE->bClosed = true;
-			break;
-		case KEY_L:
-			QE->bRestart = true;
-			break;
+
 		case VK_NUMPAD1:
 		case VK_NUMPAD2:
 		case VK_NUMPAD3:
@@ -94,9 +89,6 @@ void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) 
 			break;
 		case KEY_E:
 			VP->getTargetCamera()->move(QeVector3f(0, -1, 0));
-			break;
-		case KEY_R:
-			VP->getTargetCamera()->reset();
 			break;
 		}
 		break;

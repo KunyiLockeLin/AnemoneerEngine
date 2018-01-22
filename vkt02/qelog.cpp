@@ -23,7 +23,7 @@ void QeLog::init()
 }
 
 bool QeLog::isDebug()	{	return mode == eModeNoDebug ? false : true;	}
-bool QeLog::isConsole() {	return mode == eModeConsole ? true	: false; }
+bool QeLog::isConsole() {	return (mode == eModeConsole  || mode == eModeConsoleOutput )? true	: false; }
 
 
 void QeLog::print(std::string& msg) {
@@ -41,8 +41,8 @@ void QeLog::print(std::string& msg) {
 	std::string s = buffer;
 	s += msg;
 
-	if (mode == eModeConsole)		std::cout << s.c_str() << std::endl;
-	else if (mode == eModeOutput) {
+	if (mode != eModeOutput)		std::cout << s.c_str() << std::endl;
+	else if (mode != eModeConsole) {
 
 		std::fstream ffile(outputPath);
 		if (ffile.is_open()) {
