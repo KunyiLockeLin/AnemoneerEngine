@@ -45,6 +45,7 @@
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
   - release mode crash.
+  - camera control modification
   
 # Reference:
   - https://www.khronos.org/blog/beginners-guide-to-vulkan
