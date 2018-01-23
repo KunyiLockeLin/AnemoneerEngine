@@ -28,6 +28,7 @@
       - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has scene1, scene2, and scene3.
       
 # ToDoList:
+  - connect browser.
   - PBR lighting isn't smooth.
   - multiple render
   - mirror
