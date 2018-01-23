@@ -2,7 +2,7 @@
   <debug>2</debug>
   <title>VulkanText</title>
   <engine>QueenEngine</engine>
-  <envir FPS="30" width="1260" height="650" />
+  <envir FPS="30" width="1152" height="648" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   <defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" phonggeom="phongg.spv" phongfrag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" />
   <defaultPostprocessing vert="postprocessingv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv" />
