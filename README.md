@@ -46,6 +46,7 @@
   - select object
   - room
   - physical
+  - combine javascript
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
   
