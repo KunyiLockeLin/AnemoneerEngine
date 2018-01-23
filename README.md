@@ -1,5 +1,4 @@
 # Vulkan
-
   - enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
   
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
@@ -20,8 +19,8 @@
   - Math library.
   - Setting: data/config.xml
   - Input:
-    - "+" : Add new viewport. The maximum number of viewport is nine.
-    - "-" : Substract the last viewport.
+    - "+" : Add a new viewport. The maximum number of viewport is nine.
+    - "-" : Remove the last viewport.
     - "1"~"9" : Choose a viewport to control its camera.
     - "Up","Down","Left","Right","W","A","S","D","Q","E","MouseLeftMove","MouseRightMove" : Move the camera.
     - "c" : turn on command mode.
@@ -29,9 +28,13 @@
       - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has scene1, scene2, and scene3.
       
 # ToDoList:
+  - connect browser.
   - PBR lighting isn't smooth.
   - multiple render
   - mirror
+---
+  - release mode crash.
+  - camera control modification
   - HDR
   - bounding Box
   - collision
@@ -41,11 +44,12 @@
   - shadow
   - mix animation
   - frustum Culling
+  - select object
   - room
+  - physical
+  - combine javascript
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
-  - release mode crash.
-  - camera control modification
   
 # Reference:
   - https://vulkan-tutorial.com/
