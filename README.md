@@ -29,6 +29,7 @@
       
 # ToDoList:
   - combine browser.
+  - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - PBR lighting isn't smooth.
   - multiple render
   - mirror
@@ -47,7 +48,6 @@
   - select object
   - room
   - physical
-  - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - separate to many different libraries
   
 # Reference:
