@@ -1,13 +1,15 @@
 #include "qeheader.h"
 
 
-
-
 LRESULT EditProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg){
 	case WM_CHAR:
-		if (wParam == VK_RETURN) {
+		switch (wParam) {
+		case KEY_FSLASH:
+			WIN->closeCommand();
+			break;
+		case VK_RETURN:
 			WIN->sendCommand();
 			break;
 		}
@@ -23,13 +25,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
 
+void QeWindow::closeCommand() {
+	ShowWindow(commandBox, SW_HIDE);
+	SetFocus(window);
+}
+
 void QeWindow::sendCommand() {
 
 	wchar_t  lpString[256];
 	GetWindowText(commandBox, lpString, 256);
 	CMD(wchartochar(lpString));
-	ShowWindow(commandBox, SW_HIDE);
-	SetFocus(window);
+	closeCommand();
 }
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -39,18 +45,16 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		QE->bClosed = true;
 		break;
 	case WM_EXITSIZEMOVE:
-		VK->bRecreateRender = true;
+		VP->bRecreateRender = true;
 		break;
-	case WM_COMMAND:
-		if (wParam == VK_ESCAPE) {
-			QE->bClosed = true;
-			break;
-		}
+
 	default:
 
 		switch (wParam) {
-
-		case KEY_C:
+		case VK_ESCAPE:
+			if(uMsg != WM_IME_COMPOSITION)	QE->bClosed = true;
+			break;
+		case KEY_FSLASH:
 			SetWindowText(commandBox, L"");
 			ShowWindow(commandBox, SW_SHOW);
 			SetFocus(commandBox);
@@ -92,7 +96,7 @@ void QeWindow::resize() {
 	windowRect.top = y;
 
 	SetWindowPos(window, 0, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOZORDER);
-	VK->bRecreateRender = true;
+	VP->bRecreateRender = true;
 }
 
 void QeWindow::init() {

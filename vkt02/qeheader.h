@@ -26,6 +26,7 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #include <vulkan/vulkan.hpp>
 
+#define KEY_FSLASH 0x2F
 #define KEY_A 0x41
 #define KEY_C 0x43
 #define KEY_D 0x44

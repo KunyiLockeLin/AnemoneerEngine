@@ -1,0 +1,2 @@
+0018: validation layer: vkCreateGraphicsPipelines: parameter pCreateInfos[0].stageCount must be greater than 0. (null)
+0018: validation layer: Invalid Pipeline CreateInfo State: Vertex Shader required. The spec valid usage text states 'The stage member of one element of pStages must be VK_SHADER_STAGE_VERTEX_BIT' (https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-VkGraphicsPipelineCreateInfo-stage-00727)

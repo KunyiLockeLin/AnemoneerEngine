@@ -5,7 +5,11 @@ QeModel::~QeModel() {
 }
 
 void QeModel::cleanupPipeline() {
-	vkDestroyPipeline(VK->device, pipeline, nullptr);
+
+	if (pipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(VK->device, pipeline, nullptr);
+		pipeline = VK_NULL_HANDLE;
+	}
 }
 
 void QeModel::createPipeline() {

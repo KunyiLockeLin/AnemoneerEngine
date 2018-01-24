@@ -38,5 +38,5 @@ void QueenEngine::mainLoop() {
 			WIN->update(time);
 		}
 	}
-	VK->deviceWaitIdle();
+	vkDeviceWaitIdle(VK->device);
 }

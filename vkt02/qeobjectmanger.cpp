@@ -83,7 +83,7 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	newModel->init(_property);
 	mgrModels[newModel->id] = newModel;
 
-	VK->bUpdateDrawCommandBuffers = true;
+	VP->bUpdateDrawCommandBuffers = true;
 	return newModel;
 }
 
@@ -98,7 +98,7 @@ QeBillboard* QeObjectManger::getBillboard(int _id) {
 	newModel->init(_property);
 	mgrBillboards[_id] = newModel;
 
-	VK->bUpdateDrawCommandBuffers = true;
+	VP->bUpdateDrawCommandBuffers = true;
 	return newModel;
 }
 
@@ -158,7 +158,7 @@ void QeObjectManger::recreatePipeline() {
 		it->second->createPipeline();
 		++it;
 	}
-	VK->bUpdateDrawCommandBuffers = true;
+	VP->bUpdateDrawCommandBuffers = true;
 }
 
 

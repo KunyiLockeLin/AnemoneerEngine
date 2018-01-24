@@ -34,8 +34,8 @@ QeDataDescriptorSet::QeDataDescriptorSet() {
 }
 
  QeVulkan::~QeVulkan() {
-	cleanupRender();
-	vkDestroySurfaceKHR(instance, surface, nullptr);
+
+	vkDestroySurfaceKHR(VK->instance, surface, nullptr);
 	surface = VK_NULL_HANDLE;
 	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 	pipelineLayout = VK_NULL_HANDLE;
@@ -43,10 +43,6 @@ QeDataDescriptorSet::QeDataDescriptorSet() {
 	descriptorSetLayout = VK_NULL_HANDLE;
 	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	descriptorPool = VK_NULL_HANDLE;
-	vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
-	renderFinishedSemaphore = VK_NULL_HANDLE;
-	vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
-	imageAvailableSemaphore = VK_NULL_HANDLE;
 	vkDestroyCommandPool(device, commandPool, nullptr);
 	commandPool = VK_NULL_HANDLE;
 
@@ -60,47 +56,21 @@ QeDataDescriptorSet::QeDataDescriptorSet() {
 
 void QeVulkan::init() {
 
-	initPostProcessing();
-
 	if (bInit) return;
 	bInit = true;
-	bUpdateDrawCommandBuffers = true;
-	bRecreateRender = false;
+
 	createInstance();
 	setupDebugCallback();
-
 	surface = createSurface(WIN->window, WIN->windowInstance);
-
 	pickPhysicalDevice();
 	createLogicalDevice();
 	createDescriptorPool();
 	descriptorSetLayout = createDescriptorSetLayout();
 	pipelineLayout = createPipelineLayout( descriptorSetLayout);
 	createCommandPool();
-	createSemaphores();
-	postprocessingDescriptorSet = createDescriptorSet(descriptorSetLayout);
-
-	createRender();
 }
 
-void QeVulkan::update(float time) {
-	
-	if (bRecreateRender) {
-		recreateRender();
-		bRecreateRender = false;
-	}
-
-	if (bUpdateDrawCommandBuffers) {
-		updateDrawCommandBuffers();
-		bUpdateDrawCommandBuffers = false;
-	}
-
-	drawFrame();
-}
-
-void QeVulkan::deviceWaitIdle() {
-	vkDeviceWaitIdle(device);
-}
+void QeVulkan::update(float time) {}
 
 VkResult QeVulkan::CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {
 	auto func = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
@@ -113,100 +83,6 @@ void QeVulkan::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportC
 	auto func = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
 	
 	if (func != nullptr)	func(instance, callback, pAllocator);
-}
-
-void QeVulkan::drawFrame() {
-
-	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		bRecreateRender = true;
-		return;
-	}
-	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image!");
-
-	VkSubmitInfo submitInfo = {};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
-
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
-	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
-
-	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = signalSemaphores;
-
-	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)	LOG("failed to submit draw command buffer!");
-
-	VkPresentInfoKHR presentInfo = {};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = signalSemaphores;
-
-	VkSwapchainKHR swapChains[] = { swapChain };
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = swapChains;
-	presentInfo.pImageIndices = &imageIndex;
-
-	result = vkQueuePresentKHR(presentQueue, &presentInfo);
-
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)	bRecreateRender = true;
-
-	else if (result != VK_SUCCESS)	LOG("failed to present swap chain image!");
-
-	vkQueueWaitIdle(presentQueue);
-}
-
-void QeVulkan::createRender() {
-	
-	createSwapChain();
-	createSwapChainImageViews();
-	createRenderPass();
-	createSceneDepthImage();
-	createFramebuffers();
-	createDrawCommandBuffers();
-}
-
-void QeVulkan::cleanupRender() {
-
-	sceneImage.~QeVKImageBuffer();
-	depthImage.~QeVKImageBuffer();
-
-	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
-	postprocessingPipeline = VK_NULL_HANDLE;
-
-	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
-		vkDestroyFramebuffer(device, swapChainFramebuffers[i], nullptr);
-		swapChainFramebuffers[i] = VK_NULL_HANDLE;
-		vkDestroyImageView(device, swapChainImageViews[i], nullptr);
-		swapChainImageViews[i] = VK_NULL_HANDLE;
-	}
-	vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
-	drawCommandBuffers.clear();
-	bUpdateDrawCommandBuffers = true;
-	vkDestroyRenderPass(device, renderPass, nullptr);
-	renderPass = VK_NULL_HANDLE;
-	vkDestroySwapchainKHR(device, swapChain, nullptr);
-	swapChain = VK_NULL_HANDLE;
-	if(OBJMGR != nullptr)	OBJMGR->cleanupPipeline();
-}
-
-void QeVulkan::recreateRender() {
-	deviceWaitIdle();
-
-	cleanupRender();
-	createRender();
-
-	VP->updateViewport();
-	OBJMGR->recreatePipeline();
-	updatePostProcessing();
 }
 
 void QeVulkan::createInstance() {
@@ -271,7 +147,7 @@ void QeVulkan::pickPhysicalDevice() {
 }
 
 void QeVulkan::createLogicalDevice() {
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<int> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
@@ -315,8 +191,9 @@ void QeVulkan::createLogicalDevice() {
 	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
 }
 
-void QeVulkan::createSwapChain() {
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
+void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<VkImage>& swapChainImages, std::vector<VkImageView>& swapChainImageViews) {
+	
+	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
 
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -337,7 +214,7 @@ void QeVulkan::createSwapChain() {
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT| VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
 
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 	uint32_t queueFamilyIndices[] = { (uint32_t)indices.graphicsFamily, (uint32_t)indices.presentFamily };
 
 	if (indices.graphicsFamily != indices.presentFamily) {
@@ -362,9 +239,7 @@ void QeVulkan::createSwapChain() {
 
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
-}
 
-void QeVulkan::createSwapChainImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
 
 	for (uint32_t i = 0; i < swapChainImages.size(); i++) {
@@ -372,7 +247,7 @@ void QeVulkan::createSwapChainImageViews() {
 	}
 }
 
-void QeVulkan::createRenderPass() {
+VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	VkAttachmentDescription colorAttachment1 = {};
 	//colorAttachment1.flags = 0;
 	colorAttachment1.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
@@ -460,7 +335,9 @@ void QeVulkan::createRenderPass() {
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 
+	VkRenderPass renderPass;
 	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)	LOG("failed to create render pass!");
+	return renderPass;
 }
 
 VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
@@ -519,8 +396,9 @@ VkPipelineLayout QeVulkan::createPipelineLayout( VkDescriptorSetLayout& descript
 	return pipelineLayout;
 }
 
-void QeVulkan::createFramebuffers() {
-	swapChainFramebuffers.resize(swapChainImageViews.size());
+void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImageBuffer& sceneImage, 
+								QeVKImageBuffer& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) {
+	framebuffers.resize(swapChainImageViews.size());
 
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
 		std::array<VkImageView, 3> attachments = {
@@ -539,12 +417,12 @@ void QeVulkan::createFramebuffers() {
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
 
-		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)	LOG("failed to create framebuffer!");
+		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &framebuffers[i]) != VK_SUCCESS)	LOG("failed to create framebuffer!");
 	}
 }
 
 void QeVulkan::createCommandPool() {
-	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
+	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice, surface);
 
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -554,7 +432,7 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createSceneDepthImage() {
+void QeVulkan::createSceneDepthImage(QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, VkExtent2D& swapChainExtent) {
 	VkFormat depthFormat = findDepthFormat();
 
 	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, 
@@ -799,7 +677,7 @@ uint32_t QeVulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pro
 	return VK_NULL_HANDLE;
 }
 
-void QeVulkan::createSemaphores() {
+void QeVulkan::createSemaphores(VkSemaphore& imageAvailableSemaphore, VkSemaphore& renderFinishedSemaphore) {
 	VkSemaphoreCreateInfo semaphoreInfo = {};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -850,7 +728,7 @@ VkExtent2D QeVulkan::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabiliti
 	}
 }
 
-SwapChainSupportDetails QeVulkan::querySwapChainSupport(VkPhysicalDevice device) {
+SwapChainSupportDetails QeVulkan::querySwapChainSupport(VkPhysicalDevice& device, VkSurfaceKHR& surface) {
 	SwapChainSupportDetails details;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -875,13 +753,13 @@ SwapChainSupportDetails QeVulkan::querySwapChainSupport(VkPhysicalDevice device)
 }
 
 bool QeVulkan::isDeviceSuitable(VkPhysicalDevice device) {
-	QueueFamilyIndices indices = findQueueFamilies(device);
+	QueueFamilyIndices indices = findQueueFamilies(device, surface);
 
 	bool extensionsSupported = checkDeviceExtensionSupport(device);
 
 	//bool swapChainAdequate = false;
 	if (extensionsSupported) {
-		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device, surface);
 		//swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 
@@ -907,7 +785,7 @@ bool QeVulkan::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 	return requiredExtensions.empty();
 }
 
-QueueFamilyIndices QeVulkan::findQueueFamilies(VkPhysicalDevice device) {
+QueueFamilyIndices QeVulkan::findQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) {
 	QueueFamilyIndices indices;
 
 	uint32_t queueFamilyCount = 0;
@@ -972,8 +850,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL QeVulkan::debugCallback(VkDebugReportFlagsEXT fla
 	return VK_FALSE;
 }
 
-void QeVulkan::createDrawCommandBuffers() {
-	drawCommandBuffers.resize(swapChainFramebuffers.size());
+void QeVulkan::createDrawCommandBuffers(std::vector<VkCommandBuffer>& drawCommandBuffers, size_t size) {
+	drawCommandBuffers.resize(size);
 
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -982,56 +860,6 @@ void QeVulkan::createDrawCommandBuffers() {
 	allocInfo.commandBufferCount = (uint32_t)drawCommandBuffers.size();
 
 	if (vkAllocateCommandBuffers(device, &allocInfo, drawCommandBuffers.data()) != VK_SUCCESS) LOG("failed to allocate command buffers!");
-}
-
-
-void QeVulkan::updateDrawCommandBuffers() {
-
-	for (size_t i = 0; i < drawCommandBuffers.size(); i++) {
-		VkCommandBufferBeginInfo beginInfo = {};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-
-		vkBeginCommandBuffer(drawCommandBuffers[i], &beginInfo);
-		//vkResetCommandBuffer(drawCommandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
-		std::array<VkClearValue, 3> clearValues = {};
-		if (QE->currentActivity != nullptr) {
-			clearValues[0].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
-			clearValues[2].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
-		}
-		else {
-			clearValues[0].color = { 0, 0.5f, 0.5f, 1.0f };
-			clearValues[2].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
-		}
-		clearValues[1].depthStencil = { 1.0f, 0 };
-
-		VkRenderPassBeginInfo renderPassInfo = {};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = swapChainFramebuffers[i];
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = swapChainExtent;
-
-		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassInfo.pClearValues = clearValues.data();
-
-		vkCmdBeginRenderPass(drawCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		vkCmdSetViewport(drawCommandBuffers[i], 0, VP->currentNum, VP->viewports.data());
-		vkCmdSetScissor(drawCommandBuffers[i], 0, VP->currentNum, VP->scissors.data());
-		vkCmdSetLineWidth(drawCommandBuffers[i], 1.0f);
-
-		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
-
-		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &postprocessingDescriptorSet, 0, nullptr);
-		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline);
-		vkCmdDraw(drawCommandBuffers[i], 3, 1, 0, 0);
-
-		vkCmdEndRenderPass(drawCommandBuffers[i]);
-		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS)	LOG("failed to record command buffer!");
-	}
 }
 
 VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
@@ -1231,7 +1059,7 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = renderPass;
+	pipelineInfo.renderPass = VP->renderPass;
 	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -1415,24 +1243,4 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 
 void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
-}
-
-void QeVulkan::initPostProcessing() {
-
-	pPostProcessingVert = nullptr;
-	pPostProcessingGeom = nullptr;
-	pPostProcessingFrag = nullptr;
-
-	if (postprocessingPipeline != VK_NULL_HANDLE) 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
-	postprocessingPipeline = VK_NULL_HANDLE;
-}
-
-void QeVulkan::updatePostProcessing() {
-
-	QeDataDescriptorSet data;
-	data.inputAttachImageViews = sceneImage.view;
-	updateDescriptorSet(data, postprocessingDescriptorSet);
-	
-	if(postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, FALSE, FALSE, 1);
 }

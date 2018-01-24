@@ -24,4 +24,6 @@ public:
 	std::string wchartochar(std::wstring s);
 	void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void sendCommand();
+	void closeCommand();
+	//bool isWindow();
 };

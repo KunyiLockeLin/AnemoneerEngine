@@ -168,7 +168,6 @@
     <ClCompile Include="qecommand.cpp" />
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
-    <ClCompile Include="qerender.cpp" />
     <ClCompile Include="qevulkan.cpp" />
     <ClCompile Include="qeencode.cpp" />
     <ClCompile Include="queenengine.cpp" />
@@ -188,7 +187,6 @@
     <ClInclude Include="qecommand.h" />
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
-    <ClInclude Include="qerender.h" />
     <ClInclude Include="qevulkan.h" />
     <ClInclude Include="qeencode.h" />
     <ClInclude Include="queenengine.h" />
