@@ -15,6 +15,7 @@
 #include <cmath>
 #include <chrono>
 #include <ctime>
+#include <conio.h>
 #include <iomanip>
 #include <vector>
 #include <algorithm>

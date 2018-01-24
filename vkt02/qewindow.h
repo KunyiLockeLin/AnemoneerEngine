@@ -25,5 +25,7 @@ public:
 	void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void sendCommand();
 	void closeCommand();
+	void consoleInput();
+	std::string consoleCommandInput;
 	//bool isWindow();
 };

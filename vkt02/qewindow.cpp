@@ -234,6 +234,58 @@ void QeWindow::update(float time) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+	consoleInput();
+}
+
+void QeWindow::consoleInput() {
+	if (!DEBUG->isConsole())	return;
+
+	if(!_kbhit()) return;
+	char cur = _getch();
+
+	switch ( cur ) {
+	case VK_ESCAPE:
+		QE->bClosed = true;
+		break;
+	case VK_RETURN:
+		std::cout << std::endl;
+		if (consoleCommandInput.length()>0)	CMD(consoleCommandInput);
+		consoleCommandInput.clear();
+		break;
+	case VK_BACK:
+		if (!consoleCommandInput.empty()) {
+			consoleCommandInput.pop_back();
+			std::cout << "\b" << " " << "\b";
+		}
+		break;
+	default:
+		consoleCommandInput += cur;
+		std::cout << cur;
+		break;
+	}
+
+	//hout = GetStdHandle(STD_OUTPUT_HANDLE);
+	//initializeConsole(hout);
+	/*HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD input_record;
+	DWORD input_size = 1;
+	DWORD events = 0;
+	PeekConsoleInput(input_handle, &input_record, input_size, &events);
+	if (events <= 0) return;
+
+	ReadConsoleInput(input_handle, &input_record, input_size, &events);
+	if (input_record.EventType != KEY_EVENT || !input_record.Event.KeyEvent.bKeyDown) return;
+
+	switch (input_record.Event.KeyEvent.wVirtualKeyCode) {
+	case VK_ESCAPE:
+		QE->bClosed = true;
+		break;
+	case VK_RETURN:
+		std::string str;
+		//std::getline(std::cin, str);
+		if(str.length()>0)	CMD(str);
+		break;
+	}*/
 }
 
 std::wstring QeWindow::chartowchar(std::string s) {
