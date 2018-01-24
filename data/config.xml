@@ -2,7 +2,7 @@
   <title>VulkanText</title>
   <engine>QueenEngine</engine>
   <render>1</render>
-  <debug>3</debug>
+  <debug>2</debug>
   <envir FPS="30" width="1152" height="648" />
   <webEnvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />

@@ -21,5 +21,6 @@ public:
 	void print(std::string& msg);
 	bool isDebug();
 	bool isConsole();
+	bool isOutput();
 };
 

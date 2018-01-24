@@ -6,7 +6,7 @@ void QeLog::init()
 {
 	mode = QeDebugMode(atoi(AST->getXMLValue(2, AST->CONFIG, "debug")));
 
-	if (mode == eModeOutput) {
+	if (isOutput()) {
 		time_t rawtime;
 		struct tm timeinfo;
 		char buffer[128];
@@ -24,6 +24,7 @@ void QeLog::init()
 
 bool QeLog::isDebug()	{	return mode == eModeNoDebug ? false : true;	}
 bool QeLog::isConsole() {	return (mode == eModeConsole  || mode == eModeConsoleOutput )? true	: false; }
+bool QeLog::isOutput()	{	return (mode == eModeOutput || mode == eModeConsoleOutput) ? true : false; }
 
 
 void QeLog::print(std::string& msg) {
@@ -41,8 +42,8 @@ void QeLog::print(std::string& msg) {
 	std::string s = buffer;
 	s += msg;
 
-	if (mode != eModeOutput)		std::cout << s.c_str() << std::endl;
-	else if (mode != eModeConsole) {
+	if (isConsole())		std::cout << s.c_str() << std::endl;
+	if (isOutput()) {
 
 		std::fstream ffile(outputPath);
 		if (ffile.is_open()) {

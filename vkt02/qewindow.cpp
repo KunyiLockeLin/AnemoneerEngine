@@ -11,6 +11,8 @@ LRESULT EditProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		case VK_RETURN:
 			WIN->sendCommand();
+			WIN->closeCommand();
+			return true;
 			break;
 		}
 	default:
@@ -35,7 +37,6 @@ void QeWindow::sendCommand() {
 	wchar_t  lpString[256];
 	GetWindowText(commandBox, lpString, 256);
 	CMD(wchartochar(lpString));
-	closeCommand();
 }
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
