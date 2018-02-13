@@ -50,6 +50,7 @@
   - select object
   - room
   - physical
+  - convert the whole assets to a single binary data
   - separate to many different libraries
   
 # Reference:
