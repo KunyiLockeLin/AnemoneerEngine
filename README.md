@@ -27,7 +27,9 @@
     - "/" : turn on command mode or input directly in console.
       - "resetcamera [p1]" : Initialize the camera. p1 is camera mode. 0 is third person. 1 is first person. If p1 is empty, it means not to change the camera mode.
       - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has scene1, scene2, and scene3.
-      
+
+# Config:
+
 # ToDoList:
   - combine browser.
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
