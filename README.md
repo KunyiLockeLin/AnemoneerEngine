@@ -53,7 +53,7 @@
   - room
   - physical
   - convert the whole assets to a single binary data
-  - separate to many different libraries
+  - C-style
   
 # Reference:
   - https://vulkan-tutorial.com/
