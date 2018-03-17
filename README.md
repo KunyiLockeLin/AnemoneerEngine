@@ -40,15 +40,16 @@
           https://renderdoc.org/docs/index.html
 ---
   - ui
-  - release mode crash.
-  - camera control modification
-  - HDR
   - bounding Box
   - collision
   - Terrain system
-  - physical
-  - frustum Culling
   - parallel programming for collision and physical
+  - physical
+---
+  - release mode crash.
+  - camera control modification
+  - HDR
+  - frustum Culling
   - Dynamic Decals
   - normal map, specular map, cube map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
