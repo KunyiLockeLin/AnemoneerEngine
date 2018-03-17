@@ -31,29 +31,33 @@
 # config.xml:
 
 # ToDoList:
-  - combine browser.
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - live stream
   - PBR lighting isn't smooth.
   - multiple render
   - mirror
+  - study https://github.com/PacktPublishing/Vulkan-Cookbook 
+          https://github.com/SaschaWillems/Vulkan 
+          https://renderdoc.org/docs/index.html
 ---
   - release mode crash.
   - camera control modification
   - HDR
   - bounding Box
   - collision
-  - Terrian system
+  - Terrain system
+  - physical
   - frustum Culling
+  - parallel programming for collision and physical
   - Dynamic Decals
   - normal map, specular map, cube map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
   - mix animation
   - select object
   - room
-  - physical
   - convert the whole assets to a single binary data
   - C-style
+  - combine browser
+  - live stream
   
 # Reference:
   - https://vulkan-tutorial.com/
