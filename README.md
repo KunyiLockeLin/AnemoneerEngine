@@ -35,9 +35,11 @@
   - PBR lighting isn't smooth.
   - multiple render
   - mirror
-  - study https://github.com/PacktPublishing/Vulkan-Cookbook 
-          https://github.com/SaschaWillems/Vulkan 
-          https://renderdoc.org/docs/index.html
+  - study 
+    https://github.com/PacktPublishing/Vulkan-Cookbook 
+    https://github.com/SaschaWillems/Vulkan 
+    https://renderdoc.org/docs/index.html
+    http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
 ---
   - ui
   - bounding Box
