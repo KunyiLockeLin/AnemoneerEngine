@@ -36,10 +36,10 @@
   - multiple render
   - mirror
   - study 
-    https://github.com/PacktPublishing/Vulkan-Cookbook 
-    https://github.com/SaschaWillems/Vulkan 
-    https://renderdoc.org/docs/index.html
-    https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
+    - https://github.com/PacktPublishing/Vulkan-Cookbook 
+    - https://github.com/SaschaWillems/Vulkan 
+    - https://renderdoc.org/docs/index.html
+    - https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
 ---
   - ui
   - bounding Box
