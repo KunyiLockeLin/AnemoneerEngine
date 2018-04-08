@@ -39,7 +39,7 @@
     https://github.com/PacktPublishing/Vulkan-Cookbook 
     https://github.com/SaschaWillems/Vulkan 
     https://renderdoc.org/docs/index.html
-    http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
+    https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
 ---
   - ui
   - bounding Box
