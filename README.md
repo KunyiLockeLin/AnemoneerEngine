@@ -31,7 +31,6 @@
 # config.xml:
 
 # ToDoList:
-  - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - PBR lighting isn't smooth.
   - multiple render
   - mirror
@@ -48,6 +47,7 @@
   - parallel programming for collision and physical
   - physical
 ---
+  - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - release mode crash.
   - camera control modification
   - HDR
