@@ -84,3 +84,4 @@
   - https://github.com/KhronosGroup/Vulkan-Docs/issues/274
   - https://github.com/chunying/gaminganywhere
   - https://gpuopen.com/
+  - https://youtu.be/PxopE6Lwz3g
