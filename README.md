@@ -48,7 +48,8 @@
   - physical
 ---
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - release mode crash.
+  - release mode crash
+  - L-system, Swarm grammar
   - camera control modification
   - HDR
   - frustum Culling
