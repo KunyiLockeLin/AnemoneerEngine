@@ -41,11 +41,13 @@
     - https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
 ---
   - ui
-  - bounding Box
+  - bounding Box and sphere
   - collision
   - Terrain system
   - parallel programming for collision and physical
   - physical
+  - select object
+  - convert the whole assets into a single binary data
 ---
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - release mode crash
@@ -57,9 +59,7 @@
   - normal map, specular map, cube map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
   - mix animation
-  - select object
   - room
-  - convert the whole assets to a single binary data
   - C-style
   - combine browser
   - live stream
