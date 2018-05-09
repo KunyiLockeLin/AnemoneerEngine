@@ -146,7 +146,7 @@ QeAssetJSON* QeEncode::decodeJSON(const char* buffer, int &index) {
 				char s2[512];
 				strncpy_s(s2, s.c_str(), 512);
 				char *context = NULL;
-				const char* key1 = ",\"\n";
+				const char* key1 = ",\"\r\n";
 				char* pch = strtok_s(s2, key1, &context);
 
 				while (pch != NULL) {
@@ -430,7 +430,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 					for (k = 0; k<size2 ;++k ) {
 						if( index == model->jointsAnimation[k].id)
 							model->jointsAnimation[i].children[j] = &model->jointsAnimation[k];
-		}}}}
+					}
+				}
+			}
+		}
 
 		std::vector<QeAssetJSON*>* jchannels = AST->getJSONArrayNodes(json, 2, "animations", "channels");
 		std::vector<QeAssetJSON*>* jsmaplers = AST->getJSONArrayNodes(json, 2, "animations", "samplers");
@@ -479,7 +482,9 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 					//	memcpy(model->jointsAnimation[k].scaleOutput.data(), binData + offset, length);
 					//}
 					break;
-		}}}
+				}
+			}
+		}
 
 		// If an action doesn't move for EMPTY_FRAMES frames, it means next action.
 		const unsigned char EMPTY_FRAMES = 5;
@@ -611,7 +616,8 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		else if (index == bufferViews[7]) { // inverseBindMatrices  bone matrices
 			QeMatrix4x4f* dataPos = (QeMatrix4x4f*)(binData + offset);
 			for (j = 0; j < count; ++j) model->jointsAnimation[j].inverseBindMatrix = *(dataPos + j);
-	}}
+		}
+	}
 
 	// material
 	QeAssetMaterial *pMaterial = new QeAssetMaterial();
