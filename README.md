@@ -12,7 +12,7 @@
   - Support diffuse/baseColor map.
   - Support skeletal animation(Only for gltf), attach obj and billboards.
   - Support Log output, and command.
-  - For model  - [s]obj, mtl,[/s] gltf.
+  - For model  - [del]obj, mtl,[/del] gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
