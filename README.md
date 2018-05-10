@@ -8,11 +8,11 @@
   - Support mutli-viewports, post-processing.
   - Support simple light and camera control.
   - Support vertex, geometry, and fragment shader.
-  - Support Phong shading and PBR(Physically-Based Rendering)
+  - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map.
   - Support skeletal animation(Only for gltf), attach obj and billboards.
   - Support Log output, and command.
-  - For model  - [del]obj, mtl,[/del] gltf.
+  - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
