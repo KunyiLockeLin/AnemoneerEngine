@@ -1,5 +1,5 @@
 # Vulkan
-  - enviroment: Visual Studio 2017 and VulkanSDK 1.0.65.1
+  - enviroment: Visual Studio 2017 and VulkanSDK 1.0.73.0
   
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
@@ -63,6 +63,7 @@
   - C-style
   - combine browser
   - live stream
+  - machine learning for performance
   
 # Reference:
   - https://vulkan-tutorial.com/
