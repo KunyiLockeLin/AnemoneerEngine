@@ -85,3 +85,23 @@
   - https://github.com/chunying/gaminganywhere
   - https://gpuopen.com/
   - https://youtu.be/PxopE6Lwz3g
+
+  -https://github.com/LunarG/VulkanTools/blob/master/layersvt/screenshot.cpp
+  -https://github.com/LunarG/VulkanTools/blob/master/layersvt/screenshot_parsing.cpp
+  -https://forums.khronos.org/showthread.php/13015-How-vkCreateSwapchainKHR-from-Image-Not-from-surface
+  -https://stackoverflow.com/questions/38885309/is-it-possible-to-do-offscreen-rendering-without-surface-in-vulkan/38885394
+  -https://github.com/SaschaWillems/Vulkan/blob/master/examples/offscreen/offscreen.cpp
+  -https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCmdUpdateBuffer.html
+
+  -live stream websocket, Htc pro vive, Peregrine RPC, Bytestream, select(), Use UDP and check date correctly by myself
+  -https://www.youtube.com/watch?v=WcwnQW_AnC8
+  -https://play.google.com/store/apps/details?id=jp.co.sqex.game.ff13
+
+  -https://github.com/distcc/distcc
+  -https://en.wikipedia.org/wiki/Distcc
+  -https://en.wikipedia.org/wiki/OpenMP
+
+  -PolyWorld https://en.wikipedia.org/wiki/Polyworld
+  -Lindenmayer https://en.wikipedia.org/wiki/L-system
+  -http://www.kevs3d.co.uk/dev/lsystems/
+  -https://youtu.be/PxopE6Lwz3g
