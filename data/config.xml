@@ -1,6 +1,9 @@
 <confing>
-  <title>VulkanText</title>
-  <engine>QueenEngine</engine>
+  <applicationName>Demo</applicationName>
+  <applicationVersion major="0" minor="1" patch="0" />
+  <engineName>QueenEngine</engineName>
+  <engineVersion major="0" minor="1" patch="0" />
+  <VulkanAPIVersion major="1" minor="1" patch="73" />
   <render>1</render>
   <debug>2</debug>
   <envir FPS="30" width="1152" height="648" />

@@ -110,7 +110,7 @@ void QeWindow::init() {
 	windowInstance = GetModuleHandle(nullptr);
 
 	WNDCLASSEX wndClass;
-	std::wstring title = chartowchar(AST->getXMLValue(2, AST->CONFIG, "title"));
+	std::wstring title = chartowchar(AST->getXMLValue(2, AST->CONFIG, "applicationName"));
 
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -214,7 +214,29 @@ void QeWindow::init() {
 std::string QeWindow::getWindowTitle(){
 	std::string device(VK->deviceProperties.deviceName);
 	std::string windowTitle;
-	windowTitle = AST->getXMLValue(2, AST->CONFIG, "title");
+	windowTitle = AST->getXMLValue(2, AST->CONFIG, "applicationName");
+	windowTitle.append(" ");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "major"));
+	windowTitle.append(".");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "minor"));
+	windowTitle.append(".");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "patch"));
+	windowTitle.append(" - ");
+	windowTitle.append(AST->getXMLValue(2, AST->CONFIG, "engineName"));
+	windowTitle.append(" ");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "engineVersion", "major"));
+	windowTitle.append(".");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "engineVersion", "minor"));
+	windowTitle.append(".");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "engineVersion", "patch"));
+	windowTitle.append(" - ");
+	windowTitle.append("VulkanAPI");
+	windowTitle.append(" ");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "major"));
+	windowTitle.append(".");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "minor"));
+	windowTitle.append(".");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "patch"));
 	windowTitle.append(" - ");
 	windowTitle.append(device);
 	windowTitle.append(" - ");

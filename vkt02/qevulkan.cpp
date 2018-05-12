@@ -90,15 +90,28 @@ void QeVulkan::createInstance() {
 	
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = AST->getXMLValue(2, AST->CONFIG, "title");
-	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = AST->getXMLValue(2, AST->CONFIG, "engine");
-	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_0;
+	appInfo.pNext = nullptr;
+	appInfo.pApplicationName = AST->getXMLValue(2, AST->CONFIG, "applicationName");
+	appInfo.applicationVersion = VK_MAKE_VERSION(atoi((AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "major"))), 
+												 atoi((AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "minor"))), 
+												 atoi((AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "patch"))));
+	appInfo.pEngineName = AST->getXMLValue(2, AST->CONFIG, "engineName");
+	appInfo.engineVersion = VK_MAKE_VERSION(atoi((AST->getXMLValue(3, AST->CONFIG, "engineVersion", "major"))),
+											atoi((AST->getXMLValue(3, AST->CONFIG, "engineVersion", "minor"))),
+											atoi((AST->getXMLValue(3, AST->CONFIG, "engineVersion", "patch"))));
+	appInfo.apiVersion = VK_MAKE_VERSION(atoi((AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "major"))),
+										 atoi((AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "minor"))),
+										 atoi((AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "patch"))));
 
 	VkInstanceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	createInfo.pNext = nullptr;
+	createInfo.flags = 0;
 	createInfo.pApplicationInfo = &appInfo;
+	createInfo.enabledLayerCount = 0;
+	createInfo.ppEnabledLayerNames = nullptr;
+	//createInfo.enabledExtensionCount = 0;
+	//createInfo.ppEnabledExtensionNames = 0;
 
 	auto extensions = getRequiredExtensions();
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
@@ -149,13 +162,14 @@ void QeVulkan::pickPhysicalDevice() {
 void QeVulkan::createLogicalDevice() {
 	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 
-	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<int> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
-
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	float queuePriority = 1.0f;
 	for (int queueFamily : uniqueQueueFamilies) {
 		VkDeviceQueueCreateInfo queueCreateInfo = {};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.pNext = nullptr;
+		queueCreateInfo.flags = 0;
 		queueCreateInfo.queueFamilyIndex = queueFamily;
 		queueCreateInfo.queueCount = 1;
 		queueCreateInfo.pQueuePriorities = &queuePriority;
@@ -170,10 +184,14 @@ void QeVulkan::createLogicalDevice() {
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
+	createInfo.pNext = nullptr;
+	createInfo.flags = 0;
 	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	createInfo.pQueueCreateInfos = queueCreateInfos.data();
-
+	createInfo.enabledLayerCount = 0;
+	createInfo.ppEnabledLayerNames = nullptr;
+	//createInfo.enabledExtensionCount = 0;
+	//createInfo.ppEnabledExtensionNames = 0;
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
@@ -205,8 +223,9 @@ void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain,
 
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	createInfo.pNext = nullptr;
+	createInfo.flags = 0;
 	createInfo.surface = surface;
-
 	createInfo.minImageCount = imageCount;
 	createInfo.imageFormat = surfaceFormat.format;
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
@@ -224,12 +243,15 @@ void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain,
 	}
 	else {
 		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.queueFamilyIndexCount = 0;
+		createInfo.pQueueFamilyIndices = nullptr;
 	}
 
 	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	createInfo.presentMode = presentMode;
 	createInfo.clipped = VK_TRUE;
+	//createInfo.oldSwapchain = oldSwapchain;
 
 	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)	LOG("failed to create swap chain!");
 
@@ -426,8 +448,9 @@ void QeVulkan::createCommandPool() {
 
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+	poolInfo.pNext = nullptr;
 	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
 
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
@@ -623,6 +646,7 @@ void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemor
 VkCommandBuffer QeVulkan::beginSingleTimeCommands() {
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.pNext = nullptr;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandPool = commandPool;
 	allocInfo.commandBufferCount = 1;
@@ -866,6 +890,8 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 	VkResult err = VK_SUCCESS;
 	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
 	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	surfaceCreateInfo.pNext = nullptr;
+	surfaceCreateInfo.flags = 0;
 	surfaceCreateInfo.hinstance = windowInstance;
 	surfaceCreateInfo.hwnd = window;
 
