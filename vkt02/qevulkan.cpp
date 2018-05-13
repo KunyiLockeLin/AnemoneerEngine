@@ -92,16 +92,16 @@ void QeVulkan::createInstance() {
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pNext = nullptr;
 	appInfo.pApplicationName = AST->getXMLValue(2, AST->CONFIG, "applicationName");
-	appInfo.applicationVersion = VK_MAKE_VERSION(atoi((AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "major"))), 
-												 atoi((AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "minor"))), 
-												 atoi((AST->getXMLValue(3, AST->CONFIG, "applicationVersion", "patch"))));
+
+	std::vector<std::string> vs = ENCODE->split(AST->getXMLValue(2, AST->CONFIG, "applicationVersion"), ".");
+	appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
+	
 	appInfo.pEngineName = AST->getXMLValue(2, AST->CONFIG, "engineName");
-	appInfo.engineVersion = VK_MAKE_VERSION(atoi((AST->getXMLValue(3, AST->CONFIG, "engineVersion", "major"))),
-											atoi((AST->getXMLValue(3, AST->CONFIG, "engineVersion", "minor"))),
-											atoi((AST->getXMLValue(3, AST->CONFIG, "engineVersion", "patch"))));
-	appInfo.apiVersion = VK_MAKE_VERSION(atoi((AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "major"))),
-										 atoi((AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "minor"))),
-										 atoi((AST->getXMLValue(3, AST->CONFIG, "VulkanAPIVersion", "patch"))));
+	vs = ENCODE->split(AST->getXMLValue(2, AST->CONFIG, "engineVersion"), ".");
+	appInfo.engineVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
+
+	vs = ENCODE->split(AST->getXMLValue(2, AST->CONFIG, "VulkanAPIVersion"), ".");
+	appInfo.apiVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
 	VkInstanceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -1270,3 +1270,5 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
 }
+
+// Vulkan Cookbook

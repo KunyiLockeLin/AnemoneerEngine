@@ -1,9 +1,9 @@
 <confing>
   <applicationName>Demo</applicationName>
-  <applicationVersion major="0" minor="1" patch="0" />
+  <applicationVersion>0.1.0</applicationVersion>
   <engineName>QueenEngine</engineName>
-  <engineVersion major="0" minor="1" patch="0" />
-  <VulkanAPIVersion major="1" minor="1" patch="73" />
+  <engineVersion>0.1.0</engineVersion>
+  <VulkanAPIVersion>1.1.73</VulkanAPIVersion>
   <render>1</render>
   <debug>2</debug>
   <envir FPS="30" width="1152" height="648" />

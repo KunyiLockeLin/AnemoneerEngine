@@ -1407,3 +1407,16 @@ void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* t
 		else break; // codeLL = 256 or the others
 	}
 }
+
+std::vector<std::string> QeEncode::split(const char* s, const char* delim) {
+	
+	std::vector<std::string> tokens;
+	char dup[256];
+	strncpy(dup, s, 256);
+	char * token = strtok(dup, delim);
+	while (token != NULL) {
+		tokens.push_back(std::string(token));
+		token = strtok(NULL, delim);
+	}
+	return tokens;
+}

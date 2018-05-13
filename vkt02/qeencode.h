@@ -56,4 +56,5 @@ public:
 	void idct1(int *x, int *y, int ps, int half);
 	void xadd3(int* xa, int* xb, int* xc, int* xd, int h, int* p, int* n);
 	void xmul(int* xa, int* xb, int k1, int k2, int sh, int* p, int* n);
+	std::vector<std::string> split(const char* s, const char* delim);
 };
