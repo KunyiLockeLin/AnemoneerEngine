@@ -1412,11 +1412,12 @@ std::vector<std::string> QeEncode::split(const char* s, const char* delim) {
 	
 	std::vector<std::string> tokens;
 	char dup[256];
-	strncpy(dup, s, 256);
-	char * token = strtok(dup, delim);
+	strncpy_s(dup, s, 256);
+	char *context = NULL;
+	char * token = strtok_s(dup, delim, &context);
 	while (token != NULL) {
 		tokens.push_back(std::string(token));
-		token = strtok(NULL, delim);
+		token = strtok_s(NULL, delim, &context);
 	}
 	return tokens;
 }
