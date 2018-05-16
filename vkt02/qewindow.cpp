@@ -41,7 +41,12 @@ void QeWindow::sendCommand() {
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
-	switch (uMsg) {
+	inputData.inputType = uMsg;
+	inputData.inputKey = int(wParam);
+	inputData.mousePos.x = LOWORD(lParam);
+	inputData.mousePos.y = HIWORD(lParam);
+
+	switch (inputData.inputType) {
 	case WM_CLOSE:
 		QE->bClosed = true;
 		break;
@@ -51,7 +56,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 	default:
 
-		switch (wParam) {
+		switch (inputData.inputKey) {
 		case VK_ESCAPE:
 			if(uMsg != WM_IME_COMPOSITION)	QE->bClosed = true;
 			break;
@@ -61,7 +66,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			SetFocus(commandBox);
 			break;
 		default:
-			QE->currentActivity->eventInput(uMsg, int(wParam), LOWORD(lParam), HIWORD(lParam));
+			QE->currentActivity->eventInput(inputData);
 			break;
 		}
 
@@ -203,8 +208,7 @@ void QeWindow::init() {
 
 	int width; int height;
 	getWindowSize(width, height);
-	commandBox = CreateWindow(L"EDIT", L"", WS_CHILD ,
-		0, 0, width, 20, window, (HMENU)1, NULL, NULL);
+	commandBox = CreateWindow(L"EDIT", L"", WS_CHILD , 0, 0, width, 20, window, (HMENU)1, NULL, NULL);
 
 	ShowWindow(commandBox, SW_HIDE);
 	WIN->DefEditProc = (WNDPROC)SetWindowLongPtr(WIN->commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
@@ -260,17 +264,17 @@ void QeWindow::consoleInput() {
 		break;
 	case VK_RETURN:
 		std::cout << std::endl;
-		if (consoleCommandInput.length()>0)	CMD(consoleCommandInput);
-		consoleCommandInput.clear();
+		if (inputData.consoleCommandInput.length()>0)	CMD(inputData.consoleCommandInput);
+		inputData.consoleCommandInput.clear();
 		break;
 	case VK_BACK:
-		if (!consoleCommandInput.empty()) {
-			consoleCommandInput.pop_back();
+		if (!inputData.consoleCommandInput.empty()) {
+			inputData.consoleCommandInput.pop_back();
 			std::cout << "\b" << " " << "\b";
 		}
 		break;
 	default:
-		consoleCommandInput += cur;
+		inputData.consoleCommandInput += cur;
 		std::cout << cur;
 		break;
 	}

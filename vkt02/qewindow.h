@@ -2,6 +2,13 @@
 
 #include "qeheader.h"
 
+struct QeInputData {
+	int			inputType;
+	int			inputKey;
+	QeVector2i	mousePos;
+	std::string consoleCommandInput;
+};
+
 class QeWindow
 {
 public:
@@ -12,6 +19,7 @@ public:
 	HWND window;
 	HWND commandBox;
 	WNDPROC DefEditProc;
+	QeInputData inputData;
 
 	void getWindowSize(int& width, int& height);
 	void update(float time);
@@ -26,6 +34,5 @@ public:
 	void sendCommand();
 	void closeCommand();
 	void consoleInput();
-	std::string consoleCommandInput;
 	//bool isWindow();
 };

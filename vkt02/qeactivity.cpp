@@ -59,12 +59,12 @@ void QeActivity::init(QeAssetXML* _property) {
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
 }
 
-void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) {
+void QeActivity::eventInput(QeInputData & inputData) {
 	
-	switch (_input1) {
+	switch (inputData.inputType) {
 
 	case WM_KEYDOWN:
-		switch (_input2) {
+		switch (inputData.inputKey) {
 
 		case VK_NUMPAD1:
 		case VK_NUMPAD2:
@@ -75,7 +75,7 @@ void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) 
 		case VK_NUMPAD7:
 		case VK_NUMPAD8:
 		case VK_NUMPAD9:
-			VP->setTargetCamera(_input2 - VK_NUMPAD0);
+			VP->setTargetCamera(inputData.inputKey - VK_NUMPAD0);
 			break;
 		case VK_ADD:
 			VP->addNewViewport();
@@ -109,16 +109,16 @@ void QeActivity::eventInput(int _input1, int _input2, int _param1, int _param2) 
 		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		VP->getTargetCamera()->setMousePos(QeVector2i(_param1, _param2));
+		VP->getTargetCamera()->setMousePos(inputData.mousePos);
 		break;
 	case WM_MOUSEMOVE:
 
-		switch (_input2) {
+		switch (inputData.inputKey) {
 		case MK_LBUTTON:
-			VP->getTargetCamera()->rotateTarget(QeVector2i(_param1, _param2));
+			VP->getTargetCamera()->rotateTarget(inputData.mousePos);
 			break;
 		case MK_RBUTTON:
-			VP->getTargetCamera()->rotatePos(QeVector2i(_param1, _param2));
+			VP->getTargetCamera()->rotatePos(inputData.mousePos);
 			break;
 		}
 		break;
