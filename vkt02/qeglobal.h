@@ -35,6 +35,7 @@ private:
 	void cleanup();
 public:
 	~QeGlobal();
+
 	void restart();
 	static QeGlobal&	getInstance();
 	QueenEngine*		engine = nullptr;

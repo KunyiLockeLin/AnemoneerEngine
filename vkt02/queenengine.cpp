@@ -2,6 +2,7 @@
 
 
 void QueenEngine::run() {
+	
 	bClosed = false;
 	bRestart = false;
 ;
@@ -18,6 +19,7 @@ void QueenEngine::run() {
 	currentActivity = OBJMGR->getActivity(0, startActivityNode);
 	renderFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS")));
 	computeFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "computeFPS")));
+
 	mainLoop();
 }
 
