@@ -90,10 +90,11 @@ class QeActivity;
 class QeVulkan;
 class QeLog;
 class QeCommand;
-
+class QeTimer;
 
 #include "qeencode.h"
 #include "qemath.h"
+#include "qetimer.h"
 #include "qevulkan.h"
 #include "qeasset.h"
 #include "qemodel.h"

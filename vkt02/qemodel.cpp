@@ -206,12 +206,14 @@ void QeModel::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 
-void QeModel::update(float time) {
+void QeModel::updateRender(float time) {
 
 	if(speed != 0)	rotateFace( time*speed );
 	updateAction(time);
 	updateUniformBuffer();
 }
+
+void QeModel::updateCompute(float time) {}
 
 void QeModel::updateUniformBuffer() {
 	/*int size1 = sizeof(float);

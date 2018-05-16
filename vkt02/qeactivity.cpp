@@ -125,6 +125,10 @@ void QeActivity::eventInput(QeInputData & inputData) {
 	}
 }
 
-void QeActivity::update(float time) {
-	OBJMGR->update(time);
+void QeActivity::updateRender(float time) {
+	OBJMGR->updateRender(time);
+}
+
+void QeActivity::updateCompute(float time) {
+	OBJMGR->updateCompute(time);
 }

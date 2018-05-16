@@ -30,7 +30,8 @@ public:
 	QeVKBuffer uboBuffer;
 
 	void init(QeAssetXML* _property);
-	void update(float time);
+	void updateRender(float time);
+	void updateCompute(float time);
 
 	QeBillboard* billboard = nullptr;
 };

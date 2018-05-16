@@ -14,4 +14,5 @@ void QeBillboard::setMatModel() {
 	ubo.param.y = float(type);
 }
 
-void QeBillboard::update(float time) { updateUniformBuffer(); }
+void QeBillboard::updateRender(float time) { updateUniformBuffer(); }
+void QeBillboard::updateCompute(float time) {}

@@ -61,7 +61,7 @@ void QeLight::init(QeAssetXML* _property) {
 	if (c != nullptr && atoi(c) == 1) bShow = true;
 }
 
-void QeLight::update(float time) {
+void QeLight::updateRender(float time) {
 
 	if (speed != 0) {
 		float angle = -time * speed;
@@ -86,3 +86,5 @@ void QeLight::update(float time) {
 
 	VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data));
 }
+
+void QeLight::updateCompute(float time) {}

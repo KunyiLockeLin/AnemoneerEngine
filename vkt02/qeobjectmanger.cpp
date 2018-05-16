@@ -102,33 +102,59 @@ QeBillboard* QeObjectManger::getBillboard(int _id) {
 	return newModel;
 }
 
-void QeObjectManger::update(float _time) {
+void QeObjectManger::updateRender(float _time) {
 
 	std::map<int, QeCamera*>::iterator it = mgrCameras.begin();
 	while (it != mgrCameras.end()) {
-		it->second->update(_time);
+		it->second->updateRender(_time);
 		++it;
 	}
 
 	std::map<int, QeLight*>::iterator it1 = mgrLights.begin();
 	while (it1 != mgrLights.end()) {
-		it1->second->update(_time);
+		it1->second->updateRender(_time);
 		++it1;
 	}
 
 	std::map<int, QeModel*>::iterator it2 = mgrModels.begin();
 	while (it2 != mgrModels.end()) {
-		it2->second->update(_time);
+		it2->second->updateRender(_time);
 		++it2;
 	}
 
 	it2 = mgrBillboards.begin();
 	while (it2 != mgrBillboards.end()) {
-		it2->second->update(_time);
+		it2->second->updateRender(_time);
 		++it2;
 	}
 }
 
+void QeObjectManger::updateCompute(float _time) {
+
+	std::map<int, QeCamera*>::iterator it = mgrCameras.begin();
+	while (it != mgrCameras.end()) {
+		it->second->updateCompute(_time);
+		++it;
+	}
+
+	std::map<int, QeLight*>::iterator it1 = mgrLights.begin();
+	while (it1 != mgrLights.end()) {
+		it1->second->updateCompute(_time);
+		++it1;
+	}
+
+	std::map<int, QeModel*>::iterator it2 = mgrModels.begin();
+	while (it2 != mgrModels.end()) {
+		it2->second->updateCompute(_time);
+		++it2;
+	}
+
+	it2 = mgrBillboards.begin();
+	while (it2 != mgrBillboards.end()) {
+		it2->second->updateCompute(_time);
+		++it2;
+	}
+}
 
 void QeObjectManger::cleanupPipeline() {
 

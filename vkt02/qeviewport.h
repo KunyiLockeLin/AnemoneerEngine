@@ -19,7 +19,8 @@ public:
 	void addNewViewport();
 	void popViewport();
 	void updateViewport();
-	void update(float time);
+	void updateRender(float time);
+	void updateCompute(float time);
 	void setTargetCamera(int index);
 	QeCamera* getTargetCamera();
 
@@ -55,4 +56,3 @@ public:
 	void initPostProcessing();
 	void updatePostProcessing();
 };
-

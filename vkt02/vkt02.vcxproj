@@ -143,6 +143,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,6 +169,7 @@
     <ClCompile Include="qecommand.cpp" />
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
+    <ClCompile Include="qetimer.cpp" />
     <ClCompile Include="qevulkan.cpp" />
     <ClCompile Include="qeencode.cpp" />
     <ClCompile Include="queenengine.cpp" />
@@ -187,6 +189,7 @@
     <ClInclude Include="qecommand.h" />
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
+    <ClInclude Include="qetimer.h" />
     <ClInclude Include="qevulkan.h" />
     <ClInclude Include="qeencode.h" />
     <ClInclude Include="queenengine.h" />

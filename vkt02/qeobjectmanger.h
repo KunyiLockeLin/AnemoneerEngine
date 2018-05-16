@@ -32,7 +32,8 @@ public:
 	QeModel* getModel(int _id, QeAssetXML* _property);
 	QeBillboard* getBillboard(int _id);
 	
-	void update(float _time);
+	void updateRender(float _time);
+	void updateCompute(float _time);
 
 	void cleanupPipeline();
 	void recreatePipeline();

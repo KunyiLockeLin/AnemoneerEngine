@@ -232,13 +232,15 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append(" - ");
 	windowTitle.append(device);
 	windowTitle.append(" - ");
-	windowTitle.append(std::to_string(QE->currentFPS));
-	windowTitle.append(" fps");
-
+	windowTitle.append(std::to_string(QE->currentComputeFPS));
+	windowTitle.append(" compute fps");
+	windowTitle.append(" - ");
+	windowTitle.append(std::to_string(QE->currentRenderFPS));
+	windowTitle.append(" render fps");
 	return windowTitle;
 }
 
-void QeWindow::update(float time) {
+void QeWindow::updateRender(float time) {
 
 	std::string windowTitle = getWindowTitle();
 	std::wstring ws = chartowchar(windowTitle);
@@ -251,6 +253,8 @@ void QeWindow::update(float time) {
 	}
 	consoleInput();
 }
+
+void QeWindow::updateCompute(float time) {}
 
 void QeWindow::consoleInput() {
 	if (!DEBUG->isConsole())	return;

@@ -147,13 +147,15 @@ void QeCamera::reset() {
 	init(initProperty); 
 }
 
-void QeCamera::update(float time) {
+void QeCamera::updateRender(float time) {
 
 	//rotatePos(timec,  QeVector3f(0,0,1) );
 	//rotateTarget(timec, QeVector3f(0, 0, 1));
 	view = MATH->lookAt(pos, target, up);
 	projection = MATH->perspective(fov, faspect, fnear, ffar);
 }
+
+void QeCamera::updateCompute(float time) {}
 
 void QeCamera::switchType(QeCameraType _type) {
 	type = _type;

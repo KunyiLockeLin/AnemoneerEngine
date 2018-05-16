@@ -14,6 +14,8 @@ public:
 
 	void init(QeAssetXML * _property);
 	void eventInput(QeInputData & inputData);
-	void update(float time);
+	void updateRender(float time);
+	void updateCompute(float time);
+
 };
 

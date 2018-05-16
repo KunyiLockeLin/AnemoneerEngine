@@ -70,7 +70,8 @@ public:
 
 	bool bInit = false;
 	void init();
-	void update(float time);
+	void updateRender(float time);
+	void updateCompute(float time);
 
 	VkDevice device;
 	VkInstance instance;

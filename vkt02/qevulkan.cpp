@@ -70,7 +70,8 @@ void QeVulkan::init() {
 	createCommandPool();
 }
 
-void QeVulkan::update(float time) {}
+void QeVulkan::updateRender(float time) {}
+void QeVulkan::updateCompute(float time) {}
 
 VkResult QeVulkan::CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {
 	auto func = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");

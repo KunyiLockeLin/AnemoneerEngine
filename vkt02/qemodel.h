@@ -57,8 +57,9 @@ public:
 	QeAssetXML* initProperty = nullptr;
 
 	void updateUniformBuffer();
-	virtual void update(float time);
-	
+	virtual void updateRender(float time);
+	virtual void updateCompute(float time);
+
 	QeModel(QeObjectMangerKey& _key) {}
 	~QeModel();
 

@@ -19,5 +19,6 @@ public:
 	QeBillboardType type = eBillboardFace;
 	int width=0, height=0;
 	virtual void setMatModel();
-	virtual void update(float time);
+	virtual void updateRender(float time);
+	virtual void updateCompute(float time);
 };

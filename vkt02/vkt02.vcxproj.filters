@@ -69,6 +69,9 @@
     <ClCompile Include="qecommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qetimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qecommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qetimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

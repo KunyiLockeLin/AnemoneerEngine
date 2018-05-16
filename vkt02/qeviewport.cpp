@@ -123,7 +123,7 @@ QeCamera* QeViewport::getTargetCamera() {
 	return cameras[targetCamera];
 }
 
-void QeViewport::update(float time) {
+void QeViewport::updateRender(float time) {
 
 	if (bRecreateRender) {
 		recreateRender();
@@ -137,6 +137,9 @@ void QeViewport::update(float time) {
 
 	drawFrame();
 }
+
+void QeViewport::updateCompute(float time) {}
+
 
 void QeViewport::drawFrame() {
 

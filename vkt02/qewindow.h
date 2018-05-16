@@ -22,7 +22,8 @@ public:
 	QeInputData inputData;
 
 	void getWindowSize(int& width, int& height);
-	void update(float time);
+	void updateRender(float time);
+	void updateCompute(float time);
 	bool bInit = false;
 	void init();
 	void resize();

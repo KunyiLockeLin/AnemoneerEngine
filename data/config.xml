@@ -6,7 +6,7 @@
   <VulkanAPIVersion>1.1.73</VulkanAPIVersion>
   <render>1</render>
   <debug>2</debug>
-  <envir FPS="30" width="1152" height="648" />
+  <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
   <webEnvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   <defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" phonggeom="phongg.spv" phongfrag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" />
