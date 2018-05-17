@@ -129,14 +129,14 @@ void QeModel::init(QeAssetXML* _property) {
 	pos = { 0, 0, 0 };
 	face = 0.0f;
 	up = 0.0f;
-	size = { 1, 1, 1 };
-	speed = 30;
+	size = modelData->scale;
+	speed = 0;
 	currentActionID = 0;
 	actionType = eActionTypeOnce;
 	actionState = eActionStateStop;
 	attachID=0;
 	attachSkeletonName=nullptr;
-	actionSpeed = 1;
+	actionSpeed = 0;
 
 	c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {

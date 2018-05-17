@@ -43,6 +43,7 @@ struct QeAssetModel {
 
 	QeVKBuffer vertex;
 	QeVKBuffer index;
+	QeVector3f scale;
 
 	QeAssetMaterial* pMaterial = nullptr;
 	QeDataJoint* rootJoint = nullptr;

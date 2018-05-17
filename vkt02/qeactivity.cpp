@@ -54,6 +54,10 @@ void QeActivity::init(QeAssetXML* _property) {
 	}
 	else	for ( int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
 
+	node = AST->getXMLNode(_property, 1, "environments");
+	if (node != nullptr && node->nexts.size() > 0)
+		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
+
 	node = AST->getXMLNode(_property, 1, "models");
 	if (node != nullptr && node->nexts.size() > 0) 
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);

@@ -377,6 +377,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	c = AST->getJSONValue(json, 4, "meshes", "primitives", "attributes", "WEIGHTS_0");
 	if (c != nullptr) bufferViews[6] = atoi(c);
 
+	sv = AST->getJSONArrayValues(json, 2, "nodes", "scale");
+	if (sv == nullptr || sv->empty())	model->scale = { 1.0f, 1.0f, 1.0f };
+	else				model->scale = { float(atof((*sv)[0].c_str())), float(atof((*sv)[1].c_str())), float(atof((*sv)[2].c_str())) };
+
 	c = AST->getJSONValue(json, 2, "skins", "inverseBindMatrices");
 	if (c != nullptr) {
 
@@ -638,8 +642,20 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 		mtl.baseColor.z = float(atof((*baseColorJ)[2].c_str()));
 		mtl.baseColor.w = float(atof((*baseColorJ)[3].c_str()));
 	}
-	mtl.metallicRoughness.x = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor")));
-	mtl.metallicRoughness.y = float(atof(AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor")));
+	else {
+		mtl.baseColor.x = 1.0f;
+		mtl.baseColor.y = 1.0f;
+		mtl.baseColor.z = 1.0f;
+		mtl.baseColor.w = 1.0f;
+	}
+	const char* value = AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor");
+	if (value == nullptr)	mtl.metallicRoughness.x = 1.0f;
+	else					mtl.metallicRoughness.x = float(atof(value));
+
+	value = AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor");
+	if (value == nullptr)	mtl.metallicRoughness.y = 1.0f;
+	else					mtl.metallicRoughness.y = float(atof(value));
+
 	pMaterial->value.pbr = mtl;
 
 	return model;

@@ -5,9 +5,10 @@
 struct QueueFamilyIndices {
 	int graphicsFamily = -1;
 	int presentFamily = -1;
+	int computeFamily = -1;
 
 	bool isComplete() {
-		return graphicsFamily >= 0 && presentFamily >= 0;
+		return graphicsFamily >= 0 && presentFamily >= 0 && computeFamily >= 0;
 	}
 };
 
@@ -32,7 +33,6 @@ struct QeVKImageBuffer {
 
 	~QeVKImageBuffer();
 };
-
 
 struct QeDataDescriptorSet {
 
@@ -83,6 +83,7 @@ public:
 
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
+	VkQueue computeQueue;
 
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkPipelineLayout pipelineLayout;
@@ -149,35 +150,33 @@ public:
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
-// Vulkan Cookbook https://github.com/PacktPublishing/Vulkan-Cookbook 
-	/*
-	bool									  Ready;
-	VkDestroyer(VkInstance)                   Instance;
-	VkPhysicalDevice                          PhysicalDevice;
-	VkDestroyer(VkDevice)                     LogicalDevice;
-	VkDestroyer(VkSurfaceKHR)                 PresentationSurface;
-	QueueParameters                           GraphicsQueue;
-	QueueParameters                           ComputeQueue;
-	QueueParameters                           PresentQueue;
-	SwapchainParameters                       Swapchain;
-	VkDestroyer(VkCommandPool)                CommandPool;
-	std::vector<VkDestroyer(VkImage)>         DepthImages;
-	std::vector<VkDestroyer(VkDeviceMemory)>  DepthImagesMemory;
-	std::vector<FrameResources>               FramesResources;
-	static uint32_t const                     FramesCount = 3;
-	static VkFormat const                     DepthFormat = VK_FORMAT_D16_UNORM;
-
-	bool InitializeVulkan( HINSTANCE HInstance, HWND HWnd, VkPhysicalDeviceFeatures * desired_device_features = nullptr,
-						  VkImageUsageFlags swapchain_image_usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, 
-						  bool use_depth = true, VkImageUsageFlags depth_attachment_usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
-	bool CreateSwapchain(VkImageUsageFlags swapchain_image_usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-						 bool use_depth = true, VkImageUsageFlags depth_attachment_usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
-	void Deinitialize();
-	*/
 };
 
+// Vulkan Cookbook https://github.com/PacktPublishing/Vulkan-Cookbook 
 /*
-// Vulkan Cookbook https://github.com/PacktPublishing/Vulkan-Cookbook
+bool									  Ready;
+VkDestroyer(VkInstance)                   Instance;
+VkPhysicalDevice                          PhysicalDevice;
+VkDestroyer(VkDevice)                     LogicalDevice;
+VkDestroyer(VkSurfaceKHR)                 PresentationSurface;
+QueueParameters                           GraphicsQueue;
+QueueParameters                           ComputeQueue;
+QueueParameters                           PresentQueue;
+SwapchainParameters                       Swapchain;
+VkDestroyer(VkCommandPool)                CommandPool;
+std::vector<VkDestroyer(VkImage)>         DepthImages;
+std::vector<VkDestroyer(VkDeviceMemory)>  DepthImagesMemory;
+std::vector<FrameResources>               FramesResources;
+static uint32_t const                     FramesCount = 3;
+static VkFormat const                     DepthFormat = VK_FORMAT_D16_UNORM;
+
+bool InitializeVulkan( HINSTANCE HInstance, HWND HWnd, VkPhysicalDeviceFeatures * desired_device_features = nullptr,
+VkImageUsageFlags swapchain_image_usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+bool use_depth = true, VkImageUsageFlags depth_attachment_usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
+bool CreateSwapchain(VkImageUsageFlags swapchain_image_usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+bool use_depth = true, VkImageUsageFlags depth_attachment_usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
+void Deinitialize();
+
 namespace VulkanCookbook {
 	// Common
 	// VulkanDestroyer.h

@@ -18,11 +18,14 @@
   <startScene>scene1</startScene>
 
   <scene1>
+    <environments>
+      <e id="10" obj="cube.gltf" shadergeom="baseg.spv" shaderfrag="basef.spv"/>
+    </environments>
     <models>
-      <e id="1" obj= "animation.gltf" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="0.2" action="0" actionType="2" />
-      <e id="2" obj= "animation.gltf" speed="10" posX="0" posY="-5" posZ="-3" actionSpeed="1" action="2" actionType="2" />
-      <e id="3" obj= "ball.gltf" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_001"/>
-      <e id="4" obj= "box.gltf" speed="-100" posX="-1" posY="-1" posZ="0" attachid="2" attachskeleton="Armature_Bone_002"/>
+      <e id="1" obj="animation.gltf" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="0.1" action="0" actionType="2" />
+      <e id="2" obj="animation.gltf" speed="10" posX="0" posY="-5" posZ="-3" actionSpeed="1" action="2" actionType="2" />
+      <e id="3" obj="ball.gltf" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_001"/>
+      <e id="4" obj="box.gltf" speed="-100" posX="-1" posY="-1" posZ="0" attachid="2" attachskeleton="Armature_Bone_002"/>
     </models>
     <ambientColor/>
     <lights/>
