@@ -777,18 +777,15 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 	QeAssetImage* image = new QeAssetImage();
 	image->sampler = VK->createTextureSampler();
 	VkFormat format;
-	VkImageViewType imageViewType;
 	std::vector<std::string> imageList;
 
 	if (bCubeMap) {
-		imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
 		imageList = { "\\posx", "\\negx", "\\posy", "\\negy", "\\posz", "\\negz" };
+		image->buffer.memories.resize(6);
+	} else {
+		imageList = { "" };
+		image->buffer.memories.resize(1);
 	}
-	else {
-		imageViewType = VK_IMAGE_VIEW_TYPE_2D;
-		imageList = {""};
-	}
-
 	int size = int(imageList.size());
 	int cIndex = int(ret - _filePath.c_str());
 
@@ -816,11 +813,9 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		}
 		if (bytes != 4)	imageFillto32bits(&data, bytes);
 
-		VkDeviceMemory memory;
-		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, memory, i);
-		image->buffer.memories.push_back(memory);
+		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, image->buffer.memories[i], i, bCubeMap);
 	}
-	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT, imageViewType);
+	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap);
 	astTextures[_filePath] = image;
 
 	return image;
