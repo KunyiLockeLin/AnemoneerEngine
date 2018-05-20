@@ -72,6 +72,9 @@
     <ClCompile Include="qetimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qecube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -128,6 +131,9 @@
     <ClInclude Include="qetimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qecube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\data\shaders\billboard.geom">
@@ -157,10 +163,31 @@
     <None Include="..\data\shaders\skeleton.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\post.frag">
+    <None Include="..\data\shaders\base.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\post.vert">
+    <None Include="..\data\shaders\base.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\postprocessing.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\postprocessing.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\postprocessing.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\grayscale.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\cube.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\compile.bat">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\cube.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

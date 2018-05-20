@@ -21,6 +21,7 @@ public:
 	std::map<int, QeLight*> mgrLights;
 	std::map<int, QeActivity*> mgrActivitys;
 	std::map<int, QeModel*> mgrModels;
+	std::map<int, QeModel*> mgrCubes;
 	std::map<int, QeModel*> mgrBillboards;
 
 	QeObjectManger(QeGlobalKey& _key) {}
@@ -30,7 +31,8 @@ public:
 	QeLight* getLight(int _id, QeAssetXML* _property);
 	QeActivity* getActivity(int _id, QeAssetXML* _property);
 	QeModel* getModel(int _id, QeAssetXML* _property);
-	QeBillboard* getBillboard(int _id);
+	QeCube* getCube(int _id, QeAssetXML* _property);
+	QeBillboard* getBillboard(int _id, QeAssetXML* _property);
 	
 	void updateRender(float _time);
 	void updateCompute(float _time);

@@ -14,11 +14,12 @@ public:
 	// face: (0,0,1)
 
 	QeBillboard(QeObjectMangerKey& _key):QeModel(_key){}
-	~QeBillboard() {}
-
+	//~QeBillboard() {}
+	
 	QeBillboardType type = eBillboardFace;
-	int width=0, height=0;
+	//int width=0, height=0;
+	virtual void init(QeAssetXML* _property);
 	virtual void setMatModel();
-	virtual void updateRender(float time);
-	virtual void updateCompute(float time);
+	//virtual void updateRender(float time);
+	//virtual void updateCompute(float time);
 };

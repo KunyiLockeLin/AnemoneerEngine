@@ -5,12 +5,16 @@ void QueenEngine::run() {
 	
 	bClosed = false;
 	bRestart = false;
-;
+
+	QeAssetXML* node = AST->getXML(AST->CONFIG);
+
+	GLB.libGLFW = atoi(AST->getXMLValue(node, 1, "glfw"));
+	GLB.libGLM = atoi(AST->getXMLValue(node, 1, "glm"));
+	GLB.libGLI = atoi(AST->getXMLValue(node, 1, "gli"));
+	
 	DEBUG->init();
 	WIN->init();
 	VK->init();
-
-	QeAssetXML* node = AST->getXML(AST->CONFIG);
 
 	if(activityName.empty())
 		activityName = AST->getXMLValue(node, 1, "startScene");
@@ -23,20 +27,10 @@ void QueenEngine::run() {
 	mainLoop();
 }
 
-
 void QueenEngine::mainLoop() {
 	while (!bClosed && !bRestart) {
 
 		int passMilliSecond;
-		if (renderFPSTimer.checkTimer(passMilliSecond)) {
-
-			currentRenderFPS = 1000 / passMilliSecond;
-			float time = float(passMilliSecond) / 1000;
-			currentActivity->updateRender(time);
-			VP->updateRender(time);
-			VK->updateRender(time);
-			WIN->updateRender(time);
-		}
 		if (computeFPSTimer.checkTimer(passMilliSecond)) {
 
 			currentComputeFPS = 1000 / passMilliSecond;
@@ -45,6 +39,16 @@ void QueenEngine::mainLoop() {
 			VP->updateCompute(time);
 			VK->updateCompute(time);
 			WIN->updateCompute(time);
+		}
+
+		if (renderFPSTimer.checkTimer(passMilliSecond)) {
+
+			currentRenderFPS = 1000 / passMilliSecond;
+			float time = float(passMilliSecond) / 1000;
+			currentActivity->updateRender(time);
+			VP->updateRender(time);
+			VK->updateRender(time);
+			WIN->updateRender(time);
 		}
 	}
 	vkDeviceWaitIdle(VK->device);

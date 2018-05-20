@@ -317,7 +317,7 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 	return model;
 }
 
-QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
+QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	QeAssetModel* model = new QeAssetModel();
 
 	const char* binData = AST->getJSONValue( json, 2, "buffers", "uri" );
@@ -631,8 +631,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	int baseColorTextureIndex = atoi(AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index"));
 	std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
 	const char* baseColorTexturePath = AST->getJSONValue((*imageJSON)[baseColorTextureIndex], 1, "uri");
-	pMaterial->pDiffuseMap = AST->getImage(baseColorTexturePath);
-
+	
+	if(bCubeMap)pMaterial->pCubeMap = AST->getImage(baseColorTexturePath, bCubeMap);
+	else		pMaterial->pDiffuseMap = AST->getImage(baseColorTexturePath, bCubeMap);
+	
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
 	QeDataMaterialPBR mtl;
 
@@ -661,7 +663,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json) {
 	return model;
 }
 
-QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
+//QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
 
 QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 
@@ -697,6 +699,7 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 }
 
 std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t size, int* width, int* height, int* bytes) {
+
 	std::vector<unsigned char> ret;
 	// YCbCr(YUV), DCT(Discrete Cosine Transform), Quantization, Zig-zag(Entropy Coding), RLC(Run Length Coding), Canonical Huffman Code
 
@@ -1058,7 +1061,7 @@ std::vector<unsigned char> QeEncode::decodeBMP(unsigned char* buffer, int* width
 }
 
 std::vector<unsigned char> QeEncode::decodePNG(unsigned char* buffer, int* width, int* height, int* bytes) {
-
+	
 	std::vector<unsigned char> ret;
 	unsigned char headerKey[8] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 	if (memcmp(buffer, headerKey, 8) != 0) return ret;

@@ -1,7 +1,7 @@
 #include "qeheader.h"
 
 
-/*namespace  QEString {
+namespace  QeString {
 	std::string operator+(std::string const &a, const int &b){
 		std::ostringstream oss;
 		oss << a << b;
@@ -52,7 +52,7 @@
 		oss << a << b;
 		return oss.str();
 	}
-};*/
+};
 
 QeGlobal::QeGlobal() { init(); }
 

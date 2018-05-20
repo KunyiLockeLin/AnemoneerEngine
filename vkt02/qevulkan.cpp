@@ -17,10 +17,14 @@ QeVKImageBuffer::~QeVKImageBuffer(){
 		vkDestroyImage(VK->device, image, nullptr);
 		image = VK_NULL_HANDLE;
 	}
-	if (memory != VK_NULL_HANDLE) {
-		vkFreeMemory(VK->device, memory, nullptr);
-		memory = VK_NULL_HANDLE;
+	int size = int(memories.size());
+	for (int i = 0;i<size;++i ) {
+		if (memories[i] != VK_NULL_HANDLE)
+			vkFreeMemory(VK->device, memories[i], nullptr);
+
 	}
+	memories.clear();
+
 	if (view != VK_NULL_HANDLE) {
 		vkDestroyImageView(VK->device, view, nullptr);
 		view = VK_NULL_HANDLE;
@@ -460,15 +464,18 @@ void QeVulkan::createCommandPool() {
 void QeVulkan::createSceneDepthImage(QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, VkExtent2D& swapChainExtent) {
 	VkFormat depthFormat = findDepthFormat();
 
+	VkDeviceMemory memory;
 	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, 
-		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage.image, depthImage.memory);
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage.image, memory);
+	depthImage.memories.push_back(memory);
 	depthImage.view = createImageView(depthImage.image, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 	transitionImageLayout(depthImage.image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
 	int imageSize = swapChainExtent.width*swapChainExtent.height * 4;
 	unsigned char *data = new unsigned char[imageSize];
 	memset(data, 0, imageSize);
-	createImageData(data, VK_FORMAT_B8G8R8A8_UNORM, imageSize, swapChainExtent.width, swapChainExtent.height, sceneImage.image, sceneImage.memory);
+	createImageData(data, VK_FORMAT_B8G8R8A8_UNORM, imageSize, swapChainExtent.width, swapChainExtent.height, sceneImage.image, memory);
+	sceneImage.memories.push_back(memory);
 	sceneImage.view = createImageView(sceneImage.image, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
@@ -501,16 +508,16 @@ bool QeVulkan::hasStencilComponent(VkFormat format) {
 	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
-VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
+VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkImageViewType viewType, int index) {
 	VkImageViewCreateInfo viewInfo = {};
 	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	viewInfo.image = image;
-	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	viewInfo.viewType = viewType;
 	viewInfo.format = format;
 	viewInfo.subresourceRange.aspectMask = aspectFlags;
 	viewInfo.subresourceRange.baseMipLevel = 0;
 	viewInfo.subresourceRange.levelCount = 1;
-	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.baseArrayLayer = index;
 	viewInfo.subresourceRange.layerCount = 1;
 
 	VkImageView imageView;
@@ -520,23 +527,25 @@ VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAsp
 }
 
 void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
-	VkImageCreateInfo imageInfo = {};
-	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageInfo.extent.width = width;
-	imageInfo.extent.height = height;
-	imageInfo.extent.depth = 1;
-	imageInfo.mipLevels = 1;
-	imageInfo.arrayLayers = 1;
-	imageInfo.format = format;
-	imageInfo.tiling = tiling;
-	imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-	imageInfo.usage = usage;
-	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	
+	if (image == VK_NULL_HANDLE) {
+		VkImageCreateInfo imageInfo = {};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.extent.width = width;
+		imageInfo.extent.height = height;
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.format = format;
+		imageInfo.tiling = tiling;
+		imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+		imageInfo.usage = usage;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) LOG("failed to create image!");
-
+		if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) LOG("failed to create image!");
+	}
 	VkMemoryRequirements memRequirements;
 	vkGetImageMemoryRequirements(device, image, &memRequirements);
 
@@ -600,7 +609,7 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 	endSingleTimeCommands(commandBuffer);
 }
 
-void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
+void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer) {
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
 	VkBufferImageCopy region = {};
@@ -609,7 +618,7 @@ void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width,
 	region.bufferImageHeight = 0;
 	region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	region.imageSubresource.mipLevel = 0;
-	region.imageSubresource.baseArrayLayer = 0;
+	region.imageSubresource.baseArrayLayer = layer;
 	region.imageSubresource.layerCount = 1;
 	region.imageOffset = { 0, 0, 0 };
 	region.imageExtent = {
@@ -1246,7 +1255,7 @@ VkSampler QeVulkan::createTextureSampler() {
 	return sampler;
 }
 
-void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize,  int width, int height, VkImage& image, VkDeviceMemory& imageMemory) {
+void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize,  int width, int height, VkImage& image, VkDeviceMemory& imageMemory, int layer) {
 	
 	QeVKBuffer staging;
 	createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging.buffer, staging.memory);
@@ -1256,7 +1265,7 @@ void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSi
 	createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, imageMemory);
 
 	transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	copyBufferToImage(staging.buffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
+	copyBufferToImage(staging.buffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height), layer);
 	transitionImageLayout(image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 

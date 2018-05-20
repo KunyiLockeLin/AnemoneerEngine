@@ -73,13 +73,13 @@ void QeLight::updateRender(float time) {
 	}
 	if (bShow) {
 		if (billboard == nullptr) {
-			billboard = OBJMGR->getBillboard(0);
-			if (billboard->modelData->pMaterial->type == eMaterialPhong)
-				billboard->modelData->pMaterial->value.phong.diffuse = data.color;
-			else if (billboard->modelData->pMaterial->type == eMaterialPBR) 
-				billboard->modelData->pMaterial->value.pbr.baseColor = data.color;
+			billboard = OBJMGR->getBillboard(0, initProperty);
+			if (billboard->pMaterial->type == eMaterialPhong)
+				billboard->pMaterial->value.phong.diffuse = data.color;
+			else if (billboard->pMaterial->type == eMaterialPBR) 
+				billboard->pMaterial->value.pbr.baseColor = data.color;
 		
-			VK->setMemory(billboard->modelData->pMaterial->uboBuffer.memory, (void*)&billboard->modelData->pMaterial->value, sizeof(billboard->modelData->pMaterial->value));
+			VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value));
 		}
 		billboard->pos = data.pos;
 	}

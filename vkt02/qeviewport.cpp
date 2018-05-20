@@ -150,7 +150,7 @@ void QeViewport::drawFrame() {
 		bRecreateRender = true;
 		return;
 	}
-	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image!");
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image! "+ result);
 
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -167,9 +167,9 @@ void QeViewport::drawFrame() {
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
-
-	if (vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)	LOG("failed to submit draw command buffer!");
-
+	
+	result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	if( result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.pNext = nullptr;

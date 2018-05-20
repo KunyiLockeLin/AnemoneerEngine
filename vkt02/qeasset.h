@@ -95,6 +95,7 @@ struct QeAssetMaterial {
 	QeMaterialType type = eMaterialPhong;
 	QeVKBuffer	uboBuffer;
 	QeAssetImage* pDiffuseMap = nullptr; // baseColorMap
+	QeAssetImage* pCubeMap = nullptr;
 	QeAssetShader* pShaderVert = nullptr;
 	QeAssetShader* pShaderGeom = nullptr;
 	QeAssetShader* pShaderFrag = nullptr;
@@ -181,9 +182,10 @@ public:
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
 
-	QeAssetModel* getModel(const char* _filename);
+	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);
 	QeAssetMaterial* getMaterial(const char* _filename);
-	QeAssetImage* getImage(const char* _filename);
+	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
+	QeAssetImage* getImage(const char* _filename, bool bCubeMap=false);
 	QeAssetShader* getShader(const char* _filename);
 
 	std::vector<char> loadFile(const char* _filePath);

@@ -1,13 +1,12 @@
 #include "qeheader.h"
 
 
-
-void QeBillboard::init(QeAssetXML* _property) {
+void QeCube::init(QeAssetXML* _property) {
 
 	initProperty = _property;
 
-	modelData = AST->getModel("plane");
-	pMaterial = AST->getMaterialImage(AST->getXMLValue(_property, 1, "image"));
+	modelData = AST->getModel("cube", true);
+	pMaterial = AST->getMaterialImage(AST->getXMLValue(_property, 1, "image"), true);
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
@@ -15,21 +14,8 @@ void QeBillboard::init(QeAssetXML* _property) {
 	QeDataDescriptorSet data;
 
 	data.uboBuffer = uboBuffer.buffer;
-	data.materialBuffer = pMaterial->uboBuffer.buffer;
-	data.diffuseMapImageViews = pMaterial->pDiffuseMap->buffer.view;
-	data.diffueMapSamplers = pMaterial->pDiffuseMap->sampler;
-
-	cubeMapID = 0;
-	const char * c = AST->getXMLValue(_property, 1, "cubemapid");
-	if (c != nullptr)	cubeMapID = atoi(c);
-
-	if (cubeMapID > 0) {
-		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
-		if (model != nullptr) {
-			data.cubeMapImageViews = model->pMaterial->pCubeMap->buffer.view;
-			data.cubeMapSamplers = model->pMaterial->pCubeMap->sampler;
-		}
-	}
+	data.cubeMapImageViews = pMaterial->pCubeMap->buffer.view;
+	data.cubeMapSamplers = pMaterial->pCubeMap->sampler;
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	pos = { 0, 0, 0 };
@@ -41,12 +27,13 @@ void QeBillboard::init(QeAssetXML* _property) {
 	actionType = eActionTypeOnce;
 	actionState = eActionStateStop;
 	attachID = 0;
+	cubeMapID = 0;
 	attachSkeletonName = nullptr;
 	actionSpeed = 0;
 
-	c = AST->getXMLValue(_property, 1, "shadervert");
+	const char * c = AST->getXMLValue(_property, 1, "shadervert");
 	if (c == nullptr) {
-		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "billboardvert");
+		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "cubevert");
 		if (c == nullptr) {
 			if (modelData->animationNum == 0)
 				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");
@@ -58,7 +45,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shadergeom");
 	if (c == nullptr) {
-		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "billboardgeom");
+		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "cubegeom");
 		if (c == nullptr) {
 			if (pMaterial->type == eMaterialPhong)
 				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phonggeom");
@@ -70,7 +57,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
-		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "billboardfrag");
+		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "cubefrag");
 		if (c == nullptr) {
 			if (pMaterial->type == eMaterialPhong)
 				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phongfrag");
@@ -98,42 +85,4 @@ void QeBillboard::init(QeAssetXML* _property) {
 	if (c != nullptr)	size.y *= float(atof(c));
 	c = AST->getXMLValue(_property, 1, "scaleZ");
 	if (c != nullptr)	size.z *= float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "speed");
-	if (c != nullptr)	speed = atoi(c);
-
-	c = AST->getXMLValue(_property, 1, "actionSpeed");
-	if (c != nullptr)	actionSpeed = float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "action");
-	if (c != nullptr) {
-		currentActionID = atoi(c);
-
-		c = AST->getXMLValue(_property, 1, "actionType");
-		if (c != nullptr)	actionType = QeActionType(atoi(c));
-
-		setAction(currentActionID, actionType);
-		actionPlay();
-	}
-
-	c = AST->getXMLValue(_property, 1, "attachid");
-	if (c != nullptr)	attachID = atoi(c);
-
-	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
-
-void QeBillboard::setMatModel() {
-	
-	//type = eBillboardFaceAndSize;
-
-	QeMatrix4x4f mat;
-	mat *= MATH->translate(pos);
-	//size = { 3,3,3 };
-	mat *= MATH->scale(size);
-
-	ubo.model = mat;
-	ubo.param.y = float(type);
-}
-
-//void QeBillboard::updateRender(float time) { updateUniformBuffer(); }
-//void QeBillboard::updateCompute(float time) {}

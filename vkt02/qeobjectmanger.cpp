@@ -29,6 +29,13 @@ QeObjectManger::~QeObjectManger() {
 		++it3;
 	}
 	mgrModels.clear();
+	
+	it3 = mgrCubes.begin();
+	while (it3 != mgrCubes.end()) {
+		if (it3->second != nullptr) delete (it3->second);
+		++it3;
+	}
+	mgrCubes.clear();
 
 	it3 = mgrBillboards.begin();
 	while (it3 != mgrBillboards.end()) {
@@ -87,12 +94,25 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	return newModel;
 }
 
-QeBillboard* QeObjectManger::getBillboard(int _id) {
+QeCube* QeObjectManger::getCube(int _id, QeAssetXML* _property) {
+
+	std::map<int, QeModel*>::iterator it = mgrCubes.find(_id);
+	if (it != mgrCubes.end())	return  (QeCube*)it->second;
+
+	if (_property == nullptr) return nullptr;
+
+	QeCube* newModel = new QeCube(key);
+	newModel->init(_property);
+	mgrCubes[newModel->id] = newModel;
+
+	VP->bUpdateDrawCommandBuffers = true;
+	return newModel;
+}
+
+QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
 
 	std::map<int, QeModel*>::iterator it = mgrBillboards.find(_id);
 	if (it != mgrBillboards.end())	return (QeBillboard*)it->second;
-
-	QeAssetXML* _property = AST->getXMLNode(2, AST->CONFIG, "billboard");
 
 	QeBillboard* newModel = new QeBillboard(key);
 	newModel->init(_property);
@@ -118,6 +138,12 @@ void QeObjectManger::updateRender(float _time) {
 
 	std::map<int, QeModel*>::iterator it2 = mgrModels.begin();
 	while (it2 != mgrModels.end()) {
+		it2->second->updateRender(_time);
+		++it2;
+	}
+
+	it2 = mgrCubes.begin();
+	while (it2 != mgrCubes.end()) {
 		it2->second->updateRender(_time);
 		++it2;
 	}
@@ -148,6 +174,12 @@ void QeObjectManger::updateCompute(float _time) {
 		it2->second->updateCompute(_time);
 		++it2;
 	}
+	
+	it2 = mgrCubes.begin();
+	while (it2 != mgrCubes.end()) {
+		it2->second->updateCompute(_time);
+		++it2;
+	}
 
 	it2 = mgrBillboards.begin();
 	while (it2 != mgrBillboards.end()) {
@@ -160,6 +192,12 @@ void QeObjectManger::cleanupPipeline() {
 
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
+		it->second->cleanupPipeline();
+		++it;
+	}
+	
+	it = mgrCubes.begin();
+	while (it != mgrCubes.end()) {
 		it->second->cleanupPipeline();
 		++it;
 	}
@@ -178,7 +216,11 @@ void QeObjectManger::recreatePipeline() {
 		it->second->createPipeline();
 		++it;
 	}
-	
+	it = mgrCubes.begin();
+	while (it != mgrCubes.end()) {
+		it->second->createPipeline();
+		++it;
+	}
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
 		it->second->createPipeline();
@@ -195,7 +237,11 @@ void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer)
 		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
 	}
-
+	it = mgrCubes.begin();
+	while (it != mgrCubes.end()) {
+		it->second->updateDrawCommandBuffer(drawCommandBuffer);
+		++it;
+	}
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
 		it->second->updateDrawCommandBuffer(drawCommandBuffer);

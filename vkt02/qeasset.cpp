@@ -601,25 +601,30 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 	return source;
 }
 
-QeAssetModel* QeAsset::getModel(const char* _filename) {
-	
-	char type = 0; // 0:OBJ, 1:GLTF, 2:GLB
-
-	char *ret = strrchr((char*)_filename, '.');
-
-	if (strcmp(ret + 1, "obj") == 0)		type = 0;
-	else if (strcmp(ret + 1, "gltf") == 0)	type = 1;
-	else if (strcmp(ret + 1, "glb") == 0 )	type = 2;
-	else return nullptr;
+QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 	std::string _filePath = combinePath(_filename, eAssetModel);
 	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
 
 	if (it != astModels.end())	return it->second;
 
+	char type = 0; // 0:OBJ, 1:GLTF, 2:GLB, 3:plane, 4:cube
+
+	if (strcmp("plane", _filename)==0)		type = 3;
+	else if (strcmp("cube", _filename)==0)	type = 4;
+	else {
+
+		char *ret = strrchr((char*)_filename, '.');
+
+		if (strcmp(ret + 1, "obj") == 0)		type = 0;
+		else if (strcmp(ret + 1, "gltf") == 0)	type = 1;
+		else if (strcmp(ret + 1, "glb") == 0)	type = 2;
+	}
+
 	QeAssetModel* model = nullptr;
 	QeAssetJSON *json = nullptr;
 	std::vector<char> buffer;
+	QeVertex vertex;
 
 	switch (type) {
 	case 0:
@@ -628,17 +633,81 @@ QeAssetModel* QeAsset::getModel(const char* _filename) {
 		break;
 	case 1:
 		json = getJSON(_filePath.c_str());
-		model = ENCODE->decodeGLTF(json);
+		model = ENCODE->decodeGLTF(json, bCubeMap);
 		break;
 	case 2:
-		model = ENCODE->decodeGLB(0);
+	//	model = ENCODE->decodeGLB(0);
+		break;
+	case 3:
+
+		model = new QeAssetModel();
+		model->scale = { 1,1,1 };
+		model->indices = { 1,2,0,1,3,2 };
+		model->indexSize = 6;
+		vertex.normal = { 0, 0, 1 };
+
+		vertex.pos = { -1, -1, -1};
+		vertex.texCoord = {0,1};
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 1, -1, -1 };
+		vertex.texCoord = { 0,0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { -1, 1, -1 };
+		vertex.texCoord = { 1,1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 1, 1, -1 };
+		vertex.texCoord = { 1,0 };
+		model->vertices.push_back(vertex);
+		break;
+	case 4:
+
+		model = new QeAssetModel();
+		model->scale = { 1,1,1 };
+		model->indices = { 1,3,0,7,5,4,4,1,0,5,2,1,2,7,3,0,7,4,1,2,3,7,6,5,4,5,1,5,6,2,2,6,7,0,3,7 };
+		model->indexSize = 36;
+		vertex.texCoord = { 0,0 };
+
+		vertex.pos = { 1, -1, -1 };
+		vertex.normal = { 0, 0, -1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 1, -1, 1 };
+		vertex.normal = { 1, 0, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { -1, -1, 1 };
+		vertex.normal = { -1, 0, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { -1, -1, -1 };
+		vertex.normal = { 0, 0, -1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 1, 1, -1 };
+		vertex.normal = { 1, 0, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 1, 1, 1 };
+		vertex.normal = { 0, 0, 1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { -1, 1, 1 };
+		vertex.normal = { -1, 0, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { -1, 1, -1 };
+		vertex.normal = { 0, 0, -1 };
+		model->vertices.push_back(vertex);
 		break;
 	}
 
 	VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory);
 	VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory);
 	
-	if (model->pMaterial->type == eMaterialPBR ) {
+	if (model->pMaterial && model->pMaterial->type == eMaterialPBR ) {
 		VK->createUniformBuffer(sizeof(model->pMaterial->value), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
 		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value));
 		astMaterials[_filePath] = model->pMaterial;
@@ -653,11 +722,10 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetMaterial);
 	std::map<std::string, QeAssetMaterial*>::iterator it = astMaterials.find(_filePath.c_str());
-
 	if (it != astMaterials.end())	return it->second;
 
 	std::vector<char> buffer = loadFile(_filePath.c_str());
-	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());;
+	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());
 
 	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
 	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
@@ -667,50 +735,94 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 	return mtl;
 }
 
-QeAssetImage* QeAsset::getImage(const char* _filename) {
+QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap) {
+	std::string _filePath = combinePath(_filename, eAssetTexture);
+	std::map<std::string, QeAssetMaterial*>::iterator it = astMaterials.find(_filePath.c_str());
+	if (it != astMaterials.end())	return it->second;
 
-	char type = 0; // 0:BMP, 1:PNG, 2:JPEG
+	QeAssetMaterial* mtl = new QeAssetMaterial();
+	//mtl->value.phong.ambient = { 1,1,1,1 };
+	//mtl->value.phong.diffuse = { 1,1,1,1 };
+	//mtl->value.phong.specular = { 1,1,1,1 };
+	//mtl->value.phong.emissive = { 1,1,1,1 };
+	//mtl->value.phong.param = { 1,1,1,1 };
 
-	char *ret = strrchr((char*)_filename, '.');
+	if (bCubeMap)	mtl->pCubeMap = AST->getImage(_filename, bCubeMap);
+	else			mtl->pDiffuseMap = AST->getImage(_filename, bCubeMap);
 
-	if (strcmp(ret + 1, "bmp") == 0)		type = 0;
-	else if (strcmp(ret + 1, "png") == 0)	type = 1;
-	else if (strcmp(ret + 1, "jpg") == 0 || strcmp(ret + 1, "jpeg") == 0) type = 2;
-	else return nullptr;
+	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
+	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
+
+	astMaterials[_filePath] = mtl;
+
+	return mtl;
+}
+
+QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	std::string _filePath = combinePath(_filename, eAssetTexture);
 	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
 
 	if (it != astTextures.end())	return it->second;
 
-	std::vector<char> buffer = loadFile(_filePath.c_str());
+	char type = 0; // 0:BMP, 1:PNG, 2:JPEG
 
-	VkFormat format;
-	int width, height, bytes;
-	std::vector<unsigned char> data; 
-	
-	switch (type) {
-	case 0:
-		data = ENCODE->decodeBMP((unsigned char*)buffer.data(), &width, &height, &bytes);
-		format = VK_FORMAT_B8G8R8A8_UNORM;
-		break;
-	case 1:
-		data = ENCODE->decodePNG((unsigned char*)buffer.data(), &width, &height, &bytes);
-		format = VK_FORMAT_R8G8B8A8_UNORM;
-		break;
-	case 2:
-		data = ENCODE->decodeJPEG((unsigned char*)buffer.data(), buffer.size(), &width, &height, &bytes);
-		format = VK_FORMAT_R8G8B8A8_UNORM;
-		break;
-	}
-	if (bytes != 4)	imageFillto32bits(&data, bytes);
+	char *ret = strrchr((char*)_filePath.c_str(), '.');
+
+	if (strcmp(ret + 1, "bmp") == 0)		type = 0;
+	else if (strcmp(ret + 1, "png") == 0)	type = 1;
+	else if (strcmp(ret + 1, "jpg") == 0 || strcmp(ret + 1, "jpeg") == 0) type = 2;
+	else return nullptr;
 
 	QeAssetImage* image = new QeAssetImage();
-	VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, image->buffer.memory);
-	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT);
-
 	image->sampler = VK->createTextureSampler();
+	VkFormat format;
+	VkImageViewType imageViewType;
+	std::vector<std::string> imageList;
+
+	if (bCubeMap) {
+		imageViewType = VK_IMAGE_VIEW_TYPE_CUBE;
+		imageList = { "\\posx", "\\negx", "\\posy", "\\negy", "\\posz", "\\negz" };
+	}
+	else {
+		imageViewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageList = {""};
+	}
+
+	int size = int(imageList.size());
+	int cIndex = int(ret - _filePath.c_str());
+
+	for (int i = 0;i<size; ++i) {
+		std::string path(_filePath);
+		path.insert(cIndex, imageList[i]);
+		std::vector<char> buffer = loadFile(path.c_str());
+
+		int width, height, bytes;
+		std::vector<unsigned char> data;
+
+		switch (type) {
+		case 0:
+			data = ENCODE->decodeBMP((unsigned char*)buffer.data(), &width, &height, &bytes);
+			format = VK_FORMAT_B8G8R8A8_UNORM;
+			break;
+		case 1:
+			data = ENCODE->decodePNG((unsigned char*)buffer.data(), &width, &height, &bytes);
+			format = VK_FORMAT_R8G8B8A8_UNORM;
+			break;
+		case 2:
+			data = ENCODE->decodeJPEG((unsigned char*)buffer.data(), buffer.size(), &width, &height, &bytes);
+			format = VK_FORMAT_R8G8B8A8_UNORM;
+			break;
+		}
+		if (bytes != 4)	imageFillto32bits(&data, bytes);
+
+		VkDeviceMemory memory;
+		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, memory, i);
+		image->buffer.memories.push_back(memory);
+	}
+	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT, imageViewType);
 	astTextures[_filePath] = image;
+
 	return image;
 }
 

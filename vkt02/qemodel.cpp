@@ -13,8 +13,8 @@ void QeModel::cleanupPipeline() {
 }
 
 void QeModel::createPipeline() {
-	pipeline = VK->createPipeline(&modelData->pMaterial->pShaderVert->shader, 
-		&modelData->pMaterial->pShaderGeom->shader, &modelData->pMaterial->pShaderFrag->shader);
+	pipeline = VK->createPipeline(&pMaterial->pShaderVert->shader, 
+		&pMaterial->pShaderGeom->shader, &pMaterial->pShaderFrag->shader);
 }
 
 void QeModel::setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size) {
@@ -111,6 +111,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	const char* c = AST->getXMLValue(_property, 1, "obj");
 	modelData = AST->getModel(c);
+	pMaterial = modelData->pMaterial;
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
@@ -120,10 +121,21 @@ void QeModel::init(QeAssetXML* _property) {
 	data.uboBuffer = uboBuffer.buffer;
 	QeLight* light = OBJMGR->getLight(0, nullptr);
 	data.lightBuffer = light->uboBuffer.buffer;
-	data.materialBuffer = modelData->pMaterial->uboBuffer.buffer;
-	data.diffuseMapImageViews = modelData->pMaterial->pDiffuseMap->buffer.view;
-	data.diffueMapSamplers = modelData->pMaterial->pDiffuseMap->sampler;
+	data.materialBuffer = pMaterial->uboBuffer.buffer;
+	data.diffuseMapImageViews = pMaterial->pDiffuseMap->buffer.view;
+	data.diffueMapSamplers = pMaterial->pDiffuseMap->sampler;
+	
+	cubeMapID = 0;
+	c = AST->getXMLValue(_property, 1, "cubemapid");
+	if (c != nullptr)	cubeMapID = atoi(c);
 
+	if (cubeMapID > 0) {
+		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
+		if (model != nullptr) {
+			data.cubeMapImageViews = model->pMaterial->pCubeMap->buffer.view;
+			data.cubeMapSamplers = model->pMaterial->pCubeMap->sampler;
+		}
+	}
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	pos = { 0, 0, 0 };
@@ -144,33 +156,28 @@ void QeModel::init(QeAssetXML* _property) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");			
 		else
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "skeletonvert");
-		
-		if (c != nullptr)	modelData->pMaterial->pShaderVert = AST->getShader(c);
 	}
-	else	modelData->pMaterial->pShaderVert = AST->getShader(c);
+	if (c != nullptr)	pMaterial->pShaderVert = AST->getShader(c);
 
 	c = AST->getXMLValue(_property, 1, "shadergeom");
 	if (c == nullptr) {
-		if (modelData->pMaterial->type == eMaterialPhong)
+		if (pMaterial->type == eMaterialPhong)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phonggeom");
-		else if (modelData->pMaterial->type == eMaterialPBR) 
+		else if (pMaterial->type == eMaterialPBR) 
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
-		
-		if (c != nullptr)	modelData->pMaterial->pShaderGeom = AST->getShader(c);
 	}
-	else	modelData->pMaterial->pShaderGeom = AST->getShader(c);
-	
+	if (c != nullptr)	pMaterial->pShaderGeom = AST->getShader(c);
+
 	c = AST->getXMLValue(_property, 1, "shaderfrag");
 	if (c == nullptr) {
-		if (modelData->pMaterial->type == eMaterialPhong)
+		if (pMaterial->type == eMaterialPhong)
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phongfrag");
-		else if (modelData->pMaterial->type == eMaterialPBR) {
+		else if (pMaterial->type == eMaterialPBR) {
 			c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");
 		}
-		if (c != nullptr)	modelData->pMaterial->pShaderFrag = AST->getShader(c);
 	}
-	else	modelData->pMaterial->pShaderFrag = AST->getShader(c);
-	
+	if (c != nullptr)	pMaterial->pShaderFrag = AST->getShader(c);
+
 	createPipeline();
 
 	c = AST->getXMLValue(_property, 1, "id");
@@ -182,6 +189,13 @@ void QeModel::init(QeAssetXML* _property) {
 	if (c != nullptr)	pos.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "posZ");
 	if (c != nullptr)	pos.z = float(atof(c));
+
+	c = AST->getXMLValue(_property, 1, "scaleX");
+	if (c != nullptr)	size.x *= float(atof(c));
+	c = AST->getXMLValue(_property, 1, "scaleY");
+	if (c != nullptr)	size.y *= float(atof(c));
+	c = AST->getXMLValue(_property, 1, "scaleZ");
+	if (c != nullptr)	size.z *= float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);

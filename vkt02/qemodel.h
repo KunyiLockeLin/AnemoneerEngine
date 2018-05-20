@@ -45,9 +45,11 @@ public:
 	int speed = 0;
 
 	int attachID = 0;
+	int cubeMapID = 0;
 	const char* attachSkeletonName = nullptr;
 
 	QeAssetModel* modelData = nullptr;
+	QeAssetMaterial * pMaterial = nullptr;
 
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
@@ -63,7 +65,7 @@ public:
 	QeModel(QeObjectMangerKey& _key) {}
 	~QeModel();
 
-	void init(QeAssetXML* _property);
+	virtual void init(QeAssetXML* _property);
 	void setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size);
 	void move(QeVector3f& _pos);
 	void setPosition(QeVector3f& _pos);

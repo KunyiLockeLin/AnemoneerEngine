@@ -5,7 +5,7 @@
             "componentType" : 5121,
             "count" : 36,
             "max" : [
-                35
+                25
             ],
             "min" : [
                 0
@@ -15,23 +15,7 @@
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 36,
-            "max" : [
-                4.999967098236084,
-                4.999966621398926,
-                4.999964714050293
-            ],
-            "min" : [
-                -4.999966621398926,
-                -4.999967575073242,
-                -4.999964714050293
-            ],
-            "type" : "VEC3"
-        },
-        {
-            "bufferView" : 2,
-            "componentType" : 5126,
-            "count" : 36,
+            "count" : 26,
             "max" : [
                 1.0,
                 1.0,
@@ -39,7 +23,23 @@
             ],
             "min" : [
                 -1.0,
-                -0.9999999403953552,
+                -1.0,
+                -1.0
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 26,
+            "max" : [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min" : [
+                -1.0,
+                -1.0,
                 -1.0
             ],
             "type" : "VEC3"
@@ -47,17 +47,17 @@
         {
             "bufferView" : 3,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 26,
             "max" : [
                 1.0,
                 1.0,
-                5.337018587486808e-12,
+                0.0,
                 1.0
             ],
             "min" : [
                 -1.0,
                 -1.0,
-                -6.995191506575793e-05,
+                -3.194969758624211e-05,
                 1.0
             ],
             "type" : "VEC4"
@@ -65,14 +65,14 @@
         {
             "bufferView" : 4,
             "componentType" : 5126,
-            "count" : 36,
+            "count" : 26,
             "max" : [
-                0.9999438524246216,
-                0.9959309580735862
+                0.9999390840530396,
+                0.9981106519699097
             ],
             "min" : [
-                9.953975677490234e-05,
-                0.004086434841156006
+                0.0001043081283569336,
+                0.0018814802169799805
             ],
             "type" : "VEC2"
         }
@@ -90,32 +90,32 @@
         },
         {
             "buffer" : 0,
-            "byteLength" : 432,
+            "byteLength" : 312,
             "byteOffset" : 36,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 432,
-            "byteOffset" : 468,
+            "byteLength" : 312,
+            "byteOffset" : 348,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 576,
-            "byteOffset" : 900,
+            "byteLength" : 416,
+            "byteOffset" : 660,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 288,
-            "byteOffset" : 1476,
+            "byteLength" : 208,
+            "byteOffset" : 1076,
             "target" : 34962
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 1764,
+            "byteLength" : 1284,
             "uri" : "cube.bin"
         }
     ],
@@ -137,7 +137,7 @@
     ],
     "meshes" : [
         {
-            "name" : "Cube",
+            "name" : "Cube.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -155,12 +155,7 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Cube",
-            "scale" : [
-                4.001199722290039,
-                4.001199722290039,
-                4.001199722290039
-            ]
+            "name" : "Cube"
         }
     ],
     "samplers" : [

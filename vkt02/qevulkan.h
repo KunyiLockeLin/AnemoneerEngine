@@ -28,7 +28,7 @@ struct QeVKBuffer {
 struct QeVKImageBuffer {
 
 	VkImage image = VK_NULL_HANDLE;
-	VkDeviceMemory memory = VK_NULL_HANDLE;
+	std::vector<VkDeviceMemory> memories;
 	VkImageView view = VK_NULL_HANDLE;
 
 	~QeVKImageBuffer();
@@ -47,6 +47,8 @@ struct QeDataDescriptorSet {
 	// descriptorSetImageNumber
 	VkImageView diffuseMapImageViews = VK_NULL_HANDLE;
 	VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
+	VkImageView cubeMapImageViews = VK_NULL_HANDLE;
+	VkSampler	cubeMapSamplers = VK_NULL_HANDLE;
 
 	// descriptorSetInputAttachmentNumber
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
@@ -91,7 +93,7 @@ public:
 	VkCommandPool commandPool;
 
 	const uint8_t descriptorSetBufferNumber = 3;
-	const uint8_t descriptorSetImageNumber = 1;
+	const uint8_t descriptorSetImageNumber = 2;
 	const uint8_t descriptorSetInputAttachmentNumber = 1;
 
 	void createInstance();
@@ -114,10 +116,10 @@ public:
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
 
-	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D, int index=0);
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer);
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
@@ -146,7 +148,7 @@ public:
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
 	VkSampler createTextureSampler();
 
-	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory);
+	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, int layer=0);
 	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 

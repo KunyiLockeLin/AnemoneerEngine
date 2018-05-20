@@ -29,6 +29,7 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #include <vulkan/vulkan.hpp>
 
+
 #define KEY_FSLASH 0x2F
 #define KEY_A 0x41
 #define KEY_C 0x43
@@ -77,6 +78,7 @@ class QeMath;
 class QeAsset;
 class QeModel;
 class QeBillboard;
+class QeCube;
 class QeCamera;
 class QeLight;
 class QeGlobalKey;
@@ -99,6 +101,7 @@ class QeTimer;
 #include "qeasset.h"
 #include "qemodel.h"
 #include "qebillboard.h"
+#include "qecube.h"
 #include "qecamera.h"
 #include "qelight.h"
 #include "qewindow.h"
@@ -109,3 +112,5 @@ class QeTimer;
 #include "qeactivity.h"
 #include "qelog.h"
 #include "qecommand.h"
+
+using namespace QeString;

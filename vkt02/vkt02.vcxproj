@@ -92,7 +92,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\boost_1_67_0;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,7 +137,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\boost_1_67_0;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -167,6 +167,7 @@
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qecommand.cpp" />
+    <ClCompile Include="qecube.cpp" />
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
     <ClCompile Include="qetimer.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qecommand.h" />
+    <ClInclude Include="qecube.h" />
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
     <ClInclude Include="qetimer.h" />
@@ -203,15 +205,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\data\models\animation.gltf" />
+    <None Include="..\data\shaders\base.frag" />
+    <None Include="..\data\shaders\base.geom" />
     <None Include="..\data\shaders\base.vert" />
     <None Include="..\data\shaders\billboard.frag" />
     <None Include="..\data\shaders\billboard.geom" />
+    <None Include="..\data\shaders\compile.bat" />
+    <None Include="..\data\shaders\cube.frag" />
+    <None Include="..\data\shaders\cube.geom" />
+    <None Include="..\data\shaders\grayscale.frag" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />
     <None Include="..\data\shaders\phong.frag" />
     <None Include="..\data\shaders\phong.geom" />
-    <None Include="..\data\shaders\post.frag" />
-    <None Include="..\data\shaders\post.vert" />
+    <None Include="..\data\shaders\postprocessing.frag" />
+    <None Include="..\data\shaders\postprocessing.geom" />
+    <None Include="..\data\shaders\postprocessing.vert" />
     <None Include="..\data\shaders\skeleton.vert" />
   </ItemGroup>
   <ItemGroup>
