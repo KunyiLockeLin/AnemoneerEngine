@@ -20,12 +20,12 @@
 
   <scene1>
     <cubes>
-      <e id="10" image="cubemap1.png" show="1" scaleX="3" scaleY="3" scaleZ="3"/>
+      <e id="10" image="cubemap1.png" show="1" scaleX="5" scaleY="5" scaleZ="5"/>
     </cubes>
     <terrain>
     </terrain>
     <models>
-      <e id="1" obj="animation.gltf" show="1" speed="50" posX="0" posY="0" posZ="-3" actionSpeed="0.1" action="0" actionType="2" cubemapid="10"/>
+      <e id="1" obj="animation.gltf" show="1" speed="50" posX="0" posY="0" posZ="0" actionSpeed="0.1" action="0" actionType="2" cubemapid="10"/>
     </models>
     <ambientColor/>
     <lights/>
