@@ -1,10 +1,10 @@
 # Vulkan
-  - enviroment: Visual Studio 2017 and VulkanSDK 1.1.73.0
+  - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0, boost C++ 1.67.0
   
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     
 # Feature:
-  - Comptuer Graphics's power is by Vulkan. VulkanSDK is a only third party llibrary. The window and UI are from WinAPI.
+  - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing.
   - Support simple light and camera control.
   - Support vertex, geometry, and fragment shader.
