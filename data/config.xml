@@ -20,6 +20,7 @@
 
   <scene1>
     <cubes>
+      <e id="10" image="cubemap1.png" show="1" scaleX="15" scaleY="15" scaleZ="15"/>
     </cubes>
     <terrain>
     </terrain>
