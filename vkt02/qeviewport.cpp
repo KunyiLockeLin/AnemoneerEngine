@@ -91,7 +91,7 @@ void QeViewport::popViewport() {
 	if (currentNum < 2) return;
 	
 	--currentNum;
-	setTargetCamera(0);
+	setTargetCamera(1);
 	/*viewports[currentNum].x = 0;
 	viewports[currentNum].y = 0;
 	viewports[currentNum].height = 0;
