@@ -2,6 +2,7 @@
   - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0, boost C++ 1.67.0
   
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
+    ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample02.jpg)
     
 # Feature:
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
