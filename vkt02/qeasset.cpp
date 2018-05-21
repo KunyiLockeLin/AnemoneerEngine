@@ -796,11 +796,11 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		POSITIVE_X	Right
 		NEGATIVE_X	Left
 		POSITIVE_Y	Top
-		NEGATIVE_Y	Bottom
+		NEGATIVE_Y	Bottom 
 		POSITIVE_Z	Back
 		NEGATIVE_Z	Front
 		*/
-		imageList = { "\\posx", "\\negx", "\\posy", "\\negy", "\\posz", "\\negz" };
+		imageList = { "\\posz", "\\negz", "\\negx", "\\posx", "\\posy", "\\negy" };
 	} else
 		imageList = { "" };
 

@@ -100,10 +100,10 @@ void QeActivity::eventInput(QeInputData & inputData) {
 			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 0, 1));
 			break;
 		case KEY_W:
-			VP->getTargetCamera()->move(QeVector3f(0, 0, 1));
+			VP->getTargetCamera()->move(QeVector3f(0, 1, 0));
 			break;
 		case KEY_S:
-			VP->getTargetCamera()->move(QeVector3f(0, 0, -1));
+			VP->getTargetCamera()->move(QeVector3f(0, -1, 0));
 			break;
 		case KEY_A:
 			VP->getTargetCamera()->move(QeVector3f(1, 0, 0));
@@ -112,10 +112,16 @@ void QeActivity::eventInput(QeInputData & inputData) {
 			VP->getTargetCamera()->move(QeVector3f(-1, 0, 0));
 			break;
 		case KEY_Q:
-			VP->getTargetCamera()->move(QeVector3f(0, 1, 0));
+			VP->getTargetCamera()->move(QeVector3f(0, 0, 1));
+			break;
+		case KEY_Z:
+			VP->getTargetCamera()->move(QeVector3f(0, 0, -1));
 			break;
 		case KEY_E:
-			VP->getTargetCamera()->move(QeVector3f(0, -1, 0));
+			VP->getTargetCamera()->move(QeVector3f(0, 0, 1), false);
+			break;
+		case KEY_C:
+			VP->getTargetCamera()->move(QeVector3f(0, 0, -1), false);
 			break;
 		}
 		break;
@@ -127,11 +133,11 @@ void QeActivity::eventInput(QeInputData & inputData) {
 
 		switch (inputData.inputKey) {
 		case MK_LBUTTON:
-			//VP->getTargetCamera()->rotatePos(inputData.mousePos);
 			VP->getTargetCamera()->rotateTarget(inputData.mousePos);
 			break;
-		//case MK_RBUTTON:
-		//	VP->getTargetCamera()->rotateTarget(inputData.mousePos);
+		case MK_RBUTTON:
+			//VP->getTargetCamera()->rotatePos(inputData.mousePos);
+			VP->getTargetCamera()->zoomInOut(inputData.mousePos);
 			break;
 		}
 		break;

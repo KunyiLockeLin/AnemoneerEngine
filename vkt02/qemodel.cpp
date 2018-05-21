@@ -129,11 +129,14 @@ void QeModel::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "cubemapid");
 	if (c != nullptr)	cubeMapID = atoi(c);
 
+	ubo.param.z = 0;
+
 	if (cubeMapID > 0) {
 		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
 		if (model != nullptr) {
 			data.cubeMapImageViews = model->pMaterial->pCubeMap->buffer.view;
 			data.cubeMapSamplers = model->pMaterial->pCubeMap->sampler;
+			ubo.param.z = 1;
 		}
 	}
 	VK->updateDescriptorSet(data, descriptorSet);

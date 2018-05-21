@@ -19,7 +19,7 @@ layout( binding = 0) uniform QeUniformBufferObject {
 	mat4 joints[MAX_JOINT_NUM];
 	vec4 cameraPos[MAX_VIEWPORT_NUM];
 	vec4 ambientColor;
-	vec4 param; // 1: viewportNum, 2:billboardType
+	vec4 param; // 1: viewportNum, 2:billboardType, 3:bCubemap
 } ubo;
 
 layout( binding = 1) uniform QeDataLight {
@@ -37,6 +37,7 @@ layout( binding = 2) uniform QeDataPBRMaterial {
 } mtl;
 
 layout( binding = 3) uniform sampler2D baseColorSampler;
+layout( binding = 4) uniform samplerCube cubeSampler;
 
 layout(location = 0) in vec3 inColor;
 layout(location = 1) in vec2 inTexCoord;
@@ -46,6 +47,7 @@ layout(location = 4) in vec3 inBiTanget;
 layout(location = 5) in vec3 inPostion;
 layout(location = 6) in vec3 inCameraPostion;
 layout(location = 7) in vec3 inLighttoVertex;
+//layout(location = 8) in vec3 inCubeTexCoord;
 
 layout(location = 0) out vec4 outColor;
 
@@ -142,4 +144,20 @@ void main() {
 	vec3 gamma = vec3(1.0/2.2);
 	//outColor = vec4(pow(color,gamma), baseColor.a);
 	outColor = vec4(pow(color,gamma), baseColor.a)*baseColor.a;
+
+	// cubemap
+	if(ubo.param.z == 0) return;
+
+	vec3 view_vector =  normalize(inPostion - inCameraPostion);
+  
+	float angle = smoothstep( 0.3, 0.7, dot( normalize( -view_vector ), n ) );
+  
+	vec3 reflect_vector = reflect( view_vector, n );
+	vec4 reflect_color = texture( cubeSampler, reflect_vector );
+  
+	vec3 refrac_vector = refract( view_vector, n, 0.3 );
+	vec4 refract_color = texture( cubeSampler, refrac_vector );
+  
+	vec4 cubemapColor = mix( reflect_color, refract_color, angle );
+	outColor =  mix( outColor, cubemapColor, 0.7 );
 }

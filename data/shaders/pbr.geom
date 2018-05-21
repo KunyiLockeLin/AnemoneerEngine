@@ -38,7 +38,7 @@ layout(location = 4) out vec3 outBiTanget;
 layout(location = 5) out vec3 outPostion;
 layout(location = 6) out vec3 outCameraPostion;
 layout(location = 7) out vec3 outLighttoVertex;
-
+//layout(location = 8) out vec3 outCubeTexCoord;
 
 void main(void) {
 
@@ -47,6 +47,11 @@ void main(void) {
 	for(int i = 0; i < gl_in.length(); i++){
 
 		outPostion = (ubo.model*gl_in[i].gl_Position).xyz;
+		//outCubeTexCoord.x = outPostion.y;
+		//outCubeTexCoord.y = outPostion.z;
+		//outCubeTexCoord.z = outPostion.x;
+		//outCubeTexCoord.x *= -1;
+
 		outCameraPostion = vec3(ubo.cameraPos[gl_InvocationID]);
 		outColor = inColor[i];
 		outTexCoord = inTexCoord[i];

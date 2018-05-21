@@ -37,7 +37,8 @@ public:
 	//void rotatePos(QeVector2i mousePos);
 	void rotateTarget(QeVector2i mousePos);
 	void setMousePos(QeVector2i mousePos);
-	void move(QeVector3f _dir);
+	void zoomInOut(QeVector2i mousePos);
+	void move(QeVector3f _dir, bool bMoveTarget = true);
 	void updateRender(float time);
 	void updateCompute(float time);
 };

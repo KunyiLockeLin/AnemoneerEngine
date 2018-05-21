@@ -11,7 +11,7 @@ struct QeUniformBufferObject {
 	QeMatrix4x4f joints[MAX_JOINT_NUM];
 	QeVector4f	cameraPos[MAX_VIEWPORT_NUM];
 	QeVector4f	ambientColor;
-	QeVector4f	param; // 1:viewportNum, 2:billboardType,
+	QeVector4f	param; // 1:viewportNum, 2:billboardType, 3:bCubemap
 };
 
 enum QeActionType {

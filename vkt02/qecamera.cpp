@@ -55,7 +55,14 @@ void QeCamera::rotateTarget(QeVector2i mousePos){
 void QeCamera::setMousePos(QeVector2i mousePos) {
 	lastMousePos = mousePos;
 }
-void QeCamera::move(QeVector3f _dir) {
+
+void QeCamera::zoomInOut(QeVector2i mousePos) {
+	
+	move( QeVector3f(0,0, -(mousePos.y - lastMousePos.y)/10), false );
+	lastMousePos = mousePos;
+}
+
+void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 
 	QeMatrix4x4f mat;
 
@@ -82,10 +89,11 @@ void QeCamera::move(QeVector3f _dir) {
 	pos = v4;
 
 	//if (type == eCameraFirstPerson) {
+	if(bMoveTarget) {
 		v4 = target;
 		v4 = mat*v4;
 		target = v4;
-	//}
+	}
 }
 
 void QeCamera::init(QeAssetXML* _property) {

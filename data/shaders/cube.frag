@@ -8,7 +8,5 @@ layout(location = 0) out vec4 outColor;
 
 
 void main() {
-	//outColor = vec4(inTexCoord, 1.0f);
-	//outColor = texture(cubeSampler, vec3(0,0,1));
 	outColor = texture(cubeSampler, inTexCoord);
 }
