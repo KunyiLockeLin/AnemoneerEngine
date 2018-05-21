@@ -20,15 +20,15 @@
 
   <scene1>
     <cubes>
-      <e id="10" image="cubemap1.png" show="1" scaleX="15" scaleY="15" scaleZ="15"/>
+      <e id="10" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
     </cubes>
     <terrain>
     </terrain>
     <models>
-      <e id="1" obj="animation.gltf" show="1" speed="50" posX="0" posY="5" posZ="-3" actionSpeed="1" action="0" actionType="2" />
-      <e id="2" obj="animation.gltf" show="1" speed="10" posX="0" posY="-5" posZ="-3" actionSpeed="0.1" action="2" actionType="0" cubemapid="10"/>
-      <e id="3" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_001" />
-      <e id="4" obj="box.gltf" show="1" speed="-50" posX="-1" posY="-1" posZ="0" attachid="2" attachskeleton="Armature_Bone_002" cubemapid="10"/>    
+      <e id="1" obj="animation.gltf" show="1" speed="50" posX="0" posY="10" posZ="-3" actionSpeed="1" action="0" actionType="2" />
+      <e id="2" obj="animation.gltf" show="1" speed="0" posX="0" posY="-10" posZ="-3" cubemapid="10"/>
+      <e id="3" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_002" />
+      <e id="4" obj="box.gltf" show="1" speed="-10" posX="0" posY="0" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="10"/>    
     </models>
     <ambientColor/>
     <lights/>
