@@ -10,7 +10,7 @@
   - Support light and camera control.
   - Support vertex, geometry, and fragment shader.
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
-  - Support diffuse/baseColor map, cubemap & reflection & refraction.
+  - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation(Only for gltf), attach obj and billboards.
   - Support draw line, Log output, and command.
   - For model  - ~~obj, mtl~~, gltf.
@@ -58,7 +58,7 @@
   - HDR
   - frustum Culling
   - Dynamic Decals
-  - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
+  - specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
   - mix animation
   - room
