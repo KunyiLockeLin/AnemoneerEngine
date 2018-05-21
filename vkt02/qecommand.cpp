@@ -19,5 +19,9 @@ void QeCommand::inputCommand(std::string& command) {
 		VP->getTargetCamera()->reset();
 		//if(res.size() >1)	VP->getTargetCamera()->type = QeCameraType(atoi(res[1].c_str()));
 	}
+	else if (res[0].compare("showmesh") == 0) {
+		VK->bShowMesh = !VK->bShowMesh;
+		VP->bRecreateRender = true;
+	}
 }
 

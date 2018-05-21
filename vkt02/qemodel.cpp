@@ -13,8 +13,7 @@ void QeModel::cleanupPipeline() {
 }
 
 void QeModel::createPipeline() {
-	pipeline = VK->createPipeline(&pMaterial->pShaderVert->shader, 
-		&pMaterial->pShaderGeom->shader, &pMaterial->pShaderFrag->shader);
+	pipeline = VK->createPipeline(&pMaterial->pShaderVert->shader, &pMaterial->pShaderGeom->shader, &pMaterial->pShaderFrag->shader);
 }
 
 void QeModel::setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size) {

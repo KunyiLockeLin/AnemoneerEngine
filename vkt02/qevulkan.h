@@ -71,6 +71,7 @@ public:
 	};
 
 	bool bInit = false;
+	VkBool32 bShowMesh = false;
 	void init();
 	void updateRender(float time);
 	void updateCompute(float time);
@@ -142,7 +143,7 @@ public:
 
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE, VkBool32 bVetex = VK_TRUE, uint8_t subpassIndex = 0);
+	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bLine = VK_FALSE, VkBool32 bAlpha = VK_TRUE, VkBool32 bDepthTest = VK_TRUE, VkBool32 bVetex = VK_TRUE, uint8_t subpassIndex = 0);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);

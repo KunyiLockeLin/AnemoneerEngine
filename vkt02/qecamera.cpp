@@ -94,6 +94,7 @@ void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 		v4 = mat*v4;
 		target = v4;
 	}
+	QE->currentActivity->axis->pos = target;
 }
 
 void QeCamera::init(QeAssetXML* _property) {
@@ -155,6 +156,7 @@ void QeCamera::init(QeAssetXML* _property) {
 
 void QeCamera::reset() {
 	init(initProperty); 
+	QE->currentActivity->axis->pos = target;
 }
 
 void QeCamera::updateRender(float time) {

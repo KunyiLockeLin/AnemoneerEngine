@@ -23,6 +23,7 @@ public:
 	std::map<int, QeModel*> mgrModels;
 	std::map<int, QeModel*> mgrCubes;
 	std::map<int, QeModel*> mgrBillboards;
+	std::map<int, QeModel*> mgrLines;
 
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger();
@@ -33,7 +34,8 @@ public:
 	QeModel* getModel(int _id, QeAssetXML* _property);
 	QeCube* getCube(int _id, QeAssetXML* _property);
 	QeBillboard* getBillboard(int _id, QeAssetXML* _property);
-	
+	QeLine* getLine(int _id, QeAssetXML* _property, const char* lineType = nullptr);
+
 	void updateRender(float _time);
 	void updateCompute(float _time);
 

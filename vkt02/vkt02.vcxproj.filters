@@ -75,6 +75,9 @@
     <ClCompile Include="qecube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -134,6 +137,9 @@
     <ClInclude Include="qecube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\data\shaders\billboard.geom">
@@ -166,9 +172,6 @@
     <None Include="..\data\shaders\base.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\base.geom">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\postprocessing.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -188,6 +191,9 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\cube.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\line.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

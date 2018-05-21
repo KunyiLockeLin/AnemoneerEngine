@@ -77,7 +77,7 @@ public:
 	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
 	void cleanupPipeline();
-	void createPipeline();
+	virtual void createPipeline();
 
 	bool setAction(unsigned int actionID, QeActionType playType);
 	void actionPlay();

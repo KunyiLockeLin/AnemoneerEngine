@@ -43,6 +43,13 @@ QeObjectManger::~QeObjectManger() {
 		++it3;
 	}
 	mgrBillboards.clear();
+
+	it3 = mgrLines.begin();
+	while (it3 != mgrLines.end()) {
+		if (it3->second != nullptr) delete (it3->second);
+		++it3;
+	}
+	mgrLines.clear();
 }
 
 QeCamera* QeObjectManger::getCamera(int _id, QeAssetXML* _property) {
@@ -122,6 +129,20 @@ QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
 	return newModel;
 }
 
+QeLine* QeObjectManger::getLine(int _id, QeAssetXML* _property, const char* lineType) {
+
+	std::map<int, QeModel*>::iterator it = mgrLines.find(_id);
+	if (it != mgrLines.end())	return (QeLine*)it->second;
+
+	QeLine* newModel = new QeLine(key);
+	if (lineType) newModel->lineType = lineType;
+	newModel->init(_property);
+	mgrLines[_id] = newModel;
+
+	VP->bUpdateDrawCommandBuffers = true;
+	return newModel;
+}
+
 void QeObjectManger::updateRender(float _time) {
 
 	std::map<int, QeCamera*>::iterator it = mgrCameras.begin();
@@ -150,6 +171,12 @@ void QeObjectManger::updateRender(float _time) {
 
 	it2 = mgrBillboards.begin();
 	while (it2 != mgrBillboards.end()) {
+		it2->second->updateRender(_time);
+		++it2;
+	}
+
+	it2 = mgrLines.begin();
+	while (it2 != mgrLines.end()) {
 		it2->second->updateRender(_time);
 		++it2;
 	}
@@ -186,6 +213,12 @@ void QeObjectManger::updateCompute(float _time) {
 		it2->second->updateCompute(_time);
 		++it2;
 	}
+
+	it2 = mgrLines.begin();
+	while (it2 != mgrLines.end()) {
+		it2->second->updateCompute(_time);
+		++it2;
+	}
 }
 
 void QeObjectManger::cleanupPipeline() {
@@ -204,6 +237,12 @@ void QeObjectManger::cleanupPipeline() {
 
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
+		it->second->cleanupPipeline();
+		++it;
+	}
+
+	it = mgrLines.begin();
+	while (it != mgrLines.end()) {
 		it->second->cleanupPipeline();
 		++it;
 	}
@@ -226,6 +265,11 @@ void QeObjectManger::recreatePipeline() {
 		it->second->createPipeline();
 		++it;
 	}
+	it = mgrLines.begin();
+	while (it != mgrLines.end()) {
+		it->second->createPipeline();
+		++it;
+	}
 	VP->bUpdateDrawCommandBuffers = true;
 }
 
@@ -244,6 +288,11 @@ void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer)
 	}
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
+		it->second->updateDrawCommandBuffer(drawCommandBuffer);
+		++it;
+	}
+	it = mgrLines.begin();
+	while (it != mgrLines.end()) {
 		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
 	}

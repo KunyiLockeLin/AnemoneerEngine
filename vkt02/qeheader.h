@@ -50,8 +50,8 @@ const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = 512;
 const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = 512;
 const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = 64;
 const uint16_t MAX_DESCRIPTOR_NUM = 128;
-const int GRIDS_SIZE = 5;
-const int AXIS_SIZE = 5;
+const int GRIDS_SIZE = 10;
+const int AXIS_SIZE = 1;
 
 struct QeVKBuffer;
 struct QeVKImageBuffer;
@@ -95,6 +95,7 @@ class QeVulkan;
 class QeLog;
 class QeCommand;
 class QeTimer;
+class QeLine;
 
 #include "qeencode.h"
 #include "qemath.h"
@@ -103,6 +104,7 @@ class QeTimer;
 #include "qeasset.h"
 #include "qemodel.h"
 #include "qebillboard.h"
+#include "qeline.h"
 #include "qecube.h"
 #include "qecamera.h"
 #include "qelight.h"

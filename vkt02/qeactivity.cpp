@@ -61,6 +61,11 @@ void QeActivity::init(QeAssetXML* _property) {
 	node = AST->getXMLNode(_property, 1, "models");
 	if (node != nullptr && node->nexts.size() > 0) 
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
+
+	axis = OBJMGR->getLine(0, initProperty, "axis");
+	axis->pos = VP->getTargetCamera()->target;
+
+	grids = OBJMGR->getLine(1, initProperty, "grids");
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {

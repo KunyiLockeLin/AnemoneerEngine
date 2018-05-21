@@ -168,6 +168,7 @@
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qecommand.cpp" />
     <ClCompile Include="qecube.cpp" />
+    <ClCompile Include="qeline.cpp" />
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
     <ClCompile Include="qetimer.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qecommand.h" />
     <ClInclude Include="qecube.h" />
+    <ClInclude Include="qeline.h" />
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
     <ClInclude Include="qetimer.h" />
@@ -206,7 +208,6 @@
   <ItemGroup>
     <None Include="..\data\models\animation.gltf" />
     <None Include="..\data\shaders\base.frag" />
-    <None Include="..\data\shaders\base.geom" />
     <None Include="..\data\shaders\base.vert" />
     <None Include="..\data\shaders\billboard.frag" />
     <None Include="..\data\shaders\billboard.geom" />
@@ -214,6 +215,7 @@
     <None Include="..\data\shaders\cube.frag" />
     <None Include="..\data\shaders\cube.geom" />
     <None Include="..\data\shaders\grayscale.frag" />
+    <None Include="..\data\shaders\line.geom" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />
     <None Include="..\data\shaders\phong.frag" />

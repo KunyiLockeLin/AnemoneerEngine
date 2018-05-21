@@ -81,4 +81,5 @@ void main() {
 	vec4 gamma = vec4(1.0/2.2);
 	
 	outColor =	pow( ambient + (diffuse + specular)*light.color*attenuation, gamma)*texColor.a;
+	outColor = vec4(1,0,0,1);
 }

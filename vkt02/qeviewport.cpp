@@ -272,7 +272,6 @@ void QeViewport::updateDrawCommandBuffers() {
 		vkCmdSetLineWidth(drawCommandBuffers[i], 1.0f);
 
 		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
-
 		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &postprocessingDescriptorSet, 0, nullptr);
 		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline);
@@ -299,6 +298,6 @@ void QeViewport::updatePostProcessing() {
 	data.inputAttachImageViews = sceneImage.view;
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
-	if (postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = VK->createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, FALSE, FALSE, 1);
+	if ( postprocessingPipeline == VK_NULL_HANDLE)
+		postprocessingPipeline = VK->createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, FALSE, FALSE, FALSE, 1);
 }

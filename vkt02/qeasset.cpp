@@ -823,8 +823,8 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	//mtl->value.phong.specular = { 1,1,1,1 };
 	//mtl->value.phong.emissive = { 1,1,1,1 };
 	//mtl->value.phong.param = { 1,1,1,1 };
-
-	if (bCubeMap)	mtl->pCubeMap = AST->getImage(_filename, bCubeMap);
+	if (_filePath.length() == 0) {}
+	else if (bCubeMap)	mtl->pCubeMap = AST->getImage(_filename, bCubeMap);
 	else			mtl->pDiffuseMap = AST->getImage(_filename, bCubeMap);
 
 	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
