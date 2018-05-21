@@ -1,7 +1,7 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (input_attachment_index=0, set=0, binding=5) uniform subpassInput inputAttachment;
+layout (input_attachment_index=0, set=0, binding=6) uniform subpassInput inputAttachment;
 
 layout (location = 0) in vec2 inUV;
 

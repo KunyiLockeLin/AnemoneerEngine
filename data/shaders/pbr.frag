@@ -38,6 +38,7 @@ layout( binding = 2) uniform QeDataPBRMaterial {
 
 layout( binding = 3) uniform sampler2D baseColorSampler;
 layout( binding = 4) uniform samplerCube cubeSampler;
+layout( binding = 5) uniform sampler2D normalSampler;
 
 layout(location = 0) in vec3 inColor;
 layout(location = 1) in vec2 inTexCoord;
@@ -89,8 +90,12 @@ void main() {
     vec3 b = normalize(cross(ng, t));
 	mat3 tbn = mat3(t, b, ng);
 	// neeed normal map
-	vec3 n = tbn[2].xyz; 
-	
+	//vec3 n = tbn[2].xyz; 
+    //vec3 n = texture(normalSampler, inTexCoord).rgb;
+    //n = normalize(tbn * ((2.0 * n - 1.0) * vec3(u_NormalScale, u_NormalScale, 1.0)));
+	vec3 n = 2 * texture( normalSampler, inTexCoord ).rgb - 1.0;
+	n = normalize( mat3( inTangent, inBiTanget, inNormal) * n );
+
 	float lightType		 = light.param.x;
 	float lightIntensity = light.param.y;
 	float lightConeAngle = light.param.z;
@@ -150,12 +155,12 @@ void main() {
 
 	vec3 view_vector =  normalize(inPostion - inCameraPostion);
   
-	float angle = smoothstep( 0.3, 0.7, dot( normalize( -view_vector ), inNormal ) );
+	float angle = smoothstep( 0.3, 0.7, dot( normalize( -view_vector ), n ) );
   
-	vec3 reflect_vector = reflect( view_vector, inNormal );
+	vec3 reflect_vector = reflect( view_vector, n );
 	vec4 reflect_color = texture( cubeSampler, reflect_vector );
   
-	vec3 refrac_vector = refract( view_vector, inNormal, 0.3 );
+	vec3 refrac_vector = refract( view_vector, n, 0.3 );
 	vec4 refract_color = texture( cubeSampler, refrac_vector );
   
 	vec4 cubemapColor = mix( reflect_color, refract_color, angle );

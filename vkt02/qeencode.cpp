@@ -628,13 +628,19 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	pMaterial->type = eMaterialPBR;
 	model->pMaterial = pMaterial;
 	
-	int baseColorTextureIndex = atoi(AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index"));
+	int textureIndex = atoi(AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index"));
 	std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
-	const char* baseColorTexturePath = AST->getJSONValue((*imageJSON)[baseColorTextureIndex], 1, "uri");
+	const char* texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
 	
-	if(bCubeMap)pMaterial->pCubeMap = AST->getImage(baseColorTexturePath, bCubeMap);
-	else		pMaterial->pDiffuseMap = AST->getImage(baseColorTexturePath, bCubeMap);
+	if(bCubeMap)pMaterial->pCubeMap = AST->getImage(texturePath, bCubeMap);
+	else		pMaterial->pDiffuseMap = AST->getImage(texturePath, bCubeMap);
 	
+	textureIndex = atoi(AST->getJSONValue(json, 3, "materials", "normalTexture", "index"));
+	imageJSON = AST->getJSONArrayNodes(json, 1, "images");
+	texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
+
+	pMaterial->pNormalMap = AST->getImage(texturePath, bCubeMap);
+
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
 	QeDataMaterialPBR mtl;
 

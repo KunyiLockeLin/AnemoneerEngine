@@ -123,7 +123,9 @@ void QeModel::init(QeAssetXML* _property) {
 	data.materialBuffer = pMaterial->uboBuffer.buffer;
 	data.diffuseMapImageViews = pMaterial->pDiffuseMap->buffer.view;
 	data.diffueMapSamplers = pMaterial->pDiffuseMap->sampler;
-	
+	data.normalMapImageViews = pMaterial->pNormalMap->buffer.view;
+	data.normalMapSamplers = pMaterial->pNormalMap->sampler;
+
 	cubeMapID = 0;
 	c = AST->getXMLValue(_property, 1, "cubemapid");
 	if (c != nullptr)	cubeMapID = atoi(c);

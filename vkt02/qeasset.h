@@ -96,6 +96,7 @@ struct QeAssetMaterial {
 	QeVKBuffer	uboBuffer;
 	QeAssetImage* pDiffuseMap = nullptr; // baseColorMap
 	QeAssetImage* pCubeMap = nullptr;
+	QeAssetImage* pNormalMap = nullptr;
 	QeAssetShader* pShaderVert = nullptr;
 	QeAssetShader* pShaderGeom = nullptr;
 	QeAssetShader* pShaderFrag = nullptr;

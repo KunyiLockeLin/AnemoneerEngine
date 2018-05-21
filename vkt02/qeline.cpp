@@ -97,7 +97,7 @@ void QeLine::setMatModel() {
 	mat *= MATH->rotateZ(face);
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	float dis = MATH->distance( VP->getTargetCamera()->pos, pos )/10;
-	dis = dis < 0.1 ? 0.1 : dis;
+	dis = dis < 0.1f ? 0.1f : dis;
 	mat *= MATH->scale(size*dis);
 
 	ubo.model = mat;

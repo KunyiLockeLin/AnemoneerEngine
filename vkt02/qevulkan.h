@@ -49,6 +49,8 @@ struct QeDataDescriptorSet {
 	VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
 	VkImageView cubeMapImageViews = VK_NULL_HANDLE;
 	VkSampler	cubeMapSamplers = VK_NULL_HANDLE;
+	VkImageView normalMapImageViews = VK_NULL_HANDLE;
+	VkSampler	normalMapSamplers = VK_NULL_HANDLE;
 
 	// descriptorSetInputAttachmentNumber
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
@@ -94,7 +96,7 @@ public:
 	VkCommandPool commandPool;
 
 	const uint8_t descriptorSetBufferNumber = 3;
-	const uint8_t descriptorSetImageNumber = 2;
+	const uint8_t descriptorSetImageNumber = 3;
 	const uint8_t descriptorSetInputAttachmentNumber = 1;
 
 	void createInstance();
