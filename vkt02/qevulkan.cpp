@@ -349,7 +349,6 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 
 	std::array<VkAttachmentDescription, 3> attachments = { colorAttachment1, depthAttachment, colorAttachment2 };
 	std::array<VkSubpassDescription, 2> subpasses = { subpass1, subpass2 };
-
 	VkRenderPassCreateInfo renderPassInfo = {};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
@@ -966,7 +965,7 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bLine, VkBool32 bAlpha, VkBool32 bDepthTest, VkBool32 bVetex, uint8_t subpassIndex) {
+VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bLine, VkBool32 bPostprocessing, uint8_t subpassIndex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -999,7 +998,13 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	if (bVetex) {
+	if (bPostprocessing) { // bVetex
+		vertexInputInfo.vertexBindingDescriptionCount = 0;
+		vertexInputInfo.vertexAttributeDescriptionCount = 0;
+		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+	}
+	else {
 		std::string s = "";  // Magic line!!!! In release mode, if it's removed, attributeDescriptions would become bad value and shutdown.
 		VkVertexInputBindingDescription bindingDescription = QeVertex::getBindingDescription();
 		std::array<VkVertexInputAttributeDescription, 7> attributeDescriptions = QeVertex::getAttributeDescriptions();
@@ -1008,12 +1013,7 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 	}
-	else {
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-	}
+
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.topology = bLine? VK_PRIMITIVE_TOPOLOGY_LINE_LIST: VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -1023,10 +1023,10 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = bShowMesh? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+	rasterizer.polygonMode = bShowMesh && !bPostprocessing ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
 	
-	rasterizer.cullMode = bVetex ? VK_CULL_MODE_BACK_BIT : VK_CULL_MODE_FRONT_BIT;
+	rasterizer.cullMode = bPostprocessing ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -1038,13 +1038,13 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 
-	if (bDepthTest) {
-		depthStencil.depthTestEnable = VK_TRUE;
-		depthStencil.depthWriteEnable = VK_TRUE;
-	}
-	else {
+	if (bPostprocessing) { // DepthTest
 		depthStencil.depthTestEnable = VK_FALSE;
 		depthStencil.depthWriteEnable = VK_FALSE;
+	}
+	else {
+		depthStencil.depthTestEnable = VK_TRUE;
+		depthStencil.depthWriteEnable = VK_TRUE;
 	}
 	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
 	depthStencil.depthBoundsTestEnable = VK_FALSE;
@@ -1053,7 +1053,10 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 	
-	if (bAlpha) {
+	if (bPostprocessing) { // Alpha
+		colorBlendAttachment.blendEnable = VK_FALSE;
+	}
+	else {
 		colorBlendAttachment.blendEnable = VK_TRUE;
 		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
 		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
@@ -1061,9 +1064,6 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-	}
-	else {
-		colorBlendAttachment.blendEnable = VK_FALSE;
 	}
 	VkPipelineColorBlendStateCreateInfo colorBlending = {};
 	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;

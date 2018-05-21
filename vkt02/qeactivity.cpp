@@ -111,10 +111,10 @@ void QeActivity::eventInput(QeInputData & inputData) {
 			VP->getTargetCamera()->move(QeVector3f(0, -1, 0));
 			break;
 		case KEY_A:
-			VP->getTargetCamera()->move(QeVector3f(1, 0, 0));
+			VP->getTargetCamera()->move(QeVector3f(-1, 0, 0));
 			break;
 		case KEY_D:
-			VP->getTargetCamera()->move(QeVector3f(-1, 0, 0));
+			VP->getTargetCamera()->move(QeVector3f(1, 0, 0));
 			break;
 		case KEY_Q:
 			VP->getTargetCamera()->move(QeVector3f(0, 0, 1));

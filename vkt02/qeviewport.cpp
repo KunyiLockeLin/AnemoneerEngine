@@ -299,5 +299,5 @@ void QeViewport::updatePostProcessing() {
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = VK->createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, FALSE, FALSE, FALSE, 1);
+		postprocessingPipeline = VK->createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, TRUE, 1);
 }
