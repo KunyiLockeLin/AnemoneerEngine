@@ -255,6 +255,7 @@ QeVector3i QeVector3i::operator*(const int& other) {
 
 QeVector3f::QeVector3f() :x(0.0f), y(0.0f), z(0.0f) {}
 QeVector3f::QeVector3f(float _x, float _y, float _z) :x(_x), y(_y), z(_z) {}
+QeVector3f::QeVector3f(int _x, int _y, int _z) : x(float(_x)), y(float(_y)), z(float(_z)) {}
 
 bool QeVector3f::operator==(const QeVector3f& other) const {
 	return x == other.x && y == other.y && z == other.z;

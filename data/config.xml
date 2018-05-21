@@ -12,7 +12,7 @@
   <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
   <webEnvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-  <defaultShader vert="basev.spv" skeletonvert="skeletonv.spv" phonggeom="phongg.spv" phongfrag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" postprocessingvert="postprocessingv.spv" postprocessinggeom="postprocessingg.spv" postprocessingfrag="postprocessingf.spv" billboardgeom= "billboardg.spv" billboardfrag= "billboardf.spv" cubegeom="cubeg.spv" cubefrag="cubef.spv"/>
+  <defaultShader vert="basev.spv" geom="baseg.spv" frag="basef.spv" skeletonvert="skeletonv.spv" phonggeom="phongg.spv" phongfrag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" postprocessingvert="postprocessingv.spv" postprocessinggeom="postprocessingg.spv" postprocessingfrag="postprocessingf.spv" billboardgeom= "billboardg.spv" billboardfrag= "billboardf.spv" cubegeom="cubeg.spv" cubefrag="cubef.spv"/>
   <defaultCamera posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
   <defaultLight show="1" image="light.png" type="0" posX="15" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="50"/>
   <defaultAmbientColor r="0" g="0.5" b="0.5"/>
@@ -26,9 +26,9 @@
     </terrain>
     <models>
       <e id="1" obj="animation.gltf" show="1" speed="50" posX="0" posY="10" posZ="-3" actionSpeed="1" action="0" actionType="2" />
-      <e id="2" obj="animation.gltf" show="1" speed="0" posX="0" posY="-10" posZ="-3" cubemapid="10"/>
+      <e id="2" obj="animation.gltf" show="1" speed="-5" posX="0" posY="-10" posZ="-3" cubemapid="10"/>
       <e id="3" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_002" />
-      <e id="4" obj="box.gltf" show="1" speed="-10" posX="0" posY="0" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="10"/>    
+      <e id="4" obj="box.gltf" show="1" speed="0" posX="0" posY="0" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="10"/>    
     </models>
     <ambientColor/>
     <lights/>

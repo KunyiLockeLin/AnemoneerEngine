@@ -45,6 +45,7 @@ struct QeVector3f {
 
 	QeVector3f();
 	QeVector3f(float _x, float _y, float _z);
+	QeVector3f(int _x, int _y, int _z);
 
 	bool operator==(const QeVector3f& other)const;
 	bool operator!=(const QeVector3f& other)const;

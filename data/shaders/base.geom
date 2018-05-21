@@ -18,7 +18,9 @@ layout( binding = 0) uniform QeUniformBufferObject {
 	vec4 param; // 1: viewportNum, 2:billboardType
 } ubo;
 
+layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inTexCoord[];
+layout(location = 0) out vec3 outColor;
 layout(location = 1) out vec2 outTexCoord;
 
 void main(void)
@@ -26,6 +28,7 @@ void main(void)
 	if( ubo.param.x <= gl_InvocationID) return;
 
 	for(int i = 0; i < gl_in.length(); i++) {
+		outColor = inColor[i];
 		outTexCoord = inTexCoord[i];
 		gl_Position = ubo.proj[gl_InvocationID] *ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
 	

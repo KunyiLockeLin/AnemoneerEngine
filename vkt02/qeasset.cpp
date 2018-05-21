@@ -608,10 +608,13 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 	if (it != astModels.end())	return it->second;
 
-	char type = 0; // 0:OBJ, 1:GLTF, 2:GLB, 3:plane, 4:cube
+	char type = 0;
 
 	if (strcmp("plane", _filename)==0)		type = 3;
 	else if (strcmp("cube", _filename)==0)	type = 4;
+	else if (strcmp("axis", _filename) == 0)	type = 5;
+	else if (strcmp("grids", _filename) == 0)	type = 6;
+	else if (strcmp("line", _filename) == 0)	type = 7;
 	else {
 
 		char *ret = strrchr((char*)_filename, '.');
@@ -625,6 +628,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 	QeAssetJSON *json = nullptr;
 	std::vector<char> buffer;
 	QeVertex vertex;
+	int index = 0;
 
 	switch (type) {
 	case 0:
@@ -643,7 +647,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model = new QeAssetModel();
 		model->scale = { 1,1,1 };
 		model->indices = { 1,2,0,1,3,2 };
-		model->indexSize = 6;
+		model->indexSize = int(model->indices.size());
 		vertex.normal = { 0, 0, 1 };
 
 		vertex.pos = { -1, -1, -1};
@@ -669,7 +673,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->indices = { 3,1,0,5,7,4,1,4,0,2,5,1,7,2,3,7,0,4,2,1,3,6,7,5,5,4,1,6,5,2,6,2,7,3,0,7 };
 		//model->indices = { 1,3,0,7,5,4,4,1,0,5,2,1,2,7,3,0,7,4,1,2,3,7,6,5,4,5,1,5,6,2,2,6,7,0,3,7 };
 
-		model->indexSize = 36;
+		model->indexSize = int(model->indices.size());
 		vertex.texCoord = { 0,0 };
 
 		vertex.pos = { 1, -1, -1 };
@@ -704,6 +708,77 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.normal = { 0, 0, -1 };
 		model->vertices.push_back(vertex);
 		break;
+	case 5:
+
+		model = new QeAssetModel();
+		model->scale = { AXIS_SIZE, AXIS_SIZE, AXIS_SIZE };
+		model->indices = { 0,1,2,3,4,5 };
+		model->indexSize = int(model->indices.size());
+		vertex.normal = { 1, 0, 0 };
+		vertex.texCoord = { 0, 0 };
+
+		vertex.pos = { 0, 0, 0 };
+		vertex.color = { 1, 0, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 1, 0, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 0, 0, 0 };
+		vertex.color = { 0, 1, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 0, 1, 0 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 0, 0, 0 };
+		vertex.color = { 0, 0, 1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 0, 0, 1 };
+		model->vertices.push_back(vertex);
+		break;
+	case 6:
+
+		model = new QeAssetModel();
+		model->scale = { 1,1,1 };
+		vertex.normal = { 1, 0, 0 };
+		vertex.texCoord = { 0, 0 };
+		vertex.color = { 0.5f, 0.5f, 0.5f };
+
+		for (index = -GRIDS_SIZE; index <= GRIDS_SIZE; ++index) {
+			model->indices.push_back(int(model->vertices.size()));
+			vertex.pos = { index, GRIDS_SIZE, 0 };
+			model->vertices.push_back(vertex);
+
+			model->indices.push_back(int(model->vertices.size()));
+			vertex.pos = { index, -GRIDS_SIZE, 0 };
+			model->vertices.push_back(vertex);
+
+			model->indices.push_back(int(model->vertices.size()));
+			vertex.pos = { GRIDS_SIZE, index, 0 };
+			model->vertices.push_back(vertex);
+
+			model->indices.push_back(int(model->vertices.size()));
+			vertex.pos = { -GRIDS_SIZE, index, 0 };
+			model->vertices.push_back(vertex);
+		}
+		model->indexSize = int(model->indices.size());
+		break;
+	case 7:
+
+		model = new QeAssetModel();
+		model->scale = { 1, 1, 1 };
+		model->indices = { 0,1 };
+		model->indexSize = int(model->indices.size());
+		vertex.normal = { 1, 0, 0 };
+		vertex.texCoord = { 0, 0 };
+		vertex.color = { 0, 0, 0 };
+
+		vertex.pos = { 0, 0, 0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { 1, 0, 0 };
+		model->vertices.push_back(vertex);
 	}
 
 	VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory);
