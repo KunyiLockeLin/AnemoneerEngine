@@ -239,6 +239,7 @@ void QeModel::updateUniformBuffer() {
 	int size7 = sizeof(QeMatrix4x4f)*9;
 	int size8 = sizeof(QeUniformBufferObject);
 	int size9 = sizeof(ubo);*/
+	//pos = VP->getTargetCamera()->target;
 	setMatModel();
 
 	ubo.ambientColor = QE->currentActivity->ambientColor;

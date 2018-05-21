@@ -10,9 +10,9 @@ void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up,
 	ffar = _far;
 }
 
-void QeCamera::rotatePos(float _angle, QeVector3f _axis) {
+/*void QeCamera::rotatePos(float _angle, QeVector3f _axis) {
 
-	if (type == eCameraThirdPerson) return;
+	//if (type == eCameraThirdPerson) return;
 
 	while (_angle > 360) _angle -= 360;
 	while (_angle < -360) _angle += 360;
@@ -22,7 +22,8 @@ void QeCamera::rotatePos(float _angle, QeVector3f _axis) {
 	mat *= MATH->translate(pos);
 	QeVector4f v4(vec, 1);
 	target = mat*v4;
-}
+}*/
+
 void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	
 	while (_angle > 360) _angle -= 360;
@@ -35,21 +36,22 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	pos = mat*v4;
 }
 
-void QeCamera::rotatePos(QeVector2i mousePos){
+/*void QeCamera::rotatePos(QeVector2i mousePos){
 
-	if (type == eCameraThirdPerson) return;
+	//if (type == eCameraThirdPerson) return;
 
 	rotatePos(float(mousePos.x - lastMousePos.x), QeVector3f(0, 0, 1));
 	rotatePos(float(mousePos.y - lastMousePos.y), QeVector3f(1, 0, 0));
 	lastMousePos = mousePos;
-}
+}*/
 
 void QeCamera::rotateTarget(QeVector2i mousePos){
 
 	rotateTarget(float(mousePos.x - lastMousePos.x), QeVector3f(0, 0, 1));
-	rotateTarget(float(mousePos.y - lastMousePos.y), QeVector3f(1, 0, 0));
+	rotateTarget(float(mousePos.y - lastMousePos.y), QeVector3f(0, 1, 0));
 	lastMousePos = mousePos;
 }
+
 void QeCamera::setMousePos(QeVector2i mousePos) {
 	lastMousePos = mousePos;
 }
@@ -63,27 +65,27 @@ void QeCamera::move(QeVector3f _dir) {
 	if (_dir.z != 0) {
 		mat = MATH->translate(_face*_dir.z*speed);
 	}
-
-	QeVector3f _surface = MATH->normalize(MATH->cross(_face, up));
-	//left
-	if (_dir.x != 0) {
-		mat = MATH->translate(_surface*_dir.x*speed);
+	else {
+		QeVector3f _surface = MATH->normalize(MATH->cross(_face, up));
+		//left
+		if (_dir.x != 0) {
+			mat = MATH->translate(_surface*_dir.x*speed);
+		}
+		//up
+		if (_dir.y != 0) {
+			QeVector3f _up1 = MATH->cross(_surface, _face);
+			mat = MATH->translate(_up1*_dir.y*speed);
+		}
 	}
-	//up
-	if (_dir.y != 0) {
-		QeVector3f _up1 = MATH->cross(_surface, _face);
-		mat = MATH->translate(_up1*_dir.y*speed);
-	}
-
 	QeVector4f v4(pos, 1);
 	v4 = mat*v4;
 	pos = v4;
 
-	if (type == eCameraFirstPerson) {
+	//if (type == eCameraFirstPerson) {
 		v4 = target;
 		v4 = mat*v4;
 		target = v4;
-	}
+	//}
 }
 
 void QeCamera::init(QeAssetXML* _property) {
@@ -94,7 +96,7 @@ void QeCamera::init(QeAssetXML* _property) {
 	fov = 45.0f;
 	fnear = 0.1f;
 	ffar = 1000.0f;
-	type = eCameraThirdPerson;
+	//type = eCameraThirdPerson;
 	speed = 0.5f;
 
 	if (_property == nullptr) return;
@@ -105,9 +107,9 @@ void QeCamera::init(QeAssetXML* _property) {
 	//c = AST->getXMLValue(_property, 1, "id");
 	//if (c != nullptr)	id = atoi(c);
 
-	c = AST->getXMLValue(_property, 1, "type");
-	if (c != nullptr)	type = QeCameraType(atoi(c));
-	else				type = eCameraFirstPerson;
+	//c = AST->getXMLValue(_property, 1, "type");
+	//if (c != nullptr)	type = QeCameraType(atoi(c));
+	//else				type = eCameraFirstPerson;
 
 	c = AST->getXMLValue(_property, 1, "posX");
 	if (c != nullptr)	pos.x = float(atof(c));
@@ -157,6 +159,6 @@ void QeCamera::updateRender(float time) {
 
 void QeCamera::updateCompute(float time) {}
 
-void QeCamera::switchType(QeCameraType _type) {
-	type = _type;
-}
+//void QeCamera::switchType(QeCameraType _type) {
+//	type = _type;
+//}

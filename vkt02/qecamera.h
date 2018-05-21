@@ -2,10 +2,10 @@
 
 #include "qeheader.h"
 
-enum QeCameraType {
-	eCameraThirdPerson,
-	eCameraFirstPerson,
-};
+//enum QeCameraType {
+//	eCameraThirdPerson,
+//	eCameraFirstPerson,
+//};
 
 class QeCamera
 {
@@ -23,18 +23,18 @@ public:
 	float ffar = 1000.f;
 	float faspect = 1.f;
 	float speed = 0.5f;
-	QeCameraType type = eCameraThirdPerson;
+	//QeCameraType type = eCameraThirdPerson;
 	QeAssetXML* initProperty = nullptr;
 
 	QeCamera(QeObjectMangerKey& _key) {}
 	~QeCamera() {}
 	void init(QeAssetXML* _property);
 	void reset();
-	void switchType(QeCameraType _type);
+	//void switchType(QeCameraType _type);
 	void setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up, float _fov, float _near, float _far );
-	void rotatePos(float _angle, QeVector3f _axis);
+	//void rotatePos(float _angle, QeVector3f _axis);
 	void rotateTarget(float _angle, QeVector3f _axis);
-	void rotatePos(QeVector2i mousePos);
+	//void rotatePos(QeVector2i mousePos);
 	void rotateTarget(QeVector2i mousePos);
 	void setMousePos(QeVector2i mousePos);
 	void move(QeVector3f _dir);

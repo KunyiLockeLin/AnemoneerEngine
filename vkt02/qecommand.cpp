@@ -17,7 +17,7 @@ void QeCommand::inputCommand(std::string& command) {
 	}
 	else if (res[0].compare("resetcamera") == 0) {
 		VP->getTargetCamera()->reset();
-		if(res.size() >1)	VP->getTargetCamera()->type = QeCameraType(atoi(res[1].c_str()));
+		//if(res.size() >1)	VP->getTargetCamera()->type = QeCameraType(atoi(res[1].c_str()));
 	}
 }
 
