@@ -6,12 +6,12 @@
 # Feature:
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing.
-  - Support simple light and camera control.
+  - Support light and camera control.
   - Support vertex, geometry, and fragment shader.
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map, cubemap & reflection & refraction.
   - Support skeletal animation(Only for gltf), attach obj and billboards.
-  - Support Log output, and command.
+  - Support draw line, Log output, and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
@@ -25,7 +25,7 @@
     - "1"~"9" : Choose a viewport to control its camera.
     - "Up","Down","Left","Right","W","A","S","D","Q","E","Z","C","MouseLeftMove","MouseRightMove" : Move the camera.
     - "/" : turn on command mode or input directly in console.
-      - "resetcamera [p1]" : Initialize the camera. p1 is camera mode. 0 is third person. 1 is first person. If p1 is empty, it means not to change the camera mode.
+      - "resetcamera" : Initialize the camera.
       - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has scene1, scene2, and scene3.
 
 # config.xml:
