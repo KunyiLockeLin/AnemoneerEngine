@@ -63,7 +63,7 @@ void QeActivity::init(QeAssetXML* _property) {
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
 
 	axis = OBJMGR->getLine(0, initProperty, "axis");
-	axis->pos = VP->getTargetCamera()->target;
+	VP->getTargetCamera()->updateAxis();
 
 	grids = OBJMGR->getLine(1, initProperty, "grids");
 }

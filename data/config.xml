@@ -4,8 +4,8 @@
   <engineName>QueenEngine</engineName>
   <engineVersion>0.1.0</engineVersion>
   <VulkanAPIVersion>1.1.73</VulkanAPIVersion>
-  <debug>1</debug>
-  <render>1</render>
+  <debug>2</debug>
+  <render>0</render>
   <glfw>0</glfw>
   <glm>0</glm>
   <gli>0</gli>

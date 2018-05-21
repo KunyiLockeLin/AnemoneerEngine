@@ -91,7 +91,7 @@ void QeViewport::popViewport() {
 	if (currentNum < 2) return;
 	
 	--currentNum;
-	targetCamera = 0;
+	setTargetCamera(0);
 	/*viewports[currentNum].x = 0;
 	viewports[currentNum].y = 0;
 	viewports[currentNum].height = 0;
@@ -115,8 +115,10 @@ void QeViewport::addNewViewport() {
 void QeViewport::setTargetCamera( int index ) {
 	
 	--index;
-	if (index < currentNum)
+	if (index < currentNum) {
 		targetCamera = index;
+		getTargetCamera()->updateAxis();
+	}
 }
 
 QeCamera* QeViewport::getTargetCamera() {
