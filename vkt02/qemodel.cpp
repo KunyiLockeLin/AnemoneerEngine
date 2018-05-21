@@ -216,6 +216,11 @@ void QeModel::init(QeAssetXML* _property) {
 		setAction(currentActionID, actionType);
 		actionPlay();
 	}
+	else if (modelData->rootJoint) {
+		actionPlay();
+		updateAction(0);
+		actionStop();
+	}
 
 	c = AST->getXMLValue(_property, 1, "attachid");
 	if (c != nullptr)	attachID = atoi(c);
@@ -329,9 +334,11 @@ void QeModel::updateAction(float time) {
 					if (currentActionID >= modelData->animationNum) currentActionID -= modelData->animationNum;
 				}
 				actionPlay();
-		}}
+			}
+		}
 		else	++currentActionFrame;
-}}
+	}
+}
 
 void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parentTransform) {
 
