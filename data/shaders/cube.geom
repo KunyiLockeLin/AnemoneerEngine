@@ -26,7 +26,9 @@ void main(void)
 
 	for(int i = 0; i < gl_in.length(); i++) {
 		outTexCoord = gl_in[i].gl_Position.xyz;
+		outTexCoord.x *= -1;
 		//outTexCoord.y *= -1;
+		//outTexCoord.z *= -1;
 		gl_Position = ubo.proj[gl_InvocationID] *ubo.view[gl_InvocationID] * ubo.model * gl_in[i].gl_Position;
 	
 		// Set the viewport index that the vertex will be emitted to

@@ -771,23 +771,39 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	char *ret = strrchr((char*)_filePath.c_str(), '.');
 
-	if (strcmp(ret + 1, "bmp") == 0)		type = 0;
-	else if (strcmp(ret + 1, "png") == 0)	type = 1;
-	else if (strcmp(ret + 1, "jpg") == 0 || strcmp(ret + 1, "jpeg") == 0) type = 2;
+	VkFormat format;
+
+	if (strcmp(ret + 1, "bmp") == 0) {
+		type = 0;
+		format = VK_FORMAT_B8G8R8A8_UNORM;
+	}
+	else if (strcmp(ret + 1, "png") == 0) {
+		type = 1;
+		format = VK_FORMAT_R8G8B8A8_UNORM;
+	}
+	else if (strcmp(ret + 1, "jpg") == 0 || strcmp(ret + 1, "jpeg") == 0) {
+		type = 2;
+		format = VK_FORMAT_R8G8B8A8_UNORM;
+	}
 	else return nullptr;
 
 	QeAssetImage* image = new QeAssetImage();
 	image->sampler = VK->createTextureSampler();
-	VkFormat format;
 	std::vector<std::string> imageList;
 
 	if (bCubeMap) {
+		/*
+		POSITIVE_X	Right
+		NEGATIVE_X	Left
+		POSITIVE_Y	Top
+		NEGATIVE_Y	Bottom
+		POSITIVE_Z	Back
+		NEGATIVE_Z	Front
+		*/
 		imageList = { "\\posx", "\\negx", "\\posy", "\\negy", "\\posz", "\\negz" };
-		image->buffer.memories.resize(6);
-	} else {
+	} else
 		imageList = { "" };
-		image->buffer.memories.resize(1);
-	}
+
 	int size = int(imageList.size());
 	int cIndex = int(ret - _filePath.c_str());
 
@@ -802,20 +818,17 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		switch (type) {
 		case 0:
 			data = ENCODE->decodeBMP((unsigned char*)buffer.data(), &width, &height, &bytes);
-			format = VK_FORMAT_B8G8R8A8_UNORM;
 			break;
 		case 1:
 			data = ENCODE->decodePNG((unsigned char*)buffer.data(), &width, &height, &bytes);
-			format = VK_FORMAT_R8G8B8A8_UNORM;
 			break;
 		case 2:
 			data = ENCODE->decodeJPEG((unsigned char*)buffer.data(), buffer.size(), &width, &height, &bytes);
-			format = VK_FORMAT_R8G8B8A8_UNORM;
 			break;
 		}
 		if (bytes != 4)	imageFillto32bits(&data, bytes);
 
-		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, image->buffer.memories[i], i, bCubeMap);
+		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, image->buffer.memory, i, bCubeMap);
 	}
 	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap);
 	astTextures[_filePath] = image;

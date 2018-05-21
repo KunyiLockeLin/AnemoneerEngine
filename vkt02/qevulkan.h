@@ -28,7 +28,7 @@ struct QeVKBuffer {
 struct QeVKImageBuffer {
 
 	VkImage image = VK_NULL_HANDLE;
-	std::vector<VkDeviceMemory> memories;
+	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
 
 	~QeVKImageBuffer();
