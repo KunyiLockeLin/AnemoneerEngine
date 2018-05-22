@@ -75,6 +75,7 @@ struct QeHuffmanTree;
 struct QeAssetXML;
 struct QeAssetJSON;
 struct QeSkeleton;
+struct QeInputData;
 class QeEncode;
 class QeMath;
 class QeAsset;
@@ -106,10 +107,10 @@ class QeLine;
 #include "qebillboard.h"
 #include "qeline.h"
 #include "qecube.h"
-#include "qecamera.h"
 #include "qelight.h"
 #include "qewindow.h"
 #include "qeviewport.h"
+#include "qecamera.h"
 #include "queenengine.h"
 #include "qeglobal.h"
 #include "qeobjectmanger.h"
