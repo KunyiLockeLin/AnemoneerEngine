@@ -1,5 +1,5 @@
 # Vulkan
-  - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0, boost C++ 1.67.0
+  - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0
   
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
     ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample02.jpg)
@@ -10,9 +10,9 @@
   - Support light and camera control.
   - Support vertex, geometry, and fragment shader.
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
-  - Support diffuse/baseColor map, cubemap & reflection & refraction.
-  - Support skeletal animation(Only for gltf), attach obj and billboards.
-  - Support draw line, Log output, and command.
+  - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
+  - Support skeletal animation, attach obj, draw lines and billboards.
+  - Support Log output, and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
@@ -58,7 +58,7 @@
   - HDR
   - frustum Culling
   - Dynamic Decals
-  - normal map, specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
+  - specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - shadow
   - mix animation
   - room
@@ -79,6 +79,8 @@
   - https://github.com/KhronosGroup/glTF/tree/master/specification/2.0
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
   - https://github.com/KhronosGroup/glTF-Blender-Exporter
+  - https://learnopengl.com/
+  - http://www.opengl-tutorial.org/
   - http://lodev.org/lodepng/
   - https://github.com/KhronosGroup/glTF-WebGL-PBR
   - https://github.com/TheThinMatrix/OpenGL-Animation
