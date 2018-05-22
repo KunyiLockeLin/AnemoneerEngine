@@ -52,7 +52,6 @@
   - convert the whole assets into a single binary data
 ---
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - release mode crash
   - L-system, Swarm grammar
   - camera control modification
   - HDR
@@ -67,6 +66,10 @@
   - live stream
   - machine learning for performance
   
+# Bug
+  - release mode crash
+  - alpha models don't render lines
+   
 # Reference:
   - https://vulkan-tutorial.com/
   - https://github.com/PacktPublishing/Vulkan-Cookbook
