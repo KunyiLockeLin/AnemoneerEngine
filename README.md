@@ -11,8 +11,8 @@
   - Support vertex, geometry, and fragment shader.
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
-  - Support skeletal animation(Only for gltf), attach obj and billboards.
-  - Support draw line, Log output, and command.
+  - Support skeletal animation, attach obj, draw lines and billboards.
+  - Support Log output, and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
