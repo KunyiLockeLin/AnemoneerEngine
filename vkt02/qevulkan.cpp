@@ -380,7 +380,7 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 		bindings[i].descriptorCount = 1;
 		bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		bindings[i].pImmutableSamplers = nullptr;
-		bindings[i].stageFlags = VK_SHADER_STAGE_ALL;
+		bindings[i].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
 	}
 	i = sum;
 	sum += descriptorSetImageNumber;
@@ -1107,11 +1107,6 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	dynamicState.dynamicStateCount = 3;
 	dynamicState.pDynamicStates = dynamicStates;
 
-	VkPipelineTessellationStateCreateInfo tessellationInfo = {};
-	tessellationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
-	tessellationInfo.pNext = nullptr;
-	tessellationInfo.flags = 0;
-	tessellationInfo.patchControlPoints = 3;
 
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -1129,7 +1124,15 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	pipelineInfo.renderPass = VP->renderPass;
 	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-	pipelineInfo.pTessellationState = &tessellationInfo;
+
+	if (shader->tesc != VK_NULL_HANDLE && shader->tese != VK_NULL_HANDLE) {
+		VkPipelineTessellationStateCreateInfo tessellationInfo = {};
+		tessellationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+		tessellationInfo.pNext = nullptr;
+		tessellationInfo.flags = 0;
+		tessellationInfo.patchControlPoints = 3;
+		pipelineInfo.pTessellationState = &tessellationInfo;
+	}
 
 	VkPipeline graphicsPipeline;
 	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");

@@ -117,7 +117,7 @@ void QeViewport::setTargetCamera( int index ) {
 	--index;
 	if (index < currentNum) {
 		targetCamera = index;
-		getTargetCamera()->updateAxis(QE->currentActivity->axis);
+		getTargetCamera()->updateAxis();
 	}
 }
 

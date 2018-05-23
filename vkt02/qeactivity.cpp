@@ -38,10 +38,10 @@ void QeActivity::init(QeAssetXML* _property) {
 	if (node != nullptr && node->nexts.size() > 0) 
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
 
-	axis = OBJMGR->getLine(0, initProperty, "axis");
-	VP->getTargetCamera()->updateAxis(axis);
+	//axis = OBJMGR->getLine(0, initProperty, "axis");
+	//VP->getTargetCamera()->updateAxis();
 
-	grids = OBJMGR->getLine(1, initProperty, "grids");
+	//grids = OBJMGR->getLine(1, initProperty, "grids");
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {

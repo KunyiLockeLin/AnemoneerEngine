@@ -14,8 +14,8 @@ layout(location = 1) out vec2 outTexCoord[3];
 layout(location = 2) out vec3 outNormal[3];
 layout(location = 3) out vec4 outTangent[3];
 
-void main() {
-  if( 0 == gl_InvocationID ) {
+void main(void) {
+  if( gl_InvocationID == 0 ) {
     gl_TessLevelInner[0] = 1.0;
     gl_TessLevelOuter[0] = 1.0;
     gl_TessLevelOuter[1] = 1.0;

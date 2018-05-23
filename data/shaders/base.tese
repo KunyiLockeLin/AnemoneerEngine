@@ -2,7 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout( triangles ) in;
+layout (triangles) in;
 
 layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inTexCoord[];
@@ -14,7 +14,7 @@ layout(location = 1) out vec2 outTexCoord;
 layout(location = 2) out vec3 outNormal;
 layout(location = 3) out vec4 outTangent;
 
-void main() {
+void main(void) {
 	gl_Position = (gl_TessCoord.x * gl_in[0].gl_Position) +
                   (gl_TessCoord.y * gl_in[1].gl_Position) +
                   (gl_TessCoord.z * gl_in[2].gl_Position);
