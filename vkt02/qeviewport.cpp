@@ -265,7 +265,7 @@ void QeViewport::updateDrawCommandBuffers() {
 		}
 		else {
 			clearValues[0].color = { 0, 0.5f, 0.5f, 1.0f };
-			clearValues[2].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
+			clearValues[2].color = { 0, 0.5f, 0.5f, 1.0f };
 		}
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
