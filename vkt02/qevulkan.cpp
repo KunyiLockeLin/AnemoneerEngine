@@ -351,7 +351,28 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 	dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-
+	/*
+	std::vector<VkSubpassDependency> dependencies = {
+		{
+			VK_SUBPASS_EXTERNAL,                            // uint32_t                   srcSubpass
+			0,                                              // uint32_t                   dstSubpass
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,              // VkPipelineStageFlags       srcStageMask
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags       dstStageMask
+			VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags              srcAccessMask
+			VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags              dstAccessMask
+			VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags          dependencyFlags
+		},
+	  {
+		  0,                                              // uint32_t                   srcSubpass
+		  VK_SUBPASS_EXTERNAL,                            // uint32_t                   dstSubpass
+		  VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags       srcStageMask
+		  VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,              // VkPipelineStageFlags       dstStageMask
+		  VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags              srcAccessMask
+		  VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags              dstAccessMask
+		  VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags          dependencyFlags
+	  }
+	};
+	*/
 	std::array<VkAttachmentDescription, 3> attachments = { colorAttachment1, depthAttachment, colorAttachment2 };
 	std::array<VkSubpassDescription, 2> subpasses = { subpass1, subpass2 };
 	VkRenderPassCreateInfo renderPassInfo = {};
@@ -1037,15 +1058,15 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.topology = bLine? VK_PRIMITIVE_TOPOLOGY_LINE_LIST: VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	inputAssembly.topology = (shader->tesc != VK_NULL_HANDLE && shader->tese != VK_NULL_HANDLE) ? VK_PRIMITIVE_TOPOLOGY_PATCH_LIST : inputAssembly.topology;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 	VkPipelineRasterizationStateCreateInfo rasterizer = {};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = bShowMesh && !bPostprocessing ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+	rasterizer.polygonMode = (bShowMesh && !bPostprocessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
-	
 	rasterizer.cullMode = bPostprocessing ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;

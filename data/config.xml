@@ -28,7 +28,7 @@
     <postprocessing  vert="postprocessingv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
   </defaultShader>
   
-  <startScene>scene1</startScene>
+  <startScene>scene2</startScene>
   <scene1>
     <cubemaps>
       <e id="10" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
@@ -53,7 +53,7 @@
 
   <scene2>
     <models>
-      <e id="3" obj= "box.gltf" vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv" speed="0" posX="0" posY="0" posZ="0"  scaleX="2" scaleY="2" scaleZ="2"/>
+      <e id="3" obj= "box.gltf" tesc="basetc.spv" tese="basete.spv" speed="0" posX="0" posY="0" posZ="0"  scaleX="2" scaleY="2" scaleZ="2"/>
     </models>
   </scene2>
   

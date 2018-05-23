@@ -74,7 +74,7 @@ public:
 	};
 
 	bool bInit = false;
-	VkBool32 bShowMesh = true;
+	VkBool32 bShowMesh = false;
 	void init();
 	void updateRender(float time);
 	void updateCompute(float time);

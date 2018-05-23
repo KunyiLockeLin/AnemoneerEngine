@@ -2,7 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (triangles, fractional_odd_spacing, ccw) in;
+layout (triangles) in;
 
 layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inTexCoord[];
