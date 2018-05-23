@@ -93,7 +93,7 @@ void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 		v4 = target;
 		v4 = mat*v4;
 		target = v4;
-		updateAxis();
+		updateAxis(QE->currentActivity->axis);
 	}
 }
 
@@ -156,7 +156,7 @@ void QeCamera::init(QeAssetXML* _property) {
 
 void QeCamera::reset() {
 	init(initProperty);
-	updateAxis();
+	updateAxis(QE->currentActivity->axis);
 }
 
 void QeCamera::updateRender(float time) {
@@ -169,9 +169,8 @@ void QeCamera::updateRender(float time) {
 
 void QeCamera::updateCompute(float time) {}
 
-void QeCamera::updateAxis() {
-	if(QE->currentActivity && QE->currentActivity->axis)
-		QE->currentActivity->axis->pos = target;
+void QeCamera::updateAxis(QeModel* axis) {
+	axis->pos = target;
 }
 
 //void QeCamera::switchType(QeCameraType _type) {
@@ -219,6 +218,9 @@ void QeCamera::updateInput(QeInputData & inputData) {
 			break;
 		case KEY_Z:
 			move(QeVector3f(0, 0, -1), false);
+			break;
+		case KEY_X:
+			reset();
 			break;
 		}
 		break;

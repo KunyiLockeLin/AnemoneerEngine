@@ -41,7 +41,7 @@ public:
 	void move(QeVector3f _dir, bool bMoveTarget = true);
 	void updateRender(float time);
 	void updateCompute(float time);
-	void updateAxis();
+	void updateAxis(QeModel* axis);
 	void updateInput(QeInputData & inputData);
 };
 

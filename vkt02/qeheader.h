@@ -40,6 +40,7 @@
 #define KEY_S 0x53
 #define KEY_W 0x57
 #define KEY_L 0x4C
+#define KEY_X 0x58
 #define KEY_Z 0x5A
 
 //	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
