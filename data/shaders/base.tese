@@ -2,7 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (triangles) in;
+layout (triangles, equal_spacing, cw ) in;
 
 layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inTexCoord[];
@@ -15,12 +15,12 @@ layout(location = 2) out vec3 outNormal;
 layout(location = 3) out vec4 outTangent;
 
 void main(void) {
-	gl_Position = (gl_TessCoord.x * gl_in[0].gl_Position) +
-                  (gl_TessCoord.y * gl_in[1].gl_Position) +
-                  (gl_TessCoord.z * gl_in[2].gl_Position);
+	gl_Position = (gl_TessCoord[0] * gl_in[0].gl_Position) +
+                  (gl_TessCoord[1] * gl_in[1].gl_Position) +
+                  (gl_TessCoord[2] * gl_in[2].gl_Position);
 	
-	outColor = gl_TessCoord.x * inColor[0] + gl_TessCoord.y * inColor[1] + gl_TessCoord.z * inColor[2];
-	outTexCoord = gl_TessCoord.x * inTexCoord[0] + gl_TessCoord.y * inTexCoord[1] + gl_TessCoord.z * inTexCoord[2];
-	outNormal = gl_TessCoord.x * inNormal[0] + gl_TessCoord.y * inNormal[1] + gl_TessCoord.z * inNormal[2];
-	outTangent = gl_TessCoord.x * inTangent[0] + gl_TessCoord.y * inTangent[1] + gl_TessCoord.z * inTangent[2];
+	outColor = gl_TessCoord[0] * inColor[0] + gl_TessCoord[1] * inColor[1] + gl_TessCoord[2] * inColor[2];
+	outTexCoord = gl_TessCoord[0] * inTexCoord[0] + gl_TessCoord[1] * inTexCoord[1] + gl_TessCoord[2] * inTexCoord[2];
+	outNormal = gl_TessCoord[0] * inNormal[0] + gl_TessCoord[1] * inNormal[1] + gl_TessCoord[2] * inNormal[2];
+	outTangent = gl_TessCoord[0] * inTangent[0] + gl_TessCoord[1] * inTangent[1] + gl_TessCoord[2] * inTangent[2];
 }

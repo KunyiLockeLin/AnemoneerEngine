@@ -16,10 +16,10 @@ layout(location = 3) out vec4 outTangent[3];
 
 void main(void) {
   if( gl_InvocationID == 0 ) {
-    gl_TessLevelInner[0] = 1.0;
+    gl_TessLevelInner[0] = 2.0;
     gl_TessLevelOuter[0] = 1.0;
-    gl_TessLevelOuter[1] = 1.0;
-    gl_TessLevelOuter[2] = 1.0;
+    gl_TessLevelOuter[1] = 2.0;
+    gl_TessLevelOuter[2] = 3.0;
   }
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
