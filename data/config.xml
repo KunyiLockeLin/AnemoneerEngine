@@ -10,12 +10,12 @@
   <glm>0</glm>
   <gli>0</gli>
   <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
-  <webEnvir FPS="15" width="640" height="360" />
+  <webenvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-  <defaultCamera posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
+  
+  <defaultCamera posX="15" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
   <defaultLight show="0" image="light.png" type="0" posX="15" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="30"/>
   <defaultAmbientColor r="0" g="0.5" b="0.5"/>
-  <startScene>scene2</startScene>
 
   <defaultShader>
     <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
@@ -27,7 +27,8 @@
     <obj vert="basev.spv" geom="phongg.spv" frag="phongf.spv"/>
     <postprocessing  vert="postprocessingv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
   </defaultShader>
-
+  
+  <startScene>scene1</startScene>
   <scene1>
     <cubemaps>
       <e id="10" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
@@ -45,7 +46,7 @@
       <e show="1" image="light.png" type="0" posX="15" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="30"/>
     </lights>
     <cameras>
-      <e type="0" posX="10" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
+      <e type="0" posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
     </cameras>
     <postprocessing/>
   </scene1>

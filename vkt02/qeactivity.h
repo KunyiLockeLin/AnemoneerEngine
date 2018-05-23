@@ -11,8 +11,8 @@ public:
 	const char* name = nullptr;
 	QeVector4f	ambientColor;
 	QeAssetXML* initProperty = nullptr;
-	QeModel * axis;
-	QeModel * grids;
+	QeModel * axis = nullptr;
+	QeModel * grids = nullptr;
 
 	void init(QeAssetXML * _property);
 	void eventInput(QeInputData & inputData);
