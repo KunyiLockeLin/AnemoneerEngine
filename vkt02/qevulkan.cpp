@@ -25,6 +25,10 @@ QeVKImageBuffer::~QeVKImageBuffer(){
 		vkDestroyImageView(VK->device, view, nullptr);
 		view = VK_NULL_HANDLE;
 	}
+	if (sampler != VK_NULL_HANDLE) {
+		vkDestroySampler(VK->device, sampler, nullptr);
+		sampler = VK_NULL_HANDLE;
+	}
 }
 
 QeDataDescriptorSet::QeDataDescriptorSet() {
@@ -182,6 +186,7 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.fillModeNonSolid = VK_TRUE;
 	deviceFeatures.multiViewport = VK_TRUE;
 	deviceFeatures.geometryShader = VK_TRUE;
+	deviceFeatures.tessellationShader = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -375,7 +380,7 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 		bindings[i].descriptorCount = 1;
 		bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		bindings[i].pImmutableSamplers = nullptr;
-		bindings[i].stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT |VK_SHADER_STAGE_FRAGMENT_BIT;
+		bindings[i].stageFlags = VK_SHADER_STAGE_ALL;
 	}
 	i = sum;
 	sum += descriptorSetImageNumber;
@@ -965,32 +970,47 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bLine, VkBool32 bPostprocessing, uint8_t subpassIndex) {
+VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBool32 bPostprocessing, uint8_t subpassIndex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
-	if (vertShader != nullptr) {
+	if (shader->vert != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-		vertShaderStageInfo.module = *vertShader;
+		vertShaderStageInfo.module = shader->vert;
 		vertShaderStageInfo.pName = "main";
 		shaderStages.push_back(vertShaderStageInfo);
 	}
-
-	if (geomShader != nullptr) {
+	if (shader->tesc != VK_NULL_HANDLE) {
+		VkPipelineShaderStageCreateInfo tescShaderStageInfo = {};
+		tescShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		tescShaderStageInfo.stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+		tescShaderStageInfo.module = shader->tesc;
+		tescShaderStageInfo.pName = "main";
+		shaderStages.push_back(tescShaderStageInfo);
+	}	
+	if (shader->tese != VK_NULL_HANDLE) {
+		VkPipelineShaderStageCreateInfo teseShaderStageInfo = {};
+		teseShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		teseShaderStageInfo.stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+		teseShaderStageInfo.module = shader->tese;
+		teseShaderStageInfo.pName = "main";
+		shaderStages.push_back(teseShaderStageInfo);
+	}
+	if (shader->geom != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo geomShaderStageInfo = {};
 		geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-		geomShaderStageInfo.module = *geomShader;
+		geomShaderStageInfo.module = shader->geom;
 		geomShaderStageInfo.pName = "main";
 		shaderStages.push_back(geomShaderStageInfo);
 	}
-	if (fragShader != nullptr) {
+	if (shader->frag != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		fragShaderStageInfo.module = *fragShader;
+		fragShaderStageInfo.module = shader->frag;
 		fragShaderStageInfo.pName = "main";
 		shaderStages.push_back(fragShaderStageInfo);
 	}
@@ -1087,6 +1107,12 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	dynamicState.dynamicStateCount = 3;
 	dynamicState.pDynamicStates = dynamicStates;
 
+	VkPipelineTessellationStateCreateInfo tessellationInfo = {};
+	tessellationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+	tessellationInfo.pNext = nullptr;
+	tessellationInfo.flags = 0;
+	tessellationInfo.patchControlPoints = 3;
+
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.stageCount = (uint32_t)shaderStages.size();
@@ -1103,6 +1129,7 @@ VkPipeline QeVulkan::createPipeline(VkShaderModule* vertShader, VkShaderModule* 
 	pipelineInfo.renderPass = VP->renderPass;
 	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+	pipelineInfo.pTessellationState = &tessellationInfo;
 
 	VkPipeline graphicsPipeline;
 	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");

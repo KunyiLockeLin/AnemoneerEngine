@@ -632,14 +632,14 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
 	const char* texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
 	
-	if(bCubeMap)pMaterial->pCubeMap = AST->getImage(texturePath, bCubeMap);
-	else		pMaterial->pDiffuseMap = AST->getImage(texturePath, bCubeMap);
+	if(bCubeMap)pMaterial->image.pCubeMap = AST->getImage(texturePath, bCubeMap);
+	else		pMaterial->image.pDiffuseMap = AST->getImage(texturePath, bCubeMap);
 	
 	textureIndex = atoi(AST->getJSONValue(json, 3, "materials", "normalTexture", "index"));
 	imageJSON = AST->getJSONArrayNodes(json, 1, "images");
 	texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
 
-	pMaterial->pNormalMap = AST->getImage(texturePath, bCubeMap);
+	pMaterial->image.pNormalMap = AST->getImage(texturePath, bCubeMap);
 
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
 	QeDataMaterialPBR mtl;
@@ -699,7 +699,7 @@ QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 	}
 
 	mtl->value.phong = mtl1;
-	if (strlen(diffuseMapPath) != 0)	mtl->pDiffuseMap = AST->getImage(diffuseMapPath);
+	if (strlen(diffuseMapPath) != 0)	mtl->image.pDiffuseMap = AST->getImage(diffuseMapPath);
 
 	return mtl;
 }

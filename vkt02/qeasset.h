@@ -84,32 +84,27 @@ struct QeDataMaterial {
 
 struct QeAssetImage {
 
-	QeVKImageBuffer buffer;
-	VkSampler sampler=VK_NULL_HANDLE;
+	QeVKImageBuffer* pDiffuseMap = nullptr; // baseColorMap;
+	QeVKImageBuffer* pCubeMap = nullptr;;
+	QeVKImageBuffer* pNormalMap = nullptr;;
+};
 
-	~QeAssetImage();
+struct QeAssetShader {
+
+	VkShaderModule vert = VK_NULL_HANDLE;
+	VkShaderModule tesc = VK_NULL_HANDLE;
+	VkShaderModule tese = VK_NULL_HANDLE;
+	VkShaderModule geom = VK_NULL_HANDLE;
+	VkShaderModule frag = VK_NULL_HANDLE;
 };
 
 struct QeAssetMaterial {
 
 	QeMaterialType type = eMaterialPhong;
 	QeVKBuffer	uboBuffer;
-	QeAssetImage* pDiffuseMap = nullptr; // baseColorMap
-	QeAssetImage* pCubeMap = nullptr;
-	QeAssetImage* pNormalMap = nullptr;
-	QeAssetShader* pShaderVert = nullptr;
-	QeAssetShader* pShaderGeom = nullptr;
-	QeAssetShader* pShaderFrag = nullptr;
-	
+	QeAssetImage image;
+	QeAssetShader shader;
 	QeDataMaterial value;
-
-	~QeAssetMaterial();
-};
-
-struct QeAssetShader {
-
-	VkShaderModule shader = VK_NULL_HANDLE;
-	~QeAssetShader();
 };
 
 enum QeAssetType {
@@ -155,8 +150,8 @@ public:
 	std::map<std::string, QeAssetJSON*> astJSONs;
 	std::map<std::string, QeAssetModel*> astModels;
 	std::map<std::string, QeAssetMaterial*> astMaterials;
-	std::map<std::string, QeAssetShader*> astShaders;
-	std::map<std::string, QeAssetImage*> astTextures;
+	std::map<std::string, VkShaderModule> astShaders;
+	std::map<std::string, QeVKImageBuffer*> astTextures;
 
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset();
@@ -186,10 +181,12 @@ public:
 	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);
 	QeAssetMaterial* getMaterial(const char* _filename);
 	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
-	QeAssetImage* getImage(const char* _filename, bool bCubeMap=false);
-	QeAssetShader* getShader(const char* _filename);
+	QeVKImageBuffer* getImage(const char* _filename, bool bCubeMap=false);
+	VkShaderModule getShader(const char* _filename);
 
 	std::vector<char> loadFile(const char* _filePath);
 	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
+
+	void setShader( QeAssetShader& shader, QeAssetXML* shaderData, QeAssetXML* defaultShader);
 };

@@ -28,18 +28,11 @@ void QeLine::init(QeAssetXML* _property) {
 	attachSkeletonName = nullptr;
 	actionSpeed = 0;
 
-	const char* c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");
-	if (c != nullptr)	pMaterial->pShaderVert = AST->getShader(c);
-
-	c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "linegeom");
-	if (c != nullptr)	pMaterial->pShaderGeom = AST->getShader(c);
-
-	c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "frag");
-	if (c != nullptr)	pMaterial->pShaderFrag = AST->getShader(c);
+	AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "line"));
 
 	createPipeline();
 
-	c = AST->getXMLValue(_property, 1, "id");
+	const char * c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "posX");
@@ -84,7 +77,7 @@ void QeLine::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 void QeLine::createPipeline() {
-	pipeline = VK->createPipeline(&pMaterial->pShaderVert->shader, &pMaterial->pShaderGeom->shader, &pMaterial->pShaderFrag->shader, VK_TRUE);
+	pipeline = VK->createPipeline(&pMaterial->shader, VK_TRUE);
 }
 
 void QeLine::setMatModel() {

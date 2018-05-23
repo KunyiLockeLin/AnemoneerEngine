@@ -30,6 +30,7 @@ struct QeVKImageBuffer {
 	VkImage image = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
+	VkSampler sampler = VK_NULL_HANDLE;
 
 	~QeVKImageBuffer();
 };
@@ -145,7 +146,7 @@ public:
 
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createPipeline(VkShaderModule* vertShader, VkShaderModule* geomShader, VkShaderModule* fragShader, VkBool32 bLine = VK_FALSE, VkBool32 bPostPorcessing = VK_FALSE, uint8_t subpassIndex = 0);
+	VkPipeline createPipeline(QeAssetShader* shader, VkBool32 bLine = VK_FALSE, VkBool32 bPostPorcessing = VK_FALSE, uint8_t subpassIndex = 0);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);

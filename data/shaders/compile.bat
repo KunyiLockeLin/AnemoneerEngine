@@ -1,7 +1,10 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -u
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V base.vert -o basev.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V line.geom -o lineg.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V base.tesc -o basetc.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V base.tese -o basete.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V base.geom -o baseg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V base.frag -o basef.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V line.geom -o lineg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cube.geom -o cubeg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cube.frag -o cubef.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V skeleton.vert -o skeletonv.spv

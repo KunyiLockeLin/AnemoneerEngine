@@ -44,9 +44,7 @@ public:
 
 	VkDescriptorSet postprocessingDescriptorSet;
 	VkPipeline		postprocessingPipeline = VK_NULL_HANDLE;
-	QeAssetShader*	pPostProcessingVert = nullptr;
-	QeAssetShader*	pPostProcessingGeom = nullptr;
-	QeAssetShader*	pPostProcessingFrag = nullptr;
+	QeAssetShader	shader;
 
 	void createRender();
 	void cleanupRender();

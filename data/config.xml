@@ -12,16 +12,26 @@
   <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
   <webEnvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-  <defaultShader vert="basev.spv" frag="basef.spv" linegeom="lineg.spv" skeletonvert="skeletonv.spv" phonggeom="phongg.spv" phongfrag="phongf.spv" pbrgeom="pbrg.spv" pbrfrag="pbrf.spv" postprocessingvert="postprocessingv.spv" postprocessinggeom="postprocessingg.spv" postprocessingfrag="postprocessingf.spv" billboardgeom= "billboardg.spv" billboardfrag= "billboardf.spv" cubegeom="cubeg.spv" cubefrag="cubef.spv"/>
   <defaultCamera posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5"/>
   <defaultLight show="1" image="light.png" type="0" posX="15" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="1000" coneAngle="90" speed="30"/>
   <defaultAmbientColor r="0" g="0.5" b="0.5"/>
   <startScene>scene1</startScene>
 
+  <defaultShader>
+    <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
+    <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
+    <billboard vert="basev.spv" geom="billboardg.spv" frag="billboardf.spv"/>
+    <cubemap vert="basev.spv" geom="cubeg.spv" frag="cubef.spv"/>
+    <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
+    <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
+    <obj vert="basev.spv" geom="phongg.spv" frag="phongf.spv"/>
+    <postprocessing  vert="postprocessingv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
+  </defaultShader>
+
   <scene1>
-    <cubes>
+    <cubemaps>
       <e id="10" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
-    </cubes>
+    </cubemaps>
     <terrain>
     </terrain>
     <models>
@@ -39,10 +49,10 @@
   <scene2>
     <models>
       <e id="3" obj= "ball.gltf" speed="100" posX="0" posY="3" posZ="0" />
-      <e id="4" obj= "box.gltf" speed="-100" posX="0" posY="-3" posZ="0" />
     </models>
-    <ambientColor/>
-    <postprocessing/>
+    <lights>
+      <e show="0" image="light.png" type="0" posX="5" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="0" g="1" b="0" intensity="300" coneAngle="90" speed="50"/>
+    </lights>
   </scene2>
   
   <scene3>

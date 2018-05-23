@@ -196,6 +196,15 @@
     <None Include="..\data\shaders\line.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\base.tesc">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\base.tese">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\base.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

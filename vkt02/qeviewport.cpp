@@ -286,10 +286,6 @@ void QeViewport::updateDrawCommandBuffers() {
 
 void QeViewport::initPostProcessing() {
 
-	pPostProcessingVert = nullptr;
-	pPostProcessingGeom = nullptr;
-	pPostProcessingFrag = nullptr;
-
 	if (postprocessingPipeline != VK_NULL_HANDLE) 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
 	postprocessingPipeline = VK_NULL_HANDLE;
 }
@@ -301,7 +297,7 @@ void QeViewport::updatePostProcessing() {
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = VK->createPipeline(&pPostProcessingVert->shader, &pPostProcessingGeom->shader, &pPostProcessingFrag->shader, FALSE, TRUE, 1);
+		postprocessingPipeline = VK->createPipeline(&shader, FALSE, TRUE, 1);
 }
 
 void QeViewport::updateInput(QeInputData & inputData) {

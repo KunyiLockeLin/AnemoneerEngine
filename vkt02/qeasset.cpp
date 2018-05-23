@@ -3,21 +3,6 @@
 
 QeAssetModel::~QeAssetModel() {	pMaterial = nullptr;	}
 
-QeAssetMaterial::~QeAssetMaterial() {
-	pDiffuseMap = nullptr;
-	pShaderVert = nullptr;
-	pShaderGeom = nullptr;
-	pShaderFrag = nullptr;
-}
-
-QeAssetImage::~QeAssetImage() {
-	vkDestroySampler(VK->device, sampler, nullptr);
-}
-
-QeAssetShader::~QeAssetShader() {
-	vkDestroyShaderModule(VK->device, shader, nullptr);
-}
-
 QeAssetXML::~QeAssetXML() {
 
 	std::vector<QeAssetXML*>::iterator it = nexts.begin();
@@ -79,14 +64,14 @@ QeAsset::~QeAsset() {
 	}
 	astMaterials.clear();
 
-	std::map<std::string, QeAssetShader*>::iterator it4 = astShaders.begin();
+	std::map<std::string, VkShaderModule>::iterator it4 = astShaders.begin();
 	while (it4 != astShaders.end()) {
-		if ((it4->second) != nullptr) delete (it4->second);
+		vkDestroyShaderModule(VK->device, it4->second, nullptr);
 		++it4;
 	}
 	astShaders.clear();
 
-	std::map<std::string, QeAssetImage*>::iterator it5 = astTextures.begin();
+	std::map<std::string, QeVKImageBuffer*>::iterator it5 = astTextures.begin();
 	while (it5 != astTextures.end()) {
 		if ((it5->second) != nullptr) delete (it5->second);
 		++it5;
@@ -824,8 +809,8 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	//mtl->value.phong.emissive = { 1,1,1,1 };
 	//mtl->value.phong.param = { 1,1,1,1 };
 	if (_filePath.length() == 0) {}
-	else if (bCubeMap)	mtl->pCubeMap = AST->getImage(_filename, bCubeMap);
-	else				mtl->pDiffuseMap = AST->getImage(_filename, bCubeMap);
+	else if (bCubeMap)	mtl->image.pCubeMap = AST->getImage(_filename, bCubeMap);
+	else				mtl->image.pDiffuseMap = AST->getImage(_filename, bCubeMap);
 
 	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
 	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
@@ -835,10 +820,10 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	return mtl;
 }
 
-QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
+QeVKImageBuffer* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	std::string _filePath = combinePath(_filename, eAssetTexture);
-	std::map<std::string, QeAssetImage*>::iterator it = astTextures.find(_filePath.c_str());
+	std::map<std::string, QeVKImageBuffer*>::iterator it = astTextures.find(_filePath.c_str());
 
 	if (it != astTextures.end())	return it->second;
 
@@ -862,7 +847,7 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 	}
 	else return nullptr;
 
-	QeAssetImage* image = new QeAssetImage();
+	QeVKImageBuffer* image = new QeVKImageBuffer();
 	image->sampler = VK->createTextureSampler();
 	std::vector<std::string> imageList;
 
@@ -903,9 +888,9 @@ QeAssetImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		}
 		if (bytes != 4)	imageFillto32bits(&data, bytes);
 
-		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->buffer.image, image->buffer.memory, i, bCubeMap);
+		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
 	}
-	image->buffer.view = VK->createImageView(image->buffer.image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap);
+	image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap);
 	astTextures[_filePath] = image;
 
 	return image;
@@ -928,16 +913,15 @@ void QeAsset::imageFillto32bits(std::vector<unsigned char>* data, int bytes) {
 	}
 }
 
-QeAssetShader* QeAsset::getShader(const char* _filename) {
+VkShaderModule QeAsset::getShader(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetShader);
-	std::map<std::string, QeAssetShader*>::iterator it = astShaders.find(_filePath);
+	std::map<std::string, VkShaderModule>::iterator it = astShaders.find(_filePath);
 	if (it != astShaders.end())	return it->second;
 
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 
-	QeAssetShader* shader = new QeAssetShader();
-	shader->shader = VK->createShaderModel((void*)buffer.data(), int(buffer.size()));
+	VkShaderModule shader = VK->createShaderModel((void*)buffer.data(), int(buffer.size()));
 	astShaders[_filePath] = shader;
 	return shader;
 }
@@ -966,4 +950,45 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 		break;
 	}
 	return rtn.append(_filename);
+}
+
+void QeAsset::setShader(QeAssetShader& shader, QeAssetXML* shaderData, QeAssetXML* defaultShader) {
+
+	const char* c = nullptr;
+
+	if (shaderData) {
+		c = getXMLValue(shaderData, 1, "vert");
+		if (c != nullptr) shader.vert = getShader(c);
+		c = getXMLValue(shaderData, 1, "tesc");
+		if (c != nullptr) shader.tesc = getShader(c);
+		c = getXMLValue(shaderData, 1, "tese");
+		if (c != nullptr) shader.tese = getShader(c);
+		c = getXMLValue(shaderData, 1, "geom");
+		if (c != nullptr) shader.geom = getShader(c);
+		c = getXMLValue(shaderData, 1, "frag");
+		if (c != nullptr) shader.frag = getShader(c);
+	}
+
+	if (defaultShader) {
+		if (shader.vert == nullptr) {
+			c = getXMLValue(defaultShader, 1, "vert");
+			if (c != nullptr) shader.vert = getShader(c);
+		}
+		if (shader.tesc == nullptr) {
+			c = getXMLValue(defaultShader, 1, "tesc");
+			if (c != nullptr) shader.tesc = getShader(c);
+		}
+		if (shader.tese == nullptr) {
+			c = getXMLValue(defaultShader, 1, "tese");
+			if (c != nullptr) shader.tese = getShader(c);
+		}
+		if (shader.geom == nullptr) {
+			c = getXMLValue(defaultShader, 1, "geom");
+			if (c != nullptr) shader.geom = getShader(c);
+		}
+		if (shader.frag == nullptr) {
+			c = getXMLValue(defaultShader, 1, "frag");
+			if (c != nullptr) shader.frag = getShader(c);
+		}
+	}
 }

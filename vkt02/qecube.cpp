@@ -14,8 +14,8 @@ void QeCube::init(QeAssetXML* _property) {
 	QeDataDescriptorSet data;
 
 	data.uboBuffer = uboBuffer.buffer;
-	data.cubeMapImageViews = pMaterial->pCubeMap->buffer.view;
-	data.cubeMapSamplers = pMaterial->pCubeMap->sampler;
+	data.cubeMapImageViews = pMaterial->image.pCubeMap->view;
+	data.cubeMapSamplers = pMaterial->image.pCubeMap->sampler;
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	pos = { 0, 0, 0 };
@@ -31,45 +31,11 @@ void QeCube::init(QeAssetXML* _property) {
 	attachSkeletonName = nullptr;
 	actionSpeed = 0;
 
-	const char * c = AST->getXMLValue(_property, 1, "shadervert");
-	if (c == nullptr) {
-		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "cubevert");
-		if (c == nullptr) {
-			if (modelData->animationNum == 0)
-				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "vert");
-			else
-				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "skeletonvert");
-		}
-	}
-	if (c != nullptr)	pMaterial->pShaderVert = AST->getShader(c);
-
-	c = AST->getXMLValue(_property, 1, "shadergeom");
-	if (c == nullptr) {
-		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "cubegeom");
-		if (c == nullptr) {
-			if (pMaterial->type == eMaterialPhong)
-				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phonggeom");
-			else if (pMaterial->type == eMaterialPBR)
-				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrgeom");
-		}
-	}
-	if (c != nullptr)	pMaterial->pShaderGeom = AST->getShader(c);
-
-	c = AST->getXMLValue(_property, 1, "shaderfrag");
-	if (c == nullptr) {
-		c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "cubefrag");
-		if (c == nullptr) {
-			if (pMaterial->type == eMaterialPhong)
-				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "phongfrag");
-			else if (pMaterial->type == eMaterialPBR)
-				c = AST->getXMLValue(3, AST->CONFIG, "defaultShader", "pbrfrag");
-		}
-	}
-	if (c != nullptr)	pMaterial->pShaderFrag = AST->getShader(c);
+	AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "cubemap"));
 
 	createPipeline();
 
-	c = AST->getXMLValue(_property, 1, "id");
+	const char * c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "posX");

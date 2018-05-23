@@ -12,31 +12,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	}
 	else	VP->init(node->nexts[0]);
 
-	node = AST->getXMLNode(_property, 1, "postprocessing");
-	if (node != nullptr && node->eKeys.size() > 0) {
-
-		const char* c = AST->getXMLValue(node, 1, "vert");
-		if (c != nullptr) VP->pPostProcessingVert = AST->getShader(c);
-		c = AST->getXMLValue(node, 1, "geom");
-		if (c != nullptr) VP->pPostProcessingGeom = AST->getShader(c);
-		c = AST->getXMLValue(node, 1, "frag");
-		if (c != nullptr) VP->pPostProcessingFrag = AST->getShader(c);
-	}
-
-	node = AST->getXMLNode(2, AST->CONFIG, "defaultShader");
-	const char* c = nullptr;
-	if (VP->pPostProcessingVert == nullptr) {
-		c = AST->getXMLValue(node, 1, "postprocessingvert");
-		VP->pPostProcessingVert = AST->getShader(c);
-	}
-	if (VP->pPostProcessingGeom == nullptr) {
-		c = AST->getXMLValue(node, 1, "postprocessinggeom");
-		VP->pPostProcessingGeom = AST->getShader(c);
-	}
-	if (VP->pPostProcessingFrag == nullptr) {
-		c = AST->getXMLValue(node, 1, "postprocessingfrag");
-		VP->pPostProcessingFrag = AST->getShader(c);
-	}
+	AST->setShader(VP->shader, AST->getXMLNode(_property, 1, "postprocessing"), AST->getXMLNode(3, AST->CONFIG, "defaultShader", "postprocessing"));
 
 	VP->updatePostProcessing();
 	VP->bUpdateDrawCommandBuffers = true;
@@ -54,7 +30,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	}
 	else	for ( int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
 
-	node = AST->getXMLNode(_property, 1, "cubes");
+	node = AST->getXMLNode(_property, 1, "cubemaps");
 	if (node != nullptr && node->nexts.size() > 0)
 		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getCube(0, node->nexts[index]);
 
