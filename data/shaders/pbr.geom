@@ -1,5 +1,7 @@
 #version 450
 #extension GL_ARB_viewport_array : enable
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_shading_language_420pack : enable
 
 const int MAX_VIEWPORT_NUM = 9;
 const int MAX_JOINT_NUM = 20;
