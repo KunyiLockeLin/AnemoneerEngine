@@ -170,8 +170,20 @@ void QeViewport::drawFrame() {
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 	
-	result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	VkFenceCreateInfo fenceInfo;
+	VkFence drawFence;
+	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceInfo.pNext = NULL;
+	fenceInfo.flags = 0;
+	vkCreateFence(VK->device, &fenceInfo, NULL, &drawFence);
+
+	result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, drawFence);
 	if( result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
+
+	do {
+		result = vkWaitForFences(VK->device, 1, &drawFence, VK_TRUE, 100000000000);
+	} while (result == VK_TIMEOUT);
+
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.pNext = nullptr;
