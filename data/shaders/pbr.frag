@@ -56,9 +56,14 @@ layout(location = 0) out vec4 outColor;
 const float M_PI = 3.141592653589793;
 const float c_MinRoughness = 0.04;
 
+/*
+layout( push_constant ) uniform PushConstants {
+  float param[4];
+} pc;
+*/
 
 void main() {
-	
+
 	float metallic = mtl.metallicRoughness.x;	
     float perceptualRoughness = mtl.metallicRoughness.y;
 

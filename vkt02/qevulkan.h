@@ -75,6 +75,8 @@ public:
 
 	bool bInit = false;
 	VkBool32 bShowMesh = false;
+	std::vector<float> pushConstants;
+
 	void init();
 	void updateRender(float time);
 	void updateCompute(float time);
@@ -115,6 +117,8 @@ public:
 
 	VkDescriptorSetLayout createDescriptorSetLayout();
 	VkPipelineLayout createPipelineLayout( VkDescriptorSetLayout& descriptorSetLayout);
+	void updatePushConstnats(VkCommandBuffer command_buffer);
+
 	void createCommandPool();
 	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	VkFormat findDepthFormat();

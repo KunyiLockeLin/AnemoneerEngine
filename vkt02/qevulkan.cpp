@@ -439,10 +439,26 @@ VkPipelineLayout QeVulkan::createPipelineLayout( VkDescriptorSetLayout& descript
 	pipelineLayoutInfo.setLayoutCount = 1;
 	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
+	if (PUSH_CONSTANTS_SIZE > 0) {
+		VkPushConstantRange push_constant_range = {};
+		push_constant_range.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+		push_constant_range.offset = 0;
+		push_constant_range.offset = PUSH_CONSTANTS_SIZE * sizeof(float);
+		pushConstants.resize(PUSH_CONSTANTS_SIZE);
+		pipelineLayoutInfo.pPushConstantRanges = &push_constant_range;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+	}
 	VkPipelineLayout pipelineLayout;
 	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)	LOG("failed to create pipeline layout!");
 
 	return pipelineLayout;
+}
+
+void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
+
+	size_t size = pushConstants.size();
+	if(size>0)
+		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL_GRAPHICS, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
 void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImageBuffer& sceneImage, 

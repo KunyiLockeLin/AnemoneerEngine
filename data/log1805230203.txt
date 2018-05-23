@@ -1,0 +1,1 @@
+0204: failed to allocate buffer memory!
