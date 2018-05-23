@@ -8,7 +8,7 @@
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing.
   - Support light and camera control.
-  - Support vertex, geometry, and fragment shader.
+  - Support vertex, tessellation control & evaluation, geometry, fragment shader.
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines and billboards.
@@ -68,8 +68,9 @@
   
 # Bug
   - release mode crash
-  - alpha models don't render lines
-   
+  - alpha models don't blend lines-object
+  - tessellation shader causes triangle-face becomes opposite.
+  
 # Reference:
   - https://vulkan-tutorial.com/
   - https://github.com/PacktPublishing/Vulkan-Cookbook
