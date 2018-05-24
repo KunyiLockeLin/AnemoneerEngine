@@ -1180,6 +1180,17 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	return graphicsPipeline;
 }
 
+VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
+
+	VkPipelineShaderStageCreateInfo tescShaderStageInfo = {};
+	tescShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	tescShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+	tescShaderStageInfo.module = shader;
+	tescShaderStageInfo.pName = "main";
+	return 0;
+
+}
+
 
 void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& descriptorSet) {
 

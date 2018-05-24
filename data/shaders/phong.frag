@@ -44,7 +44,11 @@ layout(location = 0) out vec4 outColor;
 
 
 void main() {
-	
+	vec4 texColor = texture(texSampler, inTexCoord);
+	if( 0.01 > texColor.a ) {
+		discard;
+	}
+
 	float mtlSpecularExponent = mtl.param.x;
 	float mtlRefraction = mtl.param.y;
 	float mtlAlpha = mtl.param.z;
@@ -70,7 +74,6 @@ void main() {
 
 	float cosTheta = clamp(dot(inNormal,vLighttoVertex), 0, 1);
 
-	vec4 texColor = texture(texSampler, inTexCoord);
 	vec4 ambient =  mtl.ambient*ubo.ambientColor*texColor;
 	vec4 diffuse = mtl.diffuse*texColor*cosTheta;
 

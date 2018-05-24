@@ -187,13 +187,7 @@
     <None Include="..\data\shaders\grayscale.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\cube.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\compile.bat">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
-    <None Include="..\data\shaders\cube.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\line.geom">

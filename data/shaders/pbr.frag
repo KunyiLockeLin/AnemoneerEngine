@@ -63,6 +63,10 @@ layout( push_constant ) uniform PushConstants {
 */
 
 void main() {
+	vec4 baseColor1 = texture(baseColorSampler, inTexCoord);
+	if( 0.01 > baseColor1.a ) {
+		discard;
+	}
 
 	float metallic = mtl.metallicRoughness.x;	
     float perceptualRoughness = mtl.metallicRoughness.y;
@@ -72,7 +76,7 @@ void main() {
 	metallic = clamp(metallic, 0.0, 1.0);
 	float alphaRoughness = perceptualRoughness * perceptualRoughness;
 
-	vec4 baseColor = texture(baseColorSampler, inTexCoord) * mtl.baseColor;
+	vec4 baseColor = baseColor1 * mtl.baseColor;
 
 	vec3 f0 = vec3(0.04);
     vec3 diffuseColor = baseColor.rgb * (vec3(1.0) - f0);

@@ -11,5 +11,6 @@ public:
 	VkShaderModule comp = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
 
+	void init();
 };
 
