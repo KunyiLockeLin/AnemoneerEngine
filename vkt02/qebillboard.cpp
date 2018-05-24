@@ -45,6 +45,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 	actionSpeed = 0;
 
 	AST->setShader(pMaterial->shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "billboard"));
+
 	createPipeline();
 
 	c = AST->getXMLValue(_property, 1, "id");

@@ -20,8 +20,9 @@
   <defaultShader>
     <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
     <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
+    <normal vert="basev.spv" geom="normalsg.spv"  frag="basef.spv"/>
     <billboard vert="basev.spv" geom="billboardg.spv" frag="billboardf.spv"/>
-    <cubemap vert="basev.spv" geom="cubeg.spv" frag="cubef.spv"/>
+    <cubemap vert="basev.spv" geom="cubemapg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <obj vert="basev.spv" geom="phongg.spv" frag="phongf.spv"/>
@@ -53,14 +54,13 @@
 
   <scene2>
     <models>
-      <e id="3" obj= "box.gltf" tesc="basetc.spv" tese="basete.spv" posX="0" posY="0" posZ="0"  scaleX="2" scaleY="2" scaleZ="2"/>
+      <e id="3" obj= "box.gltf" speed ="100" tesc="basetc.spv" tese="basete.spv" posX="0" posY="0" posZ="0"  scaleX="2" scaleY="2" scaleZ="2"/>
     </models>
   </scene2>
   
   <scene3>
     <models>
-      <e id="3" obj= "ball.gltf" speed="100" posX="0" posY="3" posZ="0" />
-      <e id="4" obj= "box.gltf" speed="-100" posX="0" posY="-3" posZ="0" />
+      <e id="3" obj= "box.gltf" speed ="100" posX="0" posY="0" posZ="0"  scaleX="2" scaleY="2" scaleZ="2"/>
     </models>
     <postprocessing frag="grayscalef.spv"/>
   </scene3>

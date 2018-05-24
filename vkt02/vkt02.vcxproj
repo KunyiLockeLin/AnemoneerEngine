@@ -219,6 +219,7 @@
     <None Include="..\data\shaders\cube.geom" />
     <None Include="..\data\shaders\grayscale.frag" />
     <None Include="..\data\shaders\line.geom" />
+    <None Include="..\data\shaders\normals.geom" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />
     <None Include="..\data\shaders\phong.frag" />

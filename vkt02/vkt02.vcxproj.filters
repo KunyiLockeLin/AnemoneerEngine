@@ -205,6 +205,9 @@
     <None Include="..\data\shaders\base.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\normals.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

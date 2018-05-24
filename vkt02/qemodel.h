@@ -53,6 +53,8 @@ public:
 
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
+	VkPipeline normalPipeline = VK_NULL_HANDLE;
+	QeAssetShader normalShader;
 
 	QeUniformBufferObject ubo;
 	QeVKBuffer uboBuffer;

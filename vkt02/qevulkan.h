@@ -75,6 +75,8 @@ public:
 
 	bool bInit = false;
 	VkBool32 bShowMesh = false;
+	VkBool32 bShowNormal = false;
+
 	std::vector<float> pushConstants;
 
 	void init();

@@ -14,6 +14,10 @@ void QeModel::cleanupPipeline() {
 
 void QeModel::createPipeline() {
 	pipeline = VK->createPipeline(&pMaterial->shader);
+
+	if (VK->bShowNormal && normalShader.vert) {
+		normalPipeline = VK->createPipeline(&normalShader, true);
+	}
 }
 
 void QeModel::setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size) {
@@ -160,6 +164,8 @@ void QeModel::init(QeAssetXML* _property) {
 		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "model"));
 	else 
 		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "obj"));
+
+	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal") );
 
 	createPipeline();
 
@@ -350,4 +356,11 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+
+	if (VK->bShowNormal && normalPipeline ) {
+		vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline);
+		vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+	}
 }

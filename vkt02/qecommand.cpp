@@ -23,5 +23,9 @@ void QeCommand::inputCommand(std::string& command) {
 		VK->bShowMesh = !VK->bShowMesh;
 		VP->bRecreateRender = true;
 	}
+	else if (res[0].compare("shownormal") == 0) {
+		VK->bShowNormal = !VK->bShowNormal;
+		VP->bRecreateRender = true;
+	}
 }
 

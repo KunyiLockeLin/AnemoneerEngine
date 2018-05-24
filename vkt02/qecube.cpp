@@ -32,7 +32,6 @@ void QeCube::init(QeAssetXML* _property) {
 	actionSpeed = 0;
 
 	AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "cubemap"));
-
 	createPipeline();
 
 	const char * c = AST->getXMLValue(_property, 1, "id");
