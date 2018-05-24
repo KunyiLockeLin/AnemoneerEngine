@@ -53,5 +53,4 @@ public:
 	void updateDrawCommandBuffers();
 	void initPostProcessing();
 	void updatePostProcessing();
-	void updateInput(QeInputData & inputData);
 };

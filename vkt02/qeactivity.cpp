@@ -45,7 +45,102 @@ void QeActivity::init(QeAssetXML* _property) {
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {
-	VP->updateInput(inputData);
+	
+	// viewport
+	switch (inputData.inputType) {
+
+	case WM_KEYDOWN:
+		switch (inputData.inputKey) {
+
+		case VK_NUMPAD1:
+		case VK_NUMPAD2:
+		case VK_NUMPAD3:
+		case VK_NUMPAD4:
+		case VK_NUMPAD5:
+		case VK_NUMPAD6:
+		case VK_NUMPAD7:
+		case VK_NUMPAD8:
+		case VK_NUMPAD9:
+			VP->setTargetCamera(inputData.inputKey - VK_NUMPAD0);
+			break;
+		case VK_ADD:
+			VP->addNewViewport();
+			break;
+		case VK_SUBTRACT:
+			VP->popViewport();
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	// main camera
+	switch (inputData.inputType) {
+
+	case WM_KEYDOWN:
+		switch (inputData.inputKey) {
+
+		case VK_UP:
+			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 1, 0));
+			break;
+		case VK_DOWN:
+			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 1, 0));
+			break;
+		case VK_RIGHT:
+			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 0, 1));
+			break;
+		case VK_LEFT:
+			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 0, 1));
+			break;
+		case KEY_E:
+			VP->getTargetCamera()->move(QeVector3f(0, 1, 0));
+			break;
+		case KEY_C:
+			VP->getTargetCamera()->move(QeVector3f(0, -1, 0));
+			break;
+		case KEY_A:
+			VP->getTargetCamera()->move(QeVector3f(-1, 0, 0));
+			break;
+		case KEY_D:
+			VP->getTargetCamera()->move(QeVector3f(1, 0, 0));
+			break;
+		case KEY_W:
+			VP->getTargetCamera()->move(QeVector3f(0, 0, 1));
+			break;
+		case KEY_S:
+			VP->getTargetCamera()->move(QeVector3f(0, 0, -1));
+			break;
+		case KEY_Q:
+			VP->getTargetCamera()->move(QeVector3f(0, 0, 1), false);
+			break;
+		case KEY_Z:
+			VP->getTargetCamera()->move(QeVector3f(0, 0, -1), false);
+			break;
+		case KEY_X:
+			VP->getTargetCamera()->reset();
+			break;
+		}
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		VP->getTargetCamera()->setMousePos(inputData.mousePos);
+		break;
+	case WM_MOUSEMOVE:
+
+		switch (inputData.inputKey) {
+		case MK_LBUTTON:
+			VP->getTargetCamera()->rotateTarget(inputData.mousePos);
+			break;
+		case MK_RBUTTON:
+			//rotatePos(inputData.mousePos);
+			VP->getTargetCamera()->zoomInOut(inputData.mousePos);
+			break;
+		}
+		break;
+	}
 }
 
 void QeActivity::updateRender(float time) {

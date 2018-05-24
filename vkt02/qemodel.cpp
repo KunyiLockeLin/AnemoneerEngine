@@ -10,13 +10,17 @@ void QeModel::cleanupPipeline() {
 		vkDestroyPipeline(VK->device, pipeline, nullptr);
 		pipeline = VK_NULL_HANDLE;
 	}
+	if (normalPipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(VK->device, normalPipeline, nullptr);
+		normalPipeline = VK_NULL_HANDLE;
+	}
 }
 
-void QeModel::createPipeline() {
-	pipeline = VK->createPipeline(&pMaterial->shader, ePipeLine_Triangle);
+void QeModel::createGraphicsPipeline() {
+	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle);
 
 	if (VK->bShowNormal && normalShader.vert) {
-		normalPipeline = VK->createPipeline(&normalShader, ePipeLine_Line);
+		normalPipeline = VK->createGraphicsPipeline(&normalShader, ePipeLine_Line);
 	}
 }
 
@@ -167,7 +171,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal") );
 
-	createPipeline();
+	createGraphicsPipeline();
 
 	c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);

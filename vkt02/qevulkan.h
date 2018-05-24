@@ -159,7 +159,8 @@ public:
 
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createPipeline(QeAssetShader* shader, QePipelineType type, uint8_t subpassIndex = 0);
+	VkPipeline createGraphicsPipeline(QeAssetShader* shader, QePipelineType type, uint8_t subpassIndex = 0);
+	VkPipeline createComputePipeline(VkShaderModule shader);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);

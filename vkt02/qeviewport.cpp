@@ -310,39 +310,5 @@ void QeViewport::updatePostProcessing() {
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = VK->createPipeline(&shader, ePipeLine_Postprogessing, 1);
-}
-
-void QeViewport::updateInput(QeInputData & inputData) {
-
-	switch (inputData.inputType) {
-
-	case WM_KEYDOWN:
-		switch (inputData.inputKey) {
-
-		case VK_NUMPAD1:
-		case VK_NUMPAD2:
-		case VK_NUMPAD3:
-		case VK_NUMPAD4:
-		case VK_NUMPAD5:
-		case VK_NUMPAD6:
-		case VK_NUMPAD7:
-		case VK_NUMPAD8:
-		case VK_NUMPAD9:
-			setTargetCamera(inputData.inputKey - VK_NUMPAD0);
-			break;
-		case VK_ADD:
-			addNewViewport();
-			break;
-		case VK_SUBTRACT:
-			popViewport();
-			break;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
-	}
-	getTargetCamera()->updateInput(inputData);
+		postprocessingPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Postprogessing, 1);
 }

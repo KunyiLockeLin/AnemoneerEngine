@@ -78,6 +78,9 @@
     <ClCompile Include="qeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qecompute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qecompute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

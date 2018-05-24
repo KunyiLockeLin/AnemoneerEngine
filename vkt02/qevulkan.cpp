@@ -1007,7 +1007,7 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, QePipelineType type, uint8_t subpassIndex) {
+VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineType type, uint8_t subpassIndex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 

@@ -46,7 +46,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	AST->setShader(pMaterial->shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "billboard"));
 
-	createPipeline();
+	createGraphicsPipeline();
 
 	c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
@@ -88,8 +88,8 @@ void QeBillboard::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 
-void QeBillboard::createPipeline() {
-	pipeline = VK->createPipeline(&pMaterial->shader, ePipeLine_Point);
+void QeBillboard::createGraphicsPipeline() {
+	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point);
 }
 
 void QeBillboard::setMatModel() {

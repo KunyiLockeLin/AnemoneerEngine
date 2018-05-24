@@ -37,6 +37,7 @@ public:
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
 	float actionSpeed = 0.f;
 
+	//QePipelineType pipelineType;
 	int id = 0;
 	QeVector3f pos;
 	float face = 0.f;
@@ -54,7 +55,6 @@ public:
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
 	VkPipeline normalPipeline = VK_NULL_HANDLE;
-	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeAssetShader normalShader;
 
@@ -81,7 +81,7 @@ public:
 	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
 	void cleanupPipeline();
-	virtual void createPipeline();
+	virtual void createGraphicsPipeline();
 
 	bool setAction(unsigned int actionID, QeActionType playType);
 	void actionPlay();

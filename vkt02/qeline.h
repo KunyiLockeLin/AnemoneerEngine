@@ -9,7 +9,7 @@ public:
 	
 	std::string lineType;
 	virtual void init(QeAssetXML* _property);
-	virtual void createPipeline();
+	virtual void createGraphicsPipeline();
 	virtual void setMatModel();
 	//virtual void updateRender(float time);
 	//virtual void updateCompute(float time);

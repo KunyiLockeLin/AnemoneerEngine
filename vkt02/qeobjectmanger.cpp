@@ -252,22 +252,22 @@ void QeObjectManger::recreatePipeline() {
 
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		it->second->createPipeline();
+		it->second->createGraphicsPipeline();
 		++it;
 	}
 	it = mgrCubes.begin();
 	while (it != mgrCubes.end()) {
-		it->second->createPipeline();
+		it->second->createGraphicsPipeline();
 		++it;
 	}
 	it = mgrBillboards.begin();
 	while (it != mgrBillboards.end()) {
-		it->second->createPipeline();
+		it->second->createGraphicsPipeline();
 		++it;
 	}
 	it = mgrLines.begin();
 	while (it != mgrLines.end()) {
-		it->second->createPipeline();
+		it->second->createGraphicsPipeline();
 		++it;
 	}
 	VP->bUpdateDrawCommandBuffers = true;

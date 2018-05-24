@@ -42,6 +42,5 @@ public:
 	void updateRender(float time);
 	void updateCompute(float time);
 	void updateAxis();
-	void updateInput(QeInputData & inputData);
 };
 

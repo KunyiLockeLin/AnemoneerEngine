@@ -84,6 +84,7 @@ class QeAsset;
 class QeModel;
 class QeBillboard;
 class QeCube;
+class QeCompute;
 class QeCamera;
 class QeLight;
 class QeGlobalKey;
@@ -109,6 +110,7 @@ class QeLine;
 #include "qebillboard.h"
 #include "qeline.h"
 #include "qecube.h"
+#include "qecompute.h"
 #include "qelight.h"
 #include "qewindow.h"
 #include "qeviewport.h"
