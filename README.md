@@ -26,7 +26,7 @@
     - "1"~"9" : Choose a viewport to control its camera.
     - "Up","Down","Left","Right","W","A","S","D","Q","E","Z","C","X","MouseLeftMove","MouseRightMove" : Move the camera.
     - "/" : turn on command mode or input directly in console.
-      - "showmesh" : switch bwtween mesh mode and model mode.
+      - "showmesh" : switch between mesh mode and model mode.
       - "shownormal" : switch if drawing normal or not.
       - "resetcamera" : Initialize the camera.
       - "restart [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has scene1, scene2, and scene3.
