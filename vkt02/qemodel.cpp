@@ -13,10 +13,10 @@ void QeModel::cleanupPipeline() {
 }
 
 void QeModel::createPipeline() {
-	pipeline = VK->createPipeline(&pMaterial->shader);
+	pipeline = VK->createPipeline(&pMaterial->shader, ePipeLine_Triangle);
 
 	if (VK->bShowNormal && normalShader.vert) {
-		normalPipeline = VK->createPipeline(&normalShader, true);
+		normalPipeline = VK->createPipeline(&normalShader, ePipeLine_Line);
 	}
 }
 

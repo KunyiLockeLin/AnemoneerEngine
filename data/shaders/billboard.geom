@@ -4,8 +4,8 @@
 const int MAX_VIEWPORT_NUM = 9;
 const int MAX_JOINT_NUM = 20;
 
-layout (triangles, invocations = MAX_VIEWPORT_NUM) in;
-layout (triangle_strip, max_vertices = 3) out;
+layout (points , invocations = MAX_VIEWPORT_NUM) in;
+layout (triangle_strip, max_vertices = 4) out;
 
 
 layout( binding = 0) uniform QeUniformBufferObject {
@@ -21,8 +21,8 @@ layout( binding = 0) uniform QeUniformBufferObject {
 
 
 layout(location = 0) in vec3 inColor[];
-layout(location = 1) in vec2 inTexCoord[];
-layout(location = 2) in vec3 inNormal[];
+//layout(location = 1) in vec2 inTexCoord[];
+//layout(location = 2) in vec3 inNormal[];
 
 layout(location = 0) out vec3 outColor;
 layout(location = 1) out vec2 outTexCoord;
@@ -32,39 +32,48 @@ void main(void)
 {	
 	if( ubo.param.x <= gl_InvocationID) return;
 
-	mat4 viewModel = ubo.view[gl_InvocationID] * ubo.model;
 	vec3 size = vec3(ubo.model[0].x,ubo.model[1].y,ubo.model[2].z);
-
 	if( ubo.param.y == 1 ){
 		float len = distance(ubo.model[3], ubo.cameraPos[gl_InvocationID])/10;
 		size *= len;
 	}
 
-	for(int i = 0; i < gl_in.length(); i++){
+	mat4 viewModel = ubo.view[gl_InvocationID] * ubo.model;
+	
+	viewModel[0].x = size.x;
+	viewModel[0].y = 0;
+	viewModel[0].z = 0;
+	
+	viewModel[1].x = 0;
+	viewModel[1].y = size.y;
+	viewModel[1].z = 0;
 
-		outColor = inColor[i];
-		outTexCoord = inTexCoord[i];
+	viewModel[2].x = 0;
+	viewModel[2].y = 0;
+	viewModel[2].z = size.z;
+	
+	mat4 mvp = ubo.proj[gl_InvocationID]*viewModel;
 
-		viewModel[0].x = size.x;
-		viewModel[0].y = 0;
-		viewModel[0].z = 0;
-		
-		viewModel[1].x = 0;
-		viewModel[1].y = size.y;
-		viewModel[1].z = 0;
+	outColor = inColor[0];
 
-		viewModel[2].x = 0;
-		viewModel[2].y = 0;
-		viewModel[2].z = size.z;
-		
-		vec4 posC = viewModel * gl_in[i].gl_Position;
-		
-		gl_Position = ubo.proj[gl_InvocationID] * posC;
-		
-		// Set the viewport index that the vertex will be emitted to
-		gl_ViewportIndex = gl_InvocationID;
-		gl_PrimitiveID = gl_PrimitiveIDIn;
-		EmitVertex();
-	}
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( -1.0, -1.0, 0.0, 0.0 ));
+	outTexCoord = vec2( 0.0, 1.0 );
+	EmitVertex();
+  
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, -1.0, 0.0, 0.0 ));
+	outTexCoord = vec2( 0.0, 0.0 );
+	EmitVertex();
+  
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( -1.0, 1.0, 0.0, 0.0 ));
+	outTexCoord = vec2( 1.0, 1.0 );
+	EmitVertex();
+  
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, 1.0, 0.0, 0.0 ));
+	outTexCoord = vec2( 1.0, 0.0 );
+	
+	gl_ViewportIndex = gl_InvocationID;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
+	EmitVertex();
+	
 	EndPrimitive();
 }

@@ -212,11 +212,12 @@
     <None Include="..\data\shaders\base.tesc" />
     <None Include="..\data\shaders\base.tese" />
     <None Include="..\data\shaders\base.vert" />
-    <None Include="..\data\shaders\billboard.frag" />
     <None Include="..\data\shaders\billboard.geom" />
     <None Include="..\data\shaders\compile.bat" />
     <None Include="..\data\shaders\cube.frag" />
     <None Include="..\data\shaders\cube.geom" />
+    <None Include="..\data\shaders\cubemap.frag" />
+    <None Include="..\data\shaders\cubemap.geom" />
     <None Include="..\data\shaders\grayscale.frag" />
     <None Include="..\data\shaders\line.geom" />
     <None Include="..\data\shaders\normals.geom" />
@@ -227,7 +228,9 @@
     <None Include="..\data\shaders\postprocessing.frag" />
     <None Include="..\data\shaders\postprocessing.geom" />
     <None Include="..\data\shaders\postprocessing.vert" />
+    <None Include="..\data\shaders\shader.comp" />
     <None Include="..\data\shaders\skeleton.vert" />
+    <None Include="..\data\shaders\texture.frag" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml" />

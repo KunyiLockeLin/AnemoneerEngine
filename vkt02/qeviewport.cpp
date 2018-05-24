@@ -310,7 +310,7 @@ void QeViewport::updatePostProcessing() {
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = VK->createPipeline(&shader, FALSE, TRUE, 1);
+		postprocessingPipeline = VK->createPipeline(&shader, ePipeLine_Postprogessing, 1);
 }
 
 void QeViewport::updateInput(QeInputData & inputData) {

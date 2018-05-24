@@ -96,6 +96,7 @@ struct QeAssetShader {
 	VkShaderModule tese = VK_NULL_HANDLE;
 	VkShaderModule geom = VK_NULL_HANDLE;
 	VkShaderModule frag = VK_NULL_HANDLE;
+	VkShaderModule comp = VK_NULL_HANDLE;
 };
 
 struct QeAssetMaterial {

@@ -77,7 +77,7 @@ void QeLine::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 void QeLine::createPipeline() {
-	pipeline = VK->createPipeline(&pMaterial->shader, VK_TRUE);
+	pipeline = VK->createPipeline(&pMaterial->shader, ePipeLine_Line);
 }
 
 void QeLine::setMatModel() {

@@ -145,9 +145,6 @@
     <None Include="..\data\shaders\billboard.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\billboard.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\pbr.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -206,6 +203,18 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\normals.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\cubemap.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\cubemap.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\shader.comp">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\texture.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

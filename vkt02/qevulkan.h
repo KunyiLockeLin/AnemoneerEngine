@@ -59,6 +59,13 @@ struct QeDataDescriptorSet {
 	QeDataDescriptorSet();
 };
 
+enum QePipelineType {
+	ePipeLine_Point = 0,
+	ePipeLine_Line = 1,
+	ePipeLine_Triangle = 2,
+	ePipeLine_Postprogessing = 3,
+};
+
 class QeVulkan
 {
 public:
@@ -152,7 +159,7 @@ public:
 
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createPipeline(QeAssetShader* shader, VkBool32 bLine = VK_FALSE, VkBool32 bPostPorcessing = VK_FALSE, uint8_t subpassIndex = 0);
+	VkPipeline createPipeline(QeAssetShader* shader, QePipelineType type, uint8_t subpassIndex = 0);
 	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);

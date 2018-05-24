@@ -12,11 +12,12 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V phong.geom -o phongg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V phong.frag -o phongf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V billboard.geom -o billboardg.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V billboard.frag -o billboardf.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V texture.frag -o texturef.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V pbr.geom -o pbrg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V pbr.frag -o pbrf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.vert -o postprocessingv.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.geom -o postprocessingg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.frag -o postprocessingf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V grayscale.frag -o grayscalef.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V shader.comp -o shaderc.spv
 pause

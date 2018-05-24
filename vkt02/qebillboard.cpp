@@ -6,7 +6,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	initProperty = _property;
 
-	modelData = AST->getModel("plane");
+	modelData = AST->getModel("point");
 	pMaterial = AST->getMaterialImage(AST->getXMLValue(_property, 1, "image"));
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
@@ -86,6 +86,10 @@ void QeBillboard::init(QeAssetXML* _property) {
 	if (c != nullptr)	attachID = atoi(c);
 
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
+}
+
+void QeBillboard::createPipeline() {
+	pipeline = VK->createPipeline(&pMaterial->shader, ePipeLine_Point);
 }
 
 void QeBillboard::setMatModel() {

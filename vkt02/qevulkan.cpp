@@ -1007,7 +1007,7 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBool32 bPostprocessing, uint8_t subpassIndex) {
+VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, QePipelineType type, uint8_t subpassIndex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -1055,7 +1055,7 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	if (bPostprocessing) { // bVetex
+	if (type == ePipeLine_Postprogessing) { // bVetex
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
 		vertexInputInfo.vertexAttributeDescriptionCount = 0;
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
@@ -1073,17 +1073,20 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	inputAssembly.topology = bLine? VK_PRIMITIVE_TOPOLOGY_LINE_LIST: VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	inputAssembly.topology = (shader->tesc != VK_NULL_HANDLE && shader->tese != VK_NULL_HANDLE) ? VK_PRIMITIVE_TOPOLOGY_PATCH_LIST : inputAssembly.topology;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+	if (type == ePipeLine_Point)			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	else if(type == ePipeLine_Line)			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	else if (shader->tesc && shader->tese )	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
+	else									inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 	VkPipelineRasterizationStateCreateInfo rasterizer = {};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = (bShowMesh && !bPostprocessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+	rasterizer.polygonMode = (bShowMesh && type != ePipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
-	rasterizer.cullMode = bPostprocessing ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
+	rasterizer.cullMode = (type == ePipeLine_Postprogessing) ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -1095,7 +1098,7 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 
-	if (bPostprocessing) { // DepthTest
+	if (type == ePipeLine_Postprogessing) { // DepthTest
 		depthStencil.depthTestEnable = VK_FALSE;
 		depthStencil.depthWriteEnable = VK_FALSE;
 	}
@@ -1110,7 +1113,7 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 	
-	if (bPostprocessing || bLine) { // Alpha
+	if (type == ePipeLine_Postprogessing) { // Alpha
 		colorBlendAttachment.blendEnable = VK_FALSE;
 	}
 	else {
@@ -1162,7 +1165,7 @@ VkPipeline QeVulkan::createPipeline(QeAssetShader* shader, VkBool32 bLine, VkBoo
 	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-	if (shader->tesc != VK_NULL_HANDLE && shader->tese != VK_NULL_HANDLE) {
+	if (shader->tesc && shader->tese) {
 		VkPipelineTessellationStateCreateInfo tessellationInfo = {};
 		tessellationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 		tessellationInfo.pNext = nullptr;
@@ -1341,9 +1344,9 @@ void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSi
 
 	if (data == nullptr) return;
 
-	if(bCubemap)
-		transitionImageLayout(image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	else
+	//if(bCubemap)
+	//	transitionImageLayout(image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	//else
 		transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
 	copyBufferToImage(staging.buffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height), layer);
