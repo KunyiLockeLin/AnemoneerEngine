@@ -90,6 +90,6 @@ public:
 	void updateAction(float time);
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
-	void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
+	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 };
 

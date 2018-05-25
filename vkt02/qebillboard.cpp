@@ -107,3 +107,11 @@ void QeBillboard::setMatModel() {
 
 //void QeBillboard::updateRender(float time) { updateUniformBuffer(); }
 //void QeBillboard::updateCompute(float time) {}
+
+void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	vkCmdDraw(drawCommandBuffer, 1, 1, 0, 0);
+
+}

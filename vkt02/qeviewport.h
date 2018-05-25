@@ -39,6 +39,9 @@ public:
 
 	VkSemaphore imageAvailableSemaphore;
 	VkSemaphore renderFinishedSemaphore;
+	//std::vector<VkSemaphore> imageAvailableSemaphores;
+	//std::vector<VkSemaphore> renderFinishedSemaphores;
+	//std::vector<VkFence> inFlightFences;
 	//VkSemaphore textOverlayComplete;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 
