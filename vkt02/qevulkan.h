@@ -21,18 +21,19 @@ struct SwapChainSupportDetails {
 struct QeVKBuffer {
 	VkBuffer buffer = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
+	VkBufferView view = VK_NULL_HANDLE;
 
 	~QeVKBuffer();
 };
 
-struct QeVKImageBuffer {
+struct QeVKImage {
 
 	VkImage image = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
 	VkSampler sampler = VK_NULL_HANDLE;
 
-	~QeVKImageBuffer();
+	~QeVKImage();
 };
 
 struct QeDataDescriptorSet {
@@ -57,6 +58,7 @@ struct QeDataDescriptorSet {
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
 
 	// descriptorSetStorageTexeLBufferNumber
+	VkBufferView storageTexeLBufferView = VK_NULL_HANDLE;
 
 	QeDataDescriptorSet();
 };
@@ -127,8 +129,8 @@ public:
 
 	void createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<VkImage>& swapChainImages, std::vector<VkImageView>& swapChainImageViews);
 	VkRenderPass createRenderPass(VkFormat& swapChainImageFormat);
-	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
-	void createSceneDepthImage(QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, VkExtent2D& swapChainExtent);
+	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+	void createSceneDepthImage(QeVKImage& sceneImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
 	void createDrawCommandBuffers(std::vector<VkCommandBuffer>& drawCommandBuffers, size_t size);
 	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
@@ -147,6 +149,7 @@ public:
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels=1);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer);
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void createBufferView(VkBuffer buffer, VkFormat format, VkDeviceSize size, VkBufferView & buffer_view);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);

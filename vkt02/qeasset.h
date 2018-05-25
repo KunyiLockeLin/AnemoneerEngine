@@ -84,9 +84,9 @@ struct QeDataMaterial {
 
 struct QeAssetImage {
 
-	QeVKImageBuffer* pDiffuseMap = nullptr; // baseColorMap;
-	QeVKImageBuffer* pCubeMap = nullptr;;
-	QeVKImageBuffer* pNormalMap = nullptr;;
+	QeVKImage* pDiffuseMap = nullptr; // baseColorMap;
+	QeVKImage* pCubeMap = nullptr;;
+	QeVKImage* pNormalMap = nullptr;;
 };
 
 struct QeAssetShader {
@@ -151,7 +151,7 @@ public:
 	std::map<std::string, QeAssetModel*> astModels;
 	std::map<std::string, QeAssetMaterial*> astMaterials;
 	std::map<std::string, VkShaderModule> astShaders;
-	std::map<std::string, QeVKImageBuffer*> astTextures;
+	std::map<std::string, QeVKImage*> astTextures;
 
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset();
@@ -181,7 +181,7 @@ public:
 	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);
 	QeAssetMaterial* getMaterial(const char* _filename);
 	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
-	QeVKImageBuffer* getImage(const char* _filename, bool bCubeMap=false);
+	QeVKImage* getImage(const char* _filename, bool bCubeMap=false);
 	VkShaderModule getShader(const char* _filename);
 
 	std::vector<char> loadFile(const char* _filePath);

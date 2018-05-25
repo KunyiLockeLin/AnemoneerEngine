@@ -34,8 +34,8 @@ public:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkRenderPass renderPass;
 
-	QeVKImageBuffer sceneImage;
-	QeVKImageBuffer depthImage;
+	QeVKImage sceneImage;
+	QeVKImage depthImage;
 
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;

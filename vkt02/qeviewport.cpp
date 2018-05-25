@@ -211,8 +211,8 @@ void QeViewport::createRender() {
 
 void QeViewport::cleanupRender() {
 
-	sceneImage.~QeVKImageBuffer();
-	depthImage.~QeVKImageBuffer();
+	sceneImage.~QeVKImage();
+	depthImage.~QeVKImage();
 
 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
 	postprocessingPipeline = VK_NULL_HANDLE;

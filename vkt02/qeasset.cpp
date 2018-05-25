@@ -71,7 +71,7 @@ QeAsset::~QeAsset() {
 	}
 	astShaders.clear();
 
-	std::map<std::string, QeVKImageBuffer*>::iterator it5 = astTextures.begin();
+	std::map<std::string, QeVKImage*>::iterator it5 = astTextures.begin();
 	while (it5 != astTextures.end()) {
 		if ((it5->second) != nullptr) delete (it5->second);
 		++it5;
@@ -821,10 +821,10 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	return mtl;
 }
 
-QeVKImageBuffer* QeAsset::getImage(const char* _filename, bool bCubeMap) {
+QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	std::string _filePath = combinePath(_filename, eAssetTexture);
-	std::map<std::string, QeVKImageBuffer*>::iterator it = astTextures.find(_filePath.c_str());
+	std::map<std::string, QeVKImage*>::iterator it = astTextures.find(_filePath.c_str());
 
 	if (it != astTextures.end())	return it->second;
 
@@ -848,7 +848,7 @@ QeVKImageBuffer* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 	}
 	else return nullptr;
 
-	QeVKImageBuffer* image = new QeVKImageBuffer();
+	QeVKImage* image = new QeVKImage();
 	image->sampler = VK->createTextureSampler();
 	std::vector<std::string> imageList;
 

@@ -10,9 +10,13 @@ QeVKBuffer::~QeVKBuffer(){
 		vkFreeMemory(VK->device, memory, nullptr);
 		memory = VK_NULL_HANDLE;
 	}
+	if (view != VK_NULL_HANDLE) {
+		vkDestroyBufferView(VK->device, view, nullptr);
+		view = VK_NULL_HANDLE;
+	}
 }
 
-QeVKImageBuffer::~QeVKImageBuffer(){
+QeVKImage::~QeVKImage(){
 	if (image != VK_NULL_HANDLE) {
 		vkDestroyImage(VK->device, image, nullptr);
 		image = VK_NULL_HANDLE;
@@ -464,8 +468,8 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL_GRAPHICS, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImageBuffer& sceneImage, 
-								QeVKImageBuffer& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) {
+void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, 
+								QeVKImage& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) {
 	framebuffers.resize(swapChainImageViews.size());
 
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
@@ -501,7 +505,7 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createSceneDepthImage(QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, VkExtent2D& swapChainExtent) {
+void QeVulkan::createSceneDepthImage(QeVKImage& sceneImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent) {
 	VkFormat depthFormat = findDepthFormat();
 
 	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, 
@@ -704,6 +708,21 @@ void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemor
 	if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) LOG("failed to allocate buffer memory!");
 
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
+}
+
+void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkDeviceSize size, VkBufferView & buffer_view) {
+	
+	VkBufferViewCreateInfo buffer_view_create_info = {};
+	buffer_view_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+	buffer_view_create_info.pNext = nullptr;
+	buffer_view_create_info.flags = 0;
+	buffer_view_create_info.buffer = buffer;
+	buffer_view_create_info.format = format;
+	buffer_view_create_info.offset = 0;
+	buffer_view_create_info.range = size;
+
+	VkResult result = vkCreateBufferView(device, &buffer_view_create_info, nullptr, &buffer_view);
+	if (VK_SUCCESS != result) LOG("Could not creat buffer view.");
 }
 
 VkCommandBuffer QeVulkan::beginSingleTimeCommands() {
