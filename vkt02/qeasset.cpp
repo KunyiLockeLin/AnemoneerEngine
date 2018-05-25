@@ -595,8 +595,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 	char type = 0;
 
-	if (strcmp("point", _filename) == 0)		type = 2;
-	else if (strcmp("plane", _filename)==0)		type = 3;
+	if (strcmp("plane", _filename)==0)		type = 3;
 	else if (strcmp("cube", _filename)==0)	type = 4;
 	else if (strcmp("axis", _filename) == 0)	type = 5;
 	else if (strcmp("grids", _filename) == 0)	type = 6;
@@ -626,15 +625,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model = ENCODE->decodeGLTF(json, bCubeMap);
 		break;
 	case 2:
-		//	model = ENCODE->decodeGLB(0);
-		model = new QeAssetModel();
-		model->scale = { 1,1,1 };
-		model->indices = { 0 };
-		model->indexSize = int(model->indices.size());
-		vertex.normal = { 0, 0, 1 };
-		vertex.pos = { 0, 0, 0 };
-		vertex.texCoord = { 0,1 };
-		model->vertices.push_back(vertex);		
+		//	model = ENCODE->decodeGLB(0);		
 		break;
 
 	case 3:

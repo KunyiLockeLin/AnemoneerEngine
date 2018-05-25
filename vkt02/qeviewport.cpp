@@ -4,10 +4,14 @@
 QeViewport ::~QeViewport() {
 	cleanupRender();
 
-	vkDestroySemaphore(VK->device, renderFinishedSemaphore, nullptr);
-	renderFinishedSemaphore = VK_NULL_HANDLE;
-	vkDestroySemaphore(VK->device, imageAvailableSemaphore, nullptr);
-	imageAvailableSemaphore = VK_NULL_HANDLE;
+	for (size_t i = 0; i < VK->MAX_FRAMES_IN_FLIGHT; i++) {
+		vkDestroySemaphore(VK->device, renderFinishedSemaphores[i], nullptr);
+		vkDestroySemaphore(VK->device, imageAvailableSemaphores[i], nullptr);
+		vkDestroyFence(VK->device, inFlightFences[i], nullptr);
+	}
+	renderFinishedSemaphores.clear();
+	imageAvailableSemaphores.clear();
+	inFlightFences.clear();
 }
 
 
@@ -25,7 +29,7 @@ void QeViewport::init(QeAssetXML* _property) {
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = false;
 	postprocessingDescriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
-	VK->createSemaphores(imageAvailableSemaphore, renderFinishedSemaphore);
+	VK->createSyncObjects(imageAvailableSemaphores, renderFinishedSemaphores, inFlightFences);
 	createRender();
 
 	updateViewport();
@@ -145,8 +149,11 @@ void QeViewport::updateCompute(float time) {}
 
 void QeViewport::drawFrame() {
 
+	vkWaitForFences(VK->device, 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+	vkResetFences(VK->device, 1, &inFlightFences[currentFrame]);
+
 	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(VK->device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(VK->device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		bRecreateRender = true;
@@ -160,29 +167,18 @@ void QeViewport::drawFrame() {
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
 
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
 
-	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
-	
-	VkFenceCreateInfo fenceInfo;
-	VkFence drawFence;
-	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceInfo.pNext = NULL;
-	fenceInfo.flags = 0;
-	vkCreateFence(VK->device, &fenceInfo, NULL, &drawFence);
 
-	result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, drawFence);
+	result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]);
 	if( result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
-
-	do {
-		result = vkWaitForFences(VK->device, 1, &drawFence, VK_TRUE, 100000000000);
-	} while (result == VK_TIMEOUT);
 
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -201,7 +197,7 @@ void QeViewport::drawFrame() {
 
 	else if (result != VK_SUCCESS)	LOG("failed to present swap chain image!");
 
-	vkQueueWaitIdle(VK->presentQueue);
+	currentFrame = (currentFrame + 1) % VK->MAX_FRAMES_IN_FLIGHT;
 }
 
 void QeViewport::createRender() {
@@ -209,7 +205,7 @@ void QeViewport::createRender() {
 	VK->createSwapChain(VK->surface, swapChain, swapChainExtent, swapChainImageFormat, swapChainImages, swapChainImageViews);
 	renderPass = VK->createRenderPass( swapChainImageFormat );
 	VK->createSceneDepthImage(sceneImage, depthImage, swapChainExtent);
-	VK->createFramebuffers(framebuffers, sceneImage, depthImage, swapChainImageViews, swapChainExtent, renderPass);
+	VK->createFramebuffers(swapChainFramebuffers, sceneImage, depthImage, swapChainImageViews, swapChainExtent, renderPass);
 	VK->createDrawCommandBuffers(drawCommandBuffers, swapChainImages.size());
 }
 
@@ -221,9 +217,9 @@ void QeViewport::cleanupRender() {
 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
 	postprocessingPipeline = VK_NULL_HANDLE;
 
-	for (size_t i = 0; i < framebuffers.size(); i++) {
-		vkDestroyFramebuffer(VK->device, framebuffers[i], nullptr);
-		framebuffers[i] = VK_NULL_HANDLE;
+	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
+		vkDestroyFramebuffer(VK->device, swapChainFramebuffers[i], nullptr);
+		swapChainFramebuffers[i] = VK_NULL_HANDLE;
 		vkDestroyImageView(VK->device, swapChainImageViews[i], nullptr);
 		swapChainImageViews[i] = VK_NULL_HANDLE;
 	}
@@ -272,7 +268,7 @@ void QeViewport::updateDrawCommandBuffers() {
 		VkRenderPassBeginInfo renderPassInfo = {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = framebuffers[i];
+		renderPassInfo.framebuffer = swapChainFramebuffers[i];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = swapChainExtent;
 

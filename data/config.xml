@@ -21,7 +21,7 @@
     <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
     <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <normal vert="basev.spv" geom="normalsg.spv"  frag="basef.spv"/>
-    <billboard vert="billboardv.spv" geom="billboardg.spv" frag="texturef.spv"/>
+    <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturef.spv"/>
     <cubemap vert="basev.spv" geom="cubemapg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
@@ -38,11 +38,10 @@
     </terrain>
     <models>
       <e id="1" obj="animation.gltf" show="1" speed="50" posX="0" posY="10" posZ="-1" actionSpeed="1" action="0" actionType="2" />
-      <e id="2" obj="animation.gltf" show="1" speed="-5" posX="0" posY="-10" posZ="-1" cubemapid="10"/>
       <e id="3" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="1" attachskeleton="Armature_Bone_002" />
       <e id="4" obj="box.gltf" show="1" speed="0" posX="0" posY="0" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="10" comp="shaderc.spv"/>    
     </models>
-    <ambientColor r="0.5" g="0.5" b="0.5"/>
+    <ambientColor r="0.0" g="0.0" b="0.0"/>
     <lights>
       <e show="1" image="light.png" type="0" posX="15" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="10"/>
     </lights>

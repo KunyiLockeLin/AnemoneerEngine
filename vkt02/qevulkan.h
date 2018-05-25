@@ -72,6 +72,8 @@ public:
 	QeVulkan(QeGlobalKey& _key) {}
 	~QeVulkan();
 
+	const int MAX_FRAMES_IN_FLIGHT = 2;
+
 	const std::vector<const char*> validationLayers = {
 		"VK_LAYER_LUNARG_standard_validation"
 	};
@@ -121,7 +123,7 @@ public:
 	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
 	void createSceneDepthImage(QeVKImageBuffer& sceneImage, QeVKImageBuffer& depthImage, VkExtent2D& swapChainExtent);
 	void createDrawCommandBuffers(std::vector<VkCommandBuffer>& drawCommandBuffers, size_t size);
-	void createSemaphores(VkSemaphore& imageAvailableSemaphore, VkSemaphore& renderFinishedSemaphore);
+	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 
 	VkDescriptorSetLayout createDescriptorSetLayout();

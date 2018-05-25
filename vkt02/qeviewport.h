@@ -31,17 +31,17 @@ public:
 	VkFormat swapChainImageFormat;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
-	std::vector<VkFramebuffer> framebuffers;
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkRenderPass renderPass;
 
 	QeVKImageBuffer sceneImage;
 	QeVKImageBuffer depthImage;
 
-	VkSemaphore imageAvailableSemaphore;
-	VkSemaphore renderFinishedSemaphore;
-	//std::vector<VkSemaphore> imageAvailableSemaphores;
-	//std::vector<VkSemaphore> renderFinishedSemaphores;
-	//std::vector<VkFence> inFlightFences;
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+	std::vector<VkFence> inFlightFences;
+	size_t currentFrame = 0;
+
 	//VkSemaphore textOverlayComplete;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
 

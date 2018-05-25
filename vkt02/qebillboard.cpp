@@ -6,7 +6,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	initProperty = _property;
 
-	modelData = AST->getModel("point");
+	//modelData = AST->getModel("point");
 	pMaterial = AST->getMaterialImage(AST->getXMLValue(_property, 1, "image"));
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
@@ -18,24 +18,12 @@ void QeBillboard::init(QeAssetXML* _property) {
 	data.materialBuffer = pMaterial->uboBuffer.buffer;
 	data.diffuseMapImageViews = pMaterial->image.pDiffuseMap->view;
 	data.diffueMapSamplers = pMaterial->image.pDiffuseMap->sampler;
-
-	cubeMapID = 0;
-	const char * c = AST->getXMLValue(_property, 1, "cubemapid");
-	if (c != nullptr)	cubeMapID = atoi(c);
-
-	if (cubeMapID > 0) {
-		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
-		if (model != nullptr) {
-			data.cubeMapImageViews = model->pMaterial->image.pCubeMap->view;
-			data.cubeMapSamplers = model->pMaterial->image.pCubeMap->sampler;
-		}
-	}
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;
 	up = 0.0f;
-	size = modelData->scale;
+	size = {1,1,1};
 	speed = 0;
 	currentActionID = 0;
 	actionType = eActionTypeOnce;
@@ -48,7 +36,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	createGraphicsPipeline();
 
-	c = AST->getXMLValue(_property, 1, "id");
+	const char * c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "posX");
@@ -113,5 +101,4 @@ void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	vkCmdDraw(drawCommandBuffer, 1, 1, 0, 0);
-
 }
