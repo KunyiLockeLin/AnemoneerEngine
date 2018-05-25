@@ -37,9 +37,9 @@ layout( binding = 2) uniform QeDataPBRMaterial {
 	vec4 emissive;
 } mtl;
 
-layout( binding = 3) uniform sampler2D baseColorSampler;
-layout( binding = 4) uniform samplerCube cubeSampler;
-layout( binding = 5) uniform sampler2D normalSampler;
+layout( binding = 10) uniform sampler2D baseColorSampler;
+layout( binding = 11) uniform samplerCube cubeSampler;
+layout( binding = 12) uniform sampler2D normalSampler;
 
 layout(location = 0) in vec3 inColor;
 layout(location = 1) in vec2 inTexCoord;

@@ -10,7 +10,7 @@ layout( binding = 2) uniform QeDataMaterial {
 	vec4 param; // 1: specularExponent, 2: refraction, 3: alpha,
 } mtl;
 
-layout( binding = 3) uniform sampler2D texSampler;
+layout( binding = 10) uniform sampler2D texSampler;
 
 layout(location = 0) in vec3 inColor;
 layout(location = 1) in vec2 inTexCoord;

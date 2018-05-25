@@ -56,6 +56,8 @@ struct QeDataDescriptorSet {
 	// descriptorSetInputAttachmentNumber
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
 
+	// descriptorSetStorageTexeLBufferNumber
+
 	QeDataDescriptorSet();
 };
 
@@ -104,14 +106,19 @@ public:
 	VkQueue presentQueue;
 	VkQueue computeQueue;
 
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkPipelineLayout pipelineLayout;
-	VkDescriptorPool descriptorPool;
-	VkCommandPool commandPool;
-
+	const uint8_t descriptorSetBufferStart = 0;
 	const uint8_t descriptorSetBufferNumber = 3;
+	const uint8_t descriptorSetImageStart = 10;
 	const uint8_t descriptorSetImageNumber = 3;
+	const uint8_t descriptorSetInputAttachmentStart = 20;
 	const uint8_t descriptorSetInputAttachmentNumber = 1;
+	const uint8_t descriptorSetStorageTexeLBufferStart = 30;
+	const uint8_t descriptorSetStorageTexeLBufferNumber = 1;
+
+	VkDescriptorSetLayout descriptorSetLayout;
+	VkDescriptorPool descriptorPool;
+	VkPipelineLayout pipelineLayout;
+	VkCommandPool commandPool;
 
 	void createInstance();
 	void setupDebugCallback();

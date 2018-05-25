@@ -392,34 +392,37 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 	
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
-	bindings.resize(descriptorSetBufferNumber + descriptorSetImageNumber + descriptorSetInputAttachmentNumber);
+	bindings.resize(descriptorSetBufferNumber + descriptorSetImageNumber + descriptorSetInputAttachmentNumber + descriptorSetStorageTexeLBufferNumber);
 
 	int i = 0;
-	int sum = descriptorSetBufferNumber;
-	for ( i = 0; i<sum;++i ) {
-		bindings[i].binding = i;
-		bindings[i].descriptorCount = 1;
-		bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		bindings[i].pImmutableSamplers = nullptr;
-		bindings[i].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+	int index = 0;
+	for ( i = 0; i<descriptorSetBufferNumber;++i,++index) {
+		bindings[index].binding = i+ descriptorSetBufferStart;
+		bindings[index].descriptorCount = 1;
+		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		bindings[index].pImmutableSamplers = nullptr;
+		bindings[index].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
 	}
-	i = sum;
-	sum += descriptorSetImageNumber;
-	for ( ; i<sum; ++i) {
-		bindings[i].binding = i;
-		bindings[i].descriptorCount = 1;
-		bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		bindings[i].pImmutableSamplers = nullptr;
-		bindings[i].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	for ( i=0; i<descriptorSetImageNumber; ++i,++index) {
+		bindings[index].binding = i+ descriptorSetImageStart;
+		bindings[index].descriptorCount = 1;
+		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		bindings[index].pImmutableSamplers = nullptr;
+		bindings[index].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	}
-	i = sum;
-	sum += descriptorSetInputAttachmentNumber;
-	for (; i < sum; ++i) {
-		bindings[i].binding = i;
-		bindings[i].descriptorCount = 1;
-		bindings[i].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-		bindings[i].pImmutableSamplers = nullptr;
-		bindings[i].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	for ( i=0; i < descriptorSetInputAttachmentNumber; ++i,++index) {
+		bindings[index].binding = i+ descriptorSetInputAttachmentStart;
+		bindings[index].descriptorCount = 1;
+		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+		bindings[index].pImmutableSamplers = nullptr;
+		bindings[index].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	}
+	for ( i=0; i < descriptorSetStorageTexeLBufferNumber; ++i, ++index) {
+		bindings[index].binding = i+ descriptorSetStorageTexeLBufferStart;
+		bindings[index].descriptorCount = 1;
+		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+		bindings[index].pImmutableSamplers = nullptr;
+		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 	}
 	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -1195,20 +1198,38 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 
 VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 
-	VkPipelineShaderStageCreateInfo tescShaderStageInfo = {};
-	tescShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	tescShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-	tescShaderStageInfo.module = shader;
-	tescShaderStageInfo.pName = "main";
-	return 0;
+	VkPipelineShaderStageCreateInfo shaderStageInfo = {};
+	shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	shaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+	shaderStageInfo.module = shader;
+	shaderStageInfo.pName = "main";
 
+	VkComputePipelineCreateInfo createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+	createInfo.pNext = nullptr;
+	createInfo.flags = 0;
+	createInfo.stage = shaderStageInfo;
+	createInfo.layout = pipelineLayout;		
+	createInfo.basePipelineHandle = VK_NULL_HANDLE;
+	createInfo.basePipelineIndex = -1;
+
+	VkPipeline pipeline;
+
+	VkResult result = vkCreateComputePipelines(device, VK_NULL_HANDLE, 1, &createInfo, nullptr, &pipeline);
+	if (VK_SUCCESS != result) LOG("Could not create compute pipeline.");
+	
+	return pipeline;
+	/*
+	void DispatchComputeWork(VkCommandBuffer command_buffer, uint32_t x_size, uint32_t y_size, uint32_t z_size) {
+		vkCmdDispatch(command_buffer, x_size, y_size, z_size);
+	}
+	*/
 }
 
 
 void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& descriptorSet) {
 
-	uint64_t i = 0;
-	uint8_t index = 0;
+	uint8_t i = 0;
 	uint8_t* pos = (uint8_t*)&data;
 	std::vector<uint8_t>	 bindID;
 	std::vector<VkBuffer>	 buffers;
@@ -1221,25 +1242,25 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 	uint64_t sizeImgae = sizeof(VkImageView) + sizeof(VkSampler);
 	uint64_t sizeAttach = sizeof(VkImageView);
 
-	for (i = 0;i<descriptorSetBufferNumber;++i,++index) {
+	for (i = 0;i<descriptorSetBufferNumber;++i) {
 		if ( (*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back( index );
+			bindID.push_back( i+ descriptorSetBufferStart);
 			buffers.push_back(*(VkBuffer*)(pos));
 			bufferSizes.push_back(*(uint64_t*)(pos+ sizeof(VkBuffer)));
 		}
 		pos += sizeBuffer;
 	}
-	for (i = 0; i<descriptorSetImageNumber; ++i, ++index) {
+	for (i = 0; i<descriptorSetImageNumber; ++i) {
 		if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(index);
+			bindID.push_back(i+ descriptorSetImageStart);
 			imageViews.push_back(*(VkImageView*)(pos));
 			samplers.push_back(*(VkSampler*)(pos + sizeof(VkSampler)));
 		}
 		pos += sizeImgae;
 	}
-	for (i = 0; i<descriptorSetInputAttachmentNumber; ++i,++index) {
+	for (i = 0; i<descriptorSetInputAttachmentNumber; ++i) {
 		if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(index);
+			bindID.push_back(i+ descriptorSetInputAttachmentStart);
 			attachImageViews.push_back(*(VkImageView*)(pos));
 		}
 		pos += sizeAttach;
@@ -1254,7 +1275,7 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 	std::vector<VkDescriptorBufferInfo> bufInfos;
 	bufInfos.resize(bufNum);
 	i = 0;
-	index = 0;
+	uint8_t index = 0;
 	for (i = 0; i < bufNum; ++i,++index) {
 
 		bufInfos[i].buffer = buffers[i];
