@@ -867,13 +867,13 @@ QeVKImageBuffer* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	int size = int(imageList.size());
 	int cIndex = int(ret - _filePath.c_str());
+	int width, height, bytes;
 
 	for (int i = 0;i<size; ++i) {
 		std::string path(_filePath);
 		path.insert(cIndex, imageList[i]);
 		std::vector<char> buffer = loadFile(path.c_str());
 
-		int width, height, bytes;
 		std::vector<unsigned char> data;
 
 		switch (type) {
@@ -891,7 +891,9 @@ QeVKImageBuffer* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
 	}
-	image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap);
+	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+	image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels, bCubeMap);
+
 	astTextures[_filePath] = image;
 
 	return image;
