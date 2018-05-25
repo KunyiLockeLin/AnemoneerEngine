@@ -53,8 +53,6 @@
   - convert the whole assets into a single binary data
 ---
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - L-system, Swarm grammar
-  - camera control modification
   - HDR
   - frustum Culling
   - Dynamic Decals
@@ -63,11 +61,13 @@
   - mix animation
   - room
   - C-style
+  - L-system, Swarm grammar
   - combine browser
   - live stream
   - machine learning for performance
   
 # Bug
+  - x, y, z axis are not correct.
   - release mode crash
   - alpha models don't blend lines-object
   - tessellation shader causes triangle-face becomes opposite.
