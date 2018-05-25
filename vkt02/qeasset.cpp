@@ -892,7 +892,8 @@ QeVKImageBuffer* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
 	}
 	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
-	image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels, bCubeMap);
+	mipLevels = 1;
+	image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap, mipLevels);
 
 	astTextures[_filePath] = image;
 

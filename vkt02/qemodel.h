@@ -92,4 +92,3 @@ public:
 	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 };
-
