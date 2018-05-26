@@ -34,7 +34,6 @@
 # config.xml:
 
 # ToDoList:
-  - PBR lighting isn't smooth.
   - multiple render
   - mirror
   - study 
