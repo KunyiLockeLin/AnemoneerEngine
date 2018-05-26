@@ -40,11 +40,8 @@ struct QeDataDescriptorSet {
 
 	// descriptorSetBufferNumber
 	VkBuffer	uboBuffer = VK_NULL_HANDLE;
-	uint64_t	uboSize = 0;
 	VkBuffer	lightBuffer = VK_NULL_HANDLE;
-	uint64_t	lightSize = 0;
 	VkBuffer	materialBuffer = VK_NULL_HANDLE;
-	uint64_t	materialSize = 0;
 
 	// descriptorSetImageNumber
 	VkImageView diffuseMapImageViews = VK_NULL_HANDLE;
@@ -59,8 +56,6 @@ struct QeDataDescriptorSet {
 
 	// descriptorSetStorageTexeLBufferNumber
 	VkBufferView storageTexeLBufferView = VK_NULL_HANDLE;
-
-	QeDataDescriptorSet();
 };
 
 enum QePipelineType {
@@ -149,7 +144,7 @@ public:
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels=1);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer);
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void createBufferView(VkBuffer buffer, VkFormat format, VkDeviceSize size, VkBufferView & buffer_view);
+	void createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);

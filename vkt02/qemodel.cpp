@@ -193,6 +193,12 @@ void QeModel::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);
 
+	c = AST->getXMLValue(_property, 1, "show");
+	if (c != nullptr)	bShow = atoi(c);
+
+	c = AST->getXMLValue(_property, 1, "culling");
+	if (c != nullptr)	cullingDistance = atoi(c);
+
 	c = AST->getXMLValue(_property, 1, "actionSpeed");
 	if (c != nullptr)	actionSpeed = float(atof(c));
 
@@ -220,9 +226,41 @@ void QeModel::init(QeAssetXML* _property) {
 
 void QeModel::updateRender(float time) {
 
+	updateShowByCulling();
 	if(speed != 0)	rotateFace( time*speed );
 	updateAction(time);
 	updateUniformBuffer();
+}
+
+void QeModel::updateShowByCulling() {
+	if (!bShow) return;
+	QeCamera* camera = VP->getTargetCamera();
+	bool _bCullingShow = true;
+	float dis = MATH->distance(pos, camera->pos);
+
+	if (cullingDistance>0) {
+		if (dis > cullingDistance) _bCullingShow = false;
+	}
+	else {
+		if (dis > camera->cullingDistance) _bCullingShow = false;
+	}
+
+	if (_bCullingShow) {
+		float angle = MATH->getAnglefromVectors(camera->face, pos - camera->pos);
+		if (angle > 100 || angle < -100) _bCullingShow = false;
+	}
+
+	if (_bCullingShow != bCullingShow) {
+		bCullingShow = _bCullingShow;
+		VP->bUpdateDrawCommandBuffers = true;
+	}
+}
+
+void QeModel::setShow(bool b) {
+	if (b != bShow) {
+		bShow = b;
+		VP->bUpdateDrawCommandBuffers = true;
+	}
 }
 
 void QeModel::updateCompute(float time) {}
@@ -351,6 +389,8 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 }
 
 void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+
+	if (!bShow || !bCullingShow) return;
 
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 

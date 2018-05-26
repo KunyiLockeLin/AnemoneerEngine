@@ -11,7 +11,7 @@ public:
 	virtual void init(QeAssetXML* _property);
 	virtual void createGraphicsPipeline();
 	virtual void setMatModel();
-	//virtual void updateRender(float time);
+	virtual void updateRender(float time);
 	//virtual void updateCompute(float time);
 };
 

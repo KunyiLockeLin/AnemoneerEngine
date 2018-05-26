@@ -102,3 +102,7 @@ void QeLine::setMatModel() {
 		}
 	}
 }
+
+void QeLine::updateRender(float time) {
+	updateUniformBuffer();
+}

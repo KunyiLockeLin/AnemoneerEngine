@@ -17,12 +17,14 @@ public:
 	QeVector2i lastMousePos;
 	QeMatrix4x4f view;
 	QeMatrix4x4f projection;
+	QeVector3f face;
 
 	float fov = 45.f;
 	float fnear = 0.1f;
 	float ffar = 1000.f;
 	float faspect = 1.f;
 	float speed = 0.5f;
+	int cullingDistance = 0;
 	//QeCameraType type = eCameraThirdPerson;
 	QeAssetXML* initProperty = nullptr;
 

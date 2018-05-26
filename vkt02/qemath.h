@@ -117,6 +117,10 @@ public:
 	const float RADIANS_TO_DEGREES = 180.0f / PI;
 	const float DEGREES_TO_RADIANS = PI / 180;
 
+	int iRandom(int from, int to);
+	void iRandom(int from, int to, int size, int* ret);
+	float fRandom(float from, float to);
+	void fRandom(float from, float to, int size, float* ret);
 	QeMatrix4x4f lookAt(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up);
 	QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
 	QeMatrix4x4f translate(QeVector3f& _pos);
@@ -143,4 +147,5 @@ public:
 	float clamp(float in, float low, float high );
 	QeVector4f interpolateDir(QeVector4f& a, QeVector4f& b, float blend);
 	QeVector3f interpolatePos(QeVector3f& start, QeVector3f& end, float progression);
+	float getAnglefromVectors(QeVector3f& v1, QeVector3f& v2 );
 };

@@ -44,7 +44,9 @@ public:
 	float up = 0.f;
 	QeVector3f size;
 	int speed = 0;
-
+	bool bShow = true;
+	bool bCullingShow = true;
+	int cullingDistance = 0;
 	int attachID = 0;
 	int cubeMapID = 0;
 	const char* attachSkeletonName = nullptr;
@@ -62,7 +64,9 @@ public:
 	QeVKBuffer uboBuffer;
 	QeAssetXML* initProperty = nullptr;
 
+	void setShow(bool b);
 	void updateUniformBuffer();
+	virtual void updateShowByCulling();
 	virtual void updateRender(float time);
 	virtual void updateCompute(float time);
 
@@ -82,7 +86,7 @@ public:
 	virtual void setMatModel();
 	void cleanupPipeline();
 	virtual void createGraphicsPipeline();
-
+ 
 	bool setAction(unsigned int actionID, QeActionType playType);
 	void actionPlay();
 	void actionPause();

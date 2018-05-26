@@ -3,6 +3,38 @@
 float QeMath::dot(QeVector3f& _vec1, QeVector3f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
 float QeMath::dot(QeVector4f& _vec1, QeVector4f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
 
+int QeMath::iRandom(int from, int to){
+	std::random_device rd;
+	std::default_random_engine gen = std::default_random_engine(rd());
+	std::uniform_int_distribution<int> dis(from, to);
+
+	return dis(gen);
+}
+
+void QeMath::iRandom(int from, int to, int size, int* ret) {
+	std::random_device rd;
+	std::default_random_engine gen = std::default_random_engine(rd());
+	std::uniform_int_distribution<int> dis(from, to);
+
+	for (int i = 0; i<size  ; ++i)	ret[i] = dis(gen);
+}
+
+float QeMath::fRandom(float from, float to) {
+	std::random_device rd;
+	std::default_random_engine gen = std::default_random_engine(rd());
+	std::uniform_real_distribution<float> dis(from, to);
+
+	return dis(gen);
+}
+
+void QeMath::fRandom(float from, float to, int size, float* ret) {
+	std::random_device rd;
+	std::default_random_engine gen = std::default_random_engine(rd());
+	std::uniform_real_distribution<float> dis(from, to);
+
+	for (int i = 0; i<size; ++i)	ret[i] = dis(gen);
+}
+
 QeVector3f QeMath::cross(QeVector3f& _vec1, QeVector3f& _vec2) {
 
 	QeVector3f _rtn;
@@ -686,4 +718,12 @@ QeMatrix4x4f QeMath::transform(QeVector3f& tanslation, QeVector4f& rotation, QeV
 	ret *= MATH->rotate(rotation);
 	ret *= MATH->scale(scale);
 	return ret;
+}
+
+float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
+	QeVector3f v1n = normalize(v1);
+	QeVector3f v2n = normalize(v2);
+
+	float d = dot( v1n, v2n );
+	return acos(d)*RADIANS_TO_DEGREES;
 }

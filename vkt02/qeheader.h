@@ -5,7 +5,8 @@
 #include <windows.h>
 #include <tchar.h> 
 #include <cstdlib> 
-#include <string>  
+#include <string> 
+#include <random>
 #include <iostream>
 #include <sstream>
 #include <fstream>

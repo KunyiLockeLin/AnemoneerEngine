@@ -254,6 +254,11 @@ void QeViewport::updateDrawCommandBuffers() {
 
 		vkBeginCommandBuffer(drawCommandBuffers[i], &beginInfo);
 		//vkResetCommandBuffer(drawCommandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
+
+		//compute shader
+		
+
+		// graphics shader
 		std::array<VkClearValue, 3> clearValues = {};
 		if (QE->currentActivity != nullptr) {
 			clearValues[0].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
@@ -307,4 +312,8 @@ void QeViewport::updatePostProcessing() {
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
 		postprocessingPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Postprogessing, 1);
+
+	if (!compute) {
+		compute = new QeCompute();
+	}
 }

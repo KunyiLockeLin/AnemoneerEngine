@@ -35,12 +35,6 @@ QeVKImage::~QeVKImage(){
 	}
 }
 
-QeDataDescriptorSet::QeDataDescriptorSet() {
-	uboSize = sizeof(QeUniformBufferObject);
-	lightSize = sizeof(QeDataLight);
-	materialSize = sizeof(QeDataMaterial);
-}
-
  QeVulkan::~QeVulkan() {
 
 	vkDestroySurfaceKHR(VK->instance, surface, nullptr);
@@ -500,7 +494,8 @@ void QeVulkan::createCommandPool() {
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.pNext = nullptr;
 	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+	//poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+	poolInfo.queueFamilyIndex = queueFamilyIndices.computeFamily;
 
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
@@ -710,7 +705,7 @@ void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemor
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
-void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkDeviceSize size, VkBufferView & buffer_view) {
+void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view) {
 	
 	VkBufferViewCreateInfo buffer_view_create_info = {};
 	buffer_view_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
@@ -719,7 +714,7 @@ void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkDeviceSize s
 	buffer_view_create_info.buffer = buffer;
 	buffer_view_create_info.format = format;
 	buffer_view_create_info.offset = 0;
-	buffer_view_create_info.range = size;
+	buffer_view_create_info.range = VK_WHOLE_SIZE;
 
 	VkResult result = vkCreateBufferView(device, &buffer_view_create_info, nullptr, &buffer_view);
 	if (VK_SUCCESS != result) LOG("Could not creat buffer view.");
@@ -1252,20 +1247,20 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 	uint8_t* pos = (uint8_t*)&data;
 	std::vector<uint8_t>	 bindID;
 	std::vector<VkBuffer>	 buffers;
-	std::vector<uint64_t>	 bufferSizes;
 	std::vector<VkImageView> imageViews;
 	std::vector<VkSampler>	 samplers;
 	std::vector<VkImageView> attachImageViews;
+	std::vector<VkBufferView> bufferViews;
 
-	uint64_t sizeBuffer = sizeof(VkBuffer) + sizeof(uint64_t);
-	uint64_t sizeImgae = sizeof(VkImageView) + sizeof(VkSampler);
-	uint64_t sizeAttach = sizeof(VkImageView);
+	uint16_t sizeBuffer = sizeof(VkBuffer);
+	uint16_t sizeImgae = sizeof(VkImageView) + sizeof(VkSampler);
+	uint16_t sizeAttach = sizeof(VkImageView);
+	uint16_t sizeBufferView = sizeof(VkBufferView);
 
 	for (i = 0;i<descriptorSetBufferNumber;++i) {
 		if ( (*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
 			bindID.push_back( i+ descriptorSetBufferStart);
 			buffers.push_back(*(VkBuffer*)(pos));
-			bufferSizes.push_back(*(uint64_t*)(pos+ sizeof(VkBuffer)));
 		}
 		pos += sizeBuffer;
 	}
@@ -1284,22 +1279,31 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		}
 		pos += sizeAttach;
 	}
+	for (i = 0; i<descriptorSetStorageTexeLBufferNumber; ++i) {
+		if ((*(VkBufferView*)(pos)) != VK_NULL_HANDLE) {
+			bindID.push_back(i + descriptorSetStorageTexeLBufferStart);
+			bufferViews.push_back(*(VkBufferView*)(pos));
+		}
+		pos += sizeBufferView;
+	}
 
-	uint64_t bufNum = buffers.size();
-	uint64_t imageNum = imageViews.size();
-	uint64_t attachNum = attachImageViews.size();
+	size_t bufNum = buffers.size();
+	size_t imageNum = imageViews.size();
+	size_t attachNum = attachImageViews.size();
+	size_t bufViewNum = bufferViews.size();
+
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
-	descriptorWrites.resize(bufNum + imageNum + attachNum);
+	descriptorWrites.resize(bufNum + imageNum + attachNum + bufViewNum);
+
+	uint8_t index = 0;
 
 	std::vector<VkDescriptorBufferInfo> bufInfos;
 	bufInfos.resize(bufNum);
-	i = 0;
-	uint8_t index = 0;
 	for (i = 0; i < bufNum; ++i,++index) {
 
 		bufInfos[i].buffer = buffers[i];
 		bufInfos[i].offset = 0;
-		bufInfos[i].range = bufferSizes[i];
+		bufInfos[i].range = VK_WHOLE_SIZE;
 
 		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[index].pNext = nullptr;
@@ -1353,6 +1357,19 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		descriptorWrites[index].pTexelBufferView = nullptr;
 	}
 
+	for (i = 0; i < bufViewNum; ++i, ++index) {
+
+		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[index].pNext = nullptr;
+		descriptorWrites[index].dstSet = descriptorSet;
+		descriptorWrites[index].dstBinding = bindID[index];
+		descriptorWrites[index].dstArrayElement = 0;
+		descriptorWrites[index].descriptorCount = 1;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[index].pImageInfo = nullptr;
+		descriptorWrites[index].pBufferInfo = nullptr;
+		descriptorWrites[index].pTexelBufferView = &bufferViews[i];
+	}
 	vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 
@@ -1504,7 +1521,7 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 	
 	setMemory(staging.memory, data, bufferSize);
 	
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
 
 	copyBuffer(staging.buffer, buffer, bufferSize);
 }

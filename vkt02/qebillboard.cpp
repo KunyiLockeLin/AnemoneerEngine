@@ -56,6 +56,9 @@ void QeBillboard::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);
 
+	c = AST->getXMLValue(_property, 1, "culling");
+	if (c != nullptr)	cullingDistance = atoi(c);
+
 	c = AST->getXMLValue(_property, 1, "actionSpeed");
 	if (c != nullptr)	actionSpeed = float(atof(c));
 
@@ -97,6 +100,8 @@ void QeBillboard::setMatModel() {
 //void QeBillboard::updateCompute(float time) {}
 
 void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+
+	if (!bShow || !bCullingShow) return;
 
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);

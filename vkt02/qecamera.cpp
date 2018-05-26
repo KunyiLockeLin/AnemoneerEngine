@@ -8,6 +8,7 @@ void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up,
 	fov = _fov;
 	fnear = _near;
 	ffar = _far;
+	face = MATH->normalize(target - pos);
 }
 
 /*void QeCamera::rotatePos(float _angle, QeVector3f _axis) {
@@ -34,6 +35,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	mat *= MATH->translate(target);
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
+	face = MATH->normalize(target - pos);
 }
 
 /*void QeCamera::rotatePos(QeVector2i mousePos){
@@ -95,6 +97,7 @@ void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 		target = v4;
 		updateAxis();
 	}
+	face = MATH->normalize(target - pos);
 }
 
 void QeCamera::init(QeAssetXML* _property) {
@@ -107,7 +110,6 @@ void QeCamera::init(QeAssetXML* _property) {
 	ffar = 1000.0f;
 	//type = eCameraThirdPerson;
 	speed = 0.5f;
-
 	if (_property == nullptr) return;
 
 	initProperty = _property;
@@ -145,6 +147,8 @@ void QeCamera::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = float(atof(c));
 
+	c = AST->getXMLValue(_property, 1, "culling");
+	if (c != nullptr)	cullingDistance = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "fov");
 	if (c != nullptr)	fov = float(atof(c));
@@ -152,6 +156,8 @@ void QeCamera::init(QeAssetXML* _property) {
 	if (c != nullptr)	fnear = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "far");
 	if (c != nullptr)	ffar = float(atof(c));
+
+	face = MATH->normalize(target - pos);
 }
 
 void QeCamera::reset() {

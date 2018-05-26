@@ -8,4 +8,5 @@ public:
 	//~QeCube() {}
 
 	virtual void init(QeAssetXML* _property);
+	virtual void updateShowByCulling();
 };
