@@ -6,9 +6,13 @@ QeModel::~QeModel() {
 
 void QeModel::cleanupPipeline() {
 
-	if (pipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(VK->device, pipeline, nullptr);
-		pipeline = VK_NULL_HANDLE;
+	if (graphicsPipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(VK->device, graphicsPipeline, nullptr);
+		graphicsPipeline = VK_NULL_HANDLE;
+	}
+	if (computePipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(VK->device, computePipeline, nullptr);
+		computePipeline = VK_NULL_HANDLE;
 	}
 	if (normalPipeline != VK_NULL_HANDLE) {
 		vkDestroyPipeline(VK->device, normalPipeline, nullptr);
@@ -17,7 +21,7 @@ void QeModel::cleanupPipeline() {
 }
 
 void QeModel::createPipeline() {
-	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
 		normalPipeline = VK->createGraphicsPipeline(&normalShader, ePipeLine_Line);
@@ -400,7 +404,7 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
 	vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 

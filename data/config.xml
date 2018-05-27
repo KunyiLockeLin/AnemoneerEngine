@@ -22,7 +22,7 @@
     <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <normal vert="basev.spv" geom="normalsg.spv"  frag="basef.spv"/>
     <billboard vert="pointv.spv" geom="billboardquadg.spv" frag="texturef.spv"/>
-    <particle vert="pointv.spv" geom="billboardtriag.spv" frag="basef.spv"/>
+    <particle vert="basev.spv" geom="billboardtriag.spv" frag="basef.spv"/>
     <cubemap vert="basev.spv" geom="cubemapg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
@@ -56,14 +56,12 @@
   </scene1>
 
   <scene2 id="12001">
-    <models>
-      <e id="30005" obj= "box.gltf" show="1" speed ="50" tesc="basetc.spv" tese="basete.spv" posX="0" posY="0" posZ="0"  scaleX="3" scaleY="3" scaleZ="3"/>
-    </models>
   </scene2>
   
   <scene3 id="12002">
     <models>
       <e id="30006" obj= "box.gltf" show="1" speed ="100" posX="0" posY="0" posZ="0"  scaleX="2" scaleY="2" scaleZ="2"/>
+      <e id="30005" obj= "box.gltf" show="1" speed ="50" tesc="basetc.spv" tese="basete.spv" posX="0" posY="0" posZ="0"  scaleX="3" scaleY="3" scaleZ="3"/>
     </models>
     <postprocessing frag="grayscalef.spv"/>
   </scene3>

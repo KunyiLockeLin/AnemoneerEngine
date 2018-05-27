@@ -25,10 +25,6 @@ void QeActivity::init(QeAssetXML* _property) {
 
 	ambientColor = { float(atof(AST->getXMLValue(node, 1, "r"))),
 		float(atof(AST->getXMLValue(node, 1, "g"))), float(atof(AST->getXMLValue(node, 1, "b"))), 1.0f };
-	
-	axis = OBJMGR->getLine(1, initProperty, "axis");
-	//VP->getTargetCamera()->updateAxis();
-	grids = OBJMGR->getLine(2, initProperty, "grids");
 
 	node = AST->getXMLNode(_property, 1, "lights");
 	if (node == nullptr || node->nexts.size() == 0) {
@@ -57,6 +53,11 @@ void QeActivity::init(QeAssetXML* _property) {
 			OBJMGR->getModel(id, node->nexts[index]);
 		}
 	}
+
+	axis = OBJMGR->getLine(1, initProperty, "axis");
+	//VP->getTargetCamera()->updateAxis();
+	grids = OBJMGR->getLine(2, initProperty, "grids");
+	particles = OBJMGR->getParticle(3, initProperty);
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {

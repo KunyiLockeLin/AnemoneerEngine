@@ -55,8 +55,9 @@ public:
 	QeAssetMaterial * pMaterial = nullptr;
 
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-	VkPipeline pipeline = VK_NULL_HANDLE;
+	VkPipeline graphicsPipeline = VK_NULL_HANDLE;
 	VkPipeline normalPipeline = VK_NULL_HANDLE;
+	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeAssetShader normalShader;
 

@@ -85,7 +85,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 }
 
 void QeBillboard::createPipeline() {
-	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point, bAlpha);
 }
 
 void QeBillboard::setMatModel() {
@@ -109,6 +109,6 @@ void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	if (!bShow || !bCullingShow) return;
 
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	vkCmdDraw(drawCommandBuffer, 1, 1, 0, 0);
 }

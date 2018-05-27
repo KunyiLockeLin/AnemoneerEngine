@@ -217,7 +217,8 @@
     <None Include="..\data\shaders\base.tesc" />
     <None Include="..\data\shaders\base.tese" />
     <None Include="..\data\shaders\base.vert" />
-    <None Include="..\data\shaders\billboard.geom" />
+    <None Include="..\data\shaders\billboardQuad.geom" />
+    <None Include="..\data\shaders\billboardTria.geom" />
     <None Include="..\data\shaders\compile.bat" />
     <None Include="..\data\shaders\cubemap.frag" />
     <None Include="..\data\shaders\cubemap.geom" />

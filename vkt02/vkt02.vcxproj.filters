@@ -157,9 +157,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\shaders\billboard.geom">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\pbr.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -224,6 +221,12 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\texture.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\billboardQuad.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\billboardTria.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

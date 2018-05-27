@@ -1385,7 +1385,7 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		descriptorWrites[index].dstBinding = bindID[index];
 		descriptorWrites[index].dstArrayElement = 0;
 		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
 		descriptorWrites[index].pImageInfo = nullptr;
 		descriptorWrites[index].pBufferInfo = nullptr;
 		descriptorWrites[index].pTexelBufferView = &bufferViews[i];
