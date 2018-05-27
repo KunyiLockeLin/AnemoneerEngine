@@ -26,7 +26,7 @@ enum QeActionState {
 	eActionStatePause,
 };
 
-class QeModel
+class QeModel:public QeBase
 {
 public:
 	QeActionState	actionState = eActionStateStop;
@@ -38,7 +38,6 @@ public:
 	float actionSpeed = 0.f;
 
 	//QePipelineType pipelineType;
-	int id = 0;
 	QeVector3f pos;
 	float face = 0.f;
 	float up = 0.f;
@@ -70,7 +69,7 @@ public:
 	virtual void updateRender(float time);
 	virtual void updateCompute(float time);
 
-	QeModel(QeObjectMangerKey& _key) {}
+	QeModel(QeObjectMangerKey& _key):QeBase() {}
 	~QeModel();
 
 	virtual void init(QeAssetXML* _property);
@@ -85,7 +84,7 @@ public:
 	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
 	void cleanupPipeline();
-	virtual void createGraphicsPipeline();
+	virtual void createPipeline();
  
 	bool setAction(unsigned int actionID, QeActionType playType);
 	void actionPlay();
@@ -95,4 +94,5 @@ public:
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
+	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {}
 };

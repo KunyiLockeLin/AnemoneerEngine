@@ -14,10 +14,8 @@ void QeLight::init(QeAssetXML* _property) {
 	if (_property == nullptr) return;
 
 	initProperty = _property;
-	const char* c;
-
-	//c = AST->getXMLValue(_property, 1, "id");
-	//if (c != nullptr)	id = atoi(c);
+	const char* c = AST->getXMLValue(_property, 1, "id");
+	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "r");
 	if (c != nullptr)	data.color.x = float(atof(c));
@@ -59,6 +57,14 @@ void QeLight::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "show");
 	if (c != nullptr && atoi(c) == 1) bShow = true;
+
+	billboard = OBJMGR->getBillboard(id + 1000, initProperty);
+	if (billboard->pMaterial->type == eMaterialPhong)
+		billboard->pMaterial->value.phong.diffuse = data.color;
+	else if (billboard->pMaterial->type == eMaterialPBR)
+		billboard->pMaterial->value.pbr.baseColor = data.color;
+
+	VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value));
 }
 
 void QeLight::updateRender(float time) {
@@ -70,15 +76,6 @@ void QeLight::updateRender(float time) {
 		QeVector4f pos = data.pos - rotateCenter;
 		pos = mat*pos;
 		data.pos = pos + rotateCenter;
-	}
-	if (billboard == nullptr) {
-		billboard = OBJMGR->getBillboard(0, initProperty);
-		if (billboard->pMaterial->type == eMaterialPhong)
-			billboard->pMaterial->value.phong.diffuse = data.color;
-		else if (billboard->pMaterial->type == eMaterialPBR) 
-			billboard->pMaterial->value.pbr.baseColor = data.color;
-		
-		VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value));
 	}
 	billboard->setShow(bShow);
 	billboard->pos = data.pos;

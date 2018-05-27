@@ -2,8 +2,19 @@
 
 #include "qeheader.h"
 
+class QeQueenEngineKey
+{
+	friend class QueenEngine;
+
+private:
+	QeQueenEngineKey() {}
+};
+
 class QueenEngine
 {
+private:
+	QeQueenEngineKey key;
+
 public:
 	QueenEngine(QeGlobalKey& _key) {}
 	~QueenEngine() {}

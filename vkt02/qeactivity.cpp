@@ -5,6 +5,9 @@ void QeActivity::init(QeAssetXML* _property) {
 	initProperty = _property;
 	name = _property->key.c_str();
 
+	const char * c = AST->getXMLValue(_property, 1, "id");
+	if (c != nullptr)	id = atoi(c);
+
 	QeAssetXML*node = AST->getXMLNode(_property, 1, "cameras");
 	if (node == nullptr || node->nexts.size() == 0) {
 		node = AST->getXMLNode(2, AST->CONFIG, "defaultCamera");
@@ -22,26 +25,38 @@ void QeActivity::init(QeAssetXML* _property) {
 
 	ambientColor = { float(atof(AST->getXMLValue(node, 1, "r"))),
 		float(atof(AST->getXMLValue(node, 1, "g"))), float(atof(AST->getXMLValue(node, 1, "b"))), 1.0f };
+	
+	axis = OBJMGR->getLine(1, initProperty, "axis");
+	//VP->getTargetCamera()->updateAxis();
+	grids = OBJMGR->getLine(2, initProperty, "grids");
 
 	node = AST->getXMLNode(_property, 1, "lights");
 	if (node == nullptr || node->nexts.size() == 0) {
-		node = AST->getXMLNode(2, AST->CONFIG, "defaultLight");	
-		OBJMGR->getLight(0, node);
+		node = AST->getXMLNode(2, AST->CONFIG, "defaultLight");
+		uint16_t id = atoi(AST->getXMLValue(node, 1, "id"));
+		light = OBJMGR->getLight(id, node);
 	}
-	else	for ( int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getLight(index, node->nexts[index]);
+	else{
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			light = OBJMGR->getLight(index, node->nexts[index]);
+		}
+	}
 
 	node = AST->getXMLNode(_property, 1, "cubemaps");
-	if (node != nullptr && node->nexts.size() > 0)
-		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getCube(0, node->nexts[index]);
-
+	if (node != nullptr && node->nexts.size() > 0) {
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			OBJMGR->getCube(id, node->nexts[index]);
+		}
+	}
 	node = AST->getXMLNode(_property, 1, "models");
-	if (node != nullptr && node->nexts.size() > 0) 
-		for (int index = 0; index < node->nexts.size(); ++index)	OBJMGR->getModel(0, node->nexts[index]);
-
-	axis = OBJMGR->getLine(0, initProperty, "axis");
-	//VP->getTargetCamera()->updateAxis();
-
-	grids = OBJMGR->getLine(1, initProperty, "grids");
+	if (node != nullptr && node->nexts.size() > 0) {
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			OBJMGR->getModel(id, node->nexts[index]);
+		}
+	}
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {

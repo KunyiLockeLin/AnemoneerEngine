@@ -459,7 +459,7 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 
 	size_t size = pushConstants.size();
 	if(size>0)
-		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL_GRAPHICS, 0, uint32_t(size * sizeof(float)), pushConstants.data());
+		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
 void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, 
@@ -1019,14 +1019,15 @@ void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) 
 
 
 void QeVulkan::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 3> poolSizes = {};
+	std::array<VkDescriptorPoolSize, 4> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = MAX_DESCRIPTOR_UNIFORM_NUM;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	poolSizes[1].descriptorCount = MAX_DESCRIPTOR_SAMPLER_NUM;
 	poolSizes[2].type = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 	poolSizes[2].descriptorCount = MAX_DESCRIPTOR_INPUTATTACH_NUM;
-	
+	poolSizes[3].type = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+	poolSizes[3].descriptorCount = MAX_DESCRIPTOR_STORAGETEXEL_NUM;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

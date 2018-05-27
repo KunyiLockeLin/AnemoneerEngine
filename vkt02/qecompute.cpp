@@ -1,5 +1,5 @@
 #include "qeheader.h"
-
+/*
 QeCompute::~QeCompute() {}
 
 
@@ -24,3 +24,11 @@ void QeCompute::init() {
 	shader = AST->getShader("shaderc.spv");
 	pipeline = VK->createComputePipeline(shader);
 }
+
+void QeCompute::updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+	vkCmdDispatch(drawCommandBuffer, PARTICLES_COUNT / 32 + 1, 1, 1);
+}
+*/

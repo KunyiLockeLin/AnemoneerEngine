@@ -20,8 +20,9 @@ void QueenEngine::run() {
 		activityName = AST->getXMLValue(node, 1, "startScene");
 	
 	QeAssetXML* startActivityNode = AST->getXMLNode(node, 1, activityName.c_str());
-	currentActivity = nullptr;
-	currentActivity = OBJMGR->getActivity(0, startActivityNode);
+	if (currentActivity) delete currentActivity;
+	currentActivity = new QeActivity(key);
+	currentActivity->init(startActivityNode);
 	renderFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS")));
 	computeFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "computeFPS")));
 

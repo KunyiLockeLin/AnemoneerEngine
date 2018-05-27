@@ -6,7 +6,7 @@ class QeCompute
 {
 public:
 	//QeCompute(QeObjectMangerKey& _key) {}
-	~QeCompute();
+	/*~QeCompute();
 
 	VkShaderModule shader = VK_NULL_HANDLE;
 	VkPipeline pipeline = VK_NULL_HANDLE;
@@ -18,5 +18,6 @@ public:
 	QeVKBuffer		VertexBuffer;
 	
 	void init();
+	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer);*/
 };
 

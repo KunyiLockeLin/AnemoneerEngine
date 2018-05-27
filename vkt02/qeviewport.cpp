@@ -20,7 +20,8 @@ void QeViewport::init(QeAssetXML* _property) {
 	for (int i = 0; i < MAX_VIEWPORT_NUM; ++i) {
 		viewports[i].minDepth = 0.0f;
 		viewports[i].maxDepth = 1.0f;
-		cameras[i] = OBJMGR->getCamera(i, _property);
+		uint16_t id = atoi(AST->getXMLValue(_property, 1, "id"));
+		cameras[i] = OBJMGR->getCamera(id+i, _property);
 	}
 
 	currentNum = 1;
@@ -250,19 +251,22 @@ void QeViewport::updateDrawCommandBuffers() {
 		VkCommandBufferBeginInfo beginInfo = {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-
+		//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		vkBeginCommandBuffer(drawCommandBuffers[i], &beginInfo);
 		//vkResetCommandBuffer(drawCommandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 
+		// pushConstants
+		VK->updatePushConstnats(drawCommandBuffers[i]);
+
 		//compute shader
-		
+		OBJMGR->updateComputeCommandBuffer(drawCommandBuffers[i]);
 
 		// graphics shader
 		std::array<VkClearValue, 3> clearValues = {};
-		if (QE->currentActivity != nullptr) {
-			clearValues[0].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
-			clearValues[2].color = { QE->currentActivity->ambientColor.x, QE->currentActivity->ambientColor.y, QE->currentActivity->ambientColor.z, 1.0f };
+		if (ACT != nullptr) {
+			clearValues[0].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+			clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
 		}
 		else {
 			clearValues[0].color = { 0, 0.5f, 0.5f, 1.0f };
@@ -290,7 +294,6 @@ void QeViewport::updateDrawCommandBuffers() {
 		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &postprocessingDescriptorSet, 0, nullptr);
 		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline);
-		VK->updatePushConstnats(drawCommandBuffers[i]);
 		vkCmdDraw(drawCommandBuffers[i], 3, 1, 0, 0);
 
 		vkCmdEndRenderPass(drawCommandBuffers[i]);
@@ -312,8 +315,4 @@ void QeViewport::updatePostProcessing() {
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
 		postprocessingPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Postprogessing, 1);
-
-	if (!compute) {
-		compute = new QeCompute();
-	}
 }

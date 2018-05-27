@@ -8,7 +8,6 @@ public:
 	QeViewport(QeGlobalKey& _key) {}
 	~QeViewport();
 
-	QeCompute* compute=nullptr;
 	int currentNum = 0;
 	int targetCamera = 0;
 	std::array<VkViewport, MAX_VIEWPORT_NUM> viewports;

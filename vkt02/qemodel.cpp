@@ -16,7 +16,7 @@ void QeModel::cleanupPipeline() {
 	}
 }
 
-void QeModel::createGraphicsPipeline() {
+void QeModel::createPipeline() {
 	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle);
 
 	if (VK->bShowNormal && normalShader.vert) {
@@ -126,8 +126,8 @@ void QeModel::init(QeAssetXML* _property) {
 	QeDataDescriptorSet data;
 
 	data.uboBuffer = uboBuffer.buffer;
-	QeLight* light = OBJMGR->getLight(0, nullptr);
-	data.lightBuffer = light->uboBuffer.buffer;
+	//QeLight* light = OBJMGR->getLight(0, nullptr);
+	data.lightBuffer = ACT->light->uboBuffer.buffer;
 	data.materialBuffer = pMaterial->uboBuffer.buffer;
 	data.diffuseMapImageViews = pMaterial->image.pDiffuseMap->view;
 	data.diffueMapSamplers = pMaterial->image.pDiffuseMap->sampler;
@@ -171,7 +171,7 @@ void QeModel::init(QeAssetXML* _property) {
 
 	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal") );
 
-	createGraphicsPipeline();
+	createPipeline();
 
 	c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
@@ -278,7 +278,7 @@ void QeModel::updateUniformBuffer() {
 	//pos = VP->getTargetCamera()->target;
 	setMatModel();
 
-	ubo.ambientColor = QE->currentActivity->ambientColor;
+	ubo.ambientColor = ACT->ambientColor;
 	ubo.param.x = float(VP->currentNum);
 	for (int i = 0; i < VP->currentNum; ++i) {
 		ubo.view[i] = VP->cameras[i]->view;

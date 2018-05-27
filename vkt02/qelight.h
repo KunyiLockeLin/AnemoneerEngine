@@ -14,13 +14,12 @@ struct QeDataLight {
 	QeVector4f param; // 1: type, 2: intensity, 3: coneAngle
 };
 
-class QeLight
+class QeLight:public QeBase
 {
 public:
-	QeLight(QeObjectMangerKey& _key) {}
+	QeLight(QeObjectMangerKey& _key):QeBase() {}
 	~QeLight() {}
 
-	//size_t id;
 	bool bShow = false;
 	int speed = 0;
 	QeVector3f rotateCenter;

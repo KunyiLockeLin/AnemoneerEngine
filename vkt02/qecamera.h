@@ -7,10 +7,9 @@
 //	eCameraFirstPerson,
 //};
 
-class QeCamera
+class QeCamera : public QeBase
 {
 public:
-	//size_t id;
 	QeVector3f pos;
 	QeVector3f target;
 	QeVector3f up;
@@ -28,7 +27,7 @@ public:
 	//QeCameraType type = eCameraThirdPerson;
 	QeAssetXML* initProperty = nullptr;
 
-	QeCamera(QeObjectMangerKey& _key) {}
+	QeCamera(QeObjectMangerKey& _key):QeBase() {}
 	~QeCamera() {}
 	void init(QeAssetXML* _property);
 	void reset();

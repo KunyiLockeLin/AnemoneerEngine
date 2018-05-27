@@ -1,7 +1,6 @@
 #include "qeheader.h"
 
 
-
 void QeBillboard::init(QeAssetXML* _property) {
 
 	initProperty = _property;
@@ -34,7 +33,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	AST->setShader(pMaterial->shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "billboard"));
 
-	createGraphicsPipeline();
+	createPipeline();
 
 	const char * c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
@@ -55,6 +54,9 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);
+
+	c = AST->getXMLValue(_property, 1, "show");
+	if (c != nullptr)	bShow = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "culling");
 	if (c != nullptr)	cullingDistance = atoi(c);
@@ -79,7 +81,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 
-void QeBillboard::createGraphicsPipeline() {
+void QeBillboard::createPipeline() {
 	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point);
 }
 

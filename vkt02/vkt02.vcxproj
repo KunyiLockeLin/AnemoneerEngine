@@ -172,6 +172,7 @@
     <ClCompile Include="qeline.cpp" />
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
+    <ClCompile Include="qeparticle.cpp" />
     <ClCompile Include="qetimer.cpp" />
     <ClCompile Include="qevulkan.cpp" />
     <ClCompile Include="qeencode.cpp" />
@@ -187,6 +188,7 @@
   <ItemGroup>
     <ClInclude Include="qeactivity.h" />
     <ClInclude Include="qeasset.h" />
+    <ClInclude Include="qebase.h" />
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qecommand.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="qeline.h" />
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
+    <ClInclude Include="qeparticle.h" />
     <ClInclude Include="qetimer.h" />
     <ClInclude Include="qevulkan.h" />
     <ClInclude Include="qeencode.h" />

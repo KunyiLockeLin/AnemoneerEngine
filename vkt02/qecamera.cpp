@@ -113,10 +113,8 @@ void QeCamera::init(QeAssetXML* _property) {
 	if (_property == nullptr) return;
 
 	initProperty = _property;
-	const char* c;
-	
-	//c = AST->getXMLValue(_property, 1, "id");
-	//if (c != nullptr)	id = atoi(c);
+	const char* c = AST->getXMLValue(_property, 1, "id");
+	if (c != nullptr)	id = atoi(c);
 
 	//c = AST->getXMLValue(_property, 1, "type");
 	//if (c != nullptr)	type = QeCameraType(atoi(c));
@@ -176,9 +174,7 @@ void QeCamera::updateRender(float time) {
 void QeCamera::updateCompute(float time) {}
 
 void QeCamera::updateAxis() {
-
-	if(QE->currentActivity && QE->currentActivity->axis)
-		QE->currentActivity->axis->pos = target;
+	if(ACT && ACT->axis)	ACT->axis->pos = target;
 }
 
 //void QeCamera::switchType(QeCameraType _type) {

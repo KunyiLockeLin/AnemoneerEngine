@@ -66,7 +66,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			SetFocus(commandBox);
 			break;
 		default:
-			QE->currentActivity->eventInput(inputData);
+			ACT->eventInput(inputData);
 			break;
 		}
 

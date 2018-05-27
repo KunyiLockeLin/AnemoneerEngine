@@ -30,7 +30,7 @@ void QeLine::init(QeAssetXML* _property) {
 
 	AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "line"));
 
-	createGraphicsPipeline();
+	createPipeline();
 
 	const char * c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
@@ -76,7 +76,7 @@ void QeLine::init(QeAssetXML* _property) {
 
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
-void QeLine::createGraphicsPipeline() {
+void QeLine::createPipeline() {
 	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Line);
 }
 

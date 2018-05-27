@@ -51,8 +51,10 @@ const char BONE_ROOT_NAME[] = "Armature_root";
 const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = 512;
 const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = 512;
 const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = 64;
+const uint16_t MAX_DESCRIPTOR_STORAGETEXEL_NUM = 512;
 const uint16_t MAX_DESCRIPTOR_NUM = 128;
-const int PUSH_CONSTANTS_SIZE = 0;
+const uint16_t MAX_PARTICLES_NUM = UINT16_MAX;
+const int PUSH_CONSTANTS_SIZE = 4;
 const int GRIDS_SIZE = 10;
 const int AXIS_SIZE = 1;
 
@@ -79,12 +81,14 @@ struct QeAssetXML;
 struct QeAssetJSON;
 struct QeSkeleton;
 struct QeInputData;
+class QeBase;
 class QeEncode;
 class QeMath;
 class QeAsset;
 class QeModel;
 class QeBillboard;
 class QeCube;
+class QeParticle;
 class QeCompute;
 class QeCamera;
 class QeLight;
@@ -107,10 +111,12 @@ class QeLine;
 #include "qetimer.h"
 #include "qevulkan.h"
 #include "qeasset.h"
+#include "qebase.h"
 #include "qemodel.h"
 #include "qebillboard.h"
 #include "qeline.h"
 #include "qecube.h"
+#include "qeparticle.h"
 #include "qecompute.h"
 #include "qelight.h"
 #include "qewindow.h"
