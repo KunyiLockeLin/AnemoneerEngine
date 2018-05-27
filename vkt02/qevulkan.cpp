@@ -1116,15 +1116,31 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = (bShowMesh && type != ePipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
-	rasterizer.lineWidth = 1.0f;
 	rasterizer.cullMode = (type == ePipeLine_Postprogessing) ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
+	rasterizer.depthBiasConstantFactor = 0.0f;
+	rasterizer.depthBiasClamp = 1.0f;
+	rasterizer.depthBiasSlopeFactor = 0.0f;
+	rasterizer.lineWidth = 1.0f;
 
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.sampleShadingEnable = VK_FALSE;
 	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+	multisampling.sampleShadingEnable = VK_FALSE;
+	multisampling.minSampleShading = 0.0f;
+	multisampling.pSampleMask = nullptr;
+	multisampling.alphaToCoverageEnable = VK_FALSE;
+	multisampling.alphaToOneEnable = VK_FALSE;
+
+	VkStencilOpState stencil_test_parameters = {};
+	stencil_test_parameters.failOp = VK_STENCIL_OP_KEEP;
+	stencil_test_parameters.passOp = VK_STENCIL_OP_KEEP;
+	stencil_test_parameters.depthFailOp = VK_STENCIL_OP_KEEP;
+	stencil_test_parameters.compareOp = VK_COMPARE_OP_ALWAYS;
+	stencil_test_parameters.compareMask = 0;
+	stencil_test_parameters.writeMask = 0;
+	stencil_test_parameters.reference = 0;
 
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -1137,9 +1153,13 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 		depthStencil.depthTestEnable = VK_TRUE;
 		depthStencil.depthWriteEnable = VK_TRUE;
 	}
-	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;// VK_COMPARE_OP_LESS;
 	depthStencil.depthBoundsTestEnable = VK_FALSE;
+	depthStencil.minDepthBounds = 0;
+	depthStencil.maxDepthBounds = 1;
 	depthStencil.stencilTestEnable = VK_FALSE;
+	depthStencil.front = stencil_test_parameters;
+	depthStencil.back = stencil_test_parameters;
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -1149,11 +1169,11 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	}
 	else {
 		colorBlendAttachment.blendEnable = VK_TRUE;
-		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;// VK_BLEND_FACTOR_SRC_ALPHA;
+		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;// VK_BLEND_FACTOR_ONE;
 		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;// VK_BLEND_FACTOR_ONE;
+		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;// VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;// VK_BLEND_FACTOR_ONE;
 		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 	}
 	VkPipelineColorBlendStateCreateInfo colorBlending = {};
@@ -1162,10 +1182,10 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	colorBlending.logicOp = VK_LOGIC_OP_COPY;
 	colorBlending.attachmentCount = 1;
 	colorBlending.pAttachments = &colorBlendAttachment;
-	colorBlending.blendConstants[0] = 0.0f;
-	colorBlending.blendConstants[1] = 0.0f;
-	colorBlending.blendConstants[2] = 0.0f;
-	colorBlending.blendConstants[3] = 0.0f;
+	colorBlending.blendConstants[0] = 1.0f;
+	colorBlending.blendConstants[1] = 1.0f;
+	colorBlending.blendConstants[2] = 1.0f;
+	colorBlending.blendConstants[3] = 1.0f;
 
 	VkDynamicState dynamicStates[] = {
 		VK_DYNAMIC_STATE_VIEWPORT,

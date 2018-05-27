@@ -15,7 +15,7 @@
 
   <defaultAmbientColor r="0" g="0.5" b="0.5"/>
   <defaultCamera id="10000" posX="15" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
-  <defaultLight id="11000" show="1" image="light.png" type="0" posX="10" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="300" coneAngle="90" speed="20"/>
+  <defaultLight id="11000" show="1" image="light.png" type="0" posX="10" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="300" coneAngle="90" speed="0"/>
 
   <defaultShader>
     <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
@@ -42,9 +42,9 @@
       <e id="30002" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="30001" attachskeleton="Armature_Bone_002" />
       <e id="30003" obj="box.gltf" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="30000" comp="shaderc.spv" culling="1000"/>    
     </models>
-    <ambientColor r="0.7" g="0.7" b="0.7"/>
+    <ambientColor r="0.0" g="0.5" b="0.5"/>
     <lights>
-      <e id="11000" show="1" image="light.png" type="0" posX="10" posY="0" posZ="5" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="100" coneAngle="90" speed="30"/>
+      <e id="11000" show="1" image="light.png" type="0" posX="10" posY="0" posZ="5" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="200" coneAngle="90" speed="30"/>
     </lights>
     <cameras>
       <e id="10000" type="0" posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>

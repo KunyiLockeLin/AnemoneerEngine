@@ -280,7 +280,6 @@ void QeViewport::updateDrawCommandBuffers() {
 		renderPassInfo.framebuffer = swapChainFramebuffers[i];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = swapChainExtent;
-
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassInfo.pClearValues = clearValues.data();
 
@@ -288,7 +287,7 @@ void QeViewport::updateDrawCommandBuffers() {
 
 		vkCmdSetViewport(drawCommandBuffers[i], 0, VP->currentNum, VP->viewports.data());
 		vkCmdSetScissor(drawCommandBuffers[i], 0, VP->currentNum, VP->scissors.data());
-		vkCmdSetLineWidth(drawCommandBuffers[i], 1.0f);
+		vkCmdSetLineWidth(drawCommandBuffers[i], 3.0f);
 
 		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
 		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
