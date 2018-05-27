@@ -18,6 +18,7 @@
 #include <cmath>
 #include <chrono>
 #include <ctime>
+#include <forward_list>
 #include <conio.h>
 #include <iomanip>
 #include <vector>

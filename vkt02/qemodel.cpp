@@ -17,7 +17,7 @@ void QeModel::cleanupPipeline() {
 }
 
 void QeModel::createPipeline() {
-	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle);
+	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
 		normalPipeline = VK->createGraphicsPipeline(&normalShader, ePipeLine_Line);
@@ -170,6 +170,9 @@ void QeModel::init(QeAssetXML* _property) {
 		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "obj"));
 
 	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal") );
+
+	c = AST->getXMLValue(_property, 1, "alpha");
+	if (c != nullptr)	bAlpha = atoi(c);
 
 	createPipeline();
 

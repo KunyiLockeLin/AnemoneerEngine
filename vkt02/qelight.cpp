@@ -58,7 +58,7 @@ void QeLight::init(QeAssetXML* _property) {
 	c = AST->getXMLValue(_property, 1, "show");
 	if (c != nullptr && atoi(c) == 1) bShow = true;
 
-	billboard = OBJMGR->getBillboard(id + 1000, initProperty);
+	billboard = OBJMGR->getBillboard(id, initProperty);
 	if (billboard->pMaterial->type == eMaterialPhong)
 		billboard->pMaterial->value.phong.diffuse = data.color;
 	else if (billboard->pMaterial->type == eMaterialPBR)

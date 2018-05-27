@@ -21,8 +21,8 @@ layout(location = 0) out vec4 outColor;
 void main() {
 	
 	vec4 texColor = texture(texSampler, inTexCoord);
-	//if( 0.01 > texColor.a ) {
-	//	discard;
-	//}
+	if( 0.01 > texColor.a ) {
+		discard;
+	}
 	outColor = texColor*mtl.diffuse*texColor.a;
 }

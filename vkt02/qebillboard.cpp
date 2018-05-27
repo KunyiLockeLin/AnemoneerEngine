@@ -33,9 +33,12 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 	AST->setShader(pMaterial->shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "billboard"));
 
+	const char * c = AST->getXMLValue(_property, 1, "alpha");
+	if (c != nullptr)	bAlpha = atoi(c);
+
 	createPipeline();
 
-	const char * c = AST->getXMLValue(_property, 1, "id");
+	c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "posX");
@@ -82,7 +85,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 }
 
 void QeBillboard::createPipeline() {
-	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point);
+	pipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point, bAlpha);
 }
 
 void QeBillboard::setMatModel() {

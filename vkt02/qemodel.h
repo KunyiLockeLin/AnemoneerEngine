@@ -49,6 +49,7 @@ public:
 	int attachID = 0;
 	int cubeMapID = 0;
 	const char* attachSkeletonName = nullptr;
+	bool bAlpha = false;
 
 	QeAssetModel* modelData = nullptr;
 	QeAssetMaterial * pMaterial = nullptr;
