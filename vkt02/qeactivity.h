@@ -15,7 +15,6 @@ public:
 	QeLight * light = nullptr;
 	QeModel * axis = nullptr;
 	QeModel * grids = nullptr;
-	QeModel * particles = nullptr;
 
 	void init(QeAssetXML * _property);
 	void eventInput(QeInputData & inputData);

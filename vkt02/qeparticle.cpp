@@ -52,9 +52,9 @@ void QeParticle::createPipeline() {
 
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
-	//vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-	//vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	//vkCmdDispatch(drawCommandBuffer, PARTICLES_COUNT / 32 + 1, 1, 1);
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+	vkCmdDispatch(drawCommandBuffer, PARTICLES_COUNT/32 + 1, 1, 1);
 }
 
 void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {

@@ -53,11 +53,16 @@ void QeActivity::init(QeAssetXML* _property) {
 			OBJMGR->getModel(id, node->nexts[index]);
 		}
 	}
-
+	node = AST->getXMLNode(_property, 1, "particles");
+	if (node != nullptr && node->nexts.size() > 0) {
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			OBJMGR->getParticle(id, node->nexts[index]);
+		}
+	}
 	axis = OBJMGR->getLine(1, initProperty, "axis");
 	//VP->getTargetCamera()->updateAxis();
 	grids = OBJMGR->getLine(2, initProperty, "grids");
-	particles = OBJMGR->getParticle(3, initProperty);
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {

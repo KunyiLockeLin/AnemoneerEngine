@@ -12,13 +12,11 @@ const uint PARTICLES_COUNT = 2000;
 
 void main() {
   if( gl_GlobalInvocationID.x < PARTICLES_COUNT ) {
-    vec4 position = imageLoad( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 2) );
-    vec4 color = imageLoad( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 2 + 1) );
-
-    vec3 speed = normalize( cross( vec3( 0.0, 1.0, 0.0 ), position.xyz ) ) * color.w;
+    /*vec4 position = imageLoad( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 2) );
+    vec4 normal = imageLoad( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 2 + 2) );
     
-    position.xyz += speed * PushConstant.DeltaTime;
+    position.xyz += normal.xyz * PushConstant.DeltaTime;
     
-    imageStore( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 2), position );
+    imageStore( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 2), position );*/
   }
 }
