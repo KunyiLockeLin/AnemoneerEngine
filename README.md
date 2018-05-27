@@ -68,7 +68,7 @@
 # Bug
   - x, y, z axis are not correct.
   - release mode crash
-  - alpha models don't blend lines-object
+  - alpha models don't blend lines-object. The command buffer order problem. If alpha is the final, it's ok.
   - tessellation shader causes triangle-face becomes opposite.
   
 # Reference:
