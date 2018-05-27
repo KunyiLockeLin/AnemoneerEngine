@@ -14,7 +14,7 @@ QeObjectManger::~QeObjectManger() {
 		++it1;
 	}
 	mgrModels.clear();
-	std::forward_list<QeModel*>::iterator it2 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
 	while (it2 != mgrAlphaModels.end()) {
 		if (*it2 != nullptr) delete *it2;
 		++it2;
@@ -85,7 +85,7 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeModel*)it->second;
 
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	if (it1 != mgrAlphaModels.end()) {
 		if ((*it1)->id == _id)	return (QeBillboard*)it->second;
 		++it1;
@@ -100,7 +100,7 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	const char *c = AST->getXMLValue(_property, 1, "alpha");
 	if (c != nullptr)	bAlpha = atoi(c);
 
-	if (bAlpha)	mgrAlphaModels.push_front(newModel);
+	if (bAlpha)	addAlphaModels(newModel);
 	else		mgrModels[_id] = newModel;
 
 	newModel->init(_property);
@@ -136,7 +136,7 @@ QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
 	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeBillboard*)it->second;
 
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	if (it1 != mgrAlphaModels.end()) {
 		if( (*it1)->id == _id )	return (QeBillboard*)it->second;
 		++it1;
@@ -148,7 +148,7 @@ QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
 	const char *c = AST->getXMLValue(_property, 1, "alpha");
 	if (c != nullptr )	bAlpha = atoi(c);
 	
-	if(bAlpha)	mgrAlphaModels.push_front(newModel);
+	if(bAlpha)	addAlphaModels(newModel);
 	else		mgrModels[_id] = newModel;
 
 	newModel->init(_property);
@@ -181,26 +181,43 @@ QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
 	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeParticle*)it->second;
 
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	if (it1 != mgrAlphaModels.end()) {
-		if ((*it1)->id == _id)	return (QeParticle*)it->second;
-		++it1;
-	}
 	QeParticle* newModel = new QeParticle(key);
 	//mgrBillboards[_id] = newModel;
 
-	bool bAlpha = false;
-	const char *c = AST->getXMLValue(_property, 1, "alpha");
-	if (c != nullptr)	bAlpha = atoi(c);
-
-	if (bAlpha)	mgrAlphaModels.push_front(newModel);
-	else		mgrModels[_id] = newModel;
-
+	mgrModels[_id] = newModel;
 	newModel->init(_property);
 	//newModel->id = _id;
 
 	VP->bUpdateDrawCommandBuffers = true;
 	return newModel;
+}
+
+void QeObjectManger::sortAlphaModels() {
+	bool b = false;
+	QeCamera * camera = VP->getTargetCamera();
+	if (!camera) return;
+	
+	size_t size = mgrAlphaModels.size();
+	
+	for (size_t i = 0; i<size ;++i) {
+		for (size_t j = i + 1; j < size; ++j) {
+			float dis1 = MATH->distance( camera->pos, mgrAlphaModels[i]->pos);
+			float dis2 = MATH->distance(camera->pos, mgrAlphaModels[j]->pos);
+
+			if (dis1 < dis2) {
+				b = true;
+				std::swap(mgrAlphaModels[i], mgrAlphaModels[j]);
+			}
+		}
+	}
+	if(b) VP->bUpdateDrawCommandBuffers = true;
+}
+
+void QeObjectManger::addAlphaModels(QeModel* model) {
+	
+	mgrAlphaModels.push_back(model);
+	sortAlphaModels();
+	VP->bUpdateDrawCommandBuffers = true;
 }
 
 void QeObjectManger::updateRender(float _time) {
@@ -214,7 +231,7 @@ void QeObjectManger::updateRender(float _time) {
 		it1->second->updateRender(_time);
 		++it1;
 	}
-	std::forward_list<QeModel*>::iterator it2 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
 	while (it2 != mgrAlphaModels.end()) {
 		(*it2)->updateRender(_time);
 		++it2;
@@ -233,7 +250,7 @@ void QeObjectManger::updateCompute(float _time) {
 		it1->second->updateCompute(_time);
 		++it1;
 	}
-	std::forward_list<QeModel*>::iterator it2 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
 	while (it2 != mgrAlphaModels.end()) {
 		(*it2)->updateCompute(_time);
 		++it2;
@@ -247,7 +264,7 @@ void QeObjectManger::cleanupPipeline() {
 		it->second->cleanupPipeline();
 		++it;
 	}
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
 		(*it1)->cleanupPipeline();
 		++it1;
@@ -261,7 +278,7 @@ void QeObjectManger::recreatePipeline() {
 		it->second->createPipeline();
 		++it;
 	}
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
 		(*it1)->createPipeline();
 		++it1;
@@ -277,7 +294,7 @@ void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer)
 		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
 	}
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
 		(*it1)->updateDrawCommandBuffer(drawCommandBuffer);
 		++it1;
@@ -291,7 +308,7 @@ void QeObjectManger::updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuff
 		it->second->updateComputeCommandBuffer(drawCommandBuffer);
 		++it;
 	}
-	std::forward_list<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
 		(*it1)->updateComputeCommandBuffer(drawCommandBuffer);
 		++it1;

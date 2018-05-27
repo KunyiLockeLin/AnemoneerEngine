@@ -18,7 +18,7 @@ public:
 
 	std::map<uint16_t, QeBase*> mgrObjs;
 	std::map<uint16_t, QeModel*> mgrModels;
-	std::forward_list<QeModel*> mgrAlphaModels;
+	std::vector<QeModel*> mgrAlphaModels;
 	/*
 	const uint16_t ID_CAMERA_MIN			= 10000;
 	const uint16_t ID_CAMERA_MAX			= 10999;
@@ -35,12 +35,15 @@ public:
 	
 	QeCamera* getCamera(int _id, QeAssetXML* _property);
 	QeLight* getLight(int _id, QeAssetXML* _property);
-	QeActivity* getActivity(int _id, QeAssetXML* _property);
+	//QeActivity* getActivity(int _id, QeAssetXML* _property);
 	QeModel* getModel(int _id, QeAssetXML* _property);
 	QeCube* getCube(int _id, QeAssetXML* _property);
 	QeBillboard* getBillboard(int _id, QeAssetXML* _property);
 	QeLine* getLine(int _id, QeAssetXML* _property, const char* lineType = nullptr);
 	QeParticle* getParticle(int _id, QeAssetXML* _property);
+
+	void sortAlphaModels();
+	void addAlphaModels(QeModel* model);
 
 	void updateRender(float _time);
 	void updateCompute(float _time);

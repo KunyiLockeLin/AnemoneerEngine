@@ -137,6 +137,7 @@ void QeViewport::updateRender(float time) {
 		bRecreateRender = false;
 	}
 
+	OBJMGR->sortAlphaModels();
 	if (bUpdateDrawCommandBuffers) {
 		updateDrawCommandBuffers();
 		bUpdateDrawCommandBuffers = false;
