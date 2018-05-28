@@ -4,10 +4,10 @@
 
 
 struct QeVertex {
-	QeVector3f pos;
-	QeVector3f color;
-	QeVector2f texCoord;
-	QeVector3f normal;
+	QeVector4f pos = {0.0f,0.0f,0.0f,1.0f};
+	QeVector4f color = { 0.0f,0.0f,0.0f,1.0f };
+	QeVector4f texCoord;
+	QeVector4f normal = { 0.0f,0.0f,0.0f,1.0f };
 	QeVector4f tangent;
 	QeVector4f joint;
 	QeVector4f weight;

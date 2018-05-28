@@ -365,6 +365,7 @@ QeVector4s::QeVector4s() :x(0), y(0), z(0), w(0) {}
 QeVector4i::QeVector4i() : x(0), y(0), z(0), w(0) {}
 QeVector4f::QeVector4f() :x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 QeVector4f::QeVector4f(float _x, float _y, float _z, float _w) :x(_x), y(_y), z(_z), w(_w) {}
+QeVector4f::QeVector4f(int _x, int _y, int _z, int _w) : x(float(_x)), y(float(_y)), z(float(_z)), w(float(_w)) {}
 QeVector4f::QeVector4f(const QeVector3f& other, float _w) :x(other.x), y(other.y), z(other.z), w(_w) {}
 
 bool QeVector4f::operator==(const QeVector4f& other) const {
@@ -379,6 +380,11 @@ QeVector4f& QeVector4f::operator=(const QeVector3f& other) {
 	x = other.x;
 	y = other.y;
 	z = other.z;
+	return *this;
+}
+QeVector4f& QeVector4f::operator=(const QeVector2f& other) {
+	x = other.x;
+	y = other.y;
 	return *this;
 }
 QeVector4f& QeVector4f::operator=(const QeVector4s& other) {
@@ -397,6 +403,12 @@ QeVector4f& QeVector4f::operator+=(const QeVector3f& other) {
 	x -= other.x;
 	y -= other.y;
 	z -= other.z;
+	return *this;
+}
+QeVector4f& QeVector4f::operator*=(const float& other) {
+	x *= other;
+	y *= other;
+	z *= other;
 	return *this;
 }
 QeVector4f QeVector4f::operator+(const QeVector3f& other) {

@@ -13,5 +13,6 @@ public:
 	virtual void setMatModel();
 	virtual void updateRender(float time);
 	//virtual void updateCompute(float time);
+	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 };
 

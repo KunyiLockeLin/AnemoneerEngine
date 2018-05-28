@@ -16,10 +16,10 @@ layout( binding = 0) uniform QeUniformBufferObject {
 	vec4 param; // 1: viewportNum, 2:billboardType
 } ubo;
 
-layout(location = 0) in vec3 inPosition;
-layout(location = 1) in vec3 inColor;
-layout(location = 2) in vec2 inTexCoord;
-layout(location = 3) in vec3 inNormal;
+layout(location = 0) in vec4 inPosition;
+layout(location = 1) in vec4 inColor;
+layout(location = 2) in vec4 inTexCoord;
+layout(location = 3) in vec4 inNormal;
 layout(location = 4) in vec4 inTangent;
 layout(location = 5) in vec4 inJoint;
 layout(location = 6) in vec4 inWeight;
@@ -38,10 +38,10 @@ void main()
 	for(int i=0;i<4;++i){
 
 		mat4 jointTransform = ubo.joints[int(inJoint[i])];
-		vec4 posePosition = jointTransform * vec4(inPosition, 1.0);
+		vec4 posePosition = jointTransform * inPosition;
 		totalLocalPos += posePosition * inWeight[i];
 		
-		vec4 worldNormal = jointTransform * vec4(inNormal, 0.0);
+		vec4 worldNormal = jointTransform * inNormal;
 		totalNormal += worldNormal * inWeight[i];
 
 		vec4 worldTagnet = jointTransform * inTangent;
@@ -51,6 +51,6 @@ void main()
 	gl_Position = totalLocalPos;
 	outNormal = totalNormal.xyz;
 	outTangent = totalTangent;
-	outColor = inColor;
-	outTexCoord = inTexCoord;
+	outColor = inColor.xyz;
+	outTexCoord = inTexCoord.xy;
 }

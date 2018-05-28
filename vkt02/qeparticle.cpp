@@ -3,19 +3,20 @@
 void QeParticle::init(QeAssetXML* _property) {
 	
 	initProperty = _property;
-
+	PARTICLES_COUNT = 10;
 	particles.resize(PARTICLES_COUNT);
 
 	for (uint32_t i = 0; i < PARTICLES_COUNT; ++i) {
-		//particles[i].pos = { 0.0f,0.0f,-10.0f };
-		MATH->fRandoms(-10.0f, 10.0f, 3, &particles[i].pos.x);
+
+		MATH->fRandoms(-3.0f, 3.0f, 3, &particles[i].pos.x);
+		//particles[i].pos = { 0.0f,0.0f,0.0f };
 		MATH->fRandoms(0.0f, 1.0f, 3, &particles[i].color.x);
-		MATH->fRandoms(-1.0f, 1.0f, 3, &particles[i].normal.x);
-		//particles[i].normal = {0,0,0};
+		//MATH->fRandoms(-0.5f, 0.5f, 3, &particles[i].normal.x);
+		particles[i].normal = {0.3f,0.3f,0.3f};
 	}
 
 	VK->createBufferData((void*)particles.data(), sizeof(particles[0]) * particles.size(), VertexBuffer.buffer, VertexBuffer.memory);
-	VK->createBufferView(VertexBuffer.buffer, VK_FORMAT_R32_SFLOAT, VertexBuffer.view);
+	VK->createBufferView(VertexBuffer.buffer, VK_FORMAT_R32G32B32A32_SFLOAT, VertexBuffer.view);
 
 	//modelData = AST->getModel("point");
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
@@ -57,9 +58,9 @@ void QeParticle::createPipeline() {
 
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
-	//vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-	//vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	//vkCmdDispatch(computeCommandBuffer, 1, 1, 1);
+	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+	vkCmdDispatch(computeCommandBuffer, PARTICLES_COUNT, 1, 1);
 }
 
 void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
@@ -76,5 +77,5 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 void QeParticle::updateCompute(float time) {
 	VK->pushConstants[0] = float(timer.getPassTime());
-	VP->bUpdateDrawCommandBuffers = true;
+	//VP->bUpdateDrawCommandBuffers = true;
 }

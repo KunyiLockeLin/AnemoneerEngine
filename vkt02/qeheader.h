@@ -57,7 +57,8 @@ const uint16_t MAX_DESCRIPTOR_STORAGETEXEL_NUM = 512;
 const uint16_t MAX_DESCRIPTOR_NUM = 128;
 const uint16_t MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
-const int GRIDS_SIZE = 10;
+const float GRIDS_SIZE = 1.0f;
+const int GRIDS_NUM = 10;
 const int AXIS_SIZE = 1;
 
 struct QeVKBuffer;

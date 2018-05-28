@@ -78,17 +78,20 @@ struct QeVector4f {
 
 	QeVector4f();
 	QeVector4f(float _x, float _y, float _z, float _w);
+	QeVector4f(int _x, int _y, int _z, int _w);
 	QeVector4f(const QeVector3f& other, float _w);
 
 	bool operator==(const QeVector4f& other)const;
 	bool operator!=(const QeVector4f& other)const;
 
 	QeVector4f& operator=(const QeVector3f& other);
+	QeVector4f& operator=(const QeVector2f& other);
 	QeVector4f& operator=(const QeVector4s& other);
 	QeVector4f& operator+=(const QeVector3f& other);
 	QeVector4f operator+(const QeVector3f& other);
 	QeVector4f operator-(const QeVector3f& other);
 	QeVector4f operator/(const float& other);
+	QeVector4f& operator*=(const float& other);
 };
 
 struct QeMatrix4x4f {

@@ -24,7 +24,7 @@ void QeModel::createPipeline() {
 	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Triangle, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
-		normalPipeline = VK->createGraphicsPipeline(&normalShader, ePipeLine_Line);
+		normalPipeline = VK->createGraphicsPipeline(&normalShader, ePipeLine_Point);
 	}
 }
 
@@ -410,8 +410,9 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	if (VK->bShowNormal && normalPipeline ) {
 		vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-		vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		//vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
 		vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline);
-		vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+		//vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+		vkCmdDraw(drawCommandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}
 }

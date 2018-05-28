@@ -77,7 +77,7 @@ void QeLine::init(QeAssetXML* _property) {
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
 }
 void QeLine::createPipeline() {
-	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Line);
+	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point);
 }
 
 void QeLine::setMatModel() {
@@ -91,18 +91,21 @@ void QeLine::setMatModel() {
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	float dis = MATH->distance( VP->getTargetCamera()->pos, pos )/10;
 	dis = dis < 0.1f ? 0.1f : dis;
+	//dis = 1;
 	mat *= MATH->scale(size*dis);
 
 	ubo.model = mat;
-
-	if (attachID > 0) {
-		QeModel* model = OBJMGR->getModel(attachID, nullptr);
-		if (model != nullptr) {
-			ubo.model = model->getAttachMatrix(attachSkeletonName)*ubo.model;
-		}
-	}
 }
 
 void QeLine::updateRender(float time) {
 	updateUniformBuffer();
+}
+
+void QeLine::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	vkCmdDraw(drawCommandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 }

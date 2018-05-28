@@ -293,15 +293,24 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 
 			if (!texCoordV.empty()) {
 				tempV3t -= 1;
-				model->vertices[tempV3p.x].texCoord = texCoordV[tempV3t.x];
-				model->vertices[tempV3p.y].texCoord = texCoordV[tempV3t.y];
-				model->vertices[tempV3p.z].texCoord = texCoordV[tempV3t.z];
+				model->vertices[tempV3p.x].texCoord.x = texCoordV[tempV3t.x].x;
+				model->vertices[tempV3p.y].texCoord.x = texCoordV[tempV3t.y].x;
+				model->vertices[tempV3p.z].texCoord.x = texCoordV[tempV3t.z].x;
+				model->vertices[tempV3p.x].texCoord.y = texCoordV[tempV3t.x].y;
+				model->vertices[tempV3p.y].texCoord.y = texCoordV[tempV3t.y].y;
+				model->vertices[tempV3p.z].texCoord.y = texCoordV[tempV3t.z].y;
 			}
 			if (!normalV.empty()) {
 				tempV3n -= 1;
-				model->vertices[tempV3p.x].normal = normalV[tempV3n.x];
-				model->vertices[tempV3p.y].normal = normalV[tempV3n.y];
-				model->vertices[tempV3p.z].normal = normalV[tempV3n.z];
+				model->vertices[tempV3p.x].normal.x = normalV[tempV3n.x].x;
+				model->vertices[tempV3p.y].normal.x = normalV[tempV3n.y].x;
+				model->vertices[tempV3p.z].normal.x = normalV[tempV3n.z].x;
+				model->vertices[tempV3p.x].normal.y = normalV[tempV3n.x].y;
+				model->vertices[tempV3p.y].normal.y = normalV[tempV3n.y].y;
+				model->vertices[tempV3p.z].normal.y = normalV[tempV3n.z].y;
+				model->vertices[tempV3p.x].normal.z = normalV[tempV3n.x].z;
+				model->vertices[tempV3p.y].normal.z = normalV[tempV3n.y].z;
+				model->vertices[tempV3p.z].normal.z = normalV[tempV3n.z].z;
 			}
 			model->indices.push_back(tempV3p.x);
 			model->indices.push_back(tempV3p.y);
@@ -558,7 +567,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 			if (model->vertices.size() < count)	model->vertices.resize(count);
 			for (j = 0; j < count; ++j) {
 				model->vertices[j].pos = *(dataPos + j);
-				model->vertices[j].color = { 1.0f, 1.0f, 1.0f };
+				model->vertices[j].color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		}}
 		else if (index == bufferViews[2]) { // normal
 			QeVector3f* dataPos = (QeVector3f*)(binData + offset);

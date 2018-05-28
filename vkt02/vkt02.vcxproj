@@ -223,11 +223,11 @@
     <None Include="..\data\shaders\cubemap.geom" />
     <None Include="..\data\shaders\grayscale.frag" />
     <None Include="..\data\shaders\line.geom" />
-    <None Include="..\data\shaders\normals.geom" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />
     <None Include="..\data\shaders\phong.frag" />
     <None Include="..\data\shaders\phong.geom" />
+    <None Include="..\data\shaders\point.vert" />
     <None Include="..\data\shaders\postprocessing.frag" />
     <None Include="..\data\shaders\postprocessing.geom" />
     <None Include="..\data\shaders\postprocessing.vert" />

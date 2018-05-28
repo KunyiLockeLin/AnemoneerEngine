@@ -12,7 +12,7 @@ public:
 	QeAssetShader shader;
 	//VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
 
-	const uint32_t  PARTICLES_COUNT = 10;
+	uint32_t  PARTICLES_COUNT = 100;
 	std::vector<QeVertex> particles;
 	QeVKBuffer		VertexBuffer;
 

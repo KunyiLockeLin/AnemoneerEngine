@@ -350,7 +350,7 @@ void QeViewport::updateDrawCommandBuffers() {
 
 		vkCmdSetViewport(drawCommandBuffers[i], 0, VP->currentNum, VP->viewports.data());
 		vkCmdSetScissor(drawCommandBuffers[i], 0, VP->currentNum, VP->scissors.data());
-		vkCmdSetLineWidth(drawCommandBuffers[i], 3.0f);
+		vkCmdSetLineWidth(drawCommandBuffers[i], 2.0f);
 
 		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
 		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);

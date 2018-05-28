@@ -8,7 +8,6 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V line.geom -o lineg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V billboard.geom -o billboardg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V texture.frag -o texturef.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V normals.geom -o normalsg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cubemap.geom -o cubemapg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cubemap.frag -o cubemapf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V skeleton.vert -o skeletonv.spv
