@@ -8,10 +8,10 @@
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing(front-cull).
   - Support light and camera control.
-  - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader.
+  - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader.
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
-  - Support skeletal animation, attach obj, draw lines and billboards.
+  - Support skeletal animation, attach obj, draw lines, billboards, particle system.
   - Support Log output, and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
