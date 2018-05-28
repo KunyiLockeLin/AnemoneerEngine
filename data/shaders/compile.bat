@@ -19,5 +19,5 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.geom -o postprocessingg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V postprocessing.frag -o postprocessingf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V grayscale.frag -o grayscalef.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V shader.comp -o shaderc.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V particle.comp -o particlec.spv
 pause

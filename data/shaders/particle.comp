@@ -1,0 +1,24 @@
+#version 450
+
+layout( local_size_x = 1024) in;
+
+layout( binding = 30, rgba32f  ) uniform imageBuffer StorageTexelBuffer;
+
+layout( push_constant ) uniform TimeState {
+  float DeltaTime;
+} PushConstant;
+
+//const uint PARTICLES_COUNT = 10;
+
+void main() {
+ // if( gl_GlobalInvocationID.x < PARTICLES_COUNT ) {
+    vec4 position = imageLoad( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 7) );
+	
+	// speed
+    vec4 normal = imageLoad( StorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
+    
+	position.xyz += normal.xyz*PushConstant.DeltaTime;
+    
+    imageStore( StorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7), position );
+//  }
+}

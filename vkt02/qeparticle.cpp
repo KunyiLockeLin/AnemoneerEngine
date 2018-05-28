@@ -3,16 +3,16 @@
 void QeParticle::init(QeAssetXML* _property) {
 	
 	initProperty = _property;
-	PARTICLES_COUNT = 10;
+	PARTICLES_COUNT = 2000;
 	particles.resize(PARTICLES_COUNT);
 
 	for (uint32_t i = 0; i < PARTICLES_COUNT; ++i) {
 
-		MATH->fRandoms(-3.0f, 3.0f, 3, &particles[i].pos.x);
+		MATH->fRandoms(-1.0f, 1.0f, 3, &particles[i].pos.x);
 		//particles[i].pos = { 0.0f,0.0f,0.0f };
 		MATH->fRandoms(0.0f, 1.0f, 3, &particles[i].color.x);
-		//MATH->fRandoms(-0.5f, 0.5f, 3, &particles[i].normal.x);
-		particles[i].normal = {0.3f,0.3f,0.3f};
+		MATH->fRandoms(-1.0f, 1.0f, 3, &particles[i].normal.x);
+		//particles[i].normal = {1.0f,1.0f,1.0f};
 	}
 
 	VK->createBufferData((void*)particles.data(), sizeof(particles[0]) * particles.size(), VertexBuffer.buffer, VertexBuffer.memory);
@@ -42,7 +42,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	timer.initTime();
 
 	AST->setShader(shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
-	computeShader = AST->getShader("shaderc.spv");
+	computeShader = AST->getShader("particlec.spv");
 
 	createPipeline();
 
@@ -76,6 +76,6 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 }
 
 void QeParticle::updateCompute(float time) {
-	VK->pushConstants[0] = float(timer.getPassTime());
-	//VP->bUpdateDrawCommandBuffers = true;
+	VK->pushConstants[0] = time;// float(timer.getPassTime());
+	VP->bUpdateDrawCommandBuffers = true;
 }
