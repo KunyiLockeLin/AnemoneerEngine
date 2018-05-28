@@ -40,7 +40,7 @@ void main(void)
 
 	mat4 viewModel = ubo.view[gl_InvocationID] * ubo.model;
 	
-	viewModel[0].x = size.x;
+	/*viewModel[0].x = size.x;
 	viewModel[0].y = 0;
 	viewModel[0].z = 0;
 	
@@ -50,30 +50,25 @@ void main(void)
 
 	viewModel[2].x = 0;
 	viewModel[2].y = 0;
-	viewModel[2].z = size.z;
+	viewModel[2].z = size.z;*/
 	
 	mat4 mvp = ubo.proj[gl_InvocationID]*viewModel;
 
 	outColor = inColor[0];
 
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 0.0, 0.0, 2.0, 1.0 ));
+	outTexCoord = vec2( -1.0, 0.0 );
+	EmitVertex();
+
 	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 0.0, 0.0, 0.0, 1.0 ));
-	outTexCoord = vec2( 0.0, 0.0 );
+	outTexCoord = vec2( 1.0, 0.0 );
 	EmitVertex();
   
-	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, 0.0, 0.0, 1.0 ));
-	outTexCoord = vec2( 0.0, 2.0 );
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 0.0, 2.0, 0.0, 1.0 ));
+	outTexCoord = vec2( 1.0, 2.0 );
 	EmitVertex();
-  
-	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 0.0, 1.0, 0.0, 1.0 ));
-	outTexCoord = vec2( 2.0, 0.0 );
-	EmitVertex();
-  
-	//gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, 1.0, 0.0, 1.0 ));
-	//outTexCoord = vec2( 1.0, 0.0 );
-	
 	gl_ViewportIndex = gl_InvocationID;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
-	//EmitVertex();
 	
 	EndPrimitive();
 }

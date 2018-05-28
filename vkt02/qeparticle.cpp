@@ -7,7 +7,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	particles.resize(PARTICLES_COUNT);
 
 	for (uint32_t i = 0; i < PARTICLES_COUNT; ++i) {
-		//particles[i].pos = { 10.0f,0.0f,0.0f };
+		//particles[i].pos = { 0.0f,0.0f,-10.0f };
 		MATH->fRandoms(-10.0f, 10.0f, 3, &particles[i].pos.x);
 		MATH->fRandoms(0.0f, 1.0f, 3, &particles[i].color.x);
 		MATH->fRandoms(-1.0f, 1.0f, 3, &particles[i].normal.x);
