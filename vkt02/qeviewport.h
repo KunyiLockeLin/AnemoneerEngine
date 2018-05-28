@@ -24,6 +24,7 @@ public:
 	void setTargetCamera(int index);
 	QeCamera* getTargetCamera();
 
+	//bool bUpdateComputeCommandBuffers = false;
 	bool bUpdateDrawCommandBuffers = false;
 	bool bRecreateRender = false;
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
@@ -42,8 +43,12 @@ public:
 	std::vector<VkFence> inFlightFences;
 	size_t currentFrame = 0;
 
+	//std::vector<VkSemaphore> computeSemaphores;
+	//std::vector<VkFence> computeFences;
+
 	//VkSemaphore textOverlayComplete;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
+	//std::vector<VkCommandBuffer> computeCommandBuffers;
 
 	VkDescriptorSet postprocessingDescriptorSet;
 	VkPipeline		postprocessingPipeline = VK_NULL_HANDLE;
@@ -54,6 +59,7 @@ public:
 	void recreateRender();
 	void drawFrame();
 	void updateDrawCommandBuffers();
+	//void updateComputeCommandBuffers();
 	void initPostProcessing();
 	void updatePostProcessing();
 };

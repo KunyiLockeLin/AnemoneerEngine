@@ -29,6 +29,22 @@ void QeViewport::init(QeAssetXML* _property) {
 	initPostProcessing();
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = false;
+
+	/*bUpdateComputeCommandBuffers = true;
+	VK->createCommandBuffers(computeCommandBuffers, 1);
+	computeSemaphores.resize(1);
+	computeFences.resize(1);
+
+	VkSemaphoreCreateInfo semaphoreInfo = {};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	VkFenceCreateInfo fenceInfo = {};
+	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	vkCreateSemaphore(VK->device, &semaphoreInfo, nullptr, &computeSemaphores[0]);
+	vkCreateFence(VK->device, &fenceInfo, nullptr, &computeFences[0]);
+	*/
 	postprocessingDescriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 	VK->createSyncObjects(imageAvailableSemaphores, renderFinishedSemaphores, inFlightFences);
 	createRender();
@@ -146,7 +162,32 @@ void QeViewport::updateRender(float time) {
 	drawFrame();
 }
 
-void QeViewport::updateCompute(float time) {}
+void QeViewport::updateCompute(float time) {
+
+	/*if (bUpdateComputeCommandBuffers) {
+		updateComputeCommandBuffers();
+		bUpdateComputeCommandBuffers = false;
+	}
+
+	vkWaitForFences(VK->device, 1, &computeFences[0], VK_TRUE, 2000000000);
+	vkResetFences(VK->device, 1, &computeFences[0]);
+
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &computeCommandBuffers[0];
+	submitInfo.waitSemaphoreCount = 0;
+	submitInfo.pWaitSemaphores = nullptr;
+	submitInfo.pWaitDstStageMask = nullptr;
+
+	VkSemaphore signalSemaphores[] = { computeSemaphores[0] };
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = signalSemaphores;
+
+	VkResult result = vkQueueSubmit(VK->computeQueue, 1, &submitInfo, computeFences[0]);
+	if (result != VK_SUCCESS)	LOG("failed to submit compute command buffer! " + result);
+	*/
+}
 
 
 void QeViewport::drawFrame() {
@@ -163,14 +204,13 @@ void QeViewport::drawFrame() {
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image! "+ result);
 
-	VkSubmitInfo submitInfo = {};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
-
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
@@ -208,7 +248,7 @@ void QeViewport::createRender() {
 	renderPass = VK->createRenderPass( swapChainImageFormat );
 	VK->createSceneDepthImage(sceneImage, depthImage, swapChainExtent);
 	VK->createFramebuffers(swapChainFramebuffers, sceneImage, depthImage, swapChainImageViews, swapChainExtent, renderPass);
-	VK->createDrawCommandBuffers(drawCommandBuffers, swapChainImages.size());
+	VK->createCommandBuffers(drawCommandBuffers, swapChainImages.size());
 }
 
 void QeViewport::cleanupRender() {
@@ -245,6 +285,28 @@ void QeViewport::recreateRender() {
 	OBJMGR->recreatePipeline();
 	updatePostProcessing();
 }
+
+
+/*void QeViewport::updateComputeCommandBuffers() {
+	for (size_t i = 0; i < computeCommandBuffers.size(); i++) {
+		VkCommandBufferBeginInfo beginInfo = {};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		vkBeginCommandBuffer(computeCommandBuffers[i], &beginInfo);
+		//vkResetCommandBuffer(drawCommandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
+
+		// pushConstants
+		VK->updatePushConstnats(computeCommandBuffers[i]);
+
+		//compute shader
+		OBJMGR->updateComputeCommandBuffer(computeCommandBuffers[i]);
+
+		if (vkEndCommandBuffer(computeCommandBuffers[i]) != VK_SUCCESS)	LOG("failed to record command buffer!");
+	}
+
+}*/
 
 void QeViewport::updateDrawCommandBuffers() {
 

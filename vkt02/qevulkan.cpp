@@ -794,9 +794,7 @@ void QeVulkan::createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemapho
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
 			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create synchronization objects for a frame!");
-		}
+			vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) LOG("failed to create synchronization objects for a frame!");
 	}
 }
 
@@ -967,16 +965,16 @@ VKAPI_ATTR VkBool32 VKAPI_CALL QeVulkan::debugCallback(VkDebugReportFlagsEXT fla
 	return VK_FALSE;
 }
 
-void QeVulkan::createDrawCommandBuffers(std::vector<VkCommandBuffer>& drawCommandBuffers, size_t size) {
-	drawCommandBuffers.resize(size);
+void QeVulkan::createCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers, size_t size) {
+	commandBuffers.resize(size);
 
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.commandPool = commandPool;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = (uint32_t)drawCommandBuffers.size();
+	allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-	if (vkAllocateCommandBuffers(device, &allocInfo, drawCommandBuffers.data()) != VK_SUCCESS) LOG("failed to allocate command buffers!");
+	if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) LOG("failed to allocate command buffers!");
 }
 
 VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
@@ -1253,11 +1251,6 @@ VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 	if (VK_SUCCESS != result) LOG("Could not create compute pipeline.");
 	
 	return pipeline;
-	/*
-	void DispatchComputeWork(VkCommandBuffer command_buffer, uint32_t x_size, uint32_t y_size, uint32_t z_size) {
-		vkCmdDispatch(command_buffer, x_size, y_size, z_size);
-	}
-	*/
 }
 
 

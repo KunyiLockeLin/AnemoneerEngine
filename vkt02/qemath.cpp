@@ -11,7 +11,7 @@ int QeMath::iRandom(int from, int to){
 	return dis(gen);
 }
 
-void QeMath::iRandom(int from, int to, int size, int* ret) {
+void QeMath::iRandoms(int from, int to, int size, int* ret) {
 	std::random_device rd;
 	std::default_random_engine gen = std::default_random_engine(rd());
 	std::uniform_int_distribution<int> dis(from, to);
@@ -27,7 +27,7 @@ float QeMath::fRandom(float from, float to) {
 	return dis(gen);
 }
 
-void QeMath::fRandom(float from, float to, int size, float* ret) {
+void QeMath::fRandoms(float from, float to, int size, float* ret) {
 	std::random_device rd;
 	std::default_random_engine gen = std::default_random_engine(rd());
 	std::uniform_real_distribution<float> dis(from, to);

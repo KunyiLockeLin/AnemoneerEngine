@@ -72,14 +72,8 @@ public:
 	~QeVulkan();
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;
-
-	const std::vector<const char*> validationLayers = {
-		"VK_LAYER_LUNARG_standard_validation"
-	};
-
-	const std::vector<const char*> deviceExtensions = {
-		VK_KHR_SWAPCHAIN_EXTENSION_NAME
-	};
+	const std::vector<const char*> validationLayers = {	"VK_LAYER_LUNARG_standard_validation"};
+	const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 	bool bInit = false;
 	VkBool32 bShowMesh = false;
@@ -126,7 +120,7 @@ public:
 	VkRenderPass createRenderPass(VkFormat& swapChainImageFormat);
 	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
 	void createSceneDepthImage(QeVKImage& sceneImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
-	void createDrawCommandBuffers(std::vector<VkCommandBuffer>& drawCommandBuffers, size_t size);
+	void createCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers, size_t size);
 	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 
