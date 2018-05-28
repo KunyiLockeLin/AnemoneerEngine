@@ -6,8 +6,7 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V base.frag -o basef.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V point.vert -o pointv.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V line.geom -o lineg.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V billboardQuad.geom -o billboardquadg.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V billboardTria.geom -o billboardtriag.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V billboard.geom -o billboardg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V texture.frag -o texturef.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V normals.geom -o normalsg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cubemap.geom -o cubemapg.spv

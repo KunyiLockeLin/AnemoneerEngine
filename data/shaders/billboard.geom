@@ -56,20 +56,24 @@ void main(void)
 
 	outColor = inColor[0];
 
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 0.0, 0.0, 0.0, 1.0 ));
+	outTexCoord = vec2( 0.0, 0.0 );
+	EmitVertex();
+  
+	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, 0.0, 0.0, 1.0 ));
+	outTexCoord = vec2( 0.0, 2.0 );
+	EmitVertex();
+  
 	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 0.0, 1.0, 0.0, 1.0 ));
-	outTexCoord = vec2( 0.5, 0.0 );
+	outTexCoord = vec2( 2.0, 0.0 );
 	EmitVertex();
   
-	gl_Position = mvp * (gl_in[0].gl_Position + vec4( -1.0, -1.0, 0.0, 1.0 ));
-	outTexCoord = vec2( 0.0, 1.0 );
-	EmitVertex();
-  
-	gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, -1.0, 0.0, 1.0 ));
-	outTexCoord = vec2( 1.0, 1.0 );
+	//gl_Position = mvp * (gl_in[0].gl_Position + vec4( 1.0, 1.0, 0.0, 1.0 ));
+	//outTexCoord = vec2( 1.0, 0.0 );
 	
 	gl_ViewportIndex = gl_InvocationID;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
-	EmitVertex();
+	//EmitVertex();
 	
 	EndPrimitive();
 }

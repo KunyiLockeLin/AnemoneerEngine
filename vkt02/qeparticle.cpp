@@ -7,10 +7,11 @@ void QeParticle::init(QeAssetXML* _property) {
 	particles.resize(PARTICLES_COUNT);
 
 	for (uint32_t i = 0; i < PARTICLES_COUNT; ++i) {
-		particles[i].pos = { 0.0f,0.0f,0.0f };
-		MATH->fRandoms(-5.0f, 5.0f, 3, &particles[i].pos.x);
+		//particles[i].pos = { 10.0f,0.0f,0.0f };
+		MATH->fRandoms(-10.0f, 10.0f, 3, &particles[i].pos.x);
 		MATH->fRandoms(0.0f, 1.0f, 3, &particles[i].color.x);
 		MATH->fRandoms(-1.0f, 1.0f, 3, &particles[i].normal.x);
+		//particles[i].normal = {0,0,0};
 	}
 
 	VK->createBufferData((void*)particles.data(), sizeof(particles[0]) * particles.size(), VertexBuffer.buffer, VertexBuffer.memory);
@@ -43,6 +44,9 @@ void QeParticle::init(QeAssetXML* _property) {
 	computeShader = AST->getShader("shaderc.spv");
 
 	createPipeline();
+
+	const char * c = AST->getXMLValue(_property, 1, "id");
+	if (c != nullptr)	id = atoi(c);
 }
 
 void QeParticle::createPipeline() {
@@ -53,9 +57,9 @@ void QeParticle::createPipeline() {
 
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
-	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	vkCmdDispatch(computeCommandBuffer, 1, 1, 1);
+	//vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	//vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+	//vkCmdDispatch(computeCommandBuffer, 1, 1, 1);
 }
 
 void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
