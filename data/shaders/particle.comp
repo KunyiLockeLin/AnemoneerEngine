@@ -11,17 +11,28 @@ layout( push_constant ) uniform TimeState {
   float DeltaTime;
 } PushConstant;
 
-//const uint PARTICLES_COUNT = 10;
-
 void main() {
  // if( gl_GlobalInvocationID.x < PARTICLES_COUNT ) {
-    vec4 position = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7) );
 	
-	// speed
-    vec4 normal = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
-    
-	position.xyz += normal.xyz*PushConstant.DeltaTime;
-    
-    imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7), position );
+	vec4 pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7) );
+	// speed = normal
+    vec4 speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
+	
+	// force = tangent
+    vec4 force = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+4) ); 
+
+	if(speed.w>0){ // life time
+		pos.xyz += speed.xyz*PushConstant.DeltaTime;
+		speed.w -= PushConstant.DeltaTime;
+		speed.xyz += (force.xyz**PushConstant.DeltaTime);
+	}
+	else if(force.w>0){ // reborn
+		// init_pos = texCoord
+		pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
+		// init_speed & life time = joint
+		speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+5) ); 		
+	}
+    imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
+	imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );
 //  }
 }

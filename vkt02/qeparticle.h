@@ -13,7 +13,8 @@ public:
 	QeAssetParticleRule* particleRule;
 	uint16_t particlesSize;
 	std::vector<QeVertex> particles;
-	QeVKBuffer		VertexBuffer;
+	QeVKBuffer uboParticleRule;
+	QeVKBuffer VertexBuffer;
 
 	virtual void init(QeAssetXML* _property);
 	virtual void createPipeline();

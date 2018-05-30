@@ -15,9 +15,6 @@ void QeParticle::init(QeAssetXML* _property) {
 
 	for (uint32_t i = 0; i < particlesSize; ++i) {
 
-		// life time
-		particles[i].normal.w = MATH->iRandom(particleRule->count_life.z, particleRule->count_life.w);
-
 		// pos
 		particles[i].pos.z = MATH->fRandom(particleRule->init_pos_hr.x, particleRule->init_pos_hr.y)*(MATH->iRandom(0, 1) ? 1 : -1);
 		int type = MATH->iRandom(0, 1);
@@ -38,6 +35,9 @@ void QeParticle::init(QeAssetXML* _property) {
 			particles[i].pos.y = radius * sin(radian);
 		}
 
+		// init pos = texCoord
+		particles[i].texCoord = particles[i].pos;
+
 		// color
 		particles[i].color.x = MATH->fRandom(particleRule->rotate_z_color_r.z, particleRule->rotate_z_color_r.w);
 		particles[i].color.y = MATH->fRandom(particleRule->color_gb.x, particleRule->color_gb.y);
@@ -51,18 +51,24 @@ void QeParticle::init(QeAssetXML* _property) {
 		particles[i].normal.y = MATH->fRandom(particleRule->init_speed_xy.z, particleRule->init_speed_xy.w);
 		particles[i].normal.z = MATH->fRandom(particleRule->init_speed_z_force_x.x, particleRule->init_speed_z_force_x.y);
 
-		// reborn
-		particles[i].normal.w = particleRule->alpha_born_size_x.y;
+		// life time
+		particles[i].normal.w = MATH->iRandom(particleRule->count_life.z, particleRule->count_life.w);
+
+		// init speed & life time = joint
+		particles[i].joint = particles[i].normal;
 
 		// tangent = force
-		particles[i].tangent.x = MATH->fRandom(particleRule->init_speed_z_force_x.y, particleRule->init_speed_z_force_x.w);
+		particles[i].tangent.x = MATH->fRandom(particleRule->init_speed_z_force_x.z, particleRule->init_speed_z_force_x.w);
 		particles[i].tangent.y = MATH->fRandom(particleRule->force_yz.x, particleRule->force_yz.y);
 		particles[i].tangent.z = MATH->fRandom(particleRule->force_yz.z, particleRule->force_yz.w);
 
+		// reborn
+		particles[i].tangent.w = particleRule->alpha_born_size_x.y;
+
 		// rotate = texCoord
-		particles[i].texCoord.x = MATH->fRandom(particleRule->rotate_xy.x, particleRule->rotate_xy.y);
-		particles[i].texCoord.y = MATH->fRandom(particleRule->rotate_xy.z, particleRule->rotate_xy.w);
-		particles[i].texCoord.z = MATH->fRandom(particleRule->rotate_z_color_r.x, particleRule->rotate_z_color_r.y);
+		//particles[i].texCoord.x = MATH->fRandom(particleRule->rotate_xy.x, particleRule->rotate_xy.y);
+		//particles[i].texCoord.y = MATH->fRandom(particleRule->rotate_xy.z, particleRule->rotate_xy.w);
+		//particles[i].texCoord.z = MATH->fRandom(particleRule->rotate_z_color_r.x, particleRule->rotate_z_color_r.y);
 
 		// size
 		size.x = MATH->fRandom(particleRule->alpha_born_size_x.z, particleRule->alpha_born_size_x.w);
@@ -81,12 +87,14 @@ void QeParticle::init(QeAssetXML* _property) {
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
-
+	//VK->createUniformBuffer(sizeof(QeAssetParticleRule), uboParticleRule.buffer, uboParticleRule.memory);
+	//VK->setMemory(uboParticleRule.memory, (void*)&particleRule, sizeof(particleRule));
+	
 	QeDataDescriptorSet data;
 	data.uboBuffer = uboBuffer.buffer;
 	data.inputStorageTexeLBufferView = VertexBuffer.view;
 	data.outputStorageTexeLBufferView = VertexBuffer.view;
-
+	//data.inputBuffer = uboParticleRule.buffer;
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	AST->setShader(shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));

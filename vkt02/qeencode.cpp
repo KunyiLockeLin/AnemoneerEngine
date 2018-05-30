@@ -723,7 +723,7 @@ QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	AST->setXMLValue(particle->color_gb.z, *node, 2, "color", "b");
 	AST->setXMLValue(particle->color_gb.w, *node, 2, "color", "b_range");
 	AST->setXMLValue(particle->alpha_born_size_x.x, *node, 1, "alpha");
-	AST->setXMLValue(particle->alpha_born_size_x.y, *node, 1, "rebone");
+	AST->setXMLValue(particle->alpha_born_size_x.y, *node, 1, "reborn");
 	AST->setXMLValue(particle->alpha_born_size_x.z, *node, 2, "size", "x");
 	AST->setXMLValue(particle->alpha_born_size_x.w, *node, 2, "size", "x_range");
 	AST->setXMLValue(particle->size_y_init_pos_d.x, *node, 2, "size", "y");
