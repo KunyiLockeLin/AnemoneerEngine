@@ -120,10 +120,10 @@ public:
 	const float RADIANS_TO_DEGREES = 180.0f / PI;
 	const float DEGREES_TO_RADIANS = PI / 180;
 
-	int iRandom(int from, int to);
-	void iRandoms(int from, int to, int size, int* ret);
-	float fRandom(float from, float to);
-	void fRandoms(float from, float to, int size, float* ret);
+	int iRandom(int start, int range);
+	void iRandoms(int start, int range, int size, int* ret);
+	float fRandom(float start, float range);
+	void fRandoms(float start, float range, int size, float* ret);
 	QeMatrix4x4f lookAt(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up);
 	QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
 	QeMatrix4x4f translate(QeVector3f& _pos);

@@ -445,6 +445,53 @@ std::vector<QeAssetJSON*>*	QeAsset::getJSONArrayNodes(QeAssetJSON* source, const
 	return nullptr;
 }
 
+bool QeAsset::setJSONValue(int& output, QeAssetJSON& source, int length, ...) {
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getJSONValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = atoi(ret);
+
+	return ret;
+}
+
+bool QeAsset::setJSONValue(std::string& output, QeAssetJSON& source, int length, ...) {
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getJSONValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = ret;
+
+	return ret;
+}
+
+bool QeAsset::setJSONValue(float& output, QeAssetJSON& source, int length, ...) {
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getJSONValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = float(atof(ret));
+
+	return ret;
+}
 
 QeAssetXML* QeAsset::getXML(const char* _filePath) {
 	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.find(_filePath);
@@ -584,6 +631,53 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 		if (index1 == size) return nullptr;
 	}
 	return source;
+}
+
+bool QeAsset::setXMLValue(int& output, QeAssetXML& source, int length, ...) {
+
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getXMLValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = atoi(ret);
+
+	return ret;
+}
+bool QeAsset::setXMLValue(std::string& output, QeAssetXML& source, int length, ...) {
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getXMLValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = ret;
+
+	return ret;
+}
+bool QeAsset::setXMLValue(float& output, QeAssetXML& source, int length, ...) {
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getXMLValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = float(atof(ret));
+
+	return ret;
 }
 
 QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
@@ -876,6 +970,26 @@ VkShaderModule QeAsset::getShader(const char* _filename) {
 	VkShaderModule shader = VK->createShaderModel((void*)buffer.data(), int(buffer.size()));
 	astShaders[_filePath] = shader;
 	return shader;
+}
+
+QeAssetParticleRule* QeAsset::getParticle(const char* id) {
+
+	std::map<std::string, QeAssetParticleRule*>::iterator it = astParticles.find(id);
+	if (it != astParticles.end())	return it->second;
+
+	QeAssetXML* node = getXMLNode(2, AST->CONFIG, "particles");
+	if (node != nullptr && node->nexts.size() > 0) {
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			if (strcmp(AST->getXMLValue(node->nexts[index], 1, "id"), id) == 0) {
+				QeAssetParticleRule* particle = ENCODE->decodeParticle(node->nexts[index]);
+				astParticles[std::string(id)] = particle;
+				return particle;
+			}
+		}
+	}
+	QeAssetParticleRule* particle = ENCODE->decodeParticle(node);
+	astParticles[std::string(id)] = particle;
+	return nullptr;
 }
 
 std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {

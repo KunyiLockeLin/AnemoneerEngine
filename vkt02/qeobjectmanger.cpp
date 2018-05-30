@@ -181,10 +181,21 @@ QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
 	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeParticle*)it->second;
 
+	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
+	if (it1 != mgrAlphaModels.end()) {
+		if ((*it1)->id == _id)	return (QeParticle*)it->second;
+		++it1;
+	}
 	QeParticle* newModel = new QeParticle(key);
 	//mgrBillboards[_id] = newModel;
 
-	mgrModels[_id] = newModel;
+	bool bAlpha = false;
+	const char *c = AST->getXMLValue(_property, 1, "alpha");
+	if (c != nullptr)	bAlpha = atoi(c);
+
+	if (bAlpha)	addAlphaModels(newModel);
+	else		mgrModels[_id] = newModel;
+
 	newModel->init(_property);
 	//newModel->id = _id;
 

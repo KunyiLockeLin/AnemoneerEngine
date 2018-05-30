@@ -3,34 +3,48 @@
 float QeMath::dot(QeVector3f& _vec1, QeVector3f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
 float QeMath::dot(QeVector4f& _vec1, QeVector4f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
 
-int QeMath::iRandom(int from, int to){
+int QeMath::iRandom(int start, int range){
+
+	if (!range) return start;
 	std::random_device rd;
 	std::default_random_engine gen = std::default_random_engine(rd());
-	std::uniform_int_distribution<int> dis(from, to);
+	std::uniform_int_distribution<int> dis(start, start+ range);
 
 	return dis(gen);
 }
 
-void QeMath::iRandoms(int from, int to, int size, int* ret) {
+void QeMath::iRandoms(int start, int range, int size, int* ret) {
+
+	if (!range) {
+		for (int i = 0; i<size; ++i)	ret[i] = start;
+		return;
+	}
 	std::random_device rd;
 	std::default_random_engine gen = std::default_random_engine(rd());
-	std::uniform_int_distribution<int> dis(from, to);
+	std::uniform_int_distribution<int> dis(start, start+range);
 
 	for (int i = 0; i<size  ; ++i)	ret[i] = dis(gen);
 }
 
-float QeMath::fRandom(float from, float to) {
+float QeMath::fRandom(float start, float range) {
+
+	if (!range) return start;
 	std::random_device rd;
 	std::default_random_engine gen = std::default_random_engine(rd());
-	std::uniform_real_distribution<float> dis(from, to);
+	std::uniform_real_distribution<float> dis(start, start+range);
 
 	return dis(gen);
 }
 
-void QeMath::fRandoms(float from, float to, int size, float* ret) {
+void QeMath::fRandoms(float start, float range, int size, float* ret) {
+
+	if (!range) {
+		for (int i = 0; i<size; ++i)	ret[i] = start;
+		return;
+	}
 	std::random_device rd;
 	std::default_random_engine gen = std::default_random_engine(rd());
-	std::uniform_real_distribution<float> dis(from, to);
+	std::uniform_real_distribution<float> dis(start, start+range);
 
 	for (int i = 0; i<size; ++i)	ret[i] = dis(gen);
 }

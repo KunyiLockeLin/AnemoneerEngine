@@ -72,6 +72,7 @@ struct QeMatrix4x4f;
 struct QeVertex;
 struct QeAssetModel;
 struct QeAssetMaterial;
+struct QeAssetParticleRule;
 struct QeDataMaterial;
 struct QeDataMaterialPhong;
 struct QeDataMaterialPBR;
@@ -115,6 +116,7 @@ class QeLine;
 #include "qevulkan.h"
 #include "qeasset.h"
 #include "qebase.h"
+#include "qeobjectmanger.h"
 #include "qemodel.h"
 #include "qebillboard.h"
 #include "qeline.h"
@@ -127,7 +129,6 @@ class QeLine;
 #include "qecamera.h"
 #include "queenengine.h"
 #include "qeglobal.h"
-#include "qeobjectmanger.h"
 #include "qeactivity.h"
 #include "qelog.h"
 #include "qecommand.h"

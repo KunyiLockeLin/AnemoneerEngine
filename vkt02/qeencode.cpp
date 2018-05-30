@@ -679,6 +679,62 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 }
 
 //QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
+QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
+	QeAssetParticleRule* particle = new QeAssetParticleRule();
+
+	const char* c = AST->getXMLValue(node, 1, "iamge");
+
+	if (c != nullptr) particle->image = AST->getImage(c);
+	
+	AST->setXMLValue(particle->count_life.x, *node, 2, "count", "num");
+	AST->setXMLValue(particle->count_life.y, *node, 2, "count", "range");
+	AST->setXMLValue(particle->count_life.z, *node, 2, "life", "second");
+	AST->setXMLValue(particle->count_life.w, *node, 2, "life", "range");
+	AST->setXMLValue(particle->init_pos_xy.x, *node, 2, "init_pos", "x");
+	AST->setXMLValue(particle->init_pos_xy.y, *node, 2, "init_pos", "x_range");
+	AST->setXMLValue(particle->init_pos_xy.z, *node, 2, "init_pos", "y");
+	AST->setXMLValue(particle->init_pos_xy.w, *node, 2, "init_pos", "y_range");
+	AST->setXMLValue(particle->init_pos_zr.x, *node, 2, "init_pos", "z");
+	AST->setXMLValue(particle->init_pos_zr.y, *node, 2, "init_pos", "z_range");
+	AST->setXMLValue(particle->init_pos_zr.z, *node, 2, "init_pos", "radius");
+	AST->setXMLValue(particle->init_pos_zr.w, *node, 2, "init_pos", "radius_range");
+	AST->setXMLValue(particle->init_speed_xy.x, *node, 2, "init_speed", "x");
+	AST->setXMLValue(particle->init_speed_xy.y, *node, 2, "init_speed", "x_range");
+	AST->setXMLValue(particle->init_speed_xy.z, *node, 2, "init_speed", "y");
+	AST->setXMLValue(particle->init_speed_xy.w, *node, 2, "init_speed", "y_range");
+	AST->setXMLValue(particle->init_speed_z_force_x.x, *node, 2, "init_speed", "z");
+	AST->setXMLValue(particle->init_speed_z_force_x.y, *node, 2, "init_speed", "z_range");
+	AST->setXMLValue(particle->init_speed_z_force_x.z, *node, 2, "force", "x");
+	AST->setXMLValue(particle->init_speed_z_force_x.w, *node, 2, "force", "x_range");
+	AST->setXMLValue(particle->force_yz.x, *node, 2, "force", "y");
+	AST->setXMLValue(particle->force_yz.y, *node, 2, "force", "y_range");
+	AST->setXMLValue(particle->force_yz.z, *node, 2, "force", "z");
+	AST->setXMLValue(particle->force_yz.w, *node, 2, "force", "z_range");
+	AST->setXMLValue(particle->rotate_xy.x, *node, 2, "rotate", "x");
+	AST->setXMLValue(particle->rotate_xy.y, *node, 2, "rotate", "x_range");
+	AST->setXMLValue(particle->rotate_xy.z, *node, 2, "rotate", "y");
+	AST->setXMLValue(particle->rotate_xy.w, *node, 2, "rotate", "y_range");
+	AST->setXMLValue(particle->rotate_z_color_r.x, *node, 2, "rotate", "z");
+	AST->setXMLValue(particle->rotate_z_color_r.y, *node, 2, "rotate", "z_range");
+	AST->setXMLValue(particle->rotate_z_color_r.z, *node, 2, "color", "r");
+	AST->setXMLValue(particle->rotate_z_color_r.w, *node, 2, "color", "r_range");
+	AST->setXMLValue(particle->color_gb.x, *node, 2, "color", "g");
+	AST->setXMLValue(particle->color_gb.y, *node, 2, "color", "g_range");
+	AST->setXMLValue(particle->color_gb.z, *node, 2, "color", "b");
+	AST->setXMLValue(particle->color_gb.w, *node, 2, "color", "b_range");
+	AST->setXMLValue(particle->alpha_born_size_x.x, *node, 1, "alpha");
+	AST->setXMLValue(particle->alpha_born_size_x.y, *node, 1, "rebone");
+	AST->setXMLValue(particle->alpha_born_size_x.z, *node, 2, "size", "x");
+	AST->setXMLValue(particle->alpha_born_size_x.w, *node, 2, "size", "x_range");
+	AST->setXMLValue(particle->size_yz.x, *node, 2, "size", "y");
+	AST->setXMLValue(particle->size_yz.y, *node, 2, "size", "y_range");
+	AST->setXMLValue(particle->size_yz.w, *node, 2, "size", "z");
+	AST->setXMLValue(particle->size_yz.z, *node, 2, "size", "z_range");
+	AST->setXMLValue(particle->init_pos_d.x, *node, 2, "init_pos", "degree");
+	AST->setXMLValue(particle->init_pos_d.y, *node, 2, "init_pos", "degree_range");
+
+	return particle;
+}
 
 QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
 

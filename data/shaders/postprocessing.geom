@@ -3,22 +3,30 @@
 
 const int MAX_VIEWPORT_NUM = 9;
 
-layout (triangles, invocations = MAX_VIEWPORT_NUM) in;
+layout (points, invocations = MAX_VIEWPORT_NUM) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-layout (location = 0) in vec2 inUV[];
-layout (location = 0) out vec2 outUV;
+layout (location = 0) out vec2 outTexCoord;
 
 
 void main(void) {
 
-	for(int i = 0; i < gl_in.length(); i++){
+	for(int i = 0; i < gl_in.length(); i++) {
 
-		outUV = inUV[i];
-		gl_Position = gl_in[i].gl_Position;
+		gl_Position = vec4( -1.0, -1.0, 0.0, 1.0 );
+		outTexCoord = vec2( 0.0, 0.0 );
+		EmitVertex();
+
+		gl_Position = vec4( -1.0, 3.0, 0.0, 1.0 );
+		outTexCoord = vec2( 0.0, 2.0 );
+		EmitVertex();
+  
+		gl_Position = vec4( 3.0, -1.0, 0.0, 1.0 );
+		outTexCoord = vec2( 2.0, 0.0 );
+		EmitVertex();
+		
 		gl_ViewportIndex = gl_InvocationID;
 		gl_PrimitiveID = gl_PrimitiveIDIn;
-		EmitVertex();
-	}
+	}	
 	EndPrimitive();
 }

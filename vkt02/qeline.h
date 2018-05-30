@@ -5,7 +5,7 @@ class QeLine : public QeModel
 {
 public:
 
-	QeLine(QeObjectMangerKey& _key) :QeModel(_key) {}
+	QeLine(QeObjectMangerKey& _key) :QeModel(_key, eModel_Line) {}
 	
 	std::string lineType;
 	virtual void init(QeAssetXML* _property);

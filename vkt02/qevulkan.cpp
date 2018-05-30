@@ -390,35 +390,43 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 	
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
-	bindings.resize(descriptorSetBufferNumber + descriptorSetImageNumber + descriptorSetInputAttachmentNumber + descriptorSetStorageTexeLBufferNumber);
+	bindings.resize(descriptorSetgUBONumber + descriptorSetgImageNumber + descriptorSetgInputAttachmentNumber 
+					+ descriptorSetcStorageTexeLBufferNumber + descriptorSetcUBONumber);
 
 	int i = 0;
 	int index = 0;
-	for ( i = 0; i<descriptorSetBufferNumber;++i,++index) {
-		bindings[index].binding = i+ descriptorSetBufferStart;
+	for ( i = 0; i<descriptorSetgUBONumber;++i,++index) {
+		bindings[index].binding = i+ descriptorSetgUBOStart;
 		bindings[index].descriptorCount = 1;
 		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		bindings[index].pImmutableSamplers = nullptr;
 		bindings[index].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
 	}
-	for ( i=0; i<descriptorSetImageNumber; ++i,++index) {
-		bindings[index].binding = i+ descriptorSetImageStart;
+	for ( i=0; i<descriptorSetgImageNumber; ++i,++index) {
+		bindings[index].binding = i+ descriptorSetgImageStart;
 		bindings[index].descriptorCount = 1;
 		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		bindings[index].pImmutableSamplers = nullptr;
 		bindings[index].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	}
-	for ( i=0; i < descriptorSetInputAttachmentNumber; ++i,++index) {
-		bindings[index].binding = i+ descriptorSetInputAttachmentStart;
+	for ( i=0; i < descriptorSetgInputAttachmentNumber; ++i,++index) {
+		bindings[index].binding = i+ descriptorSetgInputAttachmentStart;
 		bindings[index].descriptorCount = 1;
 		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 		bindings[index].pImmutableSamplers = nullptr;
 		bindings[index].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	}
-	for ( i=0; i < descriptorSetStorageTexeLBufferNumber; ++i, ++index) {
-		bindings[index].binding = i+ descriptorSetStorageTexeLBufferStart;
+	for ( i=0; i < descriptorSetcStorageTexeLBufferNumber; ++i, ++index) {
+		bindings[index].binding = i+ descriptorSetcStorageTexeLBufferStart;
 		bindings[index].descriptorCount = 1;
 		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+		bindings[index].pImmutableSamplers = nullptr;
+		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+	}
+	for (i = 0; i < descriptorSetcUBONumber; ++i, ++index) {
+		bindings[index].binding = i + descriptorSetcUBOStart;
+		bindings[index].descriptorCount = 1;
+		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		bindings[index].pImmutableSamplers = nullptr;
 		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 	}
@@ -1104,17 +1112,17 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	if (type == ePipeLine_Point)			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-	else if(type == ePipeLine_Line)			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
-	else if (shader->tesc && shader->tese )	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
-	else									inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	if (type == ePipeLine_Point || type == ePipeLine_Postprogessing)	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	else if(type == ePipeLine_Line)										inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	else if (shader->tesc && shader->tese )								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
+	else																inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 	VkPipelineRasterizationStateCreateInfo rasterizer = {};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = (bShowMesh && type != ePipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
-	rasterizer.cullMode = (type == ePipeLine_Postprogessing) ? VK_CULL_MODE_FRONT_BIT : VK_CULL_MODE_BACK_BIT;
+	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f;
@@ -1264,46 +1272,56 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 	std::vector<VkSampler>	 samplers;
 	std::vector<VkImageView> attachImageViews;
 	std::vector<VkBufferView> bufferViews;
+	std::vector<VkBuffer> cBuffers;
 
 	uint16_t sizeBuffer = sizeof(VkBuffer);
 	uint16_t sizeImgae = sizeof(VkImageView) + sizeof(VkSampler);
 	uint16_t sizeAttach = sizeof(VkImageView);
 	uint16_t sizeBufferView = sizeof(VkBufferView);
+	uint16_t sizecBuffer = sizeof(VkBuffer);
 
-	for (i = 0;i<descriptorSetBufferNumber;++i) {
+	for (i = 0;i<descriptorSetgUBONumber;++i) {
 		if ( (*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back( i+ descriptorSetBufferStart);
+			bindID.push_back( i+ descriptorSetgUBOStart);
 			buffers.push_back(*(VkBuffer*)(pos));
 		}
 		pos += sizeBuffer;
 	}
-	for (i = 0; i<descriptorSetImageNumber; ++i) {
+	for (i = 0; i<descriptorSetgImageNumber; ++i) {
 		if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i+ descriptorSetImageStart);
+			bindID.push_back(i+ descriptorSetgImageStart);
 			imageViews.push_back(*(VkImageView*)(pos));
 			samplers.push_back(*(VkSampler*)(pos + sizeof(VkSampler)));
 		}
 		pos += sizeImgae;
 	}
-	for (i = 0; i<descriptorSetInputAttachmentNumber; ++i) {
+	for (i = 0; i<descriptorSetgInputAttachmentNumber; ++i) {
 		if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i+ descriptorSetInputAttachmentStart);
+			bindID.push_back(i+ descriptorSetgInputAttachmentStart);
 			attachImageViews.push_back(*(VkImageView*)(pos));
 		}
 		pos += sizeAttach;
 	}
-	for (i = 0; i<descriptorSetStorageTexeLBufferNumber; ++i) {
+	for (i = 0; i<descriptorSetcStorageTexeLBufferNumber; ++i) {
 		if ((*(VkBufferView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i + descriptorSetStorageTexeLBufferStart);
+			bindID.push_back(i + descriptorSetcStorageTexeLBufferStart);
 			bufferViews.push_back(*(VkBufferView*)(pos));
 		}
 		pos += sizeBufferView;
+	}
+	for (i = 0; i<descriptorSetcUBONumber; ++i) {
+		if ((*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
+			bindID.push_back(i + descriptorSetcUBOStart);
+			cBuffers.push_back(*(VkBuffer*)(pos));
+		}
+		pos += sizecBuffer;
 	}
 
 	size_t bufNum = buffers.size();
 	size_t imageNum = imageViews.size();
 	size_t attachNum = attachImageViews.size();
 	size_t bufViewNum = bufferViews.size();
+	size_t cBufNum = cBuffers.size();
 
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
 	descriptorWrites.resize(bufNum + imageNum + attachNum + bufViewNum);
@@ -1383,6 +1401,27 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		descriptorWrites[index].pBufferInfo = nullptr;
 		descriptorWrites[index].pTexelBufferView = &bufferViews[i];
 	}
+
+	std::vector<VkDescriptorBufferInfo> cBufInfos;
+	cBufInfos.resize(cBufNum);
+	for (i = 0; i < cBufNum; ++i, ++index) {
+
+		cBufInfos[i].buffer = cBuffers[i];
+		cBufInfos[i].offset = 0;
+		cBufInfos[i].range = VK_WHOLE_SIZE;
+
+		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[index].pNext = nullptr;
+		descriptorWrites[index].dstSet = descriptorSet;
+		descriptorWrites[index].dstBinding = bindID[index];
+		descriptorWrites[index].dstArrayElement = 0;
+		descriptorWrites[index].descriptorCount = 1;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[index].pImageInfo = nullptr;
+		descriptorWrites[index].pBufferInfo = &cBufInfos[i];
+		descriptorWrites[index].pTexelBufferView = nullptr;
+	}
+
 	vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 

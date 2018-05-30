@@ -38,12 +38,12 @@ struct QeVKImage {
 
 struct QeDataDescriptorSet {
 
-	// descriptorSetBufferNumber
+	// descriptorSetgUBONumber
 	VkBuffer	uboBuffer = VK_NULL_HANDLE;
 	VkBuffer	lightBuffer = VK_NULL_HANDLE;
 	VkBuffer	materialBuffer = VK_NULL_HANDLE;
 
-	// descriptorSetImageNumber
+	// descriptorSetgImageNumber
 	VkImageView diffuseMapImageViews = VK_NULL_HANDLE;
 	VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
 	VkImageView cubeMapImageViews = VK_NULL_HANDLE;
@@ -51,11 +51,16 @@ struct QeDataDescriptorSet {
 	VkImageView normalMapImageViews = VK_NULL_HANDLE;
 	VkSampler	normalMapSamplers = VK_NULL_HANDLE;
 
-	// descriptorSetInputAttachmentNumber
+	// descriptorSetgInputAttachmentNumber
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
 
-	// descriptorSetStorageTexeLBufferNumber
-	VkBufferView storageTexeLBufferView = VK_NULL_HANDLE;
+	// descriptorSetcStorageTexeLBufferNumber
+	VkBufferView inputStorageTexeLBufferView = VK_NULL_HANDLE;
+	VkBufferView outputStorageTexeLBufferView = VK_NULL_HANDLE;
+
+	// descriptorSetcUBONumber
+	VkBuffer	inputBuffer = VK_NULL_HANDLE;
+	VkBuffer	outputBuffer = VK_NULL_HANDLE;
 };
 
 enum QePipelineType {
@@ -97,14 +102,16 @@ public:
 	VkQueue presentQueue;
 	VkQueue computeQueue;
 
-	const uint8_t descriptorSetBufferStart = 0;
-	const uint8_t descriptorSetBufferNumber = 3;
-	const uint8_t descriptorSetImageStart = 10;
-	const uint8_t descriptorSetImageNumber = 3;
-	const uint8_t descriptorSetInputAttachmentStart = 20;
-	const uint8_t descriptorSetInputAttachmentNumber = 1;
-	const uint8_t descriptorSetStorageTexeLBufferStart = 30;
-	const uint8_t descriptorSetStorageTexeLBufferNumber = 1;
+	const uint8_t descriptorSetgUBOStart = 0;
+	const uint8_t descriptorSetgUBONumber = 3;
+	const uint8_t descriptorSetgImageStart = 10;
+	const uint8_t descriptorSetgImageNumber = 3;
+	const uint8_t descriptorSetgInputAttachmentStart = 20;
+	const uint8_t descriptorSetgInputAttachmentNumber = 1;
+	const uint8_t descriptorSetcStorageTexeLBufferStart = 30;
+	const uint8_t descriptorSetcStorageTexeLBufferNumber = 2;
+	const uint8_t descriptorSetcUBOStart = 40;
+	const uint8_t descriptorSetcUBONumber = 2;
 
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;

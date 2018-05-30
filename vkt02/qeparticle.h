@@ -1,25 +1,23 @@
 #pragma once
 #include "qeheader.h"
 
-class QeParticle : public QeBillboard
+
+class QeParticle : public QeModel
 {
 public:
 
-	QeParticle(QeObjectMangerKey& _key) :QeBillboard(_key) {}
+	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle) {}
 	~QeParticle() {}
 
-	VkShaderModule computeShader = VK_NULL_HANDLE;
 	QeAssetShader shader;
-	//VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
-
-	uint32_t  PARTICLES_COUNT = 100;
+	QeAssetParticleRule* particleRule;
+	uint16_t particlesSize;
 	std::vector<QeVertex> particles;
 	QeVKBuffer		VertexBuffer;
 
-	QeTimer timer;
-
 	virtual void init(QeAssetXML* _property);
 	virtual void createPipeline();
+	virtual void setMatModel();
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer);
 	virtual void updateCompute(float time);

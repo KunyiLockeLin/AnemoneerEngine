@@ -14,6 +14,14 @@ struct QeUniformBufferObject {
 	QeVector4f	param; // 1:viewportNum, 2:billboardType, 3:bCubemap
 };
 
+enum QeModelType {
+	eModel_Model = 0,
+	eModel_Billboard = 1,
+	eModel_Line = 2,
+	eModel_Cube = 3,
+	eModel_Particle = 4,
+};
+
 enum QeActionType {
 	eActionTypeOnce,
 	eActionTypeReplay,
@@ -29,6 +37,7 @@ enum QeActionState {
 class QeModel:public QeBase
 {
 public:
+	QeModelType modelType = eModel_Model;
 	QeActionState	actionState = eActionStateStop;
 	QeActionType	actionType = eActionTypeOnce;
 	unsigned char	currentActionID = 0;
@@ -53,6 +62,7 @@ public:
 
 	QeAssetModel* modelData = nullptr;
 	QeAssetMaterial * pMaterial = nullptr;
+	VkShaderModule computeShader = VK_NULL_HANDLE;
 
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 	VkPipeline graphicsPipeline = VK_NULL_HANDLE;
@@ -71,7 +81,7 @@ public:
 	virtual void updateRender(float time);
 	virtual void updateCompute(float time);
 
-	QeModel(QeObjectMangerKey& _key):QeBase() {}
+	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model):QeBase(), modelType(_type) {}
 	~QeModel();
 
 	virtual void init(QeAssetXML* _property);

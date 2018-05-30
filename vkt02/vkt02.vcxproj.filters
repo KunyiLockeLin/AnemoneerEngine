@@ -214,9 +214,6 @@
     <None Include="..\data\shaders\cubemap.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\shader.comp">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\texture.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -224,6 +221,9 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\point.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\particle.comp">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

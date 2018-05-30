@@ -13,7 +13,7 @@ class QeBillboard : public QeModel
 public:
 	// face: (0,0,1)
 
-	QeBillboard(QeObjectMangerKey& _key):QeModel(_key){}
+	QeBillboard(QeObjectMangerKey& _key): QeModel(_key, eModel_Billboard){}
 	//~QeBillboard() {}
 	QeBillboardType type = eBillboardFace;
 	//int width=0, height=0;
