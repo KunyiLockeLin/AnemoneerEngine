@@ -461,7 +461,7 @@ bool QeAsset::setJSONValue(int& output, QeAssetJSON& source, int length, ...) {
 	return ret;
 }
 
-bool QeAsset::setJSONValue(std::string& output, QeAssetJSON& source, int length, ...) {
+const char* QeAsset::setJSONValue( QeAssetJSON& source, int length, ...) {
 	va_list keys;
 	va_start(keys, length);
 
@@ -471,8 +471,6 @@ bool QeAsset::setJSONValue(std::string& output, QeAssetJSON& source, int length,
 	const char* ret = getJSONValue(&source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
-
-	if (ret) output = ret;
 
 	return ret;
 }
@@ -649,7 +647,7 @@ bool QeAsset::setXMLValue(int& output, QeAssetXML& source, int length, ...) {
 
 	return ret;
 }
-bool QeAsset::setXMLValue(std::string& output, QeAssetXML& source, int length, ...) {
+const char* QeAsset::setXMLValue( QeAssetXML& source, int length, ...) {
 	va_list keys;
 	va_start(keys, length);
 
@@ -659,8 +657,6 @@ bool QeAsset::setXMLValue(std::string& output, QeAssetXML& source, int length, .
 	const char* ret = getXMLValue(&source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
-
-	if (ret) output = ret;
 
 	return ret;
 }

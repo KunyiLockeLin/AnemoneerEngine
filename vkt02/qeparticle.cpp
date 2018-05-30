@@ -84,6 +84,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	VK->createBufferView(VertexBuffer.buffer, VK_FORMAT_R32G32B32A32_SFLOAT, VertexBuffer.view);
 
 	//modelData = AST->getModel("point");
+	pMaterial = AST->getMaterialImage(particleRule->image);
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
@@ -92,13 +93,16 @@ void QeParticle::init(QeAssetXML* _property) {
 	
 	QeDataDescriptorSet data;
 	data.uboBuffer = uboBuffer.buffer;
+	data.materialBuffer = pMaterial->uboBuffer.buffer;
 	data.inputStorageTexeLBufferView = VertexBuffer.view;
 	data.outputStorageTexeLBufferView = VertexBuffer.view;
+	data.diffuseMapImageViews = pMaterial->image.pDiffuseMap->view;
+	data.diffueMapSamplers = pMaterial->image.pDiffuseMap->sampler;
 	//data.inputBuffer = uboParticleRule.buffer;
 	VK->updateDescriptorSet(data, descriptorSet);
 
-	AST->setShader(shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
 	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "defaultShader", "particle", "comp"));
+	AST->setShader(shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
 
 	createPipeline();
 }

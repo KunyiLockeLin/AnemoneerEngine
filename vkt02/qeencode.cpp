@@ -682,10 +682,9 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	QeAssetParticleRule* particle = new QeAssetParticleRule();
 
-	const char* c = AST->getXMLValue(node, 1, "iamge");
-
-	if (c != nullptr) particle->image = AST->getImage(c);
-	
+	//const char* c = AST->getXMLValue(node, 1, "image");
+	//if (c != nullptr) particle->image = AST->getImage(c);
+	particle->image = AST->setXMLValue( *node, 1, "image");
 	AST->setXMLValue(particle->count_life.x, *node, 2, "count", "num");
 	AST->setXMLValue(particle->count_life.y, *node, 2, "count", "range");
 	AST->setXMLValue(particle->count_life.z, *node, 2, "life", "second");

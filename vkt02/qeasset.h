@@ -129,7 +129,8 @@ struct QeAssetParticleRule {
 	QeVector4f color_gb;			// 0: color_g, 1: color_g_range, 2: color_b 3: color_b_range
 	QeVector4f alpha_born_size_x;	// 0: bAlpha, 1: bReborn, 2: size_x, 3: size_x_range 
 	QeVector4f size_y_init_pos_d;	// 0: size_y, 1: size_y_range, 2: degree, 3: degree_range
-	QeVKImage* image = nullptr;
+	//QeVKImage* image = nullptr;
+	const char* image = nullptr;
 };
 
 struct QeAssetXML {
@@ -186,7 +187,7 @@ public:
 	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, int length, ...);
 	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, const char* keys[], int length);
 	bool setJSONValue(int& output, QeAssetJSON& source, int length, ...);
-	bool setJSONValue(std::string& output, QeAssetJSON& source, int length, ...);
+	const char* setJSONValue( QeAssetJSON& source, int length, ...);
 	bool setJSONValue(float& output, QeAssetJSON& source, int length, ...);
 
 	QeAssetXML* getXML(const char* _filePath);
@@ -197,7 +198,7 @@ public:
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
 	bool setXMLValue(int& output, QeAssetXML& source, int length, ...);
-	bool setXMLValue(std::string& output, QeAssetXML& source, int length, ...);
+	const char* setXMLValue(QeAssetXML& source, int length, ...);
 	bool setXMLValue(float& output, QeAssetXML& source, int length, ...);
 
 	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);

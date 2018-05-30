@@ -22,7 +22,7 @@
     <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <normal vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturef.spv"/>
-    <particle vert="basev.spv" geom="billboardg.spv" frag="basef.spv" comp="particlec.spv"/>
+    <particle vert="basev.spv" geom="billboardg.spv" frag="texturef.spv" comp="particlec.spv"/>
     <cubemap vert="basev.spv" geom="cubemapg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
@@ -73,7 +73,7 @@
   <particles>
     <e id="30004" image="light.png" alpha ="1" reborn="1">
       <count num="1000" range="0"/>
-      <life second="3" range="3"/>
+      <life second="1" range="10"/>
       <init_pos length="5" length_range="0" width="2" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
       <init_speed x="0" x_range="0" y="0" y_range="0" z="1" z_range="1"/>
       <force x="0" x_range="0" y="0" y_range="0" z="-0.05" z_range="0"/>

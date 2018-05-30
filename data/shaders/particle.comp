@@ -24,7 +24,7 @@ void main() {
 	if(speed.w>0){ // life time
 		pos.xyz += speed.xyz*PushConstant.DeltaTime;
 		speed.w -= PushConstant.DeltaTime;
-		speed.xyz += (force.xyz**PushConstant.DeltaTime);
+		speed.xyz += (force.xyz*PushConstant.DeltaTime);
 	}
 	else if(force.w>0){ // reborn
 		// init_pos = texCoord
