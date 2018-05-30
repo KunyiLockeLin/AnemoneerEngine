@@ -22,6 +22,24 @@ QeObjectManger::~QeObjectManger() {
 	mgrAlphaModels.clear();
 }
 
+QeBase* QeObjectManger::getPoint(int _id, QeAssetXML* _property) {
+
+	//std::map<int, QeCamera*>::iterator it = mgrCameras.find(_id);
+	//if (it != mgrCameras.end())	return it->second;
+	//if (_id > ID_CAMERA_MAX || _id < ID_CAMERA_MIN) return nullptr;
+
+	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
+	if (it != mgrObjs.end())	return it->second;
+
+	QeBase* newPoint = new QeBase(key);
+	//mgrCameras[_id] = newCamera;
+	mgrObjs[_id] = newPoint;
+	newPoint->init(_property);
+	//newCamera->id = _id;
+
+	return newPoint;
+}
+
 QeCamera* QeObjectManger::getCamera(int _id, QeAssetXML* _property) {
 
 	//std::map<int, QeCamera*>::iterator it = mgrCameras.find(_id);
@@ -195,7 +213,7 @@ QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
 
 	if (bAlpha)	addAlphaModels(newModel);
 	else		mgrModels[_id] = newModel;
-
+	newModel->id = _id;
 	newModel->init(_property);
 	//newModel->id = _id;
 

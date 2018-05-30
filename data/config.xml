@@ -55,11 +55,8 @@
 
   <scene2 id="12001">
     <points>
-      <e id="30006" paritcleid="30004"/>
+      <e id="30006" posX="10" posY="0" posZ="-10" paritcleid="30004"/>
     </points>
-    <particles>
-      <e id="30004"/>
-    </particles>
   </scene2>
   
   <scene3 id="12002">
@@ -71,7 +68,7 @@
   </scene3>
   
   <particles>
-    <e id="30004" image="light.png" alpha ="1" reborn="1">
+    <e id="30004" image="light.png" alpha ="1" reborn="1" follow="1">
       <count num="1000" range="0"/>
       <life second="1" range="10"/>
       <init_pos length="5" length_range="0" width="2" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>

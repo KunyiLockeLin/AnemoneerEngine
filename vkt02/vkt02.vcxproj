@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="qeactivity.cpp" />
     <ClCompile Include="qeasset.cpp" />
+    <ClCompile Include="qebase.cpp" />
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qecommand.cpp" />

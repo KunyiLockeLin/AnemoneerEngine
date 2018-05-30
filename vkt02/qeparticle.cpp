@@ -2,12 +2,13 @@
 
 void QeParticle::init(QeAssetXML* _property) {
 	
-	initProperty = _property;
+	//initProperty = _property;
 	
-	const char * c = AST->getXMLValue(_property, 1, "id");
-	if (c != nullptr)	id = atoi(c);
-
-	particleRule = AST->getParticle(c);
+	//const char * c = AST->getXMLValue(_property, 1, "id");
+	//if (c != nullptr)	id = atoi(c);
+	char cId[16]="";
+	_itoa_s(id, cId, 16, 10);
+	particleRule = AST->getParticle(cId);
 
 	// count
 	particlesSize = MATH->iRandom(particleRule->count_life.x, particleRule->count_life.y);
@@ -102,7 +103,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "defaultShader", "particle", "comp"));
-	AST->setShader(shader, _property, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
+	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
 
 	createPipeline();
 }

@@ -17,15 +17,13 @@ struct QeDataLight {
 class QeLight:public QeBase
 {
 public:
-	QeLight(QeObjectMangerKey& _key):QeBase() {}
+	QeLight(QeObjectMangerKey& _key):QeBase(_key) {}
 	~QeLight() {}
 
 	bool bShow = false;
 	int speed = 0;
 	QeVector3f rotateCenter;
 	QeDataLight data;
-	QeAssetXML* initProperty = nullptr;
-
 	QeVKBuffer uboBuffer;
 
 	void init(QeAssetXML* _property);

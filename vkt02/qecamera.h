@@ -10,7 +10,6 @@
 class QeCamera : public QeBase
 {
 public:
-	QeVector3f pos;
 	QeVector3f target;
 	QeVector3f up;
 	QeVector2i lastMousePos;
@@ -25,9 +24,8 @@ public:
 	float speed = 0.5f;
 	int cullingDistance = 0;
 	//QeCameraType type = eCameraThirdPerson;
-	QeAssetXML* initProperty = nullptr;
 
-	QeCamera(QeObjectMangerKey& _key):QeBase() {}
+	QeCamera(QeObjectMangerKey& _key):QeBase(_key) {}
 	~QeCamera() {}
 	void init(QeAssetXML* _property);
 	void reset();

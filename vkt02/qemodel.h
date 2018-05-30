@@ -47,7 +47,6 @@ public:
 	float actionSpeed = 0.f;
 
 	//QePipelineType pipelineType;
-	QeVector3f pos;
 	float face = 0.f;
 	float up = 0.f;
 	QeVector3f size;
@@ -73,7 +72,6 @@ public:
 
 	QeUniformBufferObject ubo;
 	QeVKBuffer uboBuffer;
-	QeAssetXML* initProperty = nullptr;
 
 	void setShow(bool b);
 	void updateUniformBuffer();
@@ -81,7 +79,7 @@ public:
 	virtual void updateRender(float time);
 	virtual void updateCompute(float time);
 
-	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model):QeBase(), modelType(_type) {}
+	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model):QeBase(_key), modelType(_type) {}
 	~QeModel();
 
 	virtual void init(QeAssetXML* _property);

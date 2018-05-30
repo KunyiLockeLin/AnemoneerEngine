@@ -33,6 +33,7 @@ public:
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger();
 	
+	QeBase* getPoint(int _id, QeAssetXML* _property);
 	QeCamera* getCamera(int _id, QeAssetXML* _property);
 	QeLight* getLight(int _id, QeAssetXML* _property);
 	//QeActivity* getActivity(int _id, QeAssetXML* _property);

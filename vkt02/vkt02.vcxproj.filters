@@ -84,6 +84,9 @@
     <ClCompile Include="qeparticle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qebase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
