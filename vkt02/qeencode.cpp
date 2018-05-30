@@ -690,14 +690,14 @@ QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	AST->setXMLValue(particle->count_life.y, *node, 2, "count", "range");
 	AST->setXMLValue(particle->count_life.z, *node, 2, "life", "second");
 	AST->setXMLValue(particle->count_life.w, *node, 2, "life", "range");
-	AST->setXMLValue(particle->init_pos_xy.x, *node, 2, "init_pos", "x");
-	AST->setXMLValue(particle->init_pos_xy.y, *node, 2, "init_pos", "x_range");
-	AST->setXMLValue(particle->init_pos_xy.z, *node, 2, "init_pos", "y");
-	AST->setXMLValue(particle->init_pos_xy.w, *node, 2, "init_pos", "y_range");
-	AST->setXMLValue(particle->init_pos_zr.x, *node, 2, "init_pos", "z");
-	AST->setXMLValue(particle->init_pos_zr.y, *node, 2, "init_pos", "z_range");
-	AST->setXMLValue(particle->init_pos_zr.z, *node, 2, "init_pos", "radius");
-	AST->setXMLValue(particle->init_pos_zr.w, *node, 2, "init_pos", "radius_range");
+	AST->setXMLValue(particle->init_pos_lw.x, *node, 2, "init_pos", "length");
+	AST->setXMLValue(particle->init_pos_lw.y, *node, 2, "init_pos", "length_range");
+	AST->setXMLValue(particle->init_pos_lw.z, *node, 2, "init_pos", "width");
+	AST->setXMLValue(particle->init_pos_lw.w, *node, 2, "init_pos", "width_range");
+	AST->setXMLValue(particle->init_pos_hr.x, *node, 2, "init_pos", "height");
+	AST->setXMLValue(particle->init_pos_hr.y, *node, 2, "init_pos", "height_range");
+	AST->setXMLValue(particle->init_pos_hr.z, *node, 2, "init_pos", "radius");
+	AST->setXMLValue(particle->init_pos_hr.w, *node, 2, "init_pos", "radius_range");
 	AST->setXMLValue(particle->init_speed_xy.x, *node, 2, "init_speed", "x");
 	AST->setXMLValue(particle->init_speed_xy.y, *node, 2, "init_speed", "x_range");
 	AST->setXMLValue(particle->init_speed_xy.z, *node, 2, "init_speed", "y");
@@ -726,12 +726,10 @@ QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	AST->setXMLValue(particle->alpha_born_size_x.y, *node, 1, "rebone");
 	AST->setXMLValue(particle->alpha_born_size_x.z, *node, 2, "size", "x");
 	AST->setXMLValue(particle->alpha_born_size_x.w, *node, 2, "size", "x_range");
-	AST->setXMLValue(particle->size_yz.x, *node, 2, "size", "y");
-	AST->setXMLValue(particle->size_yz.y, *node, 2, "size", "y_range");
-	AST->setXMLValue(particle->size_yz.w, *node, 2, "size", "z");
-	AST->setXMLValue(particle->size_yz.z, *node, 2, "size", "z_range");
-	AST->setXMLValue(particle->init_pos_d.x, *node, 2, "init_pos", "degree");
-	AST->setXMLValue(particle->init_pos_d.y, *node, 2, "init_pos", "degree_range");
+	AST->setXMLValue(particle->size_y_init_pos_d.x, *node, 2, "size", "y");
+	AST->setXMLValue(particle->size_y_init_pos_d.y, *node, 2, "size", "y_range");
+	AST->setXMLValue(particle->size_y_init_pos_d.z, *node, 2, "init_pos", "degree");
+	AST->setXMLValue(particle->size_y_init_pos_d.w, *node, 2, "init_pos", "degree_range");
 
 	return particle;
 }

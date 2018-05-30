@@ -119,17 +119,16 @@ enum QeAssetType {
 
 struct QeAssetParticleRule {
 	QeVector4f count_life;			// 0: count, 1: count_range, 2: life(second), 3: life_range
-	QeVector4f init_pos_xy;			// 0: x, 1: x_range, 2: y, 3: y_range,
-	QeVector4f init_pos_zr;			// 0: z, 1: z_range, 2: radius, 3: radius_range,
+	QeVector4f init_pos_lw;			// 0: length, 1: length_range, 2: width, 3: width_range,
+	QeVector4f init_pos_hr;			// 0: height, 1: height_range, 2: radius, 3: radius_range,
 	QeVector4f init_speed_xy;		// 0: speed_x, 1: speed_x_range, 2: speed_y, 3: speed_y_range
 	QeVector4f init_speed_z_force_x;// 0: speed_z, 3: speed_z_range, 2: force_x 1: force_x_range
 	QeVector4f force_yz;			// 0: force_y 1: force_y_range, 2:force_z 3: force_z_range
 	QeVector4f rotate_xy;			// 0: rotate_x(degree), 1: roate_x_range, 2: rotate_y, 3: rotate_y_range,
 	QeVector4f rotate_z_color_r;	// 0: rotate_z, 1: roate_y_range, 2: color_r 3: color_r_range
 	QeVector4f color_gb;			// 0: color_g, 1: color_g_range, 2: color_b 3: color_b_range
-	QeVector4f alpha_born_size_x;		// 0: bAlpha, 1: bReborn, 2: size_x, 3: size_x_range 
-	QeVector4f size_yz;				// 0: size_y, 1: size_y_range, 2:size_z 3: size_z_range
-	QeVector4f init_pos_d;			// 0: degree, 1: degree_range
+	QeVector4f alpha_born_size_x;	// 0: bAlpha, 1: bReborn, 2: size_x, 3: size_x_range 
+	QeVector4f size_y_init_pos_d;	// 0: size_y, 1: size_y_range, 2: degree, 3: degree_range
 	QeVKImage* image = nullptr;
 };
 
