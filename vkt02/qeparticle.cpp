@@ -2,16 +2,19 @@
 
 void QeParticle::init(QeAssetXML* _property) {
 	
-	//initProperty = _property;
+	initProperty = _property;
 	
-	//const char * c = AST->getXMLValue(_property, 1, "id");
-	//if (c != nullptr)	id = atoi(c);
-	char cId[16]="";
-	_itoa_s(id, cId, 16, 10);
-	particleRule = AST->getParticle(cId);
+	const char * c = AST->getXMLValue(_property, 1, "paritcleid");
+	id = atoi(c);
+
+	c = AST->getXMLValue(_property, 1, "paritcleEid");
+	eid = atoi(c);
+	particleRule = AST->getParticle(c);
+
+	AST->getXMLbValue(bFollow, *_property, 1, "paritclefollow");
 
 	// count
-	particlesSize = MATH->iRandom(particleRule->count_life.x, particleRule->count_life.y);
+	particlesSize = MATH->iRandom(int(particleRule->count_life.x), int(particleRule->count_life.y));
 	particles.resize(particlesSize);
 
 	for (uint32_t i = 0; i < particlesSize; ++i) {
@@ -53,10 +56,11 @@ void QeParticle::init(QeAssetXML* _property) {
 		particles[i].normal.z = MATH->fRandom(particleRule->init_speed_z_force_x.x, particleRule->init_speed_z_force_x.y);
 
 		// life time
-		particles[i].normal.w = MATH->iRandom(particleRule->count_life.z, particleRule->count_life.w);
+		particles[i].normal.w = MATH->fRandom(particleRule->count_life.z, particleRule->count_life.w);
 
 		// init speed & life time = joint
 		particles[i].joint = particles[i].normal;
+		particles[i].normal.w = 0;
 
 		// tangent = force
 		particles[i].tangent.x = MATH->fRandom(particleRule->init_speed_z_force_x.z, particleRule->init_speed_z_force_x.w);
@@ -87,8 +91,9 @@ void QeParticle::init(QeAssetXML* _property) {
 	//modelData = AST->getModel("point");
 	pMaterial = AST->getMaterialImage(particleRule->image);
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
-
+	ubo.param.z = float(bFollow+1);
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
+	VK->setMemory(uboBuffer.memory, (void*)&ubo, sizeof(ubo));
 	//VK->createUniformBuffer(sizeof(QeAssetParticleRule), uboParticleRule.buffer, uboParticleRule.memory);
 	//VK->setMemory(uboParticleRule.memory, (void*)&particleRule, sizeof(particleRule));
 	
@@ -106,11 +111,16 @@ void QeParticle::init(QeAssetXML* _property) {
 	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
 
 	createPipeline();
+
+	// attach
+	c = AST->getXMLValue(_property, 1, "id");
+	if (c != nullptr)	attachID = atoi(c);
+	attachSkeletonName = AST->getXMLValue(_property, 1, "paritcleSkeleton");
 }
 
 void QeParticle::createPipeline() {
 
-	graphicsPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Point );
+	graphicsPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Point, bAlpha );
 	computePipeline = VK->createComputePipeline(computeShader);
 }
 
@@ -140,12 +150,28 @@ void QeParticle::updateCompute(float time) {
 
 void QeParticle::setMatModel() {
 
-	//type = eBillboardFaceAndSize;
-
 	QeMatrix4x4f mat;
+
 	mat *= MATH->translate(pos);
-	//size = { 3,3,3 };
 	mat *= MATH->scale(size);
 
 	ubo.model = mat;
+
+	if (attachID > 0) {
+		QeBase* base = OBJMGR->getPoint(attachID, nullptr);
+		if (base) {
+			ubo.model._30 += base->pos.x;
+			ubo.model._31 += base->pos.y;
+			ubo.model._32 += base->pos.z;
+		}
+		else {
+			QeModel* model = OBJMGR->getModel(attachID, nullptr);
+			if (model != nullptr) {
+				QeMatrix4x4f mat = model->getAttachMatrix(attachSkeletonName);
+				ubo.model._30 += mat._30;
+				ubo.model._31 += mat._31;
+				ubo.model._32 += mat._32;
+			}
+		}
+	}
 }

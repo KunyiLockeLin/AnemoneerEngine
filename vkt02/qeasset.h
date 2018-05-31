@@ -186,9 +186,9 @@ public:
 	std::vector<QeAssetJSON*>*	getJSONArrayNodes(int length, ...);
 	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, int length, ...);
 	std::vector<QeAssetJSON*>*	getJSONArrayNodes(QeAssetJSON* source, const char* keys[], int length);
-	bool setJSONValue(int& output, QeAssetJSON& source, int length, ...);
-	const char* setJSONValue( QeAssetJSON& source, int length, ...);
-	bool setJSONValue(float& output, QeAssetJSON& source, int length, ...);
+	bool getJSONbValue(bool& output, QeAssetJSON& source, int length, ...);
+	bool getJSONiValue(int& output, QeAssetJSON& source, int length, ...);
+	bool getJSONfValue(float& output, QeAssetJSON& source, int length, ...);
 
 	QeAssetXML* getXML(const char* _filePath);
 	const char* getXMLValue(int length, ...);
@@ -197,9 +197,9 @@ public:
 	QeAssetXML* getXMLNode(int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
-	bool setXMLValue(int& output, QeAssetXML& source, int length, ...);
-	const char* setXMLValue(QeAssetXML& source, int length, ...);
-	bool setXMLValue(float& output, QeAssetXML& source, int length, ...);
+	bool getXMLbValue(bool& output, QeAssetXML& source, int length, ...);
+	bool getXMLiValue(int& output, QeAssetXML& source, int length, ...);
+	bool getXMLfValue(float& output, QeAssetXML& source, int length, ...);
 
 	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);
 	QeAssetMaterial* getMaterial(const char* _filename);

@@ -31,6 +31,8 @@ QeBase* QeObjectManger::getPoint(int _id, QeAssetXML* _property) {
 	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
 	if (it != mgrObjs.end())	return it->second;
 
+	if (!_property) return nullptr;
+
 	QeBase* newPoint = new QeBase(key);
 	//mgrCameras[_id] = newCamera;
 	mgrObjs[_id] = newPoint;
@@ -49,6 +51,8 @@ QeCamera* QeObjectManger::getCamera(int _id, QeAssetXML* _property) {
 	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
 	if (it != mgrObjs.end())	return (QeCamera*)it->second;
 
+	if (!_property) return nullptr;
+
 	QeCamera* newCamera = new QeCamera(key);
 	//mgrCameras[_id] = newCamera;
 	mgrObjs[_id] = newCamera;
@@ -66,6 +70,8 @@ QeLight* QeObjectManger::getLight(int _id, QeAssetXML* _property) {
 	//if (it != mgrLights.end())	return it->second;
 	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
 	if (it != mgrObjs.end())	return (QeLight*)it->second;
+
+	if (!_property) return nullptr;
 
 	QeLight* newLight = new QeLight(key);
 	//mgrLights[_id] = newLight;
@@ -105,7 +111,7 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	if (it1 != mgrAlphaModels.end()) {
-		if ((*it1)->id == _id)	return (QeBillboard*)it->second;
+		if ((*it1)->id == _id)	return *it1;
 		++it1;
 	}
 
@@ -156,9 +162,12 @@ QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
 
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	if (it1 != mgrAlphaModels.end()) {
-		if( (*it1)->id == _id )	return (QeBillboard*)it->second;
+		if( (*it1)->id == _id )	return (QeBillboard*)*it1;
 		++it1;
 	}
+
+	if (!_property) return nullptr;
+
 	QeBillboard* newModel = new QeBillboard(key);
 	//mgrBillboards[_id] = newModel;
 	
@@ -201,15 +210,21 @@ QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
 
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	if (it1 != mgrAlphaModels.end()) {
-		if ((*it1)->id == _id)	return (QeParticle*)it->second;
+		if ((*it1)->id == _id)	return (QeParticle*)*it1;
 		++it1;
 	}
+
+	if (!_property) return nullptr;
+
 	QeParticle* newModel = new QeParticle(key);
 	//mgrBillboards[_id] = newModel;
+	const char * c = AST->getXMLValue(_property, 1, "paritcleEid");
 
 	bool bAlpha = false;
-	const char *c = AST->getXMLValue(_property, 1, "alpha");
-	if (c != nullptr)	bAlpha = atoi(c);
+	if (c) {
+		QeAssetParticleRule* p = AST->getParticle(c);
+		if (p->alpha_born_size_x.x)	bAlpha = true;
+	}
 
 	if (bAlpha)	addAlphaModels(newModel);
 	else		mgrModels[_id] = newModel;

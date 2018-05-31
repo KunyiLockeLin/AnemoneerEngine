@@ -91,9 +91,17 @@ void QeModel::setMatModel() {
 	ubo.model = mat;
 
 	if (attachID > 0) {
-		QeModel* model = OBJMGR->getModel(attachID,nullptr);
-		if (model != nullptr) {
-			ubo.model = model->getAttachMatrix(attachSkeletonName)*ubo.model;
+		QeBase* base = OBJMGR->getPoint(attachID, nullptr);
+		if (base) {
+			ubo.model._30 += base->pos.x;
+			ubo.model._31 += base->pos.y;
+			ubo.model._32 += base->pos.z;
+		}
+		else {
+			QeModel* model = OBJMGR->getModel(attachID, nullptr);
+			if (model != nullptr) {
+				ubo.model = model->getAttachMatrix(attachSkeletonName)*ubo.model;
+			}
 		}
 	}
 }
@@ -229,6 +237,9 @@ void QeModel::init(QeAssetXML* _property) {
 	if (c != nullptr)	attachID = atoi(c);
 
 	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
+
+	c = AST->getXMLValue(_property, 1, "paritcleid");
+	if (c)	particle = OBJMGR->getParticle(atoi(c), _property);
 }
 
 void QeModel::updateRender(float time) {

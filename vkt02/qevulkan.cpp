@@ -400,7 +400,7 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 		bindings[index].descriptorCount = 1;
 		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		bindings[index].pImmutableSamplers = nullptr;
-		bindings[index].stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+		bindings[index].stageFlags = VK_SHADER_STAGE_ALL;
 	}
 	for ( i=0; i<descriptorSetgImageNumber; ++i,++index) {
 		bindings[index].binding = i+ descriptorSetgImageStart;
@@ -450,7 +450,7 @@ VkPipelineLayout QeVulkan::createPipelineLayout( VkDescriptorSetLayout& descript
 
 	if (PUSH_CONSTANTS_SIZE > 0) {
 		VkPushConstantRange push_constant_range = {};
-		push_constant_range.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+		push_constant_range.stageFlags = VK_SHADER_STAGE_ALL;
 		push_constant_range.offset = 0;
 		push_constant_range.offset = PUSH_CONSTANTS_SIZE * sizeof(float);
 		pushConstants.resize(PUSH_CONSTANTS_SIZE);

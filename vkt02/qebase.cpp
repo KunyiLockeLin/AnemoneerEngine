@@ -3,17 +3,17 @@
 void QeBase::init(QeAssetXML* _property) {
 	initProperty = _property;
 	int i = 0;
-	AST->setXMLValue(i, *_property, 1, "id");
+	AST->getXMLiValue(i, *_property, 1, "id");
 	id = i;
-	AST->setXMLValue(pos.x, *_property, 1, "posX");
-	AST->setXMLValue(pos.y, *_property, 1, "posY");
-	AST->setXMLValue(pos.z, *_property, 1, "posZ");
+	AST->getXMLfValue(pos.x, *_property, 1, "posX");
+	AST->getXMLfValue(pos.y, *_property, 1, "posY");
+	AST->getXMLfValue(pos.z, *_property, 1, "posZ");
 
-	const char * c = AST->setXMLValue(*_property, 1, "paritcleid");
-	if (c)	particle = OBJMGR->getParticle(atoi(c), nullptr);
+	const char * c = AST->getXMLValue(_property, 1, "paritcleid");
+	if (c)	particle = OBJMGR->getParticle(atoi(c), _property);
 }
 void QeBase::updateRender(float time) {
-	if (particle) particle->pos = pos;
+	//if (particle) particle->pos = pos;
 }
 void QeBase::updateCompute(float time) {
 

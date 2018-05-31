@@ -2,10 +2,24 @@
 
 layout( local_size_x = 1024) in;
 
+const int MAX_VIEWPORT_NUM = 9;
+const int MAX_JOINT_NUM = 20;
+
+layout( binding = 0) uniform QeUniformBufferObject {
+	mat4 model;
+    mat4 view[MAX_VIEWPORT_NUM];
+    mat4 proj[MAX_VIEWPORT_NUM];
+	mat4 normal[MAX_VIEWPORT_NUM];
+	mat4 joints[MAX_JOINT_NUM];
+	vec4 cameraPos[MAX_VIEWPORT_NUM];
+	vec4 ambientColor;
+	vec4 param; // 1: viewportNum, 2:billboardType
+} ubo;
+
 layout( binding = 30, rgba32f  ) uniform imageBuffer inputStorageTexelBuffer;
 layout( binding = 31, rgba32f  ) uniform imageBuffer outputStorageTexelBuffer;
-//layout( binding = 40 ) uniform imageBuffer StorageTexelBuffer;
-//layout( binding = 41 ) uniform imageBuffer StorageTexelBuffer;
+//layout( binding = 40 ) uniform inputUBO inputUBOBuffer;
+//layout( binding = 41 ) uniform outUBO outputUBOBuffer;
 
 layout( push_constant ) uniform TimeState {
   float DeltaTime;
@@ -29,6 +43,7 @@ void main() {
 	else if(force.w>0){ // reborn
 		// init_pos = texCoord
 		pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
+		if(ubo.param.z == 1) pos.xyz += ubo.model[3].xyz;
 		// init_speed & life time = joint
 		speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+5) ); 		
 	}

@@ -190,9 +190,6 @@
     <None Include="..\data\shaders\postprocessing.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\postprocessing.vert">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\grayscale.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>

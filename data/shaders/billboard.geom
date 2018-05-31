@@ -16,7 +16,7 @@ layout( binding = 0) uniform QeUniformBufferObject {
 	mat4 joints[MAX_JOINT_NUM];
 	vec4 cameraPos[MAX_VIEWPORT_NUM];
 	vec4 ambientColor;
-	vec4 param; // 1: viewportNum, 2:billboardType
+	vec4 param; // 1: viewportNum, 2:billboardType, 3: modelFollow(2:follow 1:unfollow 0:none)
 } ubo;
 
 
@@ -30,7 +30,8 @@ layout(location = 1) out vec2 outTexCoord;
 void calPoint( vec4 pos, vec4 pos2, vec3 size ){
 	
 	mat4 model = ubo.model;
-	model[3].xyz += pos.xyz;
+	if(ubo.param.z == 1) model[3].xyz = pos.xyz;
+	else				 model[3].xyz += pos.xyz;
 
 	mat4 viewModel = ubo.view[gl_InvocationID] * model;
 	viewModel[0].x = size.x;

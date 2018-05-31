@@ -3,6 +3,7 @@
 
 void QeLight::init(QeAssetXML* _property) {
 
+	QeBase::init(_property);
 	data.pos = QeVector4f(0, 0, 0, 1);
 	data.dir = QeVector4f(1, 1, 1, 1);
 	data.color = QeVector4f(1, 1, 1, 1);

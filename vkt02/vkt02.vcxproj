@@ -232,7 +232,6 @@
     <None Include="..\data\shaders\point.vert" />
     <None Include="..\data\shaders\postprocessing.frag" />
     <None Include="..\data\shaders\postprocessing.geom" />
-    <None Include="..\data\shaders\postprocessing.vert" />
     <None Include="..\data\shaders\skeleton.vert" />
     <None Include="..\data\shaders\texture.frag" />
   </ItemGroup>
