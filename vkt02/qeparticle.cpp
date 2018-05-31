@@ -38,7 +38,7 @@ void QeParticle::init(QeAssetXML* _property) {
 			particles[i].pos.x = radius * cos(radian);
 			particles[i].pos.y = radius * sin(radian);
 		}
-
+		particles[i].pos.w = 0;
 		// init pos = texCoord
 		particles[i].texCoord = particles[i].pos;
 

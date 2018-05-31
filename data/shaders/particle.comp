@@ -40,12 +40,17 @@ void main() {
 		speed.w -= PushConstant.DeltaTime;
 		speed.xyz += (force.xyz*PushConstant.DeltaTime);
 	}
-	else if(force.w>0){ // reborn
-		// init_pos = texCoord
-		pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
-		if(ubo.param.z == 1) pos.xyz += ubo.model[3].xyz;
-		// init_speed & life time = joint
-		speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+5) ); 		
+	else{
+		int times =  int(pos.w);
+		if(force.w>0 || times == 0){ // reborn
+			// init_pos = texCoord
+			++times;
+			pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
+			if(ubo.param.z == 1) pos.xyz += ubo.model[3].xyz;
+			pos.w = times;
+			// init_speed & life time = joint
+			speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+5) ); 		
+		}
 	}
     imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
 	imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );
