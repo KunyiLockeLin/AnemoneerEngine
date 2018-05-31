@@ -35,7 +35,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	else{
 		for (int index = 0; index < node->nexts.size(); ++index) {
 			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
-			light = OBJMGR->getLight(index, node->nexts[index]);
+			light = OBJMGR->getLight(id, node->nexts[index]);
 		}
 	}
 

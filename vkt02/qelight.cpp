@@ -74,10 +74,11 @@ void QeLight::updateRender(float time) {
 		float angle = -time * speed;
 		QeMatrix4x4f mat;
 		mat *= MATH->rotateZ(angle);
-		QeVector4f pos = data.pos - rotateCenter;
-		pos = mat*pos;
-		data.pos = pos + rotateCenter;
+		QeVector4f pos2 = data.pos - rotateCenter;
+		pos2 = mat* pos2;
+		data.pos = pos2 + rotateCenter;
 	}
+	pos = data.pos;
 	billboard->setShow(bShow);
 	billboard->pos = data.pos;
 
