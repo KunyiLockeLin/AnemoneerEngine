@@ -16,6 +16,8 @@ void QeParticle::init(QeAssetXML* _property) {
 	// count
 	particlesSize = MATH->iRandom(int(particleRule->count_life.x), int(particleRule->count_life.y));
 	particles.resize(particlesSize);
+	bDeaths.resize(particlesSize);
+	memset( bDeaths.data(), 0, sizeof(bDeaths[0])*bDeaths.size());
 
 	for (uint32_t i = 0; i < particlesSize; ++i) {
 
@@ -85,7 +87,7 @@ void QeParticle::init(QeAssetXML* _property) {
 		//MATH->fRandoms(-1.0f, 2.0f, 3, &particles[i].normal.x);
 	}
 
-	VK->createBufferData((void*)particles.data(), sizeof(particles[0]) * particles.size(), VertexBuffer.buffer, VertexBuffer.memory);
+	VK->createBufferData((void*)particles.data(), sizeof(particles[0]) * particles.size(), VertexBuffer.buffer, VertexBuffer.memory, &VertexBuffer.mapped);
 	VK->createBufferView(VertexBuffer.buffer, VK_FORMAT_R32G32B32A32_SFLOAT, VertexBuffer.view);
 
 	//modelData = AST->getModel("point");
@@ -93,7 +95,18 @@ void QeParticle::init(QeAssetXML* _property) {
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 	ubo.param.z = float(bFollow+1);
 	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
-	VK->setMemory(uboBuffer.memory, (void*)&ubo, sizeof(ubo));
+	VK->createBuffer(sizeof(bDeaths[0])*bDeaths.size(), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, outBuffer.buffer, outBuffer.memory );
+	VK->setMemory(outBuffer.memory, bDeaths.data(), sizeof(bDeaths[0])*bDeaths.size(), &outBuffer.mapped);
+	vkMapMemory(VK->device, outBuffer.memory, 0, sizeof(bDeaths[0])*bDeaths.size(), 0, &outBuffer.mapped);
+
+	/*VkMappedMemoryRange mappedRange = {};
+	mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+	mappedRange.memory = outBuffer.memory;
+	mappedRange.offset = 0;
+	mappedRange.size = sizeof(bDeaths);
+	vkFlushMappedMemoryRanges(VK->device, 1, &mappedRange);*/
+	//vkInvalidateMappedMemoryRanges(VK->device, 1, &mappedRange);
 	//VK->createUniformBuffer(sizeof(QeAssetParticleRule), uboParticleRule.buffer, uboParticleRule.memory);
 	//VK->setMemory(uboParticleRule.memory, (void*)&particleRule, sizeof(particleRule));
 	
@@ -104,7 +117,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	data.outputStorageTexeLBufferView = VertexBuffer.view;
 	data.diffuseMapImageViews = pMaterial->image.pDiffuseMap->view;
 	data.diffueMapSamplers = pMaterial->image.pDiffuseMap->sampler;
-	//data.inputBuffer = uboParticleRule.buffer;
+	data.outputBuffer = outBuffer.buffer;
 	VK->updateDescriptorSet(data, descriptorSet);
 
 	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "defaultShader", "particle", "comp"));
@@ -145,6 +158,11 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 void QeParticle::updateCompute(float time) {
 	VK->pushConstants[0] = time;// float(timer.getPassTime());
+	//void* buf;
+	//vkMapMemory(VK->device, outBuffer.memory, 0, sizeof(bDeaths[0])*bDeaths.size(), 0, &buf);
+	memcpy(bDeaths.data(), outBuffer.mapped, sizeof(bDeaths[0])*bDeaths.size());
+	//vkUnmapMemory(VK->device, outBuffer.memory);
+	//memcpy(bDeaths.data(), outBuffer.memory, sizeof(char)*particlesSize);
 	VP->bUpdateDrawCommandBuffers = true;
 }
 

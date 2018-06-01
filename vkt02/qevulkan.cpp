@@ -391,7 +391,7 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 	
 	std::vector<VkDescriptorSetLayoutBinding> bindings;
 	bindings.resize(descriptorSetgUBONumber + descriptorSetgImageNumber + descriptorSetgInputAttachmentNumber 
-					+ descriptorSetcStorageTexeLBufferNumber + descriptorSetcUBONumber);
+					+ descriptorSetcStorageTexeLBufferNumber + descriptorSetcBufferNumber);
 
 	int i = 0;
 	int index = 0;
@@ -423,10 +423,10 @@ VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
 		bindings[index].pImmutableSamplers = nullptr;
 		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 	}
-	for (i = 0; i < descriptorSetcUBONumber; ++i, ++index) {
-		bindings[index].binding = i + descriptorSetcUBOStart;
+	for (i = 0; i < descriptorSetcBufferNumber; ++i, ++index) {
+		bindings[index].binding = i + descriptorSetcBufferStart;
 		bindings[index].descriptorCount = 1;
-		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 		bindings[index].pImmutableSamplers = nullptr;
 		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 	}
@@ -520,7 +520,7 @@ void QeVulkan::createSceneDepthImage(QeVKImage& sceneImage, QeVKImage& depthImag
 	int imageSize = swapChainExtent.width*swapChainExtent.height * 4;
 	unsigned char *data = new unsigned char[imageSize];
 	memset(data, 0, imageSize);
-	createImageData(data, VK_FORMAT_B8G8R8A8_UNORM, imageSize, swapChainExtent.width, swapChainExtent.height, sceneImage.image, sceneImage.memory);
+	createImageData(data, VK_FORMAT_B8G8R8A8_UNORM, imageSize, swapChainExtent.width, swapChainExtent.height, sceneImage.image, sceneImage.memory, &sceneImage.mapped);
 	sceneImage.view = createImageView(sceneImage.image, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
@@ -1015,8 +1015,10 @@ VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorSetLayout& descriptorS
 	return descriptorSet;
 }
 
-void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) {
+void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped) {
 
+	//if(!(*mapped)) vkMapMemory(device, memory, 0, size, 0, mapped);
+	//memcpy(*mapped, data, size);
 	void* buf;
 	vkMapMemory(device, memory, 0, size, 0, &buf);
 	memcpy(buf, data, size);
@@ -1309,9 +1311,9 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		}
 		pos += sizeBufferView;
 	}
-	for (i = 0; i<descriptorSetcUBONumber; ++i) {
+	for (i = 0; i<descriptorSetcBufferNumber; ++i) {
 		if ((*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i + descriptorSetcUBOStart);
+			bindID.push_back(i + descriptorSetcBufferStart);
 			cBuffers.push_back(*(VkBuffer*)(pos));
 		}
 		pos += sizecBuffer;
@@ -1324,7 +1326,7 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 	size_t cBufNum = cBuffers.size();
 
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
-	descriptorWrites.resize(bufNum + imageNum + attachNum + bufViewNum);
+	descriptorWrites.resize(bufNum + imageNum + attachNum + bufViewNum + cBufNum);
 
 	uint8_t index = 0;
 
@@ -1416,7 +1418,7 @@ void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& 
 		descriptorWrites[index].dstBinding = bindID[index];
 		descriptorWrites[index].dstArrayElement = 0;
 		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 		descriptorWrites[index].pImageInfo = nullptr;
 		descriptorWrites[index].pBufferInfo = &cBufInfos[i];
 		descriptorWrites[index].pTexelBufferView = nullptr;
@@ -1465,14 +1467,14 @@ VkSampler QeVulkan::createTextureSampler() {
 	return sampler;
 }
 
-void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, int layer, bool bCubemap) {
+void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer, bool bCubemap) {
 	
 	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 	mipLevels = 1;
 	QeVKBuffer staging;
 	createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging.buffer, staging.memory);
 
-	setMemory(staging.memory, data, imageSize);
+	setMemory(staging.memory, data, imageSize, mapped);
 	
 	if(image== VK_NULL_HANDLE)
 		createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, imageMemory, bCubemap, mipLevels);
@@ -1566,15 +1568,15 @@ void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeigh
 	endSingleTimeCommands(commandBuffer);
 }
 
-void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory){
+void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped){
 
 	QeVKBuffer staging;
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging.buffer, staging.memory);
 	
-	setMemory(staging.memory, data, bufferSize);
+	setMemory(staging.memory, data, bufferSize, mapped);
 	
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
-
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
 	copyBuffer(staging.buffer, buffer, bufferSize);
 }
 

@@ -18,8 +18,10 @@ layout( binding = 0) uniform QeUniformBufferObject {
 
 layout( binding = 30, rgba32f  ) uniform imageBuffer inputStorageTexelBuffer;
 layout( binding = 31, rgba32f  ) uniform imageBuffer outputStorageTexelBuffer;
-//layout( binding = 40 ) uniform inputUBO inputUBOBuffer;
-//layout( binding = 41 ) uniform outUBO outputUBOBuffer;
+//layout( binding = 40 ) buffer inputS inputBuffer;
+layout( binding = 40 ) buffer outSSBO {
+	int death[];
+} outputs;
 
 layout( push_constant ) uniform TimeState {
   float DeltaTime;
@@ -50,6 +52,12 @@ void main() {
 			pos.w = times;
 			// init_speed & life time = joint
 			speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+5) ); 		
+		}
+		else{
+			//atomicAdd(outputs.death, 1);
+			//atomicExchange(outputs.death, 1);
+			outputs.death[gl_GlobalInvocationID.x] = 1;
+			//pos.xyz = vec3(0);
 		}
 	}
     imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );

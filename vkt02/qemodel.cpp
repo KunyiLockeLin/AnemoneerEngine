@@ -308,7 +308,7 @@ void QeModel::updateUniformBuffer() {
 		ubo.cameraPos[i] = VP->cameras[i]->pos;
 		ubo.cameraPos[i].w = 1;
 	}
-	VK->setMemory(uboBuffer.memory,(void*)&ubo, sizeof(ubo));
+	VK->setMemory(uboBuffer.memory,(void*)&ubo, sizeof(ubo), &uboBuffer.mapped);
 	
 	//QeLight* light = OBJMGR->getLight(0,nullptr);
 	//VK->setMemory(light->uboBuffer.memory, (void*)(&(light->data)), sizeof(light->data));

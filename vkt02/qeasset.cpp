@@ -810,14 +810,14 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->vertices.push_back(vertex);
 	}
 
-	VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory);
+	VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory, &model->vertex.mapped);
 
 	if (model->indexSize>0)
-		VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory);
+		VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory, &model->vertex.mapped);
 	
 	if (model->pMaterial && model->pMaterial->type == eMaterialPBR ) {
 		VK->createUniformBuffer(sizeof(model->pMaterial->value), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
-		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value));
+		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value), &model->pMaterial->uboBuffer.mapped);
 		astMaterials[_filePath] = model->pMaterial;
 	}
 	
@@ -836,7 +836,7 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());
 
 	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
-	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
+	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped );
 
 	astMaterials[_filePath] = mtl;
 
@@ -859,7 +859,7 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	else				mtl->image.pDiffuseMap = AST->getImage(_filename, bCubeMap);
 
 	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
-	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value));
+	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped);
 
 	astMaterials[_filePath] = mtl;
 
@@ -934,7 +934,7 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		}
 		if (bytes != 4)	imageFillto32bits(&data, bytes);
 
-		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
+		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, &image->mapped, i, bCubeMap);
 	}
 	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 	mipLevels = 1;

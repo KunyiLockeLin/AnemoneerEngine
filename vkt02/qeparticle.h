@@ -14,8 +14,11 @@ public:
 	QeAssetParticleRule* particleRule;
 	uint16_t particlesSize;
 	std::vector<QeVertex> particles;
+	std::vector<int> bDeaths;
 	QeVKBuffer uboParticleRule;
 	QeVKBuffer VertexBuffer;
+	QeVKBuffer outBuffer;
+
 	bool bFollow=true;
 	
 	virtual void init(QeAssetXML* _property);

@@ -22,7 +22,7 @@ struct QeVKBuffer {
 	VkBuffer buffer = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkBufferView view = VK_NULL_HANDLE;
-
+	void* mapped = nullptr;
 	~QeVKBuffer();
 };
 
@@ -32,7 +32,7 @@ struct QeVKImage {
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
 	VkSampler sampler = VK_NULL_HANDLE;
-
+	void* mapped = nullptr;
 	~QeVKImage();
 };
 
@@ -58,8 +58,7 @@ struct QeDataDescriptorSet {
 	VkBufferView inputStorageTexeLBufferView = VK_NULL_HANDLE;
 	VkBufferView outputStorageTexeLBufferView = VK_NULL_HANDLE;
 
-	// descriptorSetcUBONumber
-	VkBuffer	inputBuffer = VK_NULL_HANDLE;
+	// descriptorSetcBufferNumber
 	VkBuffer	outputBuffer = VK_NULL_HANDLE;
 };
 
@@ -69,6 +68,10 @@ enum QePipelineType {
 	ePipeLine_Triangle = 2,
 	ePipeLine_Postprogessing = 3,
 };
+
+enum QeVKBufferType {};
+
+enum QeVKImageType {};
 
 class QeVulkan
 {
@@ -110,8 +113,8 @@ public:
 	const uint8_t descriptorSetgInputAttachmentNumber = 1;
 	const uint8_t descriptorSetcStorageTexeLBufferStart = 30;
 	const uint8_t descriptorSetcStorageTexeLBufferNumber = 2;
-	const uint8_t descriptorSetcUBOStart = 40;
-	const uint8_t descriptorSetcUBONumber = 2;
+	const uint8_t descriptorSetcBufferStart = 40;
+	const uint8_t descriptorSetcBufferNumber = 1;
 
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
@@ -169,13 +172,13 @@ public:
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
 	VkPipeline createGraphicsPipeline(QeAssetShader* shader, QePipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
 	VkPipeline createComputePipeline(VkShaderModule shader);
-	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
+	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped);
 	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
 	VkSampler createTextureSampler();
 	
-	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, int layer=0, bool bCubemap=false);
+	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer=0, bool bCubemap=false);
 	void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
-	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped);
 	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 };

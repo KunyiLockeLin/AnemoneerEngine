@@ -65,7 +65,7 @@ void QeLight::init(QeAssetXML* _property) {
 	else if (billboard->pMaterial->type == eMaterialPBR)
 		billboard->pMaterial->value.pbr.baseColor = data.color;
 
-	VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value));
+	VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value), &billboard->pMaterial->uboBuffer.mapped);
 }
 
 void QeLight::updateRender(float time) {
@@ -82,7 +82,7 @@ void QeLight::updateRender(float time) {
 	billboard->setShow(bShow);
 	billboard->pos = data.pos;
 
-	VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data));
+	VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data), &uboBuffer.mapped);
 }
 
 void QeLight::updateCompute(float time) {}
