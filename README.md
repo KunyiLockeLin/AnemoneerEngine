@@ -8,7 +8,7 @@
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing(front-cull).
   - Support light and camera control.
-  - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader.
+  - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines, billboards, particle system.
@@ -37,10 +37,7 @@
   - multiple render
   - mirror
   - study 
-    - https://github.com/PacktPublishing/Vulkan-Cookbook 
     - https://github.com/SaschaWillems/Vulkan 
-    - https://renderdoc.org/docs/index.html
-    - https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
 ---
   - ui
   - bounding Box and sphere
