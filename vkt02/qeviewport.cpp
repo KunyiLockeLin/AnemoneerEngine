@@ -244,16 +244,16 @@ void QeViewport::drawFrame() {
 
 void QeViewport::createRender() {
 
-	VK->createSwapChain(VK->surface, swapChain, swapChainExtent, swapChainImageFormat, swapChainImages, swapChainImageViews);
+	VK->createSwapChain(VK->surface, swapChain, swapChainExtent, swapChainImageFormat, swapChainImages);
 	renderPass = VK->createRenderPass( swapChainImageFormat );
-	VK->createSceneDepthImage(sceneImage, depthImage, swapChainExtent);
-	VK->createFramebuffers(swapChainFramebuffers, sceneImage, depthImage, swapChainImageViews, swapChainExtent, renderPass);
+	VK->createPresentDepthImage(presentImage, depthImage, swapChainExtent);
+	VK->createFramebuffers(swapChainFramebuffers, presentImage, depthImage, swapChainImages, swapChainExtent, renderPass);
 	VK->createCommandBuffers(drawCommandBuffers, swapChainImages.size());
 }
 
 void QeViewport::cleanupRender() {
 
-	sceneImage.~QeVKImage();
+	presentImage.~QeVKImage();
 	depthImage.~QeVKImage();
 
 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
@@ -262,8 +262,11 @@ void QeViewport::cleanupRender() {
 	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
 		vkDestroyFramebuffer(VK->device, swapChainFramebuffers[i], nullptr);
 		swapChainFramebuffers[i] = VK_NULL_HANDLE;
-		vkDestroyImageView(VK->device, swapChainImageViews[i], nullptr);
-		swapChainImageViews[i] = VK_NULL_HANDLE;
+		//vkDestroyImageView(VK->device, swapChainImageViews[i], nullptr);
+		//swapChainImageViews[i] = VK_NULL_HANDLE;
+		vkDestroyImageView(VK->device, swapChainImages[i].view, nullptr);
+		swapChainImages[i].view = VK_NULL_HANDLE;
+		swapChainImages[i].image = VK_NULL_HANDLE;
 	}
 	vkFreeCommandBuffers(VK->device, VK->commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
 	drawCommandBuffers.clear();
@@ -373,7 +376,7 @@ void QeViewport::initPostProcessing() {
 void QeViewport::updatePostProcessing() {
 
 	QeDataDescriptorSet data;
-	data.inputAttachImageViews = sceneImage.view;
+	data.inputAttachImageViews = presentImage.view;
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)

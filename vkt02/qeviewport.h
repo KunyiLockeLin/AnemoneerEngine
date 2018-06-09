@@ -5,7 +5,7 @@
 class QeViewport
 {
 public:
-	QeViewport(QeGlobalKey& _key) {}
+	QeViewport(QeGlobalKey& _key):presentImage(eImage_present), depthImage(eImage_depth){}
 	~QeViewport();
 
 	int currentNum = 0;
@@ -30,12 +30,13 @@ public:
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	VkExtent2D swapChainExtent;
 	VkFormat swapChainImageFormat;
-	std::vector<VkImage> swapChainImages;
-	std::vector<VkImageView> swapChainImageViews;
+	//std::vector<VkImage> swapChainImages;
+	//std::vector<VkImageView> swapChainImageViews;
+	std::vector<QeVKImage> swapChainImages;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	VkRenderPass renderPass;
 
-	QeVKImage sceneImage;
+	QeVKImage presentImage;
 	QeVKImage depthImage;
 
 	std::vector<VkSemaphore> imageAvailableSemaphores;

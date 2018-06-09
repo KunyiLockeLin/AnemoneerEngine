@@ -133,7 +133,8 @@ void QeModel::init(QeAssetXML* _property) {
 	pMaterial = modelData->pMaterial;
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
-	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
+	//VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
+	VK->createBuffer(uboBuffer, sizeof(QeUniformBufferObject), nullptr);
 
 	QeDataDescriptorSet data;
 
@@ -308,8 +309,9 @@ void QeModel::updateUniformBuffer() {
 		ubo.cameraPos[i] = VP->cameras[i]->pos;
 		ubo.cameraPos[i].w = 1;
 	}
-	VK->setMemory(uboBuffer.memory,(void*)&ubo, sizeof(ubo), &uboBuffer.mapped);
-	
+	//VK->setMemory(uboBuffer.memory,(void*)&ubo, sizeof(ubo), &uboBuffer.mapped);
+	VK->setMemoryBuffer(uboBuffer, sizeof(ubo), (void*)&ubo );
+
 	//QeLight* light = OBJMGR->getLight(0,nullptr);
 	//VK->setMemory(light->uboBuffer.memory, (void*)(&(light->data)), sizeof(light->data));
 

@@ -18,21 +18,46 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
+enum QeVKBufferType {
+	eBuffer = 0,
+	eBuffer_vertex = 1,
+	eBuffer_index = 2,
+	eBuffer_storage_compute_shader_return = 3,
+	eBuffer_storage_texel = 4,
+	eBuffer_uniform = 5,
+};
+
 struct QeVKBuffer {
+
+	const QeVKBufferType type;
 	VkBuffer buffer = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkBufferView view = VK_NULL_HANDLE;
 	void* mapped = nullptr;
+
+	QeVKBuffer(QeVKBufferType _type):type(_type) {}
 	~QeVKBuffer();
+};
+
+enum QeVKImageType {
+	eImage_depth = 0,
+	eImage_swapchain = 1,
+	eImage_present = 2,
+	eImage_2D = 3,
+	eImage_cube = 4,
+	//eImage_inputAttach = 5,
 };
 
 struct QeVKImage {
 
+	const QeVKImageType type;
 	VkImage image = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
 	VkSampler sampler = VK_NULL_HANDLE;
-	void* mapped = nullptr;
+	//void* mapped = nullptr;
+
+	QeVKImage(QeVKImageType _type):type(_type) {}
 	~QeVKImage();
 };
 
@@ -69,12 +94,8 @@ enum QePipelineType {
 	ePipeLine_Postprogessing = 3,
 };
 
-enum QeVKBufferType {};
+class QeVulkan {
 
-enum QeVKImageType {};
-
-class QeVulkan
-{
 public:
 	QeVulkan(QeGlobalKey& _key) {}
 	~QeVulkan();
@@ -126,10 +147,10 @@ public:
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 
-	void createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<VkImage>& swapChainImages, std::vector<VkImageView>& swapChainImageViews);
+	void createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<QeVKImage>& swapChainImages);
 	VkRenderPass createRenderPass(VkFormat& swapChainImageFormat);
-	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
-	void createSceneDepthImage(QeVKImage& sceneImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
+	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+	void createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
 	void createCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers, size_t size);
 	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
@@ -143,12 +164,12 @@ public:
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
 
-	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, bool bCubemap=false, uint32_t mipLevels = 1);
-	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, bool bCubemap=false, uint32_t mipLevels = 1);
+	//VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, bool bCubemap=false, uint32_t mipLevels = 1);
+	//void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, bool bCubemap=false, uint32_t mipLevels = 1);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels=1);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer);
-	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view);
+	//void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	//void createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -172,13 +193,19 @@ public:
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
 	VkPipeline createGraphicsPipeline(QeAssetShader* shader, QePipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
 	VkPipeline createComputePipeline(VkShaderModule shader);
-	void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped);
+	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped);
+	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
 	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
-	VkSampler createTextureSampler();
+	//VkSampler createTextureSampler();
 	
-	void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer=0, bool bCubemap=false);
+	//void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer=0, bool bCubemap=false);
 	void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
-	void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped);
-	void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	//void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped);
+	//void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+	void createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
+	void setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
+	void createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data);
+	void setMemoryImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data, uint8_t layer);
 };

@@ -17,7 +17,7 @@ struct QeDataLight {
 class QeLight:public QeBase
 {
 public:
-	QeLight(QeObjectMangerKey& _key):QeBase(_key) {}
+	QeLight(QeObjectMangerKey& _key):QeBase(_key), uboBuffer(eBuffer_uniform) {}
 	~QeLight() {}
 
 	bool bShow = false;

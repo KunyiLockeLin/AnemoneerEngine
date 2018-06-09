@@ -10,7 +10,8 @@ void QeLine::init(QeAssetXML* _property) {
 
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
-	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
+	//VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
+	VK->createBuffer(uboBuffer, sizeof(QeUniformBufferObject), nullptr);
 
 	QeDataDescriptorSet data;
 	data.uboBuffer = uboBuffer.buffer;

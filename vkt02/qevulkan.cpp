@@ -214,7 +214,7 @@ void QeVulkan::createLogicalDevice() {
 	vkGetDeviceQueue(device, indices.computeFamily, 0, &computeQueue);
 }
 
-void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<VkImage>& swapChainImages, std::vector<VkImageView>& swapChainImageViews) {
+void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<QeVKImage>& swapChainImages) {
 	
 	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
 
@@ -261,16 +261,18 @@ void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain,
 	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)	LOG("failed to create swap chain!");
 
 	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
-	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
+	swapChainImages.resize(imageCount, eImage_swapchain);
+	std::vector<VkImage> swapchainImages2;
+	swapchainImages2.resize(imageCount);
+	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapchainImages2.data());
 
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
 
-	swapChainImageViews.resize(swapChainImages.size());
-
-	for (uint32_t i = 0; i < swapChainImages.size(); i++) {
-		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+	for (uint32_t i = 0; i < imageCount; i++) {
+		swapChainImages[i].image = swapchainImages2[i];
+		createImage(swapChainImages[i], 0, 0, 0, swapChainImageFormat, nullptr);
+		//swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
 
@@ -471,15 +473,15 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 }
 
 void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, 
-								  std::vector<VkImageView>& swapChainImageViews, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) {
-	framebuffers.resize(swapChainImageViews.size());
+								  std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) {
+	framebuffers.resize(swapChainImages.size());
 
-	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+	for (size_t i = 0; i < swapChainImages.size(); i++) {
 		std::array<VkImageView, 3> attachments = {
 			//swapChainImageViews[i],
 			sceneImage.view,
 			depthImage.view,
-			swapChainImageViews[i]
+			swapChainImages[i].view
 		};
 
 		VkFramebufferCreateInfo framebufferInfo = {};
@@ -508,20 +510,16 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createSceneDepthImage(QeVKImage& sceneImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent) {
+void QeVulkan::createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent) {
 	VkFormat depthFormat = findDepthFormat();
 
-	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, 
-		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage.image, depthImage.memory);
+	int imageSize = swapChainExtent.width*swapChainExtent.height * 4;
 
-	depthImage.view = createImageView(depthImage.image, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+	createImage(depthImage, imageSize, swapChainExtent.width, swapChainExtent.height, depthFormat, nullptr);
 	transitionImageLayout(depthImage.image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
-	int imageSize = swapChainExtent.width*swapChainExtent.height * 4;
-	unsigned char *data = new unsigned char[imageSize];
-	memset(data, 0, imageSize);
-	createImageData(data, VK_FORMAT_B8G8R8A8_UNORM, imageSize, swapChainExtent.width, swapChainExtent.height, sceneImage.image, sceneImage.memory, &sceneImage.mapped);
-	sceneImage.view = createImageView(sceneImage.image, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	createImage(presentImage, imageSize, swapChainExtent.width, swapChainExtent.height, VK_FORMAT_B8G8R8A8_UNORM, nullptr);
+
 }
 
 VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
@@ -553,7 +551,7 @@ bool QeVulkan::hasStencilComponent(VkFormat format) {
 	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
-VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, bool bCubemap, uint32_t mipLevels) {
+/*VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, bool bCubemap, uint32_t mipLevels) {
 	VkImageViewCreateInfo viewInfo = {};
 	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	viewInfo.image = image;
@@ -570,9 +568,9 @@ VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAsp
 	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) LOG("failed to create texture image view!");
 
 	return imageView;
-}
+}*/
 
-void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, bool bCubemap, uint32_t mipLevels) {
+/*void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, bool bCubemap, uint32_t mipLevels) {
 
 	VkImageCreateInfo imageInfo = {};
 	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -603,7 +601,7 @@ void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkI
 	if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) LOG("failed to allocate image memory!");
 
 	vkBindImageMemory(device, image, imageMemory, 0);
-}
+}*/
 
 void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
 	
@@ -691,7 +689,7 @@ void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width,
 	endSingleTimeCommands(commandBuffer);
 }
 
-void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+/*void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	VkBufferCreateInfo bufferInfo = {};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = size;
@@ -711,9 +709,9 @@ void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemor
 	if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) LOG("failed to allocate buffer memory!");
 
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
-}
+}*/
 
-void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view) {
+/*void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view) {
 	
 	VkBufferViewCreateInfo buffer_view_create_info = {};
 	buffer_view_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
@@ -726,7 +724,7 @@ void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkBufferView &
 
 	VkResult result = vkCreateBufferView(device, &buffer_view_create_info, nullptr, &buffer_view);
 	if (VK_SUCCESS != result) LOG("Could not creat buffer view.");
-}
+}*/
 
 VkCommandBuffer QeVulkan::beginSingleTimeCommands() {
 	VkCommandBufferAllocateInfo allocInfo = {};
@@ -1015,16 +1013,19 @@ VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorSetLayout& descriptorS
 	return descriptorSet;
 }
 
-void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped) {
+/*void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped) {
 
-	//if(!(*mapped)) vkMapMemory(device, memory, 0, size, 0, mapped);
-	//memcpy(*mapped, data, size);
+	if(!(*mapped)) vkMapMemory(device, memory, 0, size, 0, mapped);
+	memcpy(*mapped, data, size);
+}
+
+void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) {
+
 	void* buf;
 	vkMapMemory(device, memory, 0, size, 0, &buf);
 	memcpy(buf, data, size);
 	vkUnmapMemory(device, memory);
-}
-
+}*/
 
 void QeVulkan::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 4> poolSizes = {};
@@ -1439,7 +1440,7 @@ VkShaderModule QeVulkan::createShaderModel(void* data, VkDeviceSize size) {
 	return shader;
 }
 
-VkSampler QeVulkan::createTextureSampler() {
+/*VkSampler QeVulkan::createTextureSampler() {
 	VkSamplerCreateInfo samplerInfo = {};
 	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	samplerInfo.magFilter = VK_FILTER_LINEAR;
@@ -1465,9 +1466,9 @@ VkSampler QeVulkan::createTextureSampler() {
 	if (vkCreateSampler(VK->device, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) LOG("failed to create texture sampler!");
 	
 	return sampler;
-}
+}*/
 
-void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer, bool bCubemap) {
+/*void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer, bool bCubemap) {
 	
 	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 	mipLevels = 1;
@@ -1487,7 +1488,7 @@ void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSi
 	copyBufferToImage(staging.buffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height), layer);
 	//generateMipmaps(image, width, height, mipLevels);
 }
-
+*/
 void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
@@ -1568,7 +1569,7 @@ void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeigh
 	endSingleTimeCommands(commandBuffer);
 }
 
-void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped){
+/*void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped){
 
 	QeVKBuffer staging;
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging.buffer, staging.memory);
@@ -1578,8 +1579,245 @@ void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& b
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
 	copyBuffer(staging.buffer, buffer, bufferSize);
+}*/
+
+/*void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
+}*/
+
+void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
+
+	VkBufferUsageFlags usage;
+	VkMemoryPropertyFlags properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	bool bBuffer = true;
+	bool bMemory = true;
+	bool bView = false;
+
+	switch (buffer.type) {
+	case eBuffer:
+		usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		break;
+
+	case eBuffer_vertex:
+		usage =  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT; // VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+		//properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+		break;
+
+	case eBuffer_index:
+		usage =  VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+		break;
+
+	case eBuffer_storage_compute_shader_return:
+		usage =  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		break;
+
+	case eBuffer_storage_texel:
+		usage =  VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
+		bView = true;
+		break;
+
+	case eBuffer_uniform:
+		usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+		break;
+	}
+	// buffer
+	if (bBuffer) {
+		VkBufferCreateInfo bufferInfo = {};
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferInfo.size = size;
+		bufferInfo.usage = usage;
+		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer.buffer) != VK_SUCCESS) LOG("failed to create buffer!");
+	}
+
+	// memory
+	if (bMemory) {
+		VkMemoryRequirements memRequirements;
+		vkGetBufferMemoryRequirements(device, buffer.buffer, &memRequirements);
+
+		VkMemoryAllocateInfo allocInfo = {};
+		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		allocInfo.allocationSize = memRequirements.size;
+		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+
+		if (vkAllocateMemory(device, &allocInfo, nullptr, &buffer.memory) != VK_SUCCESS) LOG("failed to allocate buffer memory!");
+
+		vkBindBufferMemory(device, buffer.buffer, buffer.memory, 0);
+	}
+
+	// view
+	if ( bView ) {
+		VkBufferViewCreateInfo buffer_view_create_info = {};
+		buffer_view_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+		buffer_view_create_info.pNext = nullptr;
+		buffer_view_create_info.flags = 0;
+		buffer_view_create_info.buffer = buffer.buffer;
+		buffer_view_create_info.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+		buffer_view_create_info.offset = 0;
+		buffer_view_create_info.range = VK_WHOLE_SIZE;
+
+		VkResult result = vkCreateBufferView(device, &buffer_view_create_info, nullptr, &buffer.view);
+		if (VK_SUCCESS != result) LOG("Could not creat buffer view.");
+	}
+
+	if (data)	setMemoryBuffer(buffer, size, data);
+}
+void QeVulkan::setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
+	
+	if (buffer.mapped)	memcpy(buffer.mapped, data, size);
+	else {
+		vkMapMemory(device, buffer.memory, 0, size, 0, &buffer.mapped);
+		memcpy(buffer.mapped, data, size);
+	}
+	//QeVKBuffer staging(eBuffer);
+	//createBuffer(staging, size, data);
+	//copyBuffer(staging.buffer, buffer.buffer, size);
 }
 
-void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
-	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
+void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data) {
+
+	uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+
+	VkImageTiling tiling= VK_IMAGE_TILING_OPTIMAL;
+	VkImageUsageFlags usage;
+	VkMemoryPropertyFlags properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+	VkImageCreateFlags createFlags = 0;
+	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D;
+	int arrayLayer = 1;
+	bool bImage = true;
+	bool bMemory = true;
+	bool bView = true;
+	bool bSampler = false;
+	
+	switch ( image.type ) {
+	case eImage_depth:
+		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT;
+		break;
+
+	case eImage_present:
+		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT; // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
+		data = new unsigned char[size];
+		memset(data, 0, size);
+		break;
+
+	case eImage_swapchain:
+		bImage = false;
+		bMemory = false;
+		break;
+
+	case eImage_2D:
+		usage = VK_IMAGE_USAGE_SAMPLED_BIT; // VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+		bSampler = true;
+		break;
+
+	case eImage_cube:
+		createFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+		arrayLayer = 6;
+		viewType = VK_IMAGE_VIEW_TYPE_CUBE;
+		usage =  VK_IMAGE_USAGE_SAMPLED_BIT;
+		bSampler = true;
+		break;
+
+	//case eImage_inputAttach:
+	//	usage = ;
+	//	break;
+	}
+
+	// image
+	if (bImage) {
+		VkImageCreateInfo imageInfo = {};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.flags = createFlags;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.extent.width = width;
+		imageInfo.extent.height = height;
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = mipLevels;
+		imageInfo.arrayLayers = arrayLayer;
+		imageInfo.format = format;
+		imageInfo.tiling = tiling;
+		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;// VK_IMAGE_LAYOUT_PREINITIALIZED;
+		imageInfo.usage = usage;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		if (vkCreateImage(device, &imageInfo, nullptr, &image.image) != VK_SUCCESS) LOG("failed to create image!");
+	}
+
+	// memory
+	if (bMemory) {
+		VkMemoryRequirements memRequirements;
+		vkGetImageMemoryRequirements(device, image.image, &memRequirements);
+
+		VkMemoryAllocateInfo allocInfo = {};
+		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		allocInfo.allocationSize = memRequirements.size;
+		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+
+		if (vkAllocateMemory(device, &allocInfo, nullptr, &image.memory) != VK_SUCCESS) LOG("failed to allocate image memory!");
+
+		vkBindImageMemory(device, image.image, image.memory, 0);
+	}
+
+	// view
+	if (bView) {
+		VkImageViewCreateInfo viewInfo = {};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = image.image;
+		viewInfo.viewType = viewType;
+		viewInfo.format = format;
+		viewInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
+		viewInfo.subresourceRange.aspectMask = aspectFlags;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = mipLevels;// VK_REMAINING_MIP_LEVELS;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;// VK_REMAINING_ARRAY_LAYERS;
+
+		if (vkCreateImageView(device, &viewInfo, nullptr, &image.view) != VK_SUCCESS) LOG("failed to create texture image view!");
+	}
+
+	// sampler
+	if (bSampler) {
+		VkSamplerCreateInfo samplerInfo = {};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+		//samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;// VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;// VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;// VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.maxAnisotropy = 1;// 16;
+		samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;// VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+		samplerInfo.mipLodBias = 0;
+		samplerInfo.anisotropyEnable = VK_FALSE;
+		samplerInfo.minLod = 0;
+		samplerInfo.maxLod = 1;
+
+		if (vkCreateSampler(VK->device, &samplerInfo, nullptr, &image.sampler) != VK_SUCCESS) LOG("failed to create texture sampler!");
+	}
+
+	// data
+	if (data)	setMemoryImage(image, size, width, height, format, data, 0);
+}
+
+
+void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data, uint8_t layer) {
+
+	uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+	QeVKBuffer staging(eBuffer);
+	createBuffer(staging, size, data);
+
+	transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+	//transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+	copyBufferToImage(staging.buffer, image.image, static_cast<uint32_t>(width), static_cast<uint32_t>(height), layer);
+	//generateMipmaps(image, width, height, mipLevels);
 }

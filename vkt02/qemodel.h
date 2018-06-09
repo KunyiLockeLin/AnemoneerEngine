@@ -79,7 +79,7 @@ public:
 	virtual void updateRender(float time);
 	virtual void updateCompute(float time);
 
-	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model):QeBase(_key), modelType(_type) {}
+	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model):QeBase(_key), modelType(_type), uboBuffer(eBuffer_uniform){}
 	~QeModel();
 
 	virtual void init(QeAssetXML* _property);

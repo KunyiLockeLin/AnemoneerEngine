@@ -810,14 +810,18 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->vertices.push_back(vertex);
 	}
 
-	VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory, &model->vertex.mapped);
+	//VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory, &model->vertex.mapped);
+	VK->createBuffer(model->vertex, sizeof(model->vertices[0]) * model->vertices.size(), (void*)model->vertices.data());
 
-	if (model->indexSize>0)
-		VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory, &model->vertex.mapped);
-	
+	if (model->indexSize > 0) {
+		//VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory, &model->vertex.mapped);
+		VK->createBuffer(model->index, sizeof(model->indices[0]) * model->indices.size(), (void*)model->indices.data());
+	}
 	if (model->pMaterial && model->pMaterial->type == eMaterialPBR ) {
-		VK->createUniformBuffer(sizeof(model->pMaterial->value), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
-		VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value), &model->pMaterial->uboBuffer.mapped);
+		//VK->createUniformBuffer(sizeof(model->pMaterial->value), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
+		//VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value), &model->pMaterial->uboBuffer.mapped);
+		VK->createBuffer(model->pMaterial->uboBuffer, sizeof(model->pMaterial->value), (void*)&model->pMaterial->value);
+
 		astMaterials[_filePath] = model->pMaterial;
 	}
 	
@@ -835,8 +839,9 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());
 
-	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
-	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped );
+	VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
+	//VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
+	//VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped );
 
 	astMaterials[_filePath] = mtl;
 
@@ -858,8 +863,9 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	else if (bCubeMap)	mtl->image.pCubeMap = AST->getImage(_filename, bCubeMap);
 	else				mtl->image.pDiffuseMap = AST->getImage(_filename, bCubeMap);
 
-	VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
-	VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped);
+	VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
+	//VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
+	//VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped);
 
 	astMaterials[_filePath] = mtl;
 
@@ -893,8 +899,11 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 	}
 	else return nullptr;
 
-	QeVKImage* image = new QeVKImage();
-	image->sampler = VK->createTextureSampler();
+	QeVKImage* image;
+	
+	if(bCubeMap) image = new QeVKImage(eImage_cube);
+	else		 image = new QeVKImage(eImage_2D);
+	//image->sampler = VK->createTextureSampler();
 	std::vector<std::string> imageList;
 
 	if (bCubeMap) {
@@ -912,7 +921,6 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	int size = int(imageList.size());
 	int cIndex = int(ret - _filePath.c_str());
-	int width, height, bytes;
 
 	for (int i = 0;i<size; ++i) {
 		std::string path(_filePath);
@@ -920,6 +928,7 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		std::vector<char> buffer = loadFile(path.c_str());
 
 		std::vector<unsigned char> data;
+		int width, height, bytes;
 
 		switch (type) {
 		case 0:
@@ -934,11 +943,13 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		}
 		if (bytes != 4)	imageFillto32bits(&data, bytes);
 
-		VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, &image->mapped, i, bCubeMap);
+		uint32_t mipLevels = 1;// static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+
+		//VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
+		if(i == 0)	VK->createImage(*image, data.size(), width, height, format, (void*)data.data());
+		else		VK->setMemoryImage(*image, data.size(), width, height, format, (void*)data.data(), i);
 	}
-	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
-	mipLevels = 1;
-	image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap, mipLevels);
+	//image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap, mipLevels);
 
 	astTextures[_filePath] = image;
 

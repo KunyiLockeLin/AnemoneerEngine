@@ -9,8 +9,8 @@ void QeCube::init(QeAssetXML* _property) {
 	pMaterial = AST->getMaterialImage(AST->getXMLValue(_property, 1, "image"), true);
 	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
-	VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
-
+	//VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
+	VK->createBuffer(uboBuffer, sizeof(QeUniformBufferObject), nullptr);
 	QeDataDescriptorSet data;
 
 	data.uboBuffer = uboBuffer.buffer;

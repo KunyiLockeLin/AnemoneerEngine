@@ -10,7 +10,9 @@ void QeLight::init(QeAssetXML* _property) {
 	data.param = QeVector4f(0, 1, 1, 1);
 	rotateCenter = QeVector3f(0, 0, 0);
 	speed = 30;
-	VK->createUniformBuffer(sizeof(QeDataLight), uboBuffer.buffer, uboBuffer.memory);
+	//VK->createUniformBuffer(sizeof(QeDataLight), uboBuffer.buffer, uboBuffer.memory);
+	VK->createBuffer(uboBuffer, sizeof(QeDataLight), nullptr);
+
 	billboard = nullptr;
 	if (_property == nullptr) return;
 
@@ -65,7 +67,8 @@ void QeLight::init(QeAssetXML* _property) {
 	else if (billboard->pMaterial->type == eMaterialPBR)
 		billboard->pMaterial->value.pbr.baseColor = data.color;
 
-	VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value), &billboard->pMaterial->uboBuffer.mapped);
+	//VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value), &billboard->pMaterial->uboBuffer.mapped);
+	VK->setMemoryBuffer(billboard->pMaterial->uboBuffer, sizeof(billboard->pMaterial->value), (void*)&billboard->pMaterial->value);
 }
 
 void QeLight::updateRender(float time) {
@@ -82,7 +85,8 @@ void QeLight::updateRender(float time) {
 	billboard->setShow(bShow);
 	billboard->pos = data.pos;
 
-	VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data), &uboBuffer.mapped);
+	//VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data), &uboBuffer.mapped);
+	VK->setMemoryBuffer(uboBuffer, sizeof(data), (void*)(&data));
 }
 
 void QeLight::updateCompute(float time) {}

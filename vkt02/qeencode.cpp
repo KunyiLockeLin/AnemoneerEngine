@@ -729,6 +729,7 @@ QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	AST->getXMLfValue(particle->size_y_init_pos_d.y, *node, 2, "size", "y_range");
 	AST->getXMLfValue(particle->size_y_init_pos_d.z, *node, 2, "init_pos", "degree");
 	AST->getXMLfValue(particle->size_y_init_pos_d.w, *node, 2, "init_pos", "degree_range");
+
 	return particle;
 }
 

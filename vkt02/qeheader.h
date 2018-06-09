@@ -122,7 +122,6 @@ class QeLine;
 #include "qeline.h"
 #include "qecube.h"
 #include "qeparticle.h"
-#include "qecompute.h"
 #include "qelight.h"
 #include "qewindow.h"
 #include "qeviewport.h"

@@ -168,7 +168,6 @@
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qecommand.cpp" />
-    <ClCompile Include="qecompute.cpp" />
     <ClCompile Include="qecube.cpp" />
     <ClCompile Include="qeline.cpp" />
     <ClCompile Include="qelog.cpp" />
@@ -193,7 +192,6 @@
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qecommand.h" />
-    <ClInclude Include="qecompute.h" />
     <ClInclude Include="qecube.h" />
     <ClInclude Include="qeline.h" />
     <ClInclude Include="qelog.h" />

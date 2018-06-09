@@ -52,6 +52,7 @@ struct QeAssetModel {
 	std::vector<unsigned int> animationStartFrames;
 	std::vector<unsigned int> animationEndFrames;
 
+	QeAssetModel() :vertex(eBuffer_vertex), index(eBuffer_index) {}
 	~QeAssetModel();
 };
 
@@ -105,6 +106,8 @@ struct QeAssetMaterial {
 	QeAssetImage image;
 	QeAssetShader shader;
 	QeDataMaterial value;
+
+	QeAssetMaterial() :uboBuffer(eBuffer_uniform) {}
 };
 
 enum QeAssetType {
