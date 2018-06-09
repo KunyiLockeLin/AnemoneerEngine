@@ -94,6 +94,9 @@ enum QePipelineType {
 	ePipeLine_Postprogessing = 3,
 };
 
+// VK_CHECK_RESULT
+// VkDestroyer
+
 class QeVulkan {
 
 public:

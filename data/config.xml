@@ -34,7 +34,7 @@
     <particle>particlec.spv</particle>
   </computeShader>
   
-  <startScene>scene2</startScene>
+  <startScene>scene1</startScene>
   <scene1 id="12000">
     <cubemaps>
       <e id="30000" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>

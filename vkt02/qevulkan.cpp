@@ -1089,6 +1089,33 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 		fragShaderStageInfo.module = shader->frag;
 		fragShaderStageInfo.pName = "main";
+
+		/*
+		// Shader bindings based on specialization constants are marked by the new "constant_id" layout qualifier:
+		//	layout (constant_id = 0) const int LIGHTING_MODEL = 0;
+		//	layout (constant_id = 1) const float PARAM_TOON_DESATURATION = 0.0f;
+		struct SpecializationData {
+			uint32_t lightingModel;
+			float toonDesaturationFactor = 0.5f;
+		} specializationData;
+
+		std::array<VkSpecializationMapEntry, 2> specializationMapEntries;
+		specializationMapEntries[0].constantID = 0;
+		specializationMapEntries[0].size = sizeof(specializationData.lightingModel);
+		specializationMapEntries[0].offset = 0;
+
+		specializationMapEntries[1].constantID = 1;
+		specializationMapEntries[1].size = sizeof(specializationData.toonDesaturationFactor);
+		specializationMapEntries[1].offset = offsetof(SpecializationData, toonDesaturationFactor);
+		
+		VkSpecializationInfo specializationInfo{};
+		specializationInfo.dataSize = sizeof(specializationData);
+		specializationInfo.mapEntryCount = static_cast<uint32_t>(specializationMapEntries.size());
+		specializationInfo.pMapEntries = specializationMapEntries.data();
+		specializationInfo.pData = &specializationData;
+
+		fragShaderStageInfo.pSpecializationInfo = &specializationInfo;
+		*/
 		shaderStages.push_back(fragShaderStageInfo);
 	}
 

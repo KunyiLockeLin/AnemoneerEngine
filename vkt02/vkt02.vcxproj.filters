@@ -220,6 +220,9 @@
     <None Include="..\data\shaders\particle.comp">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\toon.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">
