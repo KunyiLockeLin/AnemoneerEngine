@@ -86,11 +86,11 @@ struct QeDataDescriptorSet {
 	VkBuffer	outputBuffer = VK_NULL_HANDLE;
 };
 
-enum QePipelineType {
-	ePipeLine_Point = 0,
-	ePipeLine_Line = 1,
-	ePipeLine_Triangle = 2,
-	ePipeLine_Postprogessing = 3,
+enum QeGraphicsPipelineType {
+	eGraphicsPipeLine_Point = 0,
+	eGraphicsPipeLine_Line = 1,
+	eGraphicsPipeLine_Triangle = 2,
+	eGraphicsPipeLine_Postprogessing = 3,
 };
 
 // VK_CHECK_RESULT
@@ -193,7 +193,7 @@ public:
 
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createGraphicsPipeline(QeAssetShader* shader, QePipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
+	VkPipeline createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
 	VkPipeline createComputePipeline(VkShaderModule shader);
 	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped);
 	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);

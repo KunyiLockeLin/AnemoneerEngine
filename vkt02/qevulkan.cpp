@@ -1044,7 +1044,7 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineType type, bool bAlpha, uint8_t subpassIndex) {
+VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -1119,7 +1119,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	if (type == ePipeLine_Postprogessing) { // bVetex
+	if (type == eGraphicsPipeLine_Postprogessing) { // bVetex
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
 		vertexInputInfo.vertexAttributeDescriptionCount = 0;
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
@@ -1139,8 +1139,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	if (type == ePipeLine_Point || type == ePipeLine_Postprogessing)	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-	else if(type == ePipeLine_Line)										inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	if (type == eGraphicsPipeLine_Point || type == eGraphicsPipeLine_Postprogessing)	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	else if(type == eGraphicsPipeLine_Line)								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 	else if (shader->tesc && shader->tese )								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
 	else																inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
@@ -1148,7 +1148,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = (bShowMesh && type != ePipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+	rasterizer.polygonMode = (bShowMesh && type != eGraphicsPipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
@@ -1178,7 +1178,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QePipelineTyp
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 
-	if (type == ePipeLine_Postprogessing) { // DepthTest
+	if (type == eGraphicsPipeLine_Postprogessing) { // DepthTest
 		depthStencil.depthTestEnable = VK_FALSE;
 		depthStencil.depthWriteEnable = VK_FALSE;
 	}

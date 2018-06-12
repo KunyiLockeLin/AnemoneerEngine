@@ -140,7 +140,7 @@ void QeParticle::init(QeAssetXML* _property) {
 void QeParticle::createPipeline() {
 
 	if (particlesSize == 0) return;
-	graphicsPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Point, bAlpha );
+	graphicsPipeline = VK->createGraphicsPipeline(&shader, eGraphicsPipeLine_Point, bAlpha );
 	computePipeline = VK->createComputePipeline(computeShader);
 }
 

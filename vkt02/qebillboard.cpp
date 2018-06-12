@@ -86,7 +86,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 }
 
 void QeBillboard::createPipeline() {
-	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, ePipeLine_Point, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, eGraphicsPipeLine_Point, bAlpha);
 }
 
 void QeBillboard::setMatModel() {

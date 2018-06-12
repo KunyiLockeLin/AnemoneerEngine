@@ -380,5 +380,5 @@ void QeViewport::updatePostProcessing() {
 	VK->updateDescriptorSet(data, postprocessingDescriptorSet);
 
 	if ( postprocessingPipeline == VK_NULL_HANDLE)
-		postprocessingPipeline = VK->createGraphicsPipeline(&shader, ePipeLine_Postprogessing, 1);
+		postprocessingPipeline = VK->createGraphicsPipeline(&shader, eGraphicsPipeLine_Postprogessing, 1);
 }
