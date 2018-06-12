@@ -343,7 +343,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	subpass2.colorAttachmentCount = 1;
 	subpass2.pColorAttachments = &colorAttachmentRef2;
 
-	VkSubpassDependency dependency = {};
+	/*VkSubpassDependency dependency = {};
 	dependency.srcSubpass = 0;
 	dependency.dstSubpass = 1;
 	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -351,28 +351,25 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 	dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-	/*
-	std::vector<VkSubpassDependency> dependencies = {
-		{
-			VK_SUBPASS_EXTERNAL,                            // uint32_t                   srcSubpass
-			0,                                              // uint32_t                   dstSubpass
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,              // VkPipelineStageFlags       srcStageMask
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags       dstStageMask
-			VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags              srcAccessMask
-			VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags              dstAccessMask
-			VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags          dependencyFlags
-		},
-	  {
-		  0,                                              // uint32_t                   srcSubpass
-		  VK_SUBPASS_EXTERNAL,                            // uint32_t                   dstSubpass
-		  VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags       srcStageMask
-		  VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,              // VkPipelineStageFlags       dstStageMask
-		  VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags              srcAccessMask
-		  VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags              dstAccessMask
-		  VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags          dependencyFlags
-	  }
-	};
 	*/
+	std::array<VkSubpassDependency, 2> dependencies;
+
+	dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
+	dependencies[0].dstSubpass = 0;
+	dependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+	dependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+	dependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	dependencies[0].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+
+	dependencies[1].srcSubpass = 0;
+	dependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
+	dependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+	dependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+	dependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+	
 	std::array<VkAttachmentDescription, 3> attachments = { colorAttachment1, depthAttachment, colorAttachment2 };
 	std::array<VkSubpassDescription, 2> subpasses = { subpass1, subpass2 };
 	VkRenderPassCreateInfo renderPassInfo = {};
@@ -381,8 +378,8 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	renderPassInfo.pAttachments = attachments.data();
 	renderPassInfo.subpassCount = static_cast<uint32_t>(subpasses.size());;
 	renderPassInfo.pSubpasses = subpasses.data();
-	renderPassInfo.dependencyCount = 1;
-	renderPassInfo.pDependencies = &dependency;
+	renderPassInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());;
+	renderPassInfo.pDependencies = dependencies.data();
 
 	VkRenderPass renderPass;
 	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)	LOG("failed to create render pass!");
@@ -1721,10 +1718,10 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, 
 	switch ( image.type ) {
 	case eImage_depth:
 		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT;
+		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 		break;
 
-	case eImage_present:
+	case eImage_inputAttach:
 		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT; // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
 		data = new unsigned char[size];
 		memset(data, 0, size);

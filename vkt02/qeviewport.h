@@ -5,7 +5,8 @@
 class QeViewport
 {
 public:
-	QeViewport(QeGlobalKey& _key):presentImage(eImage_present), depthImage(eImage_depth){}
+
+	QeViewport(QeGlobalKey& _key):presentImage(eImage_inputAttach), depthImage(eImage_depth){}
 	~QeViewport();
 
 	int currentNum = 0;
