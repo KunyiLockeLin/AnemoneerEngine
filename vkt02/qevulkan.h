@@ -93,6 +93,14 @@ enum QeGraphicsPipelineType {
 	eGraphicsPipeLine_Postprogessing = 3,
 };
 
+struct QeGraphicsPipelineStruct {
+	VkPipeline graphicsPipeline;
+	QeAssetShader* shader;
+	QeGraphicsPipelineType type;
+	bool bAlpha;
+	uint8_t subpassIndex;
+};
+
 // VK_CHECK_RESULT
 // VkDestroyer
 
@@ -123,6 +131,8 @@ public:
 
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkPhysicalDeviceProperties deviceProperties;
+
+	std::vector<QeGraphicsPipelineStruct*> graphicsPipelines;
 
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
@@ -193,7 +203,7 @@ public:
 
 	void createDescriptorPool();
 	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	VkPipeline createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
+	QeGraphicsPipelineStruct* createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
 	VkPipeline createComputePipeline(VkShaderModule shader);
 	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped);
 	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);

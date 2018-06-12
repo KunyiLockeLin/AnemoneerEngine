@@ -53,7 +53,9 @@ public:
 	//std::vector<VkCommandBuffer> computeCommandBuffers;
 
 	VkDescriptorSet postprocessingDescriptorSet;
-	VkPipeline		postprocessingPipeline = VK_NULL_HANDLE;
+	//VkPipeline		postprocessingPipeline = VK_NULL_HANDLE;
+	QeGraphicsPipelineStruct* postprocessingPipeline = nullptr;
+
 	QeAssetShader	shader;
 
 	void createRender();

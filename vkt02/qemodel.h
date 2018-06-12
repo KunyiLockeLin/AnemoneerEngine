@@ -64,8 +64,10 @@ public:
 	VkShaderModule computeShader = VK_NULL_HANDLE;
 
 	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-	VkPipeline graphicsPipeline = VK_NULL_HANDLE;
-	VkPipeline normalPipeline = VK_NULL_HANDLE;
+	//VkPipeline graphicsPipeline = VK_NULL_HANDLE;
+	//VkPipeline normalPipeline = VK_NULL_HANDLE;
+	QeGraphicsPipelineStruct* graphicsPipeline = nullptr;
+	QeGraphicsPipelineStruct* normalPipeline = nullptr;
 	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeAssetShader normalShader;

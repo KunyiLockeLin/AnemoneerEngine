@@ -1044,7 +1044,16 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
+QeGraphicsPipelineStruct* QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
+
+	std::vector<QeGraphicsPipelineStruct*>::iterator it = graphicsPipelines.begin();
+	while ( it != graphicsPipelines.end()) {
+		if ((*it)->shader->vert == shader->vert && (*it)->shader->tesc == shader->tesc && (*it)->shader->tese == shader->tese &&
+			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->bAlpha == bAlpha && (*it)->subpassIndex == subpassIndex) {
+			return *it;
+		}
+		++it;
+	}
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -1260,7 +1269,17 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPip
 	VkPipeline graphicsPipeline;
 	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");
 	
-	return graphicsPipeline;
+	QeGraphicsPipelineStruct* s = new QeGraphicsPipelineStruct();
+	s->shader = shader;
+	s->bAlpha = bAlpha;
+	s->subpassIndex = subpassIndex;
+	s->type = type;
+	s->graphicsPipeline = graphicsPipeline;
+	graphicsPipelines.push_back(s);
+
+	size_t size = graphicsPipelines.size();
+
+	return graphicsPipelines[size-1];
 }
 
 VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {

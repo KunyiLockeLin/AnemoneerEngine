@@ -5,18 +5,20 @@ QeModel::~QeModel() {
 }
 
 void QeModel::cleanupPipeline() {
+	graphicsPipeline = VK_NULL_HANDLE;
+	normalPipeline = VK_NULL_HANDLE;
 
-	if (graphicsPipeline != VK_NULL_HANDLE) {
+	/*if (graphicsPipeline != VK_NULL_HANDLE) {
 		vkDestroyPipeline(VK->device, graphicsPipeline, nullptr);
 		graphicsPipeline = VK_NULL_HANDLE;
-	}
-	if (computePipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(VK->device, computePipeline, nullptr);
-		computePipeline = VK_NULL_HANDLE;
 	}
 	if (normalPipeline != VK_NULL_HANDLE) {
 		vkDestroyPipeline(VK->device, normalPipeline, nullptr);
 		normalPipeline = VK_NULL_HANDLE;
+	}*/
+	if (computePipeline != VK_NULL_HANDLE) {
+		vkDestroyPipeline(VK->device, computePipeline, nullptr);
+		computePipeline = VK_NULL_HANDLE;
 	}
 }
 
@@ -417,14 +419,14 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
 	vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
 	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 
-	if (VK->bShowNormal && normalPipeline ) {
+	if (VK->bShowNormal && normalPipeline->graphicsPipeline) {
 		vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
 		//vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-		vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline);
+		vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
 		//vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 		vkCmdDraw(drawCommandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}

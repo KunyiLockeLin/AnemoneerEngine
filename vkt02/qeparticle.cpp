@@ -160,7 +160,7 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &VertexBuffer.buffer, offsets);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
 	vkCmdDraw(drawCommandBuffer, particlesSize, 1, 0, 0);
 	
 }

@@ -256,7 +256,7 @@ void QeViewport::cleanupRender() {
 	presentImage.~QeVKImage();
 	depthImage.~QeVKImage();
 
-	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
+	//vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
 	postprocessingPipeline = VK_NULL_HANDLE;
 
 	for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
@@ -275,6 +275,13 @@ void QeViewport::cleanupRender() {
 	renderPass = VK_NULL_HANDLE;
 	vkDestroySwapchainKHR(VK->device, swapChain, nullptr);
 	swapChain = VK_NULL_HANDLE;
+
+	for (size_t i = 0;i<VK->graphicsPipelines.size();++i ) {
+		vkDestroyPipeline(VK->device, VK->graphicsPipelines[i]->graphicsPipeline, nullptr);
+		delete VK->graphicsPipelines[i];
+	}
+	VK->graphicsPipelines.clear();
+
 	if (OBJMGR != nullptr)	OBJMGR->cleanupPipeline();
 }
 
@@ -358,7 +365,7 @@ void QeViewport::updateDrawCommandBuffers() {
 		OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
 		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &postprocessingDescriptorSet, 0, nullptr);
-		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline);
+		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline->graphicsPipeline);
 		//vkCmdDraw(drawCommandBuffers[i], 3, 1, 0, 0);
 		vkCmdDraw(drawCommandBuffers[i], 1, 1, 0, 0);
 
@@ -369,7 +376,7 @@ void QeViewport::updateDrawCommandBuffers() {
 
 void QeViewport::initPostProcessing() {
 
-	if (postprocessingPipeline != VK_NULL_HANDLE) 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
+	//if (postprocessingPipeline != VK_NULL_HANDLE) 	vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
 	postprocessingPipeline = VK_NULL_HANDLE;
 }
 
