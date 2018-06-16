@@ -14,5 +14,5 @@ layout(location = 2) out vec3 outNormal;
 layout(location = 3) out vec3 outTangent;
 layout(location = 4) out vec3 outBiTanget;
 layout(location = 5) out vec3 outPostion;
-layout(location = 6) out vec3 outCameraPostion;
-layout(location = 7) out vec3 outLighttoVertex;
+layout(location = 6) out vec3 outLighttoVertex;
+layout(location = 7) out vec3 outUV3;

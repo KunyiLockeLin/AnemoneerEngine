@@ -71,8 +71,13 @@
   </scene2>
   
   <scene3 id="12002">
+    <cubemaps>
+      <e id="30000" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
+    </cubemaps>
     <models>
-      <e id="30005" obj= "box.gltf" show="1" speed ="50" posX="0" posY="0" posZ="0"  scaleX="3" scaleY="3" scaleZ="3"/>
+      <e id="30001" obj="animation.gltf" show="1" speed="50" posX="0" posY="5" posZ="-1" actionSpeed="1" action="0" actionType="2" />
+      <e id="30002" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="30001" attachskeleton="Armature_Bone_002" />
+      <e id="30003" obj="box.gltf" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="30000" comp="shaderc.spv" culling="1000"/>
     </models>
   </scene3>
   

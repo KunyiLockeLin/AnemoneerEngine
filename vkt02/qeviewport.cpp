@@ -145,7 +145,7 @@ void QeViewport::updateBuffer() {
 		if (viewports[i]->camera->bUpdateBuffer) {
 			viewports[i]->camera->bUpdateBuffer = false;
 
-			viewports[i]->environmentData.ambintColor = ACT->ambientColor;
+			viewports[i]->environmentData.ambientColor = ACT->ambientColor;
 			viewports[i]->environmentData.camera = viewports[i]->camera->bufferData;
 			viewports[i]->environmentData.param.x = float(viewports[i]->lights.size());
 

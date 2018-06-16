@@ -1,4 +1,6 @@
 const int MAX_JOINT_NUM = 20;
+const float M_PI = 3.141592653589793;
+const float c_MinRoughness = 0.04;
 
 
 layout( push_constant ) uniform TimeState {
@@ -13,7 +15,7 @@ struct QeDataCamera {
 };
 
 layout( set = 0, binding = 0) uniform QeDataEnvironment {
-	vec4 ambintColor;
+	vec4 ambientColor;
 	QeDataCamera camera;
 	vec4 param; // 0: light num
 } environmentData;
