@@ -407,7 +407,7 @@ void QeVulkan::createDescriptorSetLayout() {
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model].resize(4);
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].startID = 0;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].count = 2;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].count = 1;
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].startID = 10;
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].count = 3;

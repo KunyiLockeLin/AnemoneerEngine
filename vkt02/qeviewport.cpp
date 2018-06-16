@@ -111,7 +111,7 @@ void QeViewport::addNewViewport() {
 	else node = node->nexts[0];
 
 	uint16_t id = atoi(AST->getXMLValue(node, 1, "id"));
-	vp->camera = OBJMGR->getCamera(id+ int(viewports.size()), initProperty);
+	vp->camera = OBJMGR->getCamera(id+ int(viewports.size()), node);
 
 	VK->createBuffer(vp->environmentBuffer, sizeof(vp->environmentData), nullptr);
 	

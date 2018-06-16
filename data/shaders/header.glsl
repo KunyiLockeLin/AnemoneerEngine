@@ -47,6 +47,6 @@ layout( set = 1, binding = 0) uniform QeDataModel {
 } modelData;
 
 
-layout( set = 1, binding = 1) uniform QeDataModelViewport {
+/*layout( set = 1, binding = 1) uniform QeDataModelViewport {
 	mat4 normal;
-} modelViewport;
+} modelViewport;*/

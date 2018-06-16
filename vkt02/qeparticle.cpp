@@ -118,11 +118,11 @@ void QeParticle::createPipeline() {
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
 	if (particlesSize == 0) return;
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
+	/*std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
 	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);
+	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);*/
 }
 
 void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {

@@ -30,17 +30,16 @@ enum QeActionState {
 	eActionStatePause,
 };
 
-struct QeDataModelViewport {
+/*struct QeDataModelViewport {
 	QeMatrix4x4f normal;
-};
+};*/
 
 struct QeDataModelShader {
-	QeDataModelViewport data;
-
-	QeVKBuffer buffer;
+	//QeDataModelViewport data;
+	//QeVKBuffer buffer;
 	QeDataDescriptorSet descriptorSet;
 
-	QeDataModelShader():buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
+	QeDataModelShader():/*buffer(eBuffer_uniform),*/ descriptorSet(eDescriptorSetLayout_Model) {}
 };
 
 class QeModel:public QeBase

@@ -33,7 +33,7 @@
     <particle>particlec.spv</particle>
   </computeShader>
   
-  <startScene>scene3</startScene>
+  <startScene>scene1</startScene>
   <scene1 id="12000">
     <cubemaps>
       <e id="30000" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
@@ -50,7 +50,7 @@
       <e id="11000" alpha="1" show="1" image="light.png" type="0" posX="10" posY="0" posZ="5" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="200" coneAngle="90" speed="30"/>
     </lights>
     <cameras>
-      <e id="10000" type="0" posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
+      <e id="10000" posX="25" posY="0" posZ="5" targetX="0" targetY="0" targetZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
     </cameras>
     <points/>
     <postprocessing/>
@@ -71,14 +71,9 @@
   </scene2>
   
   <scene3 id="12002">
-    <cubemaps>
-      <e id="30000" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
-    </cubemaps>
-    <models>
-      <e id="30001" obj="animation.gltf" show="1" speed="50" posX="0" posY="5" posZ="-1" actionSpeed="1" action="0" actionType="2" />
-      <e id="30002" obj="ball.gltf" show="1" speed="100" posX="1" posY="1" posZ="0" attachid="30001" attachskeleton="Armature_Bone_002" />
-      <e id="30003" obj="box.gltf" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapid="30000" comp="shaderc.spv" culling="1000"/>
-    </models>
+    <points>
+      <e id="30006" posX="0" posY="5" posZ="0" paritcleid="30005" paritcleEid="30004" paritclefollow="1"/>
+    </points>
   </scene3>
   
   <particles>

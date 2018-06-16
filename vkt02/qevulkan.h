@@ -92,7 +92,7 @@ struct QeDataDescriptorSetCommon {
 struct QeDataDescriptorSetModel {
 	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
 	VkBuffer	modelBuffer = VK_NULL_HANDLE;
-	VkBuffer	modelViewportBuffer = VK_NULL_HANDLE;
+	//VkBuffer	modelViewportBuffer = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
 	//VkImageView diffuseMapImageViews = VK_NULL_HANDLE;

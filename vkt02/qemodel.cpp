@@ -29,7 +29,7 @@ void QeModel::updateShaderData() {
 	for (; i < size; ++i) {
 		QeDataModelShader * data = new QeDataModelShader();
 		shaderData.push_back(data);
-		VK->createBuffer(data->buffer, sizeof(data->data), nullptr);
+		//VK->createBuffer(data->buffer, sizeof(data->data), nullptr);
 		VK->createDescriptorSet(data->descriptorSet);
 		VK->updateDescriptorSet(&createDescriptorSetModel(int(i)), data->descriptorSet);
 	}
@@ -47,7 +47,7 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
 	descriptorSetData.normalMapImageViews = pMaterial->image.pNormalMap->view;
 	descriptorSetData.normalMapSamplers = pMaterial->image.pNormalMap->sampler;
-	descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
+	//descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
 
 	bufferData.param.x = 0;
 	if (cubeMapID > 0) {
@@ -289,8 +289,8 @@ void QeModel::updateBuffer() {
 
 	setMatModel();
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
-
-	size_t size = shaderData.size();
+	
+	/*size_t size = shaderData.size();
 	size_t size1 = VP->viewports.size();
 	if (size1 < size) size = size1;
 
@@ -300,7 +300,7 @@ void QeModel::updateBuffer() {
 		MATH->inverse(mat, mat);
 		shaderData[i]->data.normal = MATH->transpose(mat);
 		VK->setMemoryBuffer(shaderData[i]->buffer, sizeof(shaderData[i]->data), &shaderData[i]->data);
-	}
+	}*/
 }
 
 bool QeModel::setAction(unsigned int actionID, QeActionType type) {
