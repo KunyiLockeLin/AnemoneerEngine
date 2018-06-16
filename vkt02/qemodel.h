@@ -116,7 +116,7 @@ public:
 	void updateAction(float time);
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
-	std::vector<VkDescriptorSet> getDescriptorSets();
+	std::vector<VkDescriptorSet> getDescriptorSets(int index);
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {}
 };

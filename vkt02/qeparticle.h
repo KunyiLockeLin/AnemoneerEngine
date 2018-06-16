@@ -6,7 +6,7 @@ class QeParticle : public QeModel
 {
 public:
 
-	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle), VertexBuffer(eBuffer_storage_texel), outBuffer(eBuffer_storage_compute_shader_return){}
+	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle), VertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
 	~QeParticle() {}
 
 	uint16_t eid;

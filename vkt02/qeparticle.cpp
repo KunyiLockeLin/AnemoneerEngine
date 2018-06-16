@@ -27,7 +27,7 @@ void QeParticle::init(QeAssetXML* _property) {
 		switch (type) {
 		case 0:
 			particles[i].pos.x = MATH->fRandom(particleRule->init_pos_lw.x, particleRule->init_pos_lw.y)*(MATH->iRandom(0, 1) ? 1 : -1);
-			particles[i].pos.y = MATH->fRandom(-(particleRule->init_pos_lw.z+particleRule->init_pos_lw.w), (particleRule->init_pos_lw.z + particleRule->init_pos_lw.w)*2);
+			particles[i].pos.y = MATH->fRandom(-(particleRule->init_pos_lw.z + particleRule->init_pos_lw.w), (particleRule->init_pos_lw.z + particleRule->init_pos_lw.w) * 2);
 			break;
 		case 1:
 			particles[i].pos.x = MATH->fRandom(-(particleRule->init_pos_lw.x + particleRule->init_pos_lw.y), (particleRule->init_pos_lw.x + particleRule->init_pos_lw.y) * 2);
@@ -81,13 +81,14 @@ void QeParticle::init(QeAssetXML* _property) {
 		size.x = MATH->fRandom(particleRule->alpha_born_size_x.z, particleRule->alpha_born_size_x.w);
 		size.y = MATH->fRandom(particleRule->size_y_init_pos_d.x, particleRule->size_y_init_pos_d.y);
 		size.z = 1;
-	
+
 		//MATH->fRandoms(-1.0f, 2.0f, 3, &particles[i].pos.x);
 		//MATH->fRandoms(0.0f, 1.0f, 3, &particles[i].color.x);
 		//MATH->fRandoms(-1.0f, 2.0f, 3, &particles[i].normal.x);
 	}
-
 	VK->createBuffer(VertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
+	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
+
 	bufferData.param.x = float(bFollow + 1);
 
 	pMaterial = AST->getMaterialImage(particleRule->image);
@@ -100,7 +101,7 @@ void QeParticle::init(QeAssetXML* _property) {
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.texeLBufferView = VertexBuffer.view;
+	descriptorSetData.texelBufferView = VertexBuffer.view;
 	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
 	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
@@ -117,7 +118,7 @@ void QeParticle::createPipeline() {
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
 	if (particlesSize == 0) return;
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
 	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
@@ -129,7 +130,7 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	//if (!bShow || !bCullingShow) return;
 	if (particlesSize == 0) return;
 
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(VP->currentCommandViewport);
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
@@ -139,26 +140,30 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 }
 
 void QeParticle::updateCompute(float time) {
-	memcpy(bDeaths.data(), outBuffer.mapped, sizeof(bDeaths[0])*bDeaths.size());
-	memcpy(particles.data(), VertexBuffer.mapped, sizeof(particles[0])*particles.size());
-	VP->bUpdateDrawCommandBuffers = true;
 
-	size_t size = bDeaths.size();
-	bool b = false;
-	for (int i = 0; i<size; ++i) {
-		if (bDeaths[i]) {
-			b = true;
-			particles.erase(particles.begin() + i);
-			bDeaths.erase(bDeaths.begin() + i);
-			--i;
-			--size;
-		}
-	}
-
-	if (b) {
-		particlesSize = uint32_t(particles.size());
-		VK->setMemoryBuffer(VertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
+	if (particleRule->alpha_born_size_x.y == 0) {
+		memcpy(bDeaths.data(), outBuffer.mapped, sizeof(bDeaths[0])*bDeaths.size());
+		memcpy(particles.data(), VertexBuffer.mapped, sizeof(particles[0])*particles.size());
 		VP->bUpdateDrawCommandBuffers = true;
+
+		size_t size = bDeaths.size();
+		bool b = false;
+		for (int i = 0; i < size; ++i) {
+			if (bDeaths[i]) {
+				b = true;
+				particles.erase(particles.begin() + i);
+				bDeaths.erase(bDeaths.begin() + i);
+				--i;
+				--size;
+			}
+		}
+
+		if (b) {
+			particlesSize = uint32_t(particles.size());
+			VK->setMemoryBuffer(VertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
+			VK->setMemoryBuffer(outBuffer, sizeof(bDeaths[0])*bDeaths.size(), bDeaths.data());
+			VP->bUpdateDrawCommandBuffers = true;
+		}
 	}
 }
 

@@ -1,66 +1,40 @@
 #version 450
+#extension GL_GOOGLE_include_directive : enable
+#include "header.comp"
 
-layout( local_size_x = 1024) in;
-
-const int MAX_VIEWPORT_NUM = 9;
-const int MAX_JOINT_NUM = 20;
-
-layout( binding = 0) uniform QeUniformBufferObject {
-	mat4 model;
-    mat4 view[MAX_VIEWPORT_NUM];
-    mat4 proj[MAX_VIEWPORT_NUM];
-	mat4 normal[MAX_VIEWPORT_NUM];
-	mat4 joints[MAX_JOINT_NUM];
-	vec4 cameraPos[MAX_VIEWPORT_NUM];
-	vec4 ambientColor;
-	vec4 param; // 1: viewportNum, 2:billboardType
-} ubo;
-
-layout( binding = 30, rgba32f  ) uniform imageBuffer inputStorageTexelBuffer;
-layout( binding = 31, rgba32f  ) uniform imageBuffer outputStorageTexelBuffer;
-//layout( binding = 40 ) buffer inputS inputBuffer;
-layout( binding = 40 ) buffer outSSBO {
-	int death[];
-} outputs;
-
-layout( push_constant ) uniform TimeState {
-  float DeltaTime;
-} PushConstant;
 
 void main() {
- // if( gl_GlobalInvocationID.x < PARTICLES_COUNT ) {
 	
-	vec4 pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7) );
+	vec4 pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7) );
 	// speed = normal
-    vec4 speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
+    vec4 speed = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
 	
 	// force = tangent
-    vec4 force = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+4) ); 
+    vec4 force = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+4) ); 
 
 	if(speed.w>0){ // life time
-		pos.xyz += speed.xyz*PushConstant.DeltaTime;
-		speed.w -= PushConstant.DeltaTime;
-		speed.xyz += (force.xyz*PushConstant.DeltaTime);
+		pos.xyz += speed.xyz*pushConstant.DeltaTime;
+		speed.w -= pushConstant.DeltaTime;
+		speed.xyz += (force.xyz*pushConstant.DeltaTime);
 	}
 	else{
 		int times =  int(pos.w);
 		if(force.w>0 || times == 0){ // reborn
 			// init_pos = texCoord
 			++times;
-			pos = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
-			if(ubo.param.z == 1) pos.xyz += ubo.model[3].xyz;
+			pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
+			if(modelData.param.y == 1) pos.xyz += modelData.model[3].xyz;
 			pos.w = times;
+			
 			// init_speed & life time = joint
-			speed = imageLoad( inputStorageTexelBuffer, int(gl_GlobalInvocationID.x * 7+5) ); 		
+			speed = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+5) );
 		}
 		else{
 			//atomicAdd(outputs.death, 1);
 			//atomicExchange(outputs.death, 1);
-			outputs.death[gl_GlobalInvocationID.x] = 1;
-			//pos.xyz = vec3(0);
+			death[gl_GlobalInvocationID.x] = 1;
 		}
 	}
-    imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
-	imageStore( outputStorageTexelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );
-//  }
+	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
+	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );
 }

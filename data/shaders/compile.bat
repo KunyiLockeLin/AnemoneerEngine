@@ -11,8 +11,6 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cubemap.geom -o cubemapg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cubemap.frag -o cubemapf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V skeleton.vert -o skeletonv.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V phong.geom -o phongg.spv
-%VULKAN_SDK%/Bin32/glslangValidator.exe -V phong.frag -o phongf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V toon.frag -o toonf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V pbr.geom -o pbrg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V pbr.frag -o pbrf.spv

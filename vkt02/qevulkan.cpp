@@ -1473,8 +1473,8 @@ void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
 		usage =  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		break;
 
-	case eBuffer_storage_texel:
-		usage =  VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
+	case eBuffer_vertex_texel:
+		usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 		bView = true;
 		break;
 

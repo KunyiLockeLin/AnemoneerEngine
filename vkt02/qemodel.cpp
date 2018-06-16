@@ -390,10 +390,10 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 	}
 }
 
-std::vector<VkDescriptorSet> QeModel::getDescriptorSets() {
+std::vector<VkDescriptorSet> QeModel::getDescriptorSets(int index) {
 	std::vector<VkDescriptorSet> descriptorSets = 
-	{	VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, 
-		shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet 
+	{	VP->viewports[index]->commonDescriptorSet.descriptorSet,
+		shaderData[index]->descriptorSet.descriptorSet 
 	};
 	return descriptorSets;
 }
@@ -402,7 +402,7 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	if (!bShow || !bCullingShow) return;
 	
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(VP->currentCommandViewport);
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };

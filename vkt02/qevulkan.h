@@ -23,7 +23,7 @@ enum QeVKBufferType {
 	eBuffer_vertex = 1,
 	eBuffer_index = 2,
 	eBuffer_storage_compute_shader_return = 3,
-	eBuffer_storage_texel = 4,
+	eBuffer_vertex_texel = 4,
 	eBuffer_uniform = 5,
 	eBuffer_storage = 6,
 };
@@ -105,7 +105,7 @@ struct QeDataDescriptorSetModel {
 	VkSampler	normalMapSamplers = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
-	VkBufferView texeLBufferView = VK_NULL_HANDLE;
+	VkBufferView texelBufferView = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
 	VkBuffer	computeShaderoutputBuffer = VK_NULL_HANDLE;

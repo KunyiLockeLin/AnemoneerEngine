@@ -1,6 +1,11 @@
 const int MAX_JOINT_NUM = 20;
 
 
+layout( push_constant ) uniform TimeState {
+  float DeltaTime;
+} pushConstant;
+
+
 struct QeDataCamera {
 	vec4 pos;
 	mat4 view;

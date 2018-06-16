@@ -49,7 +49,7 @@ void QeLine::updateRender(float time) {
 
 void QeLine::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(VP->currentCommandViewport);
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };

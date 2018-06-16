@@ -226,22 +226,22 @@
     <None Include="..\data\shaders\header.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headerComp.glsl">
+    <None Include="..\data\shaders\header.comp">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headerFrag.glsl">
+    <None Include="..\data\shaders\header.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headerGeom.glsl">
+    <None Include="..\data\shaders\header.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headerTesc.glsl">
+    <None Include="..\data\shaders\header.tesc">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headerTese.glsl">
+    <None Include="..\data\shaders\header.tese">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headerVert.glsl">
+    <None Include="..\data\shaders\header.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
