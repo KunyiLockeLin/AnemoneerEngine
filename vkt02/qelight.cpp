@@ -4,14 +4,12 @@
 void QeLight::init(QeAssetXML* _property) {
 
 	QeBase::init(_property);
-	data.pos = QeVector4f(0, 0, 0, 1);
-	data.dir = QeVector4f(1, 1, 1, 1);
-	data.color = QeVector4f(1, 1, 1, 1);
-	data.param = QeVector4f(0, 1, 1, 1);
+	bufferData.pos = QeVector4f(0, 0, 0, 1);
+	bufferData.dir = QeVector4f(1, 1, 1, 1);
+	bufferData.color = QeVector4f(1, 1, 1, 1);
+	bufferData.param = QeVector4f(0, 1, 1, 1);
 	rotateCenter = QeVector3f(0, 0, 0);
 	speed = 30;
-	//VK->createUniformBuffer(sizeof(QeDataLight), uboBuffer.buffer, uboBuffer.memory);
-	VK->createBuffer(uboBuffer, sizeof(QeDataLight), nullptr);
 
 	billboard = nullptr;
 	if (_property == nullptr) return;
@@ -21,18 +19,18 @@ void QeLight::init(QeAssetXML* _property) {
 	if (c != nullptr)	id = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "r");
-	if (c != nullptr)	data.color.x = float(atof(c));
+	if (c != nullptr)	bufferData.color.x = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "g");
-	if (c != nullptr)	data.color.y = float(atof(c));
+	if (c != nullptr)	bufferData.color.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "b");
-	if (c != nullptr)	data.color.z = float(atof(c));
+	if (c != nullptr)	bufferData.color.z = float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "posX");
-	if (c != nullptr)	data.pos.x = float(atof(c));
+	if (c != nullptr)	bufferData.pos.x = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "posY");
-	if (c != nullptr)	data.pos.y = float(atof(c));
+	if (c != nullptr)	bufferData.pos.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "posZ");
-	if (c != nullptr)	data.pos.z = float(atof(c));
+	if (c != nullptr)	bufferData.pos.z = float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "rotateCenterX");
 	if (c != nullptr)	rotateCenter.x = float(atof(c));
@@ -42,51 +40,56 @@ void QeLight::init(QeAssetXML* _property) {
 	if (c != nullptr)	rotateCenter.z = float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "dirX");
-	if (c != nullptr)	data.dir.x = float(atof(c));
+	if (c != nullptr)	bufferData.dir.x = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "dirY");
-	if (c != nullptr)	data.dir.y = float(atof(c));
+	if (c != nullptr)	bufferData.dir.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "dirZ");
-	if (c != nullptr)	data.dir.z = float(atof(c));
+	if (c != nullptr)	bufferData.dir.z = float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "speed");
 	if (c != nullptr)	speed = atoi(c);
 
 	c = AST->getXMLValue(_property, 1, "type");
-	if (c != nullptr)	data.param.x = float(atoi(c));
+	if (c != nullptr)	bufferData.param.x = float(atoi(c));
 	c = AST->getXMLValue(_property, 1, "intensity");
-	if (c != nullptr)	data.param.y = float(atof(c));
+	if (c != nullptr)	bufferData.param.y = float(atof(c));
 	c = AST->getXMLValue(_property, 1, "coneAngle");
-	if (c != nullptr)	data.param.z = float(atof(c));
+	if (c != nullptr)	bufferData.param.z = float(atof(c));
 
 	c = AST->getXMLValue(_property, 1, "show");
 	if (c != nullptr && atoi(c) == 1) bShow = true;
 
 	billboard = OBJMGR->getBillboard(id, initProperty);
-	if (billboard->pMaterial->type == eMaterialPhong)
-		billboard->pMaterial->value.phong.diffuse = data.color;
-	else if (billboard->pMaterial->type == eMaterialPBR)
-		billboard->pMaterial->value.pbr.baseColor = data.color;
+	//if (billboard->pMaterial->type == eMaterialPhong)
+	//	billboard->pMaterial->value.phong.diffuse = bufferData.color;
+	//else if (billboard->pMaterial->type == eMaterialPBR)
+	//	billboard->pMaterial->value.pbr.baseColor = bufferData.color;
+	billboard->bufferData.material.baseColor = bufferData.color;
+	bufferData.pos;
+	pos = bufferData.pos;
+	billboard->setShow(bShow);
+	billboard->pos = bufferData.pos;
 
-	//VK->setMemory(billboard->pMaterial->uboBuffer.memory, (void*)&billboard->pMaterial->value, sizeof(billboard->pMaterial->value), &billboard->pMaterial->uboBuffer.mapped);
-	VK->setMemoryBuffer(billboard->pMaterial->uboBuffer, sizeof(billboard->pMaterial->value), (void*)&billboard->pMaterial->value);
+	bUpdateBuffer = true;
+
 }
 
-void QeLight::updateRender(float time) {
+void QeLight::updateCompute(float time) {
 
 	if (speed != 0) {
 		float angle = -time * speed;
 		QeMatrix4x4f mat;
 		mat *= MATH->rotateZ(angle);
-		QeVector4f pos2 = data.pos - rotateCenter;
+		QeVector4f pos2 = bufferData.pos - rotateCenter;
 		pos2 = mat* pos2;
-		data.pos = pos2 + rotateCenter;
-	}
-	pos = data.pos;
-	billboard->setShow(bShow);
-	billboard->pos = data.pos;
+		bufferData.pos = pos2 + rotateCenter;
 
-	//VK->setMemory(uboBuffer.memory, (void*)(&data), sizeof(data), &uboBuffer.mapped);
-	VK->setMemoryBuffer(uboBuffer, sizeof(data), (void*)(&data));
+		pos = bufferData.pos;
+		billboard->setShow(bShow);
+		billboard->pos = bufferData.pos;
+		
+		bUpdateBuffer = true;
+	}
 }
 
-void QeLight::updateCompute(float time) {}
+void QeLight::updateRender(float time) {}

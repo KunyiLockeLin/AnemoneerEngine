@@ -41,8 +41,13 @@ QeVKImage::~QeVKImage(){
 	surface = VK_NULL_HANDLE;
 	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 	pipelineLayout = VK_NULL_HANDLE;
-	vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-	descriptorSetLayout = VK_NULL_HANDLE;
+	
+	size_t size = descriptorSetLayouts.size();
+	for (size_t i = 0; i<size ;++i ) {
+		vkDestroyDescriptorSetLayout(device, descriptorSetLayouts[i], nullptr);
+	}
+	descriptorSetLayouts.clear();
+
 	vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	descriptorPool = VK_NULL_HANDLE;
 	vkDestroyCommandPool(device, commandPool, nullptr);
@@ -67,8 +72,8 @@ void QeVulkan::init() {
 	pickPhysicalDevice();
 	createLogicalDevice();
 	createDescriptorPool();
-	descriptorSetLayout = createDescriptorSetLayout();
-	pipelineLayout = createPipelineLayout( descriptorSetLayout);
+	createDescriptorSetLayout();
+	pipelineLayout = createPipelineLayout();
 	createCommandPool();
 }
 
@@ -386,66 +391,85 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	return renderPass;
 }
 
-VkDescriptorSetLayout QeVulkan::createDescriptorSetLayout() {
+void QeVulkan::createDescriptorSetLayout() {
 	
-	std::vector<VkDescriptorSetLayoutBinding> bindings;
-	bindings.resize(descriptorSetgUBONumber + descriptorSetgImageNumber + descriptorSetgInputAttachmentNumber 
-					+ descriptorSetcStorageTexeLBufferNumber + descriptorSetcBufferNumber);
+	descriptorSetLayoutDatas.resize(eDescriptorSetLayout_MAX);
 
-	int i = 0;
-	int index = 0;
-	for ( i = 0; i<descriptorSetgUBONumber;++i,++index) {
-		bindings[index].binding = i+ descriptorSetgUBOStart;
-		bindings[index].descriptorCount = 1;
-		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		bindings[index].pImmutableSamplers = nullptr;
-		bindings[index].stageFlags = VK_SHADER_STAGE_ALL;
-	}
-	for ( i=0; i<descriptorSetgImageNumber; ++i,++index) {
-		bindings[index].binding = i+ descriptorSetgImageStart;
-		bindings[index].descriptorCount = 1;
-		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		bindings[index].pImmutableSamplers = nullptr;
-		bindings[index].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	}
-	for ( i=0; i < descriptorSetgInputAttachmentNumber; ++i,++index) {
-		bindings[index].binding = i+ descriptorSetgInputAttachmentStart;
-		bindings[index].descriptorCount = 1;
-		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-		bindings[index].pImmutableSamplers = nullptr;
-		bindings[index].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-	}
-	for ( i=0; i < descriptorSetcStorageTexeLBufferNumber; ++i, ++index) {
-		bindings[index].binding = i+ descriptorSetcStorageTexeLBufferStart;
-		bindings[index].descriptorCount = 1;
-		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-		bindings[index].pImmutableSamplers = nullptr;
-		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-	}
-	for (i = 0; i < descriptorSetcBufferNumber; ++i, ++index) {
-		bindings[index].binding = i + descriptorSetcBufferStart;
-		bindings[index].descriptorCount = 1;
-		bindings[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-		bindings[index].pImmutableSamplers = nullptr;
-		bindings[index].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-	}
-	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-	layoutInfo.pBindings = bindings.data();
+	// eDescriptorSetLayout_Common
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common].resize(2);
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].startID = 0;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].count = 1;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].startID = 10;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].count = 1;
+	// eDescriptorSetLayout_Model
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model].resize(4);
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].startID = 0;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].count = 1;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].startID = 10;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].count = 3;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].type = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].startID = 20;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].count = 1;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].startID = 30;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].count = 1;
+	// eDescriptorSetLayout_Postprocessing
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing].resize(1);
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].type = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].startID = 0;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].count = 1;
 
-	VkDescriptorSetLayout descriptorSetLayout;
-	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)	LOG("failed to create descriptor set layout!");
+	descriptorSetLayouts.resize(eDescriptorSetLayout_MAX);
 
-	return descriptorSetLayout;
+	for ( int i = 0; i< eDescriptorSetLayout_MAX;++i ) {
+		std::vector<VkDescriptorSetLayoutBinding> bindings;
+		size_t size1 = descriptorSetLayoutDatas[i].size();
+
+		for (size_t j = 0; j< size1; ++j) {
+
+			VkDescriptorSetLayoutBinding binding;
+			binding.descriptorType = descriptorSetLayoutDatas[i][j].type;
+			binding.descriptorCount = 1;
+			binding.pImmutableSamplers = nullptr;
+
+			switch (descriptorSetLayoutDatas[i][j].type) {
+			case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+			case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+				binding.stageFlags = VK_SHADER_STAGE_ALL;
+				break;
+			case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+			case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+				binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+				break;
+			case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+				binding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+				break;
+			}
+
+			for (int k = 0; k< descriptorSetLayoutDatas[i][j].count;++k ) {
+				binding.binding = k + descriptorSetLayoutDatas[i][j].startID;
+				bindings.push_back(binding);
+			}
+		}
+		VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+		layoutInfo.pBindings = bindings.data();
+
+		if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayouts[i]) != VK_SUCCESS)	LOG("failed to create descriptor set layout!");
+	}
 }
 
-VkPipelineLayout QeVulkan::createPipelineLayout( VkDescriptorSetLayout& descriptorSetLayout) {
+VkPipelineLayout QeVulkan::createPipelineLayout() {
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 1;
-	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+	pipelineLayoutInfo.setLayoutCount = uint32_t(descriptorSetLayouts.size());
+	pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 
 	if (PUSH_CONSTANTS_SIZE > 0) {
 		VkPushConstantRange push_constant_range = {};
@@ -548,58 +572,6 @@ bool QeVulkan::hasStencilComponent(VkFormat format) {
 	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
-/*VkImageView QeVulkan::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, bool bCubemap, uint32_t mipLevels) {
-	VkImageViewCreateInfo viewInfo = {};
-	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-	viewInfo.image = image;
-	viewInfo.viewType = bCubemap ? VK_IMAGE_VIEW_TYPE_CUBE : VK_IMAGE_VIEW_TYPE_2D;
-	viewInfo.format = format;
-	viewInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
-	viewInfo.subresourceRange.aspectMask = aspectFlags;
-	viewInfo.subresourceRange.baseMipLevel = 0;
-	viewInfo.subresourceRange.levelCount = mipLevels;// VK_REMAINING_MIP_LEVELS;
-	viewInfo.subresourceRange.baseArrayLayer = 0;
-	viewInfo.subresourceRange.layerCount = 1;// VK_REMAINING_ARRAY_LAYERS;
-
-	VkImageView imageView;
-	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) LOG("failed to create texture image view!");
-
-	return imageView;
-}*/
-
-/*void QeVulkan::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, bool bCubemap, uint32_t mipLevels) {
-
-	VkImageCreateInfo imageInfo = {};
-	imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageInfo.flags = bCubemap ? VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT : 0;
-	imageInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageInfo.extent.width = width;
-	imageInfo.extent.height = height;
-	imageInfo.extent.depth = 1;
-	imageInfo.mipLevels = mipLevels;
-	imageInfo.arrayLayers = bCubemap ? 6 : 1;
-	imageInfo.format = format;
-	imageInfo.tiling = tiling;
-	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;// VK_IMAGE_LAYOUT_PREINITIALIZED;
-	imageInfo.usage = usage;
-	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-	if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) LOG("failed to create image!");
-	
-	VkMemoryRequirements memRequirements;
-	vkGetImageMemoryRequirements(device, image, &memRequirements);
-
-	VkMemoryAllocateInfo allocInfo = {};
-	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
-
-	if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) LOG("failed to allocate image memory!");
-
-	vkBindImageMemory(device, image, imageMemory, 0);
-}*/
-
 void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
 	
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
@@ -685,43 +657,6 @@ void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width,
 
 	endSingleTimeCommands(commandBuffer);
 }
-
-/*void QeVulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
-	VkBufferCreateInfo bufferInfo = {};
-	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	bufferInfo.size = size;
-	bufferInfo.usage = usage;
-	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-	if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) LOG("failed to create buffer!");
-
-	VkMemoryRequirements memRequirements;
-	vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
-
-	VkMemoryAllocateInfo allocInfo = {};
-	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
-
-	if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) LOG("failed to allocate buffer memory!");
-
-	vkBindBufferMemory(device, buffer, bufferMemory, 0);
-}*/
-
-/*void QeVulkan::createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view) {
-	
-	VkBufferViewCreateInfo buffer_view_create_info = {};
-	buffer_view_create_info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-	buffer_view_create_info.pNext = nullptr;
-	buffer_view_create_info.flags = 0;
-	buffer_view_create_info.buffer = buffer;
-	buffer_view_create_info.format = format;
-	buffer_view_create_info.offset = 0;
-	buffer_view_create_info.range = VK_WHOLE_SIZE;
-
-	VkResult result = vkCreateBufferView(device, &buffer_view_create_info, nullptr, &buffer_view);
-	if (VK_SUCCESS != result) LOG("Could not creat buffer view.");
-}*/
 
 VkCommandBuffer QeVulkan::beginSingleTimeCommands() {
 	VkCommandBufferAllocateInfo allocInfo = {};
@@ -996,18 +931,15 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 	return surface;
 }
 
-VkDescriptorSet QeVulkan::createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout) {
-	VkDescriptorSetLayout layouts[] = { descriptorSetLayout };
+void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
+
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
 	allocInfo.descriptorSetCount = 1;
-	allocInfo.pSetLayouts = layouts;
+	allocInfo.pSetLayouts = &descriptorSetLayouts[descriptorSet.type];
 
-	VkDescriptorSet descriptorSet;
-	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
-
-	return descriptorSet;
+	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet.descriptorSet) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
 }
 
 /*void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped) {
@@ -1025,7 +957,7 @@ void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) 
 }*/
 
 void QeVulkan::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 4> poolSizes = {};
+	std::array<VkDescriptorPoolSize, 5> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = MAX_DESCRIPTOR_UNIFORM_NUM;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -1034,6 +966,8 @@ void QeVulkan::createDescriptorPool() {
 	poolSizes[2].descriptorCount = MAX_DESCRIPTOR_INPUTATTACH_NUM;
 	poolSizes[3].type = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
 	poolSizes[3].descriptorCount = MAX_DESCRIPTOR_STORAGETEXEL_NUM;
+	poolSizes[4].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+	poolSizes[4].descriptorCount = MAX_DESCRIPTOR_STORAG_NUM;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -1044,9 +978,9 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-QeGraphicsPipelineStruct* QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
+QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
 
-	std::vector<QeGraphicsPipelineStruct*>::iterator it = graphicsPipelines.begin();
+	std::vector<QeDataGraphicsPipeline*>::iterator it = graphicsPipelines.begin();
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == shader->vert && (*it)->shader->tesc == shader->tesc && (*it)->shader->tese == shader->tese &&
 			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->bAlpha == bAlpha && (*it)->subpassIndex == subpassIndex) {
@@ -1240,13 +1174,18 @@ QeGraphicsPipelineStruct* QeVulkan::createGraphicsPipeline(QeAssetShader* shader
 	dynamicState.dynamicStateCount = 3;
 	dynamicState.pDynamicStates = dynamicStates;
 
+	VkPipelineViewportStateCreateInfo viewportState = {};
+	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	viewportState.viewportCount = 1;
+	viewportState.scissorCount = 1;
+
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.stageCount = (uint32_t)shaderStages.size();
 	pipelineInfo.pStages = shaderStages.data();
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
-	pipelineInfo.pViewportState = &VP->viewportState;
+	pipelineInfo.pViewportState = &viewportState;
 	pipelineInfo.pRasterizationState = &rasterizer;
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = &depthStencil;
@@ -1269,7 +1208,7 @@ QeGraphicsPipelineStruct* QeVulkan::createGraphicsPipeline(QeAssetShader* shader
 	VkPipeline graphicsPipeline;
 	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");
 	
-	QeGraphicsPipelineStruct* s = new QeGraphicsPipelineStruct();
+	QeDataGraphicsPipeline* s = new QeDataGraphicsPipeline();
 	s->shader = shader;
 	s->bAlpha = bAlpha;
 	s->subpassIndex = subpassIndex;
@@ -1307,168 +1246,96 @@ VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 	return pipeline;
 }
 
+void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet) {
 
-void QeVulkan::updateDescriptorSet(QeDataDescriptorSet& data,  VkDescriptorSet& descriptorSet) {
-
-	uint8_t i = 0;
-	uint8_t* pos = (uint8_t*)&data;
-	std::vector<uint8_t>	 bindID;
-	std::vector<VkBuffer>	 buffers;
-	std::vector<VkImageView> imageViews;
-	std::vector<VkSampler>	 samplers;
-	std::vector<VkImageView> attachImageViews;
-	std::vector<VkBufferView> bufferViews;
-	std::vector<VkBuffer> cBuffers;
-
-	uint16_t sizeBuffer = sizeof(VkBuffer);
-	uint16_t sizeImgae = sizeof(VkImageView) + sizeof(VkSampler);
-	uint16_t sizeAttach = sizeof(VkImageView);
-	uint16_t sizeBufferView = sizeof(VkBufferView);
-	uint16_t sizecBuffer = sizeof(VkBuffer);
-
-	for (i = 0;i<descriptorSetgUBONumber;++i) {
-		if ( (*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back( i+ descriptorSetgUBOStart);
-			buffers.push_back(*(VkBuffer*)(pos));
-		}
-		pos += sizeBuffer;
-	}
-	for (i = 0; i<descriptorSetgImageNumber; ++i) {
-		if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i+ descriptorSetgImageStart);
-			imageViews.push_back(*(VkImageView*)(pos));
-			samplers.push_back(*(VkSampler*)(pos + sizeof(VkSampler)));
-		}
-		pos += sizeImgae;
-	}
-	for (i = 0; i<descriptorSetgInputAttachmentNumber; ++i) {
-		if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i+ descriptorSetgInputAttachmentStart);
-			attachImageViews.push_back(*(VkImageView*)(pos));
-		}
-		pos += sizeAttach;
-	}
-	for (i = 0; i<descriptorSetcStorageTexeLBufferNumber; ++i) {
-		if ((*(VkBufferView*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i + descriptorSetcStorageTexeLBufferStart);
-			bufferViews.push_back(*(VkBufferView*)(pos));
-		}
-		pos += sizeBufferView;
-	}
-	for (i = 0; i<descriptorSetcBufferNumber; ++i) {
-		if ((*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
-			bindID.push_back(i + descriptorSetcBufferStart);
-			cBuffers.push_back(*(VkBuffer*)(pos));
-		}
-		pos += sizecBuffer;
-	}
-
-	size_t bufNum = buffers.size();
-	size_t imageNum = imageViews.size();
-	size_t attachNum = attachImageViews.size();
-	size_t bufViewNum = bufferViews.size();
-	size_t cBufNum = cBuffers.size();
-
+	uint8_t* pos = (uint8_t*)data;
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
-	descriptorWrites.resize(bufNum + imageNum + attachNum + bufViewNum + cBufNum);
+	std::list<VkDescriptorBufferInfo> bufInfos;
+	std::list<VkDescriptorImageInfo> imgInfos;
 
-	uint8_t index = 0;
+	VkWriteDescriptorSet descriptorWrite;
+	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrite.pNext = nullptr;
+	descriptorWrite.dstSet = descriptorSet.descriptorSet;
+	descriptorWrite.dstArrayElement = 0;
+	descriptorWrite.descriptorCount = 1;
 
-	std::vector<VkDescriptorBufferInfo> bufInfos;
-	bufInfos.resize(bufNum);
-	for (i = 0; i < bufNum; ++i,++index) {
+	size_t size = descriptorSetLayoutDatas[descriptorSet.type].size();
+	for (size_t i = 0; i < size; ++i) {
 
-		bufInfos[i].buffer = buffers[i];
-		bufInfos[i].offset = 0;
-		bufInfos[i].range = VK_WHOLE_SIZE;
+		descriptorWrite.descriptorType = descriptorSetLayoutDatas[descriptorSet.type][i].type;
 
-		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[index].pNext = nullptr;
-		descriptorWrites[index].dstSet = descriptorSet;
-		descriptorWrites[index].dstBinding = bindID[index];
-		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		descriptorWrites[index].pImageInfo = nullptr;
-		descriptorWrites[index].pBufferInfo = &bufInfos[i];
-		descriptorWrites[index].pTexelBufferView = nullptr;
+		for (int j = 0; j < descriptorSetLayoutDatas[descriptorSet.type][i].count; ++j) {
+
+			descriptorWrite.dstBinding = j + descriptorSetLayoutDatas[descriptorSet.type][i].startID;
+			descriptorWrite.pImageInfo = nullptr;
+			descriptorWrite.pBufferInfo = nullptr;
+			descriptorWrite.pTexelBufferView = nullptr;
+			switch (descriptorSetLayoutDatas[descriptorSet.type][i].type) {
+
+			case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+			case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+
+				if ((*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
+
+					VkDescriptorBufferInfo bufInfo;
+					bufInfo.buffer = *(VkBuffer*)(pos);
+					bufInfo.offset = 0;
+					bufInfo.range = VK_WHOLE_SIZE;
+					bufInfos.push_back(bufInfo);
+
+					descriptorWrite.pBufferInfo = &bufInfos.back();
+					descriptorWrites.push_back(descriptorWrite);
+				}
+				pos += sizeof(VkBuffer);
+
+				break;
+			case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+
+				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
+
+					VkDescriptorImageInfo imgInfo;
+					imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+					imgInfo.imageView = *(VkImageView*)(pos);
+					imgInfo.sampler = *(VkSampler*)(pos + sizeof(VkSampler));
+					imgInfos.push_back(imgInfo);
+
+					descriptorWrite.pImageInfo = &imgInfos.back();
+					descriptorWrites.push_back(descriptorWrite);
+				}
+				pos += sizeof(VkImageView) + sizeof(VkSampler);
+
+				break;
+			case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+
+				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
+
+					VkDescriptorImageInfo imgInfo;
+					imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+					imgInfo.imageView = *(VkImageView*)(pos);
+					imgInfo.sampler = VK_NULL_HANDLE;
+					imgInfos.push_back(imgInfo);
+
+					descriptorWrite.pImageInfo = &imgInfos.back();
+					descriptorWrites.push_back(descriptorWrite);
+				}
+				pos += sizeof(VkImageView);
+
+				break;
+			case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+
+				if ((*(VkBufferView*)(pos)) != VK_NULL_HANDLE) {
+
+					descriptorWrite.pTexelBufferView = (VkBufferView*)(pos);
+					descriptorWrites.push_back(descriptorWrite);
+				}
+				pos += sizeof(VkBufferView);
+
+				break;
+			}
+		}
 	}
-	
-	std::vector<VkDescriptorImageInfo> imgInfos;
-	imgInfos.resize(imageNum);
-	for (i = 0; i < imageNum; ++i, ++index) {
-
-		imgInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imgInfos[i].sampler = samplers[i];
-		imgInfos[i].imageView = imageViews[i];
-		
-		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[index].pNext = nullptr;
-		descriptorWrites[index].dstSet = descriptorSet;
-		descriptorWrites[index].dstBinding = bindID[index];
-		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[index].pImageInfo = &imgInfos[i];
-		descriptorWrites[index].pBufferInfo = nullptr;
-		descriptorWrites[index].pTexelBufferView = nullptr;
-	}
-
-	std::vector<VkDescriptorImageInfo> attachInfos;
-	attachInfos.resize(attachNum);
-	for (i = 0; i < attachNum; ++i, ++index) {
-
-		attachInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		attachInfos[i].sampler = VK_NULL_HANDLE;
-		attachInfos[i].imageView = attachImageViews[i];
-
-		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[index].pNext = nullptr;
-		descriptorWrites[index].dstSet = descriptorSet;
-		descriptorWrites[index].dstBinding = bindID[index];
-		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-		descriptorWrites[index].pImageInfo = &attachInfos[i];
-		descriptorWrites[index].pBufferInfo = nullptr;
-		descriptorWrites[index].pTexelBufferView = nullptr;
-	}
-
-	for (i = 0; i < bufViewNum; ++i, ++index) {
-
-		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[index].pNext = nullptr;
-		descriptorWrites[index].dstSet = descriptorSet;
-		descriptorWrites[index].dstBinding = bindID[index];
-		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-		descriptorWrites[index].pImageInfo = nullptr;
-		descriptorWrites[index].pBufferInfo = nullptr;
-		descriptorWrites[index].pTexelBufferView = &bufferViews[i];
-	}
-
-	std::vector<VkDescriptorBufferInfo> cBufInfos;
-	cBufInfos.resize(cBufNum);
-	for (i = 0; i < cBufNum; ++i, ++index) {
-
-		cBufInfos[i].buffer = cBuffers[i];
-		cBufInfos[i].offset = 0;
-		cBufInfos[i].range = VK_WHOLE_SIZE;
-
-		descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[index].pNext = nullptr;
-		descriptorWrites[index].dstSet = descriptorSet;
-		descriptorWrites[index].dstBinding = bindID[index];
-		descriptorWrites[index].dstArrayElement = 0;
-		descriptorWrites[index].descriptorCount = 1;
-		descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-		descriptorWrites[index].pImageInfo = nullptr;
-		descriptorWrites[index].pBufferInfo = &cBufInfos[i];
-		descriptorWrites[index].pTexelBufferView = nullptr;
-	}
-
-	vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+	vkUpdateDescriptorSets(device, uint32_t(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 
 VkShaderModule QeVulkan::createShaderModel(void* data, VkDeviceSize size) {
@@ -1483,55 +1350,6 @@ VkShaderModule QeVulkan::createShaderModel(void* data, VkDeviceSize size) {
 	return shader;
 }
 
-/*VkSampler QeVulkan::createTextureSampler() {
-	VkSamplerCreateInfo samplerInfo = {};
-	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-	samplerInfo.magFilter = VK_FILTER_LINEAR;
-	samplerInfo.minFilter = VK_FILTER_LINEAR;
-	//samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
-	samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;// VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;// VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;// VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.maxAnisotropy = 1;// 16;
-	samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;// VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-	samplerInfo.unnormalizedCoordinates = VK_FALSE;
-	samplerInfo.compareEnable = VK_FALSE;
-	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-
-	samplerInfo.mipLodBias = 0;
-	samplerInfo.anisotropyEnable = VK_FALSE;
-	samplerInfo.minLod = 0;
-	samplerInfo.maxLod = 1;
-
-
-	VkSampler sampler;
-	if (vkCreateSampler(VK->device, &samplerInfo, nullptr, &sampler) != VK_SUCCESS) LOG("failed to create texture sampler!");
-	
-	return sampler;
-}*/
-
-/*void QeVulkan::createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer, bool bCubemap) {
-	
-	uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
-	mipLevels = 1;
-	QeVKBuffer staging;
-	createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging.buffer, staging.memory);
-
-	setMemory(staging.memory, data, imageSize, mapped);
-	
-	if(image== VK_NULL_HANDLE)
-		createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, image, imageMemory, bCubemap, mipLevels);
-
-	if (data == nullptr) return;
-
-	transitionImageLayout(image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
-	//transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
-	copyBufferToImage(staging.buffer, image, static_cast<uint32_t>(width), static_cast<uint32_t>(height), layer);
-	//generateMipmaps(image, width, height, mipLevels);
-}
-*/
 void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
@@ -1650,6 +1468,7 @@ void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
 		usage =  VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 		break;
 
+	case eBuffer_storage:
 	case eBuffer_storage_compute_shader_return:
 		usage =  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		break;

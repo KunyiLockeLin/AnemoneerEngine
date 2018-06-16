@@ -7,15 +7,26 @@
 //	eCameraFirstPerson,
 //};
 
+struct QeDataCamera {
+	QeVector4f pos;
+	QeMatrix4x4f view;
+	QeMatrix4x4f projection;
+};
+
 class QeCamera : public QeBase
 {
 public:
+	
+	QeCamera(QeObjectMangerKey& _key) :QeBase(_key) {}
+	~QeCamera() {}
+
 	QeVector3f target;
 	QeVector3f up;
 	QeVector2i lastMousePos;
-	QeMatrix4x4f view;
-	QeMatrix4x4f projection;
 	QeVector3f face;
+	
+	bool bUpdateBuffer = true;
+	QeDataCamera bufferData;
 
 	float fov = 45.f;
 	float fnear = 0.1f;
@@ -25,10 +36,9 @@ public:
 	int cullingDistance = 0;
 	//QeCameraType type = eCameraThirdPerson;
 
-	QeCamera(QeObjectMangerKey& _key):QeBase(_key) {}
-	~QeCamera() {}
 	void init(QeAssetXML* _property);
 	void reset();
+	void setMatrix();
 	//void switchType(QeCameraType _type);
 	void setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up, float _fov, float _near, float _far );
 	//void rotatePos(float _angle, QeVector3f _axis);

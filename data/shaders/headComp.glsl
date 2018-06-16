@@ -1,0 +1,1 @@
+const int MAX_JOINT_NUM = 20;

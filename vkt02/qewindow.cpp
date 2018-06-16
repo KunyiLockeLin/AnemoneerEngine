@@ -240,7 +240,7 @@ std::string QeWindow::getWindowTitle(){
 	return windowTitle;
 }
 
-void QeWindow::updateRender(float time) {
+void QeWindow::updateCompute(float time) {
 
 	std::string windowTitle = getWindowTitle();
 	std::wstring ws = chartowchar(windowTitle);
@@ -254,7 +254,7 @@ void QeWindow::updateRender(float time) {
 	consoleInput();
 }
 
-void QeWindow::updateCompute(float time) {}
+void QeWindow::updateRender(float time) {}
 
 void QeWindow::consoleInput() {
 	if (!DEBUG->isConsole())	return;

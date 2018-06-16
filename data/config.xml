@@ -26,7 +26,6 @@
     <cubemap vert="basev.spv" geom="cubemapg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
-    <obj vert="basev.spv" geom="phongg.spv" frag="phongf.spv"/>
     <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
   </defaultShader>
   
@@ -34,7 +33,7 @@
     <particle>particlec.spv</particle>
   </computeShader>
   
-  <startScene>scene1</startScene>
+  <startScene>scene3</startScene>
   <scene1 id="12000">
     <cubemaps>
       <e id="30000" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
@@ -59,6 +58,7 @@
 
   <scene2 id="12001">
     <models>
+      <e id="30005" obj= "box.gltf" show="1" speed ="50" tesc="basetc.spv" tese="basete.spv" posX="0" posY="0" posZ="0"  scaleX="3" scaleY="3" scaleZ="3"/>
       <e id="30001" obj="animation.gltf" show="1" speed="0" posX="0" posY="-5" posZ="-3" actionSpeed="0.1" action="0" actionType="2" paritcleid="30006" paritclefollow="1" paritcleEid="30004" paritcleSkeleton="Armature_Bone_002"/>
     </models>
     <points>
@@ -67,13 +67,10 @@
     <lights>
       <e id="11000" alpha="1" show="1" image="light.png" type="0" posX="5" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="200" coneAngle="90" speed="30" paritcleid="30007" paritclefollow="0" paritcleEid="30004" />
     </lights>
+    <postprocessing frag="grayscalef.spv"/>
   </scene2>
   
   <scene3 id="12002">
-    <models>
-      <e id="30005" obj= "box.gltf" show="1" speed ="50" tesc="basetc.spv" tese="basete.spv" posX="0" posY="0" posZ="0"  scaleX="3" scaleY="3" scaleZ="3"/>
-    </models>
-    <postprocessing frag="grayscalef.spv"/>
   </scene3>
   
   <particles>
@@ -86,7 +83,6 @@
       <rotate x="1" x_range="2" y="2" y_range="5" z="2" z_range="5"/>
       <size x="0.1" x_range="0" y="0.1" y_range="0" />
       <color r="0" r_range="1" g="0" g_range="0" b="0" b_range="0"/>
-      <postprocessing frag="grayscalef.spv"/>
     </e>
   </particles>
 </confing>

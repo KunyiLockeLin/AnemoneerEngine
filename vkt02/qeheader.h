@@ -47,13 +47,13 @@
 #define KEY_Z 0x5A
 
 //	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
-const uint8_t MAX_VIEWPORT_NUM = 9;
 const uint8_t MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
-const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = 512;
-const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = 512;
-const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = 64;
-const uint16_t MAX_DESCRIPTOR_STORAGETEXEL_NUM = 512;
+const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = 128;
+const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = 128;
+const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = 16;
+const uint16_t MAX_DESCRIPTOR_STORAGETEXEL_NUM = 128;
+const uint16_t MAX_DESCRIPTOR_STORAG_NUM = 128;
 const uint16_t MAX_DESCRIPTOR_NUM = 128;
 const uint16_t MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
@@ -124,8 +124,8 @@ class QeLine;
 #include "qeparticle.h"
 #include "qelight.h"
 #include "qewindow.h"
-#include "qeviewport.h"
 #include "qecamera.h"
+#include "qeviewport.h"
 #include "queenengine.h"
 #include "qeglobal.h"
 #include "qeactivity.h"

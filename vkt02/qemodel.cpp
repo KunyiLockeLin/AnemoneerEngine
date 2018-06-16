@@ -22,7 +22,46 @@ void QeModel::cleanupPipeline() {
 	}
 }
 
+void QeModel::updateShaderData() {
+	size_t size = VP->viewports.size();
+	size_t i = shaderData.size();
+
+	for (; i < size; ++i) {
+		QeDataModelShader * data = new QeDataModelShader();
+		shaderData.push_back(data);
+		VK->createBuffer(data->modelBuffer, sizeof(bufferData), nullptr);
+		VK->createDescriptorSet(data->descriptorSet);
+		VK->updateDescriptorSet(&createDescriptorSetModel(int(i)), data->descriptorSet);
+	}
+
+	for (; i > size; --i) {
+		delete shaderData[i - 1];
+		shaderData.pop_back();
+	}
+}
+
+QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
+	QeDataDescriptorSetModel descriptorSetData;
+	descriptorSetData.modelBuffer = shaderData[index]->modelBuffer.buffer;
+	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
+	descriptorSetData.normalMapImageViews = pMaterial->image.pNormalMap->view;
+	descriptorSetData.normalMapSamplers = pMaterial->image.pNormalMap->sampler;
+
+	bufferData.param.x = 0;
+	if (cubeMapID > 0) {
+		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
+		if (model != nullptr) {
+			descriptorSetData.cubeMapImageViews = model->pMaterial->image.pCubeMap->view;
+			descriptorSetData.cubeMapSamplers = model->pMaterial->image.pCubeMap->sampler;
+			bufferData.param.x = 1;
+		}
+	}
+	return descriptorSetData;
+}
+
 void QeModel::createPipeline() {
+
 	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, eGraphicsPipeLine_Triangle, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
@@ -90,19 +129,19 @@ void QeModel::setMatModel() {
 	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	mat *= MATH->scale(size);
 	
-	ubo.model = mat;
+	bufferData.model = mat;
 
 	if (attachID > 0) {
 		QeBase* base = OBJMGR->getPoint(attachID, nullptr);
 		if (base) {
-			ubo.model._30 += base->pos.x;
-			ubo.model._31 += base->pos.y;
-			ubo.model._32 += base->pos.z;
+			bufferData.model._30 += base->pos.x;
+			bufferData.model._31 += base->pos.y;
+			bufferData.model._32 += base->pos.z;
 		}
 		else {
 			QeModel* model = OBJMGR->getModel(attachID, nullptr);
 			if (model != nullptr) {
-				ubo.model = model->getAttachMatrix(attachSkeletonName)*ubo.model;
+				bufferData.model = model->getAttachMatrix(attachSkeletonName)*bufferData.model;
 			}
 		}
 	}
@@ -110,19 +149,19 @@ void QeModel::setMatModel() {
 
 QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
 
-	if (attachSkeletonName == nullptr)	return ubo.model;
+	if (attachSkeletonName == nullptr)	return bufferData.model;
 
 	size_t size = modelData->jointsAnimation.size();
-	if( size == 0 ) return ubo.model;
+	if( size == 0 ) return bufferData.model;
 
 	size_t i;
 	for (i = 0; i<size ;++i ) {
 		if ( strcmp(attachSkeletonName, modelData->jointsAnimation[i].name) == 0) break;
 	}
 
-	if (i == size) return ubo.model;
+	if (i == size) return bufferData.model;
 
-	return ubo.model*joints[i];
+	return bufferData.model*joints[i];
 }
 
 
@@ -133,124 +172,84 @@ void QeModel::init(QeAssetXML* _property) {
 	const char* c = AST->getXMLValue(_property, 1, "obj");
 	modelData = AST->getModel(c);
 	pMaterial = modelData->pMaterial;
-	descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
 
-	//VK->createUniformBuffer(sizeof(QeUniformBufferObject), uboBuffer.buffer, uboBuffer.memory);
-	VK->createBuffer(uboBuffer, sizeof(QeUniformBufferObject), nullptr);
+	if (modelData->animationNum > 0)
+		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "Action"));
+	else //if (pMaterial->type == eMaterialPBR)
+		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "model"));
+	//else
+		//AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "obj"));
 
-	QeDataDescriptorSet data;
+	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal"));
 
-	data.uboBuffer = uboBuffer.buffer;
-	//QeLight* light = OBJMGR->getLight(0, nullptr);
-	data.lightBuffer = ACT->light->uboBuffer.buffer;
-	data.materialBuffer = pMaterial->uboBuffer.buffer;
-	data.diffuseMapImageViews = pMaterial->image.pDiffuseMap->view;
-	data.diffueMapSamplers = pMaterial->image.pDiffuseMap->sampler;
-	data.normalMapImageViews = pMaterial->image.pNormalMap->view;
-	data.normalMapSamplers = pMaterial->image.pNormalMap->sampler;
+	setProperty();
+}
 
-	cubeMapID = 0;
-	c = AST->getXMLValue(_property, 1, "cubemapid");
-	if (c != nullptr)	cubeMapID = atoi(c);
 
-	ubo.param.z = 0;
 
-	if (cubeMapID > 0) {
-		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
-		if (model != nullptr) {
-			data.cubeMapImageViews = model->pMaterial->image.pCubeMap->view;
-			data.cubeMapSamplers = model->pMaterial->image.pCubeMap->sampler;
-			ubo.param.z = 1;
-		}
-	}
-	VK->updateDescriptorSet(data, descriptorSet);
+void QeModel::setProperty() {
 
 	pos = { 0, 0, 0 };
 	face = 0.0f;
 	up = 0.0f;
-	size = modelData->scale;
+
+	if(modelData)	size = modelData->scale;
+	else			size = { 1,1,1 };
+
 	speed = 0;
 	currentActionID = 0;
 	actionType = eActionTypeOnce;
 	actionState = eActionStateStop;
-	attachID=0;
-	attachSkeletonName=nullptr;
+	attachID = 0;
+	attachSkeletonName = nullptr;
 	actionSpeed = 0;
+	cubeMapID = 0;
 
-	if (modelData->animationNum > 0)
-		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "Action"));
-	else if (pMaterial->type == eMaterialPBR)
-		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "model"));
-	else 
-		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "obj"));
+	AST->getXMLiValue(cubeMapID, *initProperty, 1, "cubemapid");
+	AST->getXMLbValue(bAlpha, *initProperty, 1, "alpha");
+	AST->getXMLuiValue(id, *initProperty, 1, "id");
+	AST->getXMLfValue(pos.x, *initProperty, 1, "posX");
+	AST->getXMLfValue(pos.y, *initProperty, 1, "posY");
+	AST->getXMLfValue(pos.z, *initProperty, 1, "posZ");
+	AST->getXMLfValue(size.x, *initProperty, 1, "scaleX");
+	AST->getXMLfValue(size.y, *initProperty, 1, "scaleY");
+	AST->getXMLfValue(size.z, *initProperty, 1, "scaleZ");
+	AST->getXMLiValue(speed, *initProperty, 1, "speed");
+	AST->getXMLbValue(bShow, *initProperty, 1, "show");
+	AST->getXMLiValue(cullingDistance, *initProperty, 1, "culling");
 
-	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal") );
+	if (modelData && modelData->rootJoint) {
+		AST->getXMLfValue(actionSpeed, *initProperty, 1, "actionSpeed");
+		AST->getXMLuiValue(currentActionID, *initProperty, 1, "action");
+		int i = 0;
+		AST->getXMLiValue(i, *initProperty, 1, "actionType");
 
-	c = AST->getXMLValue(_property, 1, "alpha");
-	if (c != nullptr)	bAlpha = atoi(c);
-
-	createPipeline();
-
-	c = AST->getXMLValue(_property, 1, "id");
-	if (c != nullptr)	id = atoi(c);
-
-	c = AST->getXMLValue(_property, 1, "posX");
-	if (c != nullptr)	pos.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "posY");
-	if (c != nullptr)	pos.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "posZ");
-	if (c != nullptr)	pos.z = float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "scaleX");
-	if (c != nullptr)	size.x *= float(atof(c));
-	c = AST->getXMLValue(_property, 1, "scaleY");
-	if (c != nullptr)	size.y *= float(atof(c));
-	c = AST->getXMLValue(_property, 1, "scaleZ");
-	if (c != nullptr)	size.z *= float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "speed");
-	if (c != nullptr)	speed = atoi(c);
-
-	c = AST->getXMLValue(_property, 1, "show");
-	if (c != nullptr)	bShow = atoi(c);
-
-	c = AST->getXMLValue(_property, 1, "culling");
-	if (c != nullptr)	cullingDistance = atoi(c);
-
-	c = AST->getXMLValue(_property, 1, "actionSpeed");
-	if (c != nullptr)	actionSpeed = float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "action");
-	if (c != nullptr) {
-		currentActionID = atoi(c);
-
-		c = AST->getXMLValue(_property, 1, "actionType");
-		if (c != nullptr)	actionType = QeActionType(atoi(c));
-
+		actionType = QeActionType(i);
 		setAction(currentActionID, actionType);
 		actionPlay();
-	}
-	else if (modelData->rootJoint) {
-		actionPlay();
 		updateAction(0);
-		actionStop();
+
+		if (!AST->getXMLValue(initProperty, 1, "action")) {
+			actionStop();
+		}
 	}
 
-	c = AST->getXMLValue(_property, 1, "attachid");
-	if (c != nullptr)	attachID = atoi(c);
+	AST->getXMLiValue(attachID, *initProperty, 1, "attachid");
 
-	attachSkeletonName = AST->getXMLValue(_property, 1, "attachskeleton");
+	attachSkeletonName = AST->getXMLValue(initProperty, 1, "attachskeleton");
 
-	c = AST->getXMLValue(_property, 1, "paritcleid");
-	if (c)	particle = OBJMGR->getParticle(atoi(c), _property);
+	AST->getXMLiValue(particleID, *initProperty, 1, "paritcleid");
+
+	memcpy(&bufferData.material, &pMaterial->value, sizeof(bufferData.material));
 }
 
-void QeModel::updateRender(float time) {
-
+void QeModel::updateCompute(float time) {
 	updateShowByCulling();
-	if(speed != 0)	rotateFace( time*speed );
+	if (speed != 0)	rotateFace(time*speed);
 	updateAction(time);
-	updateUniformBuffer();
+	updateBuffer();
+}
+void QeModel::updateRender(float time) {
 }
 
 void QeModel::updateShowByCulling() {
@@ -284,43 +283,21 @@ void QeModel::setShow(bool b) {
 	}
 }
 
-void QeModel::updateCompute(float time) {}
+void QeModel::updateBuffer() {
 
-void QeModel::updateUniformBuffer() {
-	/*int size1 = sizeof(float);
-	int size2 = sizeof(int);
-	int size3 = sizeof(QeVector3f);
-	int size4 = sizeof(QeVector4f);
-	int size5 = sizeof(QeVector3i);
-	int size6 = sizeof(QeMatrix4x4f);
-	int size7 = sizeof(QeMatrix4x4f)*9;
-	int size8 = sizeof(QeUniformBufferObject);
-	int size9 = sizeof(ubo);*/
-	//pos = VP->getTargetCamera()->target;
 	setMatModel();
 
-	ubo.ambientColor = ACT->ambientColor;
-	ubo.param.x = float(VP->currentNum);
-	for (int i = 0; i < VP->currentNum; ++i) {
-		ubo.view[i] = VP->cameras[i]->view;
-		ubo.proj[i] = VP->cameras[i]->projection;
+	size_t size = shaderData.size();
+	size_t size1 = VP->viewports.size();
+	if (size1 < size) size = size1;
 
-		QeMatrix4x4f mat = ubo.view[i]* ubo.model;
+	for (size_t i = 0; i < size; ++i) {
+		QeCamera* camera = VP->viewports[i]->camera;
+		QeMatrix4x4f mat = camera->bufferData.view* bufferData.model;
 		MATH->inverse(mat, mat);
-		ubo.normal[i] = MATH->transpose(mat);
-		ubo.cameraPos[i] = VP->cameras[i]->pos;
-		ubo.cameraPos[i].w = 1;
+		bufferData.normal = MATH->transpose(mat);
+		VK->setMemoryBuffer(shaderData[i]->modelBuffer, sizeof(bufferData), &bufferData );
 	}
-	//VK->setMemory(uboBuffer.memory,(void*)&ubo, sizeof(ubo), &uboBuffer.mapped);
-	VK->setMemoryBuffer(uboBuffer, sizeof(ubo), (void*)&ubo );
-
-	//QeLight* light = OBJMGR->getLight(0,nullptr);
-	//VK->setMemory(light->uboBuffer.memory, (void*)(&(light->data)), sizeof(light->data));
-
-	//if (modelData->pMaterial->type == eMaterial)	
-	//	VK->setMemory(modelData->pMaterial->uboBuffer.memory, (void*)&modelData->pMaterial->value, sizeof(modelData->pMaterial->value));
-	//else if (modelData->pMaterial->type == eMaterialPBR)
-	//	VK->setMemory(modelData->pMaterial->uboBuffer.memory, (void*)&modelData->pMaterial->valuePBR, sizeof(modelData->pMaterial->valuePBR));
 }
 
 bool QeModel::setAction(unsigned int actionID, QeActionType type) {
@@ -344,7 +321,7 @@ void QeModel::actionStop()	{	actionState = eActionStateStop; }
 
 void QeModel::updateAction(float time) {
 
-	if (actionState != eActionStatePlay) return;
+	if (!modelData || actionState != eActionStatePlay) return;
 
 	float previousActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
 	float nextActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame + 1];
@@ -404,7 +381,7 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 			for (size_t j = 0; j<size1 ;++j)
 				setChildrenJointTransform( *modelData->jointsAnimation[i].children[j], joints[i]);
 			
-			ubo.joints[i] = joints[i]*modelData->jointsAnimation[i].inverseBindMatrix;
+			bufferData.joints[i] = joints[i]*modelData->jointsAnimation[i].inverseBindMatrix;
 			break;
 		}
 	}
@@ -413,8 +390,9 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	if (!bShow || !bCullingShow) return;
-
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	
+	std::array<VkDescriptorSet, 2> descriptorSets1 = { VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet };
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets1.size()), descriptorSets1.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);

@@ -8,5 +8,7 @@ public:
 	//~QeCube() {}
 
 	virtual void init(QeAssetXML* _property);
+	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
+	virtual void createPipeline();
 	virtual void updateShowByCulling();
 };

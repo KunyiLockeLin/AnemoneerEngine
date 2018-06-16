@@ -22,6 +22,7 @@ public:
 	bool bFollow=true;
 	
 	virtual void init(QeAssetXML* _property);
+	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
 	virtual void createPipeline();
 	virtual void setMatModel();
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);

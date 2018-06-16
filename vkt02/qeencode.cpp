@@ -253,7 +253,7 @@ QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index) {
 	return node;
 }
 
-QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
+/*QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 
 	std::vector<QeVector3f> normalV;
 	std::vector<QeVector2f> texCoordV;
@@ -327,6 +327,39 @@ QeAssetModel* QeEncode::decodeOBJ(char* buffer) {
 
 	return model;
 }
+
+QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
+
+	QeAssetMaterial* mtl = new QeAssetMaterial();
+	mtl->type = eMaterialPhong;
+	QeDataMaterialPhong mtl1;
+	mtl1.ambient.w = 1;
+	mtl1.diffuse.w = 1;
+	mtl1.specular.w = 1;
+	mtl1.emissive.w = 1;
+	char diffuseMapPath[512];
+	char *context;
+	char* line = strtok_s(buffer, "\n", &context);
+
+	while (line != nullptr) {
+
+		if (strncmp(line, "map_Kd ", 7) == 0)	sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
+		else if (strncmp(line, "Ns ", 3) == 0)	sscanf_s(line, "Ns %f", &mtl1.param.x);
+		else if (strncmp(line, "Ka ", 3) == 0)	sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
+		else if (strncmp(line, "Kd ", 3) == 0)	sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
+		else if (strncmp(line, "Ks ", 3) == 0)	sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
+		else if (strncmp(line, "Ke ", 3) == 0)	sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
+		else if (strncmp(line, "Ni ", 3) == 0)	sscanf_s(line, "Ni %f", &(mtl1.param.y));
+		else if (strncmp(line, "d ", 2) == 0)	sscanf_s(line, "d %f", &(mtl1.param.z));
+
+		line = strtok_s(NULL, "\n", &context);
+	}
+
+	mtl->value.phong = mtl1;
+	if (strlen(diffuseMapPath) != 0)	mtl->image.pDiffuseMap = AST->getImage(diffuseMapPath);
+
+	return mtl;
+}*/
 
 QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	QeAssetModel* model = new QeAssetModel();
@@ -636,7 +669,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 
 	// material
 	QeAssetMaterial *pMaterial = new QeAssetMaterial();
-	pMaterial->type = eMaterialPBR;
+	//pMaterial->type = eMaterialPBR;
 	model->pMaterial = pMaterial;
 	
 	int textureIndex = atoi(AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index"));
@@ -644,7 +677,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	const char* texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
 	
 	if(bCubeMap)pMaterial->image.pCubeMap = AST->getImage(texturePath, bCubeMap);
-	else		pMaterial->image.pDiffuseMap = AST->getImage(texturePath, bCubeMap);
+	else		pMaterial->image.pBaseColorMap = AST->getImage(texturePath, bCubeMap);
 	
 	textureIndex = atoi(AST->getJSONValue(json, 3, "materials", "normalTexture", "index"));
 	imageJSON = AST->getJSONArrayNodes(json, 1, "images");
@@ -653,7 +686,8 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	pMaterial->image.pNormalMap = AST->getImage(texturePath, bCubeMap);
 
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
-	QeDataMaterialPBR mtl;
+	//QeDataMaterialPBR mtl;
+	QeDataMaterial mtl;
 
 	if (baseColorJ != nullptr) {
 		mtl.baseColor.x = float(atof((*baseColorJ)[0].c_str()));
@@ -675,7 +709,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	if (value == nullptr)	mtl.metallicRoughness.y = 1.0f;
 	else					mtl.metallicRoughness.y = float(atof(value));
 
-	pMaterial->value.pbr = mtl;
+	pMaterial->value = mtl;
 
 	return model;
 }
@@ -733,39 +767,6 @@ QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	AST->getXMLfValue(particle->size_y_init_pos_d.w, *node, 2, "init_pos", "degree_range");
 
 	return particle;
-}
-
-QeAssetMaterial* QeEncode::decodeMTL(char* buffer) {
-
-	QeAssetMaterial* mtl = new QeAssetMaterial();
-	mtl->type = eMaterialPhong;
-	QeDataMaterialPhong mtl1;
-	mtl1.ambient.w = 1;
-	mtl1.diffuse.w = 1;
-	mtl1.specular.w = 1;
-	mtl1.emissive.w = 1;
-	char diffuseMapPath[512];
-	char *context;
-	char* line = strtok_s(buffer, "\n", &context);
-
-	while (line != nullptr) {
-
-		if (strncmp(line, "map_Kd ", 7) == 0)	sscanf_s(line, "map_Kd %s", diffuseMapPath, (unsigned int) sizeof(diffuseMapPath));
-		else if (strncmp(line, "Ns ", 3) == 0)	sscanf_s(line, "Ns %f", &mtl1.param.x);
-		else if (strncmp(line, "Ka ", 3) == 0)	sscanf_s(line, "Ka %f %f %f", &(mtl1.ambient.x), &(mtl1.ambient.y), &(mtl1.ambient.z));
-		else if (strncmp(line, "Kd ", 3) == 0)	sscanf_s(line, "Kd %f %f %f", &(mtl1.diffuse.x), &(mtl1.diffuse.y), &(mtl1.diffuse.z));
-		else if (strncmp(line, "Ks ", 3) == 0)	sscanf_s(line, "Ks %f %f %f", &(mtl1.specular.x), &(mtl1.specular.y), &(mtl1.specular.z));
-		else if (strncmp(line, "Ke ", 3) == 0)	sscanf_s(line, "Ke %f %f %f", &(mtl1.emissive.x), &(mtl1.emissive.y), &(mtl1.emissive.z));
-		else if (strncmp(line, "Ni ", 3) == 0)	sscanf_s(line, "Ni %f", &(mtl1.param.y));
-		else if (strncmp(line, "d ", 2) == 0)	sscanf_s(line, "d %f", &(mtl1.param.z));
-	
-		line = strtok_s(NULL, "\n", &context);
-	}
-
-	mtl->value.phong = mtl1;
-	if (strlen(diffuseMapPath) != 0)	mtl->image.pDiffuseMap = AST->getImage(diffuseMapPath);
-
-	return mtl;
 }
 
 std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char* buffer, size_t size, int* width, int* height, int* bytes) {

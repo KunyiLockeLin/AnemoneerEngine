@@ -221,6 +221,13 @@
     <None Include="..\data\shaders\cubemap.frag" />
     <None Include="..\data\shaders\cubemap.geom" />
     <None Include="..\data\shaders\grayscale.frag" />
+    <None Include="..\data\shaders\head.glsl" />
+    <None Include="..\data\shaders\headComp.glsl" />
+    <None Include="..\data\shaders\headFrag.glsl" />
+    <None Include="..\data\shaders\headGeom.glsl" />
+    <None Include="..\data\shaders\headTesc.glsl" />
+    <None Include="..\data\shaders\headTese.glsl" />
+    <None Include="..\data\shaders\headVert.glsl" />
     <None Include="..\data\shaders\line.geom" />
     <None Include="..\data\shaders\particle.comp" />
     <None Include="..\data\shaders\pbr.frag" />

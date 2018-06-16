@@ -36,11 +36,11 @@ public:
 	std::string trim(std::string s);
 	QeAssetXML* decodeXML(const char* buffer, int &index);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
-	QeAssetModel* decodeOBJ(char* buffer);
+	//QeAssetModel* decodeOBJ(char* buffer);
 	QeAssetModel* decodeGLTF(QeAssetJSON *json, bool bCubeMap = false);
 	QeAssetParticleRule* decodeParticle(QeAssetXML* node);
 	//QeAssetModel* decodeGLB(char* buffer);
-	QeAssetMaterial* decodeMTL(char* buffer);
+	//QeAssetMaterial* decodeMTL(char* buffer);
 	std::vector<unsigned char> decodeJPEG(unsigned char* buffer, size_t size, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodeBMP(unsigned char* buffer, int* width, int* height, int* bytes);
 	std::vector<unsigned char> decodePNG(unsigned char* buffer, int* width, int* height, int* bytes);

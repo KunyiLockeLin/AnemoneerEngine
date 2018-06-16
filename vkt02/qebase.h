@@ -8,6 +8,7 @@ public:
 	uint16_t id;
 	QeAssetXML* initProperty = nullptr;
 	QeVector3f pos;
+	int particleID = 0;
 	QeParticle* particle;
 
 	QeBase(QeObjectMangerKey& _key) {}

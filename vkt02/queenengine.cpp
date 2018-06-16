@@ -37,20 +37,22 @@ void QueenEngine::mainLoop() {
 
 			currentComputeFPS = 1000 / passMilliSecond;
 			float time = float(passMilliSecond) / 1000;
-			currentActivity->updateCompute(time);
-			VP->updateCompute(time);
 			VK->updateCompute(time);
+			VP->updateCompute(time);
 			WIN->updateCompute(time);
+			ACT->updateCompute(time);
+			OBJMGR->updateCompute(time);
 		}
 
 		if (renderFPSTimer.checkTimer(passMilliSecond)) {
 
 			currentRenderFPS = 1000 / passMilliSecond;
 			float time = float(passMilliSecond) / 1000;
-			currentActivity->updateRender(time);
+			WIN->updateRender(time);
+			ACT->updateRender(time);
+			OBJMGR->updateRender(time);
 			VP->updateRender(time);
 			VK->updateRender(time);
-			WIN->updateRender(time);
 		}
 	}
 	vkDeviceWaitIdle(VK->device);

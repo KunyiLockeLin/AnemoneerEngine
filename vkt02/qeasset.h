@@ -56,7 +56,7 @@ struct QeAssetModel {
 	~QeAssetModel();
 };
 
-enum QeMaterialType {
+/*enum QeMaterialType {
 	eMaterialPhong,
 	eMaterialPBR,
 };
@@ -73,19 +73,23 @@ struct QeDataMaterialPBR {
 	QeVector4f baseColor;
 	QeVector4f metallicRoughness;
 	QeVector4f emissive;
-};
+};*/
 
 struct QeDataMaterial {
-	union{
+	/*union{
 		QeDataMaterialPhong phong;
 		QeDataMaterialPBR pbr;
-	};
+	};*/
+	QeVector4f baseColor;
+	QeVector4f metallicRoughness;
+	QeVector4f emissive;
 	QeDataMaterial() {}
 };
 
 struct QeAssetImage {
 
-	QeVKImage* pDiffuseMap = nullptr; // baseColorMap;
+	//QeVKImage* pDiffuseMap = nullptr; // baseColorMap;
+	QeVKImage* pBaseColorMap = nullptr;
 	QeVKImage* pCubeMap = nullptr;;
 	QeVKImage* pNormalMap = nullptr;;
 };
@@ -101,13 +105,12 @@ struct QeAssetShader {
 
 struct QeAssetMaterial {
 
-	QeMaterialType type = eMaterialPhong;
-	QeVKBuffer	uboBuffer;
+	//QeMaterialType type = eMaterialPhong;
 	QeAssetImage image;
 	QeAssetShader shader;
 	QeDataMaterial value;
 
-	QeAssetMaterial() :uboBuffer(eBuffer_uniform) {}
+	QeAssetMaterial() {}
 };
 
 enum QeAssetType {
@@ -201,11 +204,12 @@ public:
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
 	bool getXMLbValue(bool& output, QeAssetXML& source, int length, ...);
+	bool getXMLuiValue(uint16_t& output, QeAssetXML& source, int length, ...);
 	bool getXMLiValue(int& output, QeAssetXML& source, int length, ...);
 	bool getXMLfValue(float& output, QeAssetXML& source, int length, ...);
 
 	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);
-	QeAssetMaterial* getMaterial(const char* _filename);
+	//QeAssetMaterial* getMaterial(const char* _filename);
 	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
 	QeVKImage* getImage(const char* _filename, bool bCubeMap=false);
 	VkShaderModule getShader(const char* _filename);

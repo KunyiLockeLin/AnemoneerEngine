@@ -3,15 +3,12 @@
 #include "qeheader.h"
 
 
-struct QeUniformBufferObject {
+struct QeDataModel {
 	QeMatrix4x4f model;
-	QeMatrix4x4f view[MAX_VIEWPORT_NUM];
-	QeMatrix4x4f proj[MAX_VIEWPORT_NUM];
-	QeMatrix4x4f normal[MAX_VIEWPORT_NUM];
+	QeMatrix4x4f normal;
 	QeMatrix4x4f joints[MAX_JOINT_NUM];
-	QeVector4f	cameraPos[MAX_VIEWPORT_NUM];
-	QeVector4f	ambientColor;
-	QeVector4f	param; // 1:viewportNum, 2:billboardType, 3:bCubemap
+	QeVector4f	param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none)
+	QeDataMaterial material;
 };
 
 enum QeModelType {
@@ -34,13 +31,24 @@ enum QeActionState {
 	eActionStatePause,
 };
 
+struct QeDataModelShader {
+	QeVKBuffer modelBuffer;
+	QeDataDescriptorSet descriptorSet;
+
+	QeDataModelShader():modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
+};
+
 class QeModel:public QeBase
 {
 public:
+
+	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model) :QeBase(_key), modelType(_type) {}
+	~QeModel();
+
 	QeModelType modelType = eModel_Model;
 	QeActionState	actionState = eActionStateStop;
 	QeActionType	actionType = eActionTypeOnce;
-	unsigned char	currentActionID = 0;
+	uint16_t		currentActionID = 0;
 	unsigned int	currentActionFrame = 0;
 	float			currentActionTime = 0.f;
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
@@ -60,31 +68,27 @@ public:
 	bool bAlpha = false;
 
 	QeAssetModel* modelData = nullptr;
-	QeAssetMaterial * pMaterial = nullptr;
+	QeAssetMaterial* pMaterial = nullptr;
 	VkShaderModule computeShader = VK_NULL_HANDLE;
 
-	VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-	//VkPipeline graphicsPipeline = VK_NULL_HANDLE;
-	//VkPipeline normalPipeline = VK_NULL_HANDLE;
-	QeGraphicsPipelineStruct* graphicsPipeline = nullptr;
-	QeGraphicsPipelineStruct* normalPipeline = nullptr;
+	QeDataModel bufferData;
+	std::vector<QeDataModelShader*> shaderData;
+	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
+	QeDataGraphicsPipeline* normalPipeline = nullptr;
 	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeAssetShader normalShader;
-
-	QeUniformBufferObject ubo;
-	QeVKBuffer uboBuffer;
+	//std::vector<QeMatrix4x4f> normals;
+	//QeVKBuffer normalsBuffer;
 
 	void setShow(bool b);
-	void updateUniformBuffer();
+	void updateBuffer();
 	virtual void updateShowByCulling();
 	virtual void updateRender(float time);
 	virtual void updateCompute(float time);
 
-	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model):QeBase(_key), modelType(_type), uboBuffer(eBuffer_uniform){}
-	~QeModel();
-
 	virtual void init(QeAssetXML* _property);
+	virtual void setProperty();
 	void setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size);
 	void move(QeVector3f& _pos);
 	void setPosition(QeVector3f& _pos);
@@ -96,6 +100,8 @@ public:
 	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
 	void cleanupPipeline();
+	void updateShaderData();
+	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
 	virtual void createPipeline();
  
 	bool setAction(unsigned int actionID, QeActionType playType);

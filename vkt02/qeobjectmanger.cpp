@@ -237,8 +237,8 @@ QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
 }
 
 void QeObjectManger::sortAlphaModels() {
-	bool b = false;
-	QeCamera * camera = VP->getTargetCamera();
+
+	QeCamera * camera = VP->viewports[VP->currentCommandViewport]->camera;
 	if (!camera) return;
 	
 	size_t size = mgrAlphaModels.size();
@@ -249,18 +249,15 @@ void QeObjectManger::sortAlphaModels() {
 			float dis2 = MATH->distance(camera->pos, mgrAlphaModels[j]->pos);
 
 			if (dis1 < dis2) {
-				b = true;
 				std::swap(mgrAlphaModels[i], mgrAlphaModels[j]);
 			}
 		}
 	}
-	if(b) VP->bUpdateDrawCommandBuffers = true;
 }
 
 void QeObjectManger::addAlphaModels(QeModel* model) {
 	
 	mgrAlphaModels.push_back(model);
-	sortAlphaModels();
 	VP->bUpdateDrawCommandBuffers = true;
 }
 
@@ -319,11 +316,13 @@ void QeObjectManger::recreatePipeline() {
 
 	std::map<uint16_t, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
+		it->second->updateShaderData();
 		it->second->createPipeline();
 		++it;
 	}
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
+		(*it1)->updateShaderData();
 		(*it1)->createPipeline();
 		++it1;
 	}
@@ -338,6 +337,7 @@ void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer)
 		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
 	}
+	sortAlphaModels();
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
 		(*it1)->updateDrawCommandBuffer(drawCommandBuffer);

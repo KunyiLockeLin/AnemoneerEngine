@@ -650,6 +650,23 @@ bool QeAsset::getXMLbValue(bool& output, QeAssetXML& source, int length, ...) {
 	return ret;
 }
 
+bool QeAsset::getXMLuiValue(uint16_t& output, QeAssetXML& source, int length, ...) {
+
+	va_list keys;
+	va_start(keys, length);
+
+	const char** keys1 = new const char*[length];
+	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
+
+	const char* ret = getXMLValue(&source, keys1, length + 1);
+	va_end(keys);
+	delete[] keys1;
+
+	if (ret) output = atoi(ret);
+
+	return ret;
+}
+
 bool QeAsset::getXMLiValue(int& output, QeAssetXML& source, int length, ...) {
 
 	va_list keys;
@@ -700,8 +717,9 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 		char *ret = strrchr((char*)_filename, '.');
 
-		if (strcmp(ret + 1, "obj") == 0)		type = 0;
-		else if (strcmp(ret + 1, "gltf") == 0)	type = 1;
+		//if (strcmp(ret + 1, "obj") == 0)		type = 0;
+		//else 
+			if (strcmp(ret + 1, "gltf") == 0)	type = 1;
 		//else if (strcmp(ret + 1, "glb") == 0)	type = 2;
 	}
 
@@ -713,8 +731,8 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 	switch (type) {
 	case 0:
-		buffer = loadFile(_filePath.c_str());
-		model = ENCODE->decodeOBJ(buffer.data());
+		//buffer = loadFile(_filePath.c_str());
+		//model = ENCODE->decodeOBJ(buffer.data()); 
 		break;
 	case 1:
 		json = getJSON(_filePath.c_str());
@@ -817,20 +835,20 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		//VK->createBufferData((void*)model->indices.data(), sizeof(model->indices[0]) * model->indices.size(), model->index.buffer, model->index.memory, &model->vertex.mapped);
 		VK->createBuffer(model->index, sizeof(model->indices[0]) * model->indices.size(), (void*)model->indices.data());
 	}
-	if (model->pMaterial && model->pMaterial->type == eMaterialPBR ) {
+	//if (model->pMaterial && model->pMaterial->type == eMaterialPBR ) {
 		//VK->createUniformBuffer(sizeof(model->pMaterial->value), model->pMaterial->uboBuffer.buffer, model->pMaterial->uboBuffer.memory);
 		//VK->setMemory(model->pMaterial->uboBuffer.memory, (void*)&model->pMaterial->value, sizeof(model->pMaterial->value), &model->pMaterial->uboBuffer.mapped);
-		VK->createBuffer(model->pMaterial->uboBuffer, sizeof(model->pMaterial->value), (void*)&model->pMaterial->value);
+		//VK->createBuffer(model->pMaterial->uboBuffer, sizeof(model->pMaterial->value), (void*)&model->pMaterial->value);
 
 		astMaterials[_filePath] = model->pMaterial;
-	}
+	//}
 	
 	astModels[_filePath] = model;
 
 	return model;
 }
 
-QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
+/*QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 
 	std::string _filePath = combinePath(_filename, eAssetMaterial);
 	std::map<std::string, QeAssetMaterial*>::iterator it = astMaterials.find(_filePath.c_str());
@@ -839,14 +857,14 @@ QeAssetMaterial* QeAsset::getMaterial(const char* _filename) {
 	std::vector<char> buffer = loadFile(_filePath.c_str());
 	QeAssetMaterial* mtl = ENCODE->decodeMTL(buffer.data());
 
-	VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
+	//VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
 	//VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
 	//VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped );
 
 	astMaterials[_filePath] = mtl;
 
 	return mtl;
-}
+}*/
 
 QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap) {
 	std::string _filePath = combinePath(_filename, eAssetTexture);
@@ -861,9 +879,9 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	//mtl->value.phong.param = { 1,1,1,1 };
 	if (_filePath.length() == 0) {}
 	else if (bCubeMap)	mtl->image.pCubeMap = AST->getImage(_filename, bCubeMap);
-	else				mtl->image.pDiffuseMap = AST->getImage(_filename, bCubeMap);
+	else				mtl->image.pBaseColorMap = AST->getImage(_filename, bCubeMap);
 
-	VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
+	//VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
 	//VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
 	//VK->setMemory(mtl->uboBuffer.memory, (void*)&mtl->value, sizeof(mtl->value), &mtl->uboBuffer.mapped);
 

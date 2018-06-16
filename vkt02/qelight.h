@@ -17,14 +17,17 @@ struct QeDataLight {
 class QeLight:public QeBase
 {
 public:
-	QeLight(QeObjectMangerKey& _key):QeBase(_key), uboBuffer(eBuffer_uniform) {}
+	QeLight(QeObjectMangerKey& _key):QeBase(_key) {}
 	~QeLight() {}
 
 	bool bShow = false;
 	int speed = 0;
 	QeVector3f rotateCenter;
-	QeDataLight data;
-	QeVKBuffer uboBuffer;
+
+	QeDataLight bufferData;
+	//VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+
+	bool bUpdateBuffer = true;
 
 	void init(QeAssetXML* _property);
 	void updateRender(float time);

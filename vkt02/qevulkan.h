@@ -25,6 +25,7 @@ enum QeVKBufferType {
 	eBuffer_storage_compute_shader_return = 3,
 	eBuffer_storage_texel = 4,
 	eBuffer_uniform = 5,
+	eBuffer_storage = 6,
 };
 
 struct QeVKBuffer {
@@ -60,30 +61,58 @@ struct QeVKImage {
 	~QeVKImage();
 };
 
+enum QeDescriptorSetLayoutType {
+	eDescriptorSetLayout_Common = 0,
+	eDescriptorSetLayout_Model = 1,
+	eDescriptorSetLayout_Postprocessing = 2,
+	eDescriptorSetLayout_MAX = 3
+};
+
 struct QeDataDescriptorSet {
+	QeDescriptorSetLayoutType type;
+	VkDescriptorSet descriptorSet= VK_NULL_HANDLE;
 
-	// descriptorSetgUBONumber
-	VkBuffer	uboBuffer = VK_NULL_HANDLE;
-	VkBuffer	lightBuffer = VK_NULL_HANDLE;
-	VkBuffer	materialBuffer = VK_NULL_HANDLE;
+	QeDataDescriptorSet(QeDescriptorSetLayoutType _type) :type(_type) {}
+};
 
-	// descriptorSetgImageNumber
-	VkImageView diffuseMapImageViews = VK_NULL_HANDLE;
-	VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
+struct QeDataDescriptorSetLayout {
+	VkDescriptorType type;
+	uint8_t startID;
+	uint8_t count;
+};
+
+struct QeDataDescriptorSetCommon {
+	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+	VkBuffer environmentBuffer = VK_NULL_HANDLE;
+
+	// VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+	VkBuffer lightsBuffer = VK_NULL_HANDLE;
+};
+
+struct QeDataDescriptorSetModel {
+	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+	VkBuffer	modelBuffer = VK_NULL_HANDLE;
+
+	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
+	//VkImageView diffuseMapImageViews = VK_NULL_HANDLE;
+	//VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
+	VkImageView baseColorMapImageViews = VK_NULL_HANDLE;
+	VkSampler	baseColorMapSamplers = VK_NULL_HANDLE;
 	VkImageView cubeMapImageViews = VK_NULL_HANDLE;
 	VkSampler	cubeMapSamplers = VK_NULL_HANDLE;
 	VkImageView normalMapImageViews = VK_NULL_HANDLE;
 	VkSampler	normalMapSamplers = VK_NULL_HANDLE;
 
-	// descriptorSetgInputAttachmentNumber
+	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
+	VkBufferView texeLBufferView = VK_NULL_HANDLE;
+
+	// VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+	VkBuffer	computeShaderoutputBuffer = VK_NULL_HANDLE;
+};
+
+struct QeDataDescriptorSetPostprocessing {
+	// VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
 	VkImageView inputAttachImageViews = VK_NULL_HANDLE;
-
-	// descriptorSetcStorageTexeLBufferNumber
-	VkBufferView inputStorageTexeLBufferView = VK_NULL_HANDLE;
-	VkBufferView outputStorageTexeLBufferView = VK_NULL_HANDLE;
-
-	// descriptorSetcBufferNumber
-	VkBuffer	outputBuffer = VK_NULL_HANDLE;
 };
 
 enum QeGraphicsPipelineType {
@@ -93,7 +122,7 @@ enum QeGraphicsPipelineType {
 	eGraphicsPipeLine_Postprogessing = 3,
 };
 
-struct QeGraphicsPipelineStruct {
+struct QeDataGraphicsPipeline {
 	VkPipeline graphicsPipeline;
 	QeAssetShader* shader;
 	QeGraphicsPipelineType type;
@@ -132,24 +161,15 @@ public:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkPhysicalDeviceProperties deviceProperties;
 
-	std::vector<QeGraphicsPipelineStruct*> graphicsPipelines;
+	std::vector<QeDataGraphicsPipeline*> graphicsPipelines;
 
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
 	VkQueue computeQueue;
 
-	const uint8_t descriptorSetgUBOStart = 0;
-	const uint8_t descriptorSetgUBONumber = 3;
-	const uint8_t descriptorSetgImageStart = 10;
-	const uint8_t descriptorSetgImageNumber = 3;
-	const uint8_t descriptorSetgInputAttachmentStart = 20;
-	const uint8_t descriptorSetgInputAttachmentNumber = 1;
-	const uint8_t descriptorSetcStorageTexeLBufferStart = 30;
-	const uint8_t descriptorSetcStorageTexeLBufferNumber = 2;
-	const uint8_t descriptorSetcBufferStart = 40;
-	const uint8_t descriptorSetcBufferNumber = 1;
+	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas;
+	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 
-	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 	VkPipelineLayout pipelineLayout;
 	VkCommandPool commandPool;
@@ -167,8 +187,8 @@ public:
 	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 
-	VkDescriptorSetLayout createDescriptorSetLayout();
-	VkPipelineLayout createPipelineLayout( VkDescriptorSetLayout& descriptorSetLayout);
+	void createDescriptorSetLayout();
+	VkPipelineLayout createPipelineLayout();
 	void updatePushConstnats(VkCommandBuffer command_buffer);
 
 	void createCommandPool();
@@ -176,12 +196,8 @@ public:
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
 
-	//VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, bool bCubemap=false, uint32_t mipLevels = 1);
-	//void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory, bool bCubemap=false, uint32_t mipLevels = 1);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels=1);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer);
-	//void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	//void createBufferView(VkBuffer buffer, VkFormat format, VkBufferView & buffer_view);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -202,20 +218,13 @@ public:
 	void DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator);
 
 	void createDescriptorPool();
-	VkDescriptorSet createDescriptorSet(VkDescriptorSetLayout& descriptorSetLayout);
-	QeGraphicsPipelineStruct* createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
+	void createDescriptorSet(QeDataDescriptorSet& descriptorSet);
+	void updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet);
+	QeDataGraphicsPipeline* createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha = false, uint8_t subpassIndex = 0);
 	VkPipeline createComputePipeline(VkShaderModule shader);
-	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped);
-	//void setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size);
-	void updateDescriptorSet(QeDataDescriptorSet& data, VkDescriptorSet& descriptorSet);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
-	//VkSampler createTextureSampler();
-	
-	//void createImageData(void* data, VkFormat format, VkDeviceSize imageSize, int width, int height, VkImage& image, VkDeviceMemory& imageMemory, void** mapped, int layer=0, bool bCubemap=false);
 	void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
-	//void createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped);
-	//void createUniformBuffer(VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-
+	
 	void createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
 	void setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
 	void createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data);

@@ -9,6 +9,7 @@ void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up,
 	fnear = _near;
 	ffar = _far;
 	face = MATH->normalize(target - pos);
+	bUpdateBuffer = true;
 }
 
 /*void QeCamera::rotatePos(float _angle, QeVector3f _axis) {
@@ -36,6 +37,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
 	face = MATH->normalize(target - pos);
+	bUpdateBuffer = true;
 }
 
 /*void QeCamera::rotatePos(QeVector2i mousePos){
@@ -95,9 +97,9 @@ void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 		v4 = target;
 		v4 = mat*v4;
 		target = v4;
-		updateAxis();
 	}
 	face = MATH->normalize(target - pos);
+	bUpdateBuffer = true;
 }
 
 void QeCamera::init(QeAssetXML* _property) {
@@ -115,6 +117,13 @@ void QeCamera::init(QeAssetXML* _property) {
 	initProperty = _property;
 	const char* c = AST->getXMLValue(_property, 1, "id");
 	if (c != nullptr)	id = atoi(c);
+
+	//VK->createBuffer(uboBuffer, sizeof(QeUBODataCamera), nullptr);
+
+	//descriptorSet = VK->createDescriptorSet(VK->descriptorSetLayout);
+	//QeDataDescriptorSet descriptorSetData;
+	//descriptorSetData.cameraBuffer = uboBuffer.buffer;
+	//VK->updateDescriptorSet(descriptorSetData, descriptorSet);
 
 	//c = AST->getXMLValue(_property, 1, "type");
 	//if (c != nullptr)	type = QeCameraType(atoi(c));
@@ -163,15 +172,26 @@ void QeCamera::reset() {
 	updateAxis();
 }
 
-void QeCamera::updateRender(float time) {
+void QeCamera::setMatrix() {
+	bufferData.view = MATH->lookAt(pos, target, up);
+	bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
+	bufferData.pos = pos;
+}
+
+
+void QeCamera::updateCompute(float time) {
 
 	//rotatePos(timec,  QeVector3f(0,0,1) );
 	//rotateTarget(timec, QeVector3f(0, 0, 1));
-	view = MATH->lookAt(pos, target, up);
-	projection = MATH->perspective(fov, faspect, fnear, ffar);
+	if (bUpdateBuffer) {
+		updateAxis();
+		setMatrix();
+		//bUpdateBuffer = false;
+	}
 }
 
-void QeCamera::updateCompute(float time) {}
+void QeCamera::updateRender(float time) {
+}
 
 void QeCamera::updateAxis() {
 	if(ACT && ACT->axis)	ACT->axis->pos = target;
