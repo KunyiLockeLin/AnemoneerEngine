@@ -15,7 +15,6 @@ public:
 	uint32_t particlesSize;
 	std::vector<QeVertex> particles;
 	std::vector<int> bDeaths;
-	//QeVKBuffer uboParticleRule(eBuffer_uniform);
 	QeVKBuffer VertexBuffer;
 	QeVKBuffer outBuffer;
 

@@ -3,9 +3,6 @@
 void QeParticle::init(QeAssetXML* _property) {
 	
 	initProperty = _property;
-	
-	computeShader = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "computeShader", "particle"));
-	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
 
 	const char * c = AST->getXMLValue(_property, 1, "paritcleid");
 	id = atoi(c);
@@ -17,6 +14,10 @@ void QeParticle::init(QeAssetXML* _property) {
 	AST->getXMLbValue(bFollow, *_property, 1, "paritclefollow");
 
 	pMaterial = AST->getMaterialImage(particleRule->image);
+	
+	computeShader = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "computeShader", "particle"));
+	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
+
 	setProperty();
 
 	// count
@@ -94,19 +95,18 @@ void QeParticle::init(QeAssetXML* _property) {
 	size.z = 1;
 
 	bufferData.material.baseColor = particles[0].color;
+	bufferData.param.x = float(bFollow + 1);
 
 	VK->createBuffer(VertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
-
-	bufferData.param.x = float(bFollow + 1);
 }
 
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.texelBufferView = VertexBuffer.view;
 	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
+	descriptorSetData.texelBufferView = VertexBuffer.view;
 	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
 	return descriptorSetData;
 }
@@ -121,11 +121,11 @@ void QeParticle::createPipeline() {
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
 	if (particlesSize == 0) return;
-	/*std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
 	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);*/
+	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);
 }
 
 void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {

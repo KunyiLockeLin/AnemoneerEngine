@@ -1430,22 +1430,6 @@ void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeigh
 	endSingleTimeCommands(commandBuffer);
 }
 
-/*void QeVulkan::createBufferData(void* data, VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory, void** mapped){
-
-	QeVKBuffer staging;
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging.buffer, staging.memory);
-	
-	setMemory(staging.memory, data, bufferSize, mapped);
-	
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
-	copyBuffer(staging.buffer, buffer, bufferSize);
-}*/
-
-/*void QeVulkan::createUniformBuffer( VkDeviceSize bufferSize, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
-	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory);
-}*/
-
 void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
 
 	VkBufferUsageFlags usage;
@@ -1474,7 +1458,7 @@ void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
 		break;
 
 	case eBuffer_vertex_texel:
-		usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
+		usage = VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 		bView = true;
 		break;
 
@@ -1530,11 +1514,15 @@ void QeVulkan::setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data
 	if (buffer.mapped)	memcpy(buffer.mapped, data, size);
 	else {
 		vkMapMemory(device, buffer.memory, 0, size, 0, &buffer.mapped);
-		memcpy(buffer.mapped, data, size);
+		if (buffer.mapped) {
+			memcpy(buffer.mapped, data, size);
+		}
+		else {
+			QeVKBuffer staging(eBuffer);
+			createBuffer(staging, size, data);
+			copyBuffer(staging.buffer, buffer.buffer, size);
+		}
 	}
-	//QeVKBuffer staging(eBuffer);
-	//createBuffer(staging, size, data);
-	//copyBuffer(staging.buffer, buffer.buffer, size);
 }
 
 void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data) {

@@ -7,4 +7,4 @@ layout( set = 1, binding = 20, rgba32f  ) uniform imageBuffer texelBuffer;
 
 layout( set = 1, binding = 30 ) buffer outSSBO {
 	int death[];
-};
+}outputData;
