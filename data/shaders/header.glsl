@@ -1,3 +1,5 @@
+#extension GL_ARB_separate_shader_objects : enable
+
 const int MAX_JOINT_NUM = 20;
 
 struct QeDataMaterial {

@@ -223,25 +223,25 @@
     <None Include="..\data\shaders\toon.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\head.glsl">
+    <None Include="..\data\shaders\header.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headComp.glsl">
+    <None Include="..\data\shaders\headerComp.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headFrag.glsl">
+    <None Include="..\data\shaders\headerFrag.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headGeom.glsl">
+    <None Include="..\data\shaders\headerGeom.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headTesc.glsl">
+    <None Include="..\data\shaders\headerTesc.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headTese.glsl">
+    <None Include="..\data\shaders\headerTese.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\headVert.glsl">
+    <None Include="..\data\shaders\headerVert.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
