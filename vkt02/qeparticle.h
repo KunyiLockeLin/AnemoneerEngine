@@ -9,7 +9,7 @@ public:
 	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle), VertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
 	~QeParticle() {}
 
-	uint16_t eid;
+	std::string eid;
 	QeAssetShader shader;
 	QeAssetParticleRule* particleRule;
 	uint32_t particlesSize;

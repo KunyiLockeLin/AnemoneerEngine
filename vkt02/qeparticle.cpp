@@ -4,12 +4,10 @@ void QeParticle::init(QeAssetXML* _property) {
 	
 	initProperty = _property;
 
-	const char * c = AST->getXMLValue(_property, 1, "paritcleid");
-	id = atoi(c);
+	AST->getXMLuiValue(id, *initProperty, 1, "paritcleid");
 
-	c = AST->getXMLValue(_property, 1, "paritcleEid");
-	eid = atoi(c);
-	particleRule = AST->getParticle(c);
+	eid = AST->getXMLValue(initProperty, 1, "paritcleEid");
+	particleRule = AST->getParticle(eid.c_str());
 
 	AST->getXMLbValue(bFollow, *_property, 1, "paritclefollow");
 
