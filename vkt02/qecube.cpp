@@ -14,7 +14,7 @@ void QeCube::init(QeAssetXML* _property) {
 
 QeDataDescriptorSetModel QeCube::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
-	descriptorSetData.modelBuffer = shaderData[index]->modelBuffer.buffer;
+	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.cubeMapImageViews = pMaterial->image.pCubeMap->view;
 	descriptorSetData.cubeMapSamplers = pMaterial->image.pCubeMap->sampler;
 	return descriptorSetData;

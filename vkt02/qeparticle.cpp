@@ -99,7 +99,7 @@ void QeParticle::init(QeAssetXML* _property) {
 
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
-	descriptorSetData.modelBuffer = shaderData[index]->modelBuffer.buffer;
+	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.texeLBufferView = VertexBuffer.view;
 	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
@@ -117,8 +117,8 @@ void QeParticle::createPipeline() {
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
 	if (particlesSize == 0) return;
-	std::array<VkDescriptorSet, 2> descriptorSets1 = { VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet };
-	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets1.size()), descriptorSets1.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);
@@ -129,8 +129,8 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	//if (!bShow || !bCullingShow) return;
 	if (particlesSize == 0) return;
 
-	std::array<VkDescriptorSet, 2> descriptorSets1 = { VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet };
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets1.size()), descriptorSets1.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &VertexBuffer.buffer, offsets);

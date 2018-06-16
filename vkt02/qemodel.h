@@ -5,7 +5,6 @@
 
 struct QeDataModel {
 	QeMatrix4x4f model;
-	QeMatrix4x4f normal;
 	QeMatrix4x4f joints[MAX_JOINT_NUM];
 	QeVector4f	param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none)
 	QeDataMaterial material;
@@ -31,18 +30,24 @@ enum QeActionState {
 	eActionStatePause,
 };
 
+struct QeDataModelViewport {
+	QeMatrix4x4f normal;
+};
+
 struct QeDataModelShader {
-	QeVKBuffer modelBuffer;
+	QeDataModelViewport data;
+
+	QeVKBuffer buffer;
 	QeDataDescriptorSet descriptorSet;
 
-	QeDataModelShader():modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
+	QeDataModelShader():buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
 };
 
 class QeModel:public QeBase
 {
 public:
 
-	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model) :QeBase(_key), modelType(_type) {}
+	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model) :QeBase(_key), modelType(_type), modelBuffer(eBuffer_uniform){}
 	~QeModel();
 
 	QeModelType modelType = eModel_Model;
@@ -72,14 +77,14 @@ public:
 	VkShaderModule computeShader = VK_NULL_HANDLE;
 
 	QeDataModel bufferData;
+	QeVKBuffer modelBuffer;
+
 	std::vector<QeDataModelShader*> shaderData;
 	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
 	QeDataGraphicsPipeline* normalPipeline = nullptr;
 	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeAssetShader normalShader;
-	//std::vector<QeMatrix4x4f> normals;
-	//QeVKBuffer normalsBuffer;
 
 	void setShow(bool b);
 	void updateBuffer();
@@ -111,6 +116,7 @@ public:
 	void updateAction(float time);
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
+	std::vector<VkDescriptorSet> getDescriptorSets();
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {}
 };

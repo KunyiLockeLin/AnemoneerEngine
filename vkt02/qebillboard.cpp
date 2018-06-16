@@ -15,7 +15,7 @@ void QeBillboard::init(QeAssetXML* _property) {
 
 QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
-	descriptorSetData.modelBuffer = shaderData[index]->modelBuffer.buffer;
+	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
 	return descriptorSetData;
@@ -44,8 +44,8 @@ void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	if (!bShow || !bCullingShow) return;
 
-	std::array<VkDescriptorSet, 2> descriptorSets1 = { VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet };
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets1.size()), descriptorSets1.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
 	vkCmdDraw(drawCommandBuffer, 1, 1, 0, 0);

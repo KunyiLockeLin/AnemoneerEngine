@@ -15,7 +15,7 @@ void QeLine::init(QeAssetXML* _property) {
 
 QeDataDescriptorSetModel QeLine::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
-	descriptorSetData.modelBuffer = shaderData[index]->modelBuffer.buffer;
+	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	return descriptorSetData;
 }
 
@@ -49,8 +49,8 @@ void QeLine::updateRender(float time) {
 
 void QeLine::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
-	std::array<VkDescriptorSet, 2> descriptorSets1 = { VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet };
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets1.size()), descriptorSets1.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);

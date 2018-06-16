@@ -29,7 +29,7 @@ void QeModel::updateShaderData() {
 	for (; i < size; ++i) {
 		QeDataModelShader * data = new QeDataModelShader();
 		shaderData.push_back(data);
-		VK->createBuffer(data->modelBuffer, sizeof(bufferData), nullptr);
+		VK->createBuffer(data->buffer, sizeof(data->data), nullptr);
 		VK->createDescriptorSet(data->descriptorSet);
 		VK->updateDescriptorSet(&createDescriptorSetModel(int(i)), data->descriptorSet);
 	}
@@ -42,11 +42,12 @@ void QeModel::updateShaderData() {
 
 QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
-	descriptorSetData.modelBuffer = shaderData[index]->modelBuffer.buffer;
+	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
 	descriptorSetData.normalMapImageViews = pMaterial->image.pNormalMap->view;
 	descriptorSetData.normalMapSamplers = pMaterial->image.pNormalMap->sampler;
+	descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
 
 	bufferData.param.x = 0;
 	if (cubeMapID > 0) {
@@ -185,8 +186,6 @@ void QeModel::init(QeAssetXML* _property) {
 	setProperty();
 }
 
-
-
 void QeModel::setProperty() {
 
 	pos = { 0, 0, 0 };
@@ -241,6 +240,9 @@ void QeModel::setProperty() {
 	AST->getXMLiValue(particleID, *initProperty, 1, "paritcleid");
 
 	memcpy(&bufferData.material, &pMaterial->value, sizeof(bufferData.material));
+
+	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
+
 }
 
 void QeModel::updateCompute(float time) {
@@ -286,6 +288,7 @@ void QeModel::setShow(bool b) {
 void QeModel::updateBuffer() {
 
 	setMatModel();
+	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 
 	size_t size = shaderData.size();
 	size_t size1 = VP->viewports.size();
@@ -295,8 +298,8 @@ void QeModel::updateBuffer() {
 		QeCamera* camera = VP->viewports[i]->camera;
 		QeMatrix4x4f mat = camera->bufferData.view* bufferData.model;
 		MATH->inverse(mat, mat);
-		bufferData.normal = MATH->transpose(mat);
-		VK->setMemoryBuffer(shaderData[i]->modelBuffer, sizeof(bufferData), &bufferData );
+		shaderData[i]->data.normal = MATH->transpose(mat);
+		VK->setMemoryBuffer(shaderData[i]->buffer, sizeof(shaderData[i]->data), &shaderData[i]->data);
 	}
 }
 
@@ -387,12 +390,20 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 	}
 }
 
+std::vector<VkDescriptorSet> QeModel::getDescriptorSets() {
+	std::vector<VkDescriptorSet> descriptorSets = 
+	{	VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, 
+		shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet 
+	};
+	return descriptorSets;
+}
+
 void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	if (!bShow || !bCullingShow) return;
 	
-	std::array<VkDescriptorSet, 2> descriptorSets1 = { VP->viewports[VP->currentCommandViewport]->commonDescriptorSet.descriptorSet, shaderData[VP->currentCommandViewport]->descriptorSet.descriptorSet };
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets1.size()), descriptorSets1.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets();
+	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);

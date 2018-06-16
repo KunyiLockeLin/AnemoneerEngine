@@ -1,11 +1,6 @@
 #version 450
 #extension GL_GOOGLE_include_directive : enable
-
-#include "header.glsl"
-
-layout(location = 1) in vec2 inUV;
-
-layout(location = 0) out vec4 outColor;
+#include "headerFrag.glsl"
 
 
 void main() {

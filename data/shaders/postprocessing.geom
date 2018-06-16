@@ -1,10 +1,11 @@
 #version 450
-#extension GL_ARB_viewport_array : enable
+#extension GL_GOOGLE_include_directive : enable
+#include "headerGeom.glsl"
+
 
 layout (points) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-layout (location = 0) out vec2 outUV;
 
 void main(void) {
 
