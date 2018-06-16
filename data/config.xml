@@ -33,7 +33,7 @@
     <particle>particlec.spv</particle>
   </computeShader>
   
-  <startScene>scene1</startScene>
+  <startScene>scene3</startScene>
   <scene1 id="12000">
     <cubemaps>
       <e id="30000" image="cubemap1.png" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
@@ -72,7 +72,7 @@
   
   <scene3 id="12002">
     <points>
-      <e id="30006" posX="0" posY="5" posZ="0" paritcleid="30005" paritcleEid="30004" paritclefollow="1"/>
+      <e id="30006" posX="0" posY="0" posZ="0" paritcleid="30005" paritcleEid="30004" paritclefollow="1"/>
     </points>
   </scene3>
   
@@ -85,7 +85,7 @@
       <force x="0" x_range="0" y="0" y_range="0" z="-0.8" z_range="0.3"/>
       <rotate x="1" x_range="2" y="2" y_range="5" z="2" z_range="5"/>
       <size x="0.1" x_range="0" y="0.1" y_range="0" />
-      <color r="0" r_range="1" g="0" g_range="0" b="0" b_range="0"/>
+      <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1"/>
     </e>
   </particles>
 </confing>

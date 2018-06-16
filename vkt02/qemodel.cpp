@@ -239,10 +239,9 @@ void QeModel::setProperty() {
 
 	AST->getXMLiValue(particleID, *initProperty, 1, "paritcleid");
 
-	memcpy(&bufferData.material, &pMaterial->value, sizeof(bufferData.material));
+	bufferData.material = pMaterial->value;
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
-
 }
 
 void QeModel::updateCompute(float time) {

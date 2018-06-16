@@ -4,6 +4,9 @@ void QeParticle::init(QeAssetXML* _property) {
 	
 	initProperty = _property;
 	
+	computeShader = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "computeShader", "particle"));
+	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
+
 	const char * c = AST->getXMLValue(_property, 1, "paritcleid");
 	id = atoi(c);
 
@@ -12,6 +15,9 @@ void QeParticle::init(QeAssetXML* _property) {
 	particleRule = AST->getParticle(c);
 
 	AST->getXMLbValue(bFollow, *_property, 1, "paritclefollow");
+
+	pMaterial = AST->getMaterialImage(particleRule->image);
+	setProperty();
 
 	// count
 	particlesSize = MATH->iRandom(int(particleRule->count_life.x), int(particleRule->count_life.y));
@@ -48,6 +54,7 @@ void QeParticle::init(QeAssetXML* _property) {
 		particles[i].color.x = MATH->fRandom(particleRule->rotate_z_color_r.z, particleRule->rotate_z_color_r.w);
 		particles[i].color.y = MATH->fRandom(particleRule->color_gb.x, particleRule->color_gb.y);
 		particles[i].color.z = MATH->fRandom(particleRule->color_gb.z, particleRule->color_gb.w);
+		particles[i].color.w = 1.0f;
 
 		// ahlpa
 		bAlpha = particleRule->alpha_born_size_x.x;
@@ -77,25 +84,21 @@ void QeParticle::init(QeAssetXML* _property) {
 		//particles[i].texCoord.y = MATH->fRandom(particleRule->rotate_xy.z, particleRule->rotate_xy.w);
 		//particles[i].texCoord.z = MATH->fRandom(particleRule->rotate_z_color_r.x, particleRule->rotate_z_color_r.y);
 
-		// size
-		size.x = MATH->fRandom(particleRule->alpha_born_size_x.z, particleRule->alpha_born_size_x.w);
-		size.y = MATH->fRandom(particleRule->size_y_init_pos_d.x, particleRule->size_y_init_pos_d.y);
-		size.z = 1;
-
 		//MATH->fRandoms(-1.0f, 2.0f, 3, &particles[i].pos.x);
 		//MATH->fRandoms(0.0f, 1.0f, 3, &particles[i].color.x);
 		//MATH->fRandoms(-1.0f, 2.0f, 3, &particles[i].normal.x);
 	}
+	// size
+	size.x = MATH->fRandom(particleRule->alpha_born_size_x.z, particleRule->alpha_born_size_x.w);
+	size.y = MATH->fRandom(particleRule->size_y_init_pos_d.x, particleRule->size_y_init_pos_d.y);
+	size.z = 1;
+
+	bufferData.material.baseColor = particles[0].color;
+
 	VK->createBuffer(VertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
 
 	bufferData.param.x = float(bFollow + 1);
-
-	pMaterial = AST->getMaterialImage(particleRule->image);
-	computeShader = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "computeShader", "particle"));
-	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
-
-	setProperty();
 }
 
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
@@ -165,6 +168,7 @@ void QeParticle::updateCompute(float time) {
 			VP->bUpdateDrawCommandBuffers = true;
 		}
 	}
+	updateBuffer();
 }
 
 void QeParticle::setMatModel() {
