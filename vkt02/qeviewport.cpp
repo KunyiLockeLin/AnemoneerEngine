@@ -405,7 +405,7 @@ void QeViewport::updateDrawCommandBuffers() {
 		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdSetViewport(drawCommandBuffers[i], 0, 1, &mainViewport);
 		vkCmdSetScissor(drawCommandBuffers[i], 0, 1, &mainScissor);
-		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &postprocessingDescriptorSet.descriptorSet, 0, nullptr);
+		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &postprocessingDescriptorSet.set, 0, nullptr);
 		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline->graphicsPipeline);
 		vkCmdDraw(drawCommandBuffers[i], 1, 1, 0, 0);
 		

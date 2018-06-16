@@ -391,8 +391,8 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 
 std::vector<VkDescriptorSet> QeModel::getDescriptorSets(int index) {
 	std::vector<VkDescriptorSet> descriptorSets = 
-	{	VP->viewports[index]->commonDescriptorSet.descriptorSet,
-		shaderData[index]->descriptorSet.descriptorSet 
+	{	VP->viewports[index]->commonDescriptorSet.set,
+		shaderData[index]->descriptorSet.set 
 	};
 	return descriptorSets;
 }

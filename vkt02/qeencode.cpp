@@ -609,10 +609,10 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 			if (model->vertices.size() < count)	model->vertices.resize(count);
 			for (j = 0; j < count; ++j) model->vertices[j].normal = *(dataPos + j);
 		}
-		else if (index == bufferViews[3]) { // texcoord
+		else if (index == bufferViews[3]) { // uv
 			QeVector2f* dataPos = (QeVector2f*)(binData + offset);
 			if (model->vertices.size() < count)	model->vertices.resize(count);
-			for (j = 0; j < count; ++j) model->vertices[j].texCoord = *(dataPos + j);
+			for (j = 0; j < count; ++j) model->vertices[j].uv = *(dataPos + j);
 		}
 		else if (index == bufferViews[4]) { // tangent
 			QeVector4f* dataPos = (QeVector4f*)(binData + offset);

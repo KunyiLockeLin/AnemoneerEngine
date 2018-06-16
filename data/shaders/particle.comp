@@ -34,7 +34,7 @@ void main() {
 	/*else{
 		int times =  int(pos.w);
 		if(force.w>0 || times == 0){ // reborn
-			// init_pos = texCoord
+			// init_pos = uv
 			++times;
 			pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
 			if(modelData.param.y == 1) pos.xyz += modelData.model[3].xyz;

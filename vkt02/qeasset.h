@@ -6,7 +6,7 @@
 struct QeVertex {
 	QeVector4f pos = {0.0f,0.0f,0.0f,1.0f};
 	QeVector4f color = { 0.0f,0.0f,0.0f,1.0f };
-	QeVector4f texCoord;
+	QeVector4f uv;
 	QeVector4f normal = { 0.0f,0.0f,0.0f,1.0f };
 	QeVector4f tangent;
 	QeVector4f joint;

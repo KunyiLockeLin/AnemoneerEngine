@@ -48,8 +48,8 @@ void QeParticle::init(QeAssetXML* _property) {
 			particles[i].pos.y = radius * sin(radian);
 		}
 		particles[i].pos.w = 0;
-		// init pos = texCoord
-		particles[i].texCoord = particles[i].pos;
+		// init pos = uv
+		particles[i].uv = particles[i].pos;
 
 		// color
 		particles[i].color.x = MATH->fRandom(particleRule->rotate_z_color_r.z, particleRule->rotate_z_color_r.w);

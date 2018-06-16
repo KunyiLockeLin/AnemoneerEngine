@@ -104,7 +104,7 @@ std::array<VkVertexInputAttributeDescription, 7> QeVertex::getAttributeDescripti
 	attributeDescriptions[2].binding = 0;
 	attributeDescriptions[2].location = 2;
 	attributeDescriptions[2].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-	attributeDescriptions[2].offset = offsetof(QeVertex, texCoord);
+	attributeDescriptions[2].offset = offsetof(QeVertex, uv);
 
 	attributeDescriptions[3].binding = 0;
 	attributeDescriptions[3].location = 3;
@@ -130,7 +130,7 @@ std::array<VkVertexInputAttributeDescription, 7> QeVertex::getAttributeDescripti
 }
 
 bool QeVertex::operator==(const QeVertex& other) const {
-	return pos == other.pos && normal == other.normal && texCoord == other.texCoord && color == other.color;
+	return pos == other.pos && normal == other.normal && uv == other.uv && color == other.color;
 }
 
 std::vector<char> QeAsset::loadFile(const char* _filePath) {
@@ -750,7 +750,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		//model->indices = { 1,3,0,7,5,4,4,1,0,5,2,1,2,7,3,0,7,4,1,2,3,7,6,5,4,5,1,5,6,2,2,6,7,0,3,7 };
 
 		model->indexSize = int(model->indices.size());
-		vertex.texCoord = { 0,0,0,0 };
+		vertex.uv = { 0,0,0,0 };
 
 		vertex.pos = { 1, -1, -1,1 };
 		vertex.normal = { 0, 0, -1,1 };
@@ -822,7 +822,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model = new QeAssetModel();
 		model->scale = { 1, 1, 1 };
 		vertex.normal = { 1, 0, 0,1 };
-		vertex.texCoord = { 0, 0,1,1 };
+		vertex.uv = { 0, 0,1,1 };
 		vertex.color = { 0, 0, 0,1 };
 		vertex.pos = { 0, 0, 0,1 };
 		model->vertices.push_back(vertex);

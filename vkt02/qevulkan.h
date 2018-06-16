@@ -70,7 +70,7 @@ enum QeDescriptorSetLayoutType {
 
 struct QeDataDescriptorSet {
 	QeDescriptorSetLayoutType type;
-	VkDescriptorSet descriptorSet= VK_NULL_HANDLE;
+	VkDescriptorSet set= VK_NULL_HANDLE;
 
 	QeDataDescriptorSet(QeDescriptorSetLayoutType _type) :type(_type) {}
 };

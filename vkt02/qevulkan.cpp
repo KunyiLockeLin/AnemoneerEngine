@@ -939,7 +939,7 @@ void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
 	allocInfo.descriptorSetCount = 1;
 	allocInfo.pSetLayouts = &descriptorSetLayouts[descriptorSet.type];
 
-	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet.descriptorSet) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
+	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet.set) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
 }
 
 /*void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped) {
@@ -1256,7 +1256,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 	VkWriteDescriptorSet descriptorWrite;
 	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 	descriptorWrite.pNext = nullptr;
-	descriptorWrite.dstSet = descriptorSet.descriptorSet;
+	descriptorWrite.dstSet = descriptorSet.set;
 	descriptorWrite.dstArrayElement = 0;
 	descriptorWrite.descriptorCount = 1;
 

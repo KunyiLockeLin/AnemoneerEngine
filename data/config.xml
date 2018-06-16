@@ -23,7 +23,7 @@
     <normal vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
     <particle vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>
-    <cubemap vert="basev.spv" geom="cubemapg.spv" frag="cubemapf.spv"/>
+    <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
