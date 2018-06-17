@@ -1235,13 +1235,9 @@ VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 	createInfo.flags = 0;
 	createInfo.stage = shaderStageInfo;
 	createInfo.layout = pipelineLayout;		
-	createInfo.basePipelineHandle = VK_NULL_HANDLE;
-	createInfo.basePipelineIndex = -1;
 
 	VkPipeline pipeline;
-
-	VkResult result = vkCreateComputePipelines(device, VK_NULL_HANDLE, 1, &createInfo, nullptr, &pipeline);
-	if (VK_SUCCESS != result) LOG("Could not create compute pipeline.");
+	if (VK_SUCCESS != vkCreateComputePipelines(device, VK_NULL_HANDLE, 1, &createInfo, nullptr, &pipeline)) LOG("Could not create compute pipeline.");
 	
 	return pipeline;
 }
