@@ -95,7 +95,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	bufferData.material.baseColor = particles[0].color;
 	bufferData.param.x = float(bFollow + 1);
 
-	VK->createBuffer(VertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
+	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
 }
 
@@ -104,7 +104,7 @@ QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
-	descriptorSetData.texelBufferView = VertexBuffer.view;
+	descriptorSetData.texelBufferView = vertexBuffer.view;
 	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
 	return descriptorSetData;
 }
@@ -135,7 +135,7 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &VertexBuffer.buffer, offsets);
+	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
 	vkCmdDraw(drawCommandBuffer, particlesSize, 1, 0, 0);
 }
@@ -144,8 +144,7 @@ void QeParticle::updateCompute(float time) {
 
 	if (particleRule->alpha_born_size_x.y == 0) {
 		memcpy(bDeaths.data(), outBuffer.mapped, sizeof(bDeaths[0])*bDeaths.size());
-		memcpy(particles.data(), VertexBuffer.mapped, sizeof(particles[0])*particles.size());
-		VP->bUpdateDrawCommandBuffers = true;
+		memcpy(particles.data(), vertexBuffer.mapped, sizeof(particles[0])*particles.size());
 
 		size_t size = bDeaths.size();
 		bool b = false;
@@ -161,7 +160,7 @@ void QeParticle::updateCompute(float time) {
 
 		if (b) {
 			particlesSize = uint32_t(particles.size());
-			VK->setMemoryBuffer(VertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
+			VK->setMemoryBuffer(vertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
 			VK->setMemoryBuffer(outBuffer, sizeof(bDeaths[0])*bDeaths.size(), bDeaths.data());
 			VP->bUpdateDrawCommandBuffers = true;
 		}

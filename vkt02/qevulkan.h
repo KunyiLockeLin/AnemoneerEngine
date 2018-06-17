@@ -62,8 +62,8 @@ struct QeVKImage {
 };
 
 enum QeDescriptorSetLayoutType {
-	eDescriptorSetLayout_Common = 0,
-	eDescriptorSetLayout_Model = 1,
+	eDescriptorSetLayout_Model = 0,
+	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
 	eDescriptorSetLayout_MAX = 3
 };

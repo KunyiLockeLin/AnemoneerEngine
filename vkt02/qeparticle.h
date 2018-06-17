@@ -6,7 +6,7 @@ class QeParticle : public QeModel
 {
 public:
 
-	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle), VertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
+	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle), vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
 	~QeParticle() {}
 
 	std::string eid;
@@ -15,7 +15,7 @@ public:
 	uint32_t particlesSize;
 	std::vector<QeVertex> particles;
 	std::vector<int> bDeaths;
-	QeVKBuffer VertexBuffer;
+	QeVKBuffer vertexBuffer;
 	QeVKBuffer outBuffer;
 
 	bool bFollow=true;

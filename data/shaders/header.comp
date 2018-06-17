@@ -3,8 +3,8 @@
 
 layout( local_size_x = 1024) in;
 
-layout( set = 1, binding = 20, rgba32f  ) uniform imageBuffer texelBuffer;
+layout( set = layoutSet_Compute, binding = 0, rgba32f  ) uniform imageBuffer texelBuffer;
 
-layout( set = 1, binding = 30 ) buffer outSSBO {
+layout( set = layoutSet_Compute, binding = 10 ) buffer outSSBO {
 	int death[];
 }outputData;

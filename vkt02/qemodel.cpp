@@ -26,14 +26,17 @@ void QeModel::updateShaderData() {
 	size_t size = VP->viewports.size();
 	size_t i = shaderData.size();
 
-	for (; i < size; ++i) {
-		QeDataModelShader * data = new QeDataModelShader();
-		shaderData.push_back(data);
-		//VK->createBuffer(data->buffer, sizeof(data->data), nullptr);
-		VK->createDescriptorSet(data->descriptorSet);
-		VK->updateDescriptorSet(&createDescriptorSetModel(int(i)), data->descriptorSet);
-	}
+	if ( size>i ) {
+		//shaderData.resize(size);
+		for (; i < size; ++i) {
+			QeDataModelShader * data = new QeDataModelShader();
+			shaderData.push_back(data);
 
+			//VK->createBuffer(data->buffer, sizeof(data->data), nullptr);
+			VK->createDescriptorSet(shaderData[i]->descriptorSet);
+			VK->updateDescriptorSet(&createDescriptorSetModel(int(i)), shaderData[i]->descriptorSet);
+		}
+	}
 	for (; i > size; --i) {
 		delete shaderData[i - 1];
 		shaderData.pop_back();
@@ -391,8 +394,9 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 
 std::vector<VkDescriptorSet> QeModel::getDescriptorSets(int index) {
 	std::vector<VkDescriptorSet> descriptorSets = 
-	{	VP->viewports[index]->commonDescriptorSet.set,
-		shaderData[index]->descriptorSet.set 
+	{	
+		shaderData[index]->descriptorSet.set,
+		VP->viewports[index]->commonDescriptorSet.set
 	};
 	return descriptorSets;
 }

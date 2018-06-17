@@ -49,12 +49,12 @@
 //	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
 const uint8_t MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
-const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = 128;
-const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = 128;
-const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = 16;
-const uint16_t MAX_DESCRIPTOR_STORAGETEXEL_NUM = 128;
-const uint16_t MAX_DESCRIPTOR_STORAG_NUM = 128;
-const uint16_t MAX_DESCRIPTOR_NUM = 128;
+const uint16_t MAX_DESCRIPTOR_UNIFORM_NUM = UINT8_MAX;
+const uint16_t MAX_DESCRIPTOR_SAMPLER_NUM = UINT8_MAX;
+const uint16_t MAX_DESCRIPTOR_INPUTATTACH_NUM = UINT8_MAX;
+const uint16_t MAX_DESCRIPTOR_STORAGETEXEL_NUM = UINT8_MAX;
+const uint16_t MAX_DESCRIPTOR_STORAG_NUM = UINT8_MAX;
+const uint16_t MAX_DESCRIPTOR_NUM = UINT8_MAX;
 const uint16_t MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
 const float GRIDS_SIZE = 1.0f;

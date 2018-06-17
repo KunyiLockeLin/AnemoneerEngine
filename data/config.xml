@@ -22,7 +22,7 @@
     <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <normal vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
     <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
-    <particle vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>
+    <particle vert="basev.spv" geom="billboardg.spv" frag="basef.spv"/>
     <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
     <Action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
     <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
@@ -78,14 +78,14 @@
   
   <particles>
     <e id="30004" image="light.png" alpha ="1" reborn="1">
-      <count num="1000" range="0"/>
-      <life second="1" range="20"/>
+      <count num="100" range="0"/>
+      <life second="1" range="10"/>
       <init_pos length="1" length_range="0" width="1" width_range="0" height="" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
-      <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="1" z_range="1"/>
+      <init_speed x="-0.2" x_range="0" y="-0.2" y_range="0" z="1" z_range="0"/>
       <force x="0" x_range="0" y="0" y_range="0" z="-0.8" z_range="0.3"/>
       <rotate x="1" x_range="2" y="2" y_range="5" z="2" z_range="5"/>
-      <size x="0.5" x_range="0" y="0.5" y_range="0" />
-      <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1"/>
-    </e>
+      <size x="0.1" x_range="0" y="0.1" y_range="0" />
+      <color r="0" r_range="1" g="0" g_range="0" b="0" b_range="0"/>
+     </e>
   </particles>
 </confing>

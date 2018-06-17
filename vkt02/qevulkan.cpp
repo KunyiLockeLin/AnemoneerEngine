@@ -395,14 +395,6 @@ void QeVulkan::createDescriptorSetLayout() {
 	
 	descriptorSetLayoutDatas.resize(eDescriptorSetLayout_MAX);
 
-	// eDescriptorSetLayout_Common
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common].resize(2);
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].startID = 0;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].count = 1;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].startID = 10;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].count = 1;
 	// eDescriptorSetLayout_Model
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model].resize(4);
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -417,6 +409,14 @@ void QeVulkan::createDescriptorSetLayout() {
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].startID = 30;
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].count = 1;
+	// eDescriptorSetLayout_Common
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common].resize(2);
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].startID = 0;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].count = 1;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].startID = 10;
+	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].count = 1;
 	// eDescriptorSetLayout_Postprocessing
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing].resize(1);
 	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].type = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -1247,6 +1247,148 @@ VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 }
 
 void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet) {
+
+	/*if (descriptorSet.type == eDescriptorSetLayout_Model) {
+		uint8_t i = 0;
+		uint8_t* pos = (uint8_t*)data;
+		std::vector<uint8_t>	 bindID;
+		std::vector<VkBuffer>	 buffers;
+		std::vector<VkImageView> imageViews;
+		std::vector<VkSampler>	 samplers;
+		std::vector<VkBufferView> bufferViews;
+		std::vector<VkBuffer> cBuffers;
+
+		uint16_t sizeBuffer = sizeof(VkBuffer);
+		uint16_t sizeImgae = sizeof(VkImageView) + sizeof(VkSampler);
+		uint16_t sizeBufferView = sizeof(VkBufferView);
+		uint16_t sizecBuffer = sizeof(VkBuffer);
+
+		const uint8_t descriptorSetgUBOStart = 0;
+		const uint8_t descriptorSetgUBONumber = 1;
+		const uint8_t descriptorSetgImageStart = 10;
+		const uint8_t descriptorSetgImageNumber = 3;
+		const uint8_t descriptorSetcStorageTexeLBufferStart = 20;
+		const uint8_t descriptorSetcStorageTexeLBufferNumber = 1;
+		const uint8_t descriptorSetcBufferStart = 30;
+		const uint8_t descriptorSetcBufferNumber = 1;
+
+		for (i = 0; i<descriptorSetgUBONumber; ++i) {
+			if ((*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
+				bindID.push_back(i + descriptorSetgUBOStart);
+				buffers.push_back(*(VkBuffer*)(pos));
+			}
+			pos += sizeBuffer;
+		}
+		for (i = 0; i<descriptorSetgImageNumber; ++i) {
+			if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
+				bindID.push_back(i + descriptorSetgImageStart);
+				imageViews.push_back(*(VkImageView*)(pos));
+				samplers.push_back(*(VkSampler*)(pos + sizeof(VkSampler)));
+			}
+			pos += sizeImgae;
+		}
+		for (i = 0; i<descriptorSetcStorageTexeLBufferNumber; ++i) {
+			if ((*(VkBufferView*)(pos)) != VK_NULL_HANDLE) {
+				bindID.push_back(i + descriptorSetcStorageTexeLBufferStart);
+				bufferViews.push_back(*(VkBufferView*)(pos));
+			}
+			pos += sizeBufferView;
+		}
+		for (i = 0; i<descriptorSetcBufferNumber; ++i) {
+			if ((*(VkBuffer*)(pos)) != VK_NULL_HANDLE) {
+				bindID.push_back(i + descriptorSetcBufferStart);
+				cBuffers.push_back(*(VkBuffer*)(pos));
+			}
+			pos += sizecBuffer;
+		}
+
+		size_t bufNum = buffers.size();
+		size_t imageNum = imageViews.size();
+		size_t bufViewNum = bufferViews.size();
+		size_t cBufNum = cBuffers.size();
+
+		std::vector<VkWriteDescriptorSet> descriptorWrites;
+		descriptorWrites.resize(bufNum + imageNum + bufViewNum + cBufNum);
+
+		uint8_t index = 0;
+
+		std::vector<VkDescriptorBufferInfo> bufInfos;
+		bufInfos.resize(bufNum);
+		for (i = 0; i < bufNum; ++i, ++index) {
+
+			bufInfos[i].buffer = buffers[i];
+			bufInfos[i].offset = 0;
+			bufInfos[i].range = VK_WHOLE_SIZE;
+
+			descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[index].pNext = nullptr;
+			descriptorWrites[index].dstSet = descriptorSet.set;
+			descriptorWrites[index].dstBinding = bindID[index];
+			descriptorWrites[index].dstArrayElement = 0;
+			descriptorWrites[index].descriptorCount = 1;
+			descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrites[index].pImageInfo = nullptr;
+			descriptorWrites[index].pBufferInfo = &bufInfos[i];
+			descriptorWrites[index].pTexelBufferView = nullptr;
+		}
+
+		std::vector<VkDescriptorImageInfo> imgInfos;
+		imgInfos.resize(imageNum);
+		for (i = 0; i < imageNum; ++i, ++index) {
+
+			imgInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imgInfos[i].sampler = samplers[i];
+			imgInfos[i].imageView = imageViews[i];
+
+			descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[index].pNext = nullptr;
+			descriptorWrites[index].dstSet = descriptorSet.set;
+			descriptorWrites[index].dstBinding = bindID[index];
+			descriptorWrites[index].dstArrayElement = 0;
+			descriptorWrites[index].descriptorCount = 1;
+			descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[index].pImageInfo = &imgInfos[i];
+			descriptorWrites[index].pBufferInfo = nullptr;
+			descriptorWrites[index].pTexelBufferView = nullptr;
+		}
+
+		for (i = 0; i < bufViewNum; ++i, ++index) {
+
+			descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[index].pNext = nullptr;
+			descriptorWrites[index].dstSet = descriptorSet.set;
+			descriptorWrites[index].dstBinding = bindID[index];
+			descriptorWrites[index].dstArrayElement = 0;
+			descriptorWrites[index].descriptorCount = 1;
+			descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+			descriptorWrites[index].pImageInfo = nullptr;
+			descriptorWrites[index].pBufferInfo = nullptr;
+			descriptorWrites[index].pTexelBufferView = &bufferViews[i];
+		}
+
+		std::vector<VkDescriptorBufferInfo> cBufInfos;
+		cBufInfos.resize(cBufNum);
+		for (i = 0; i < cBufNum; ++i, ++index) {
+
+			cBufInfos[i].buffer = cBuffers[i];
+			cBufInfos[i].offset = 0;
+			cBufInfos[i].range = VK_WHOLE_SIZE;
+
+			descriptorWrites[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[index].pNext = nullptr;
+			descriptorWrites[index].dstSet = descriptorSet.set;
+			descriptorWrites[index].dstBinding = bindID[index];
+			descriptorWrites[index].dstArrayElement = 0;
+			descriptorWrites[index].descriptorCount = 1;
+			descriptorWrites[index].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+			descriptorWrites[index].pImageInfo = nullptr;
+			descriptorWrites[index].pBufferInfo = &cBufInfos[i];
+			descriptorWrites[index].pTexelBufferView = nullptr;
+		}
+
+		vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		return;
+	}*/
 
 	uint8_t* pos = (uint8_t*)data;
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
