@@ -1,42 +1,15 @@
 #version 450
-#extension GL_GOOGLE_include_directive : enable
-#include "header.comp"
+//#extension GL_GOOGLE_include_directive : enable
+//#include "header.comp"
+
+layout( local_size_x = 1024) in;
+
+layout( set = 0, binding = 20, rgba32f  ) uniform imageBuffer texelBuffer;
 
 
 void main() {
 	
 	vec4 pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7) );
 	pos.xyz += vec3(0.1,0.1,0.1);
-	// speed = normal
-    /*vec4 speed = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
-	
-	// force = tangent
-    vec4 force = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+4) ); 
-
-	if(speed.w>0){ // life time
-		pos.xyz += speed.xyz*pushConstant.DeltaTime;
-		speed.w -= pushConstant.DeltaTime;
-		speed.xyz += (force.xyz*pushConstant.DeltaTime);
-	}
-	else{
-		int times =  int(pos.w);
-		if(force.w>0 || times == 0){ // reborn
-			// init_pos = uv
-			++times;
-			pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
-			if(modelData.param.y == 1) pos.xyz += modelData.model[3].xyz;
-			pos.w = times;
-			
-			// init_speed & life time = joint
-			//speed = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+5) );
-		}
-		else{
-			//atomicAdd(outputs.death, 1);
-			//atomicExchange(outputs.death, 1);
-			//outputData.death[gl_GlobalInvocationID.x] = 1;
-		}
-	}
-	*/
-	//imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
-	//imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );
+	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
 }
