@@ -13,6 +13,7 @@ const int Common_uniform = 0;
 const int Common_storage = 10;
 
 const int layoutSet_Postprocessing = 2;
+const int Postprocessing_attach = 0;
 
 
 layout( push_constant ) uniform TimeState {
