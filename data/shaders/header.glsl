@@ -5,7 +5,7 @@ const float c_MinRoughness = 0.04;
 const int layoutSet_Common = 1;
 const int layoutSet_Model = 0;
 const int layoutSet_Postprocessing = 2;
-const int layoutSet_Compute= 5;
+
 
 layout( push_constant ) uniform TimeState {
   float DeltaTime;
