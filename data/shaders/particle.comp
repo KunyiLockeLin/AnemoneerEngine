@@ -11,5 +11,5 @@ void main() {
 	
 	vec4 pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7) );
 	pos.xyz += vec3(0.1,0.1,0.1);
-	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
+	//imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
 }

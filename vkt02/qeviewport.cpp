@@ -201,7 +201,7 @@ void QeViewport::updateRender(float time) {
 
 void QeViewport::drawFrame() {
 
-	vkWaitForFences(VK->device, 1, &inFlightFences[currentFrame], VK_TRUE, 2000000000);
+	vkWaitForFences(VK->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	vkResetFences(VK->device, 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
