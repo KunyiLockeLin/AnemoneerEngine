@@ -97,6 +97,9 @@ void QeParticle::init(QeAssetXML* _property) {
 
 	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
+	AST->getXMLiValue(attachID, *initProperty, 1, "id");
+	attachSkeletonName = AST->getXMLValue(initProperty, 1, "paritcleSkeleton");
+	pos = { 0,0,0 };
 }
 
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
@@ -119,8 +122,8 @@ void QeParticle::createPipeline() {
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
 	if (particlesSize == 0) return;
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
-	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+	//std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
+	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &shaderData[0]->descriptorSet.set, 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);

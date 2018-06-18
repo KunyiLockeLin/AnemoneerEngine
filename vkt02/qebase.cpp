@@ -9,8 +9,8 @@ void QeBase::init(QeAssetXML* _property) {
 	AST->getXMLfValue(pos.y, *initProperty, 1, "posY");
 	AST->getXMLfValue(pos.z, *initProperty, 1, "posZ");
 
-	const char * c = AST->getXMLValue(initProperty, 1, "paritcleid");
-	if (c)	particle = OBJMGR->getParticle(atoi(c), initProperty);
+	AST->getXMLiValue(particleID, *initProperty, 1, "paritcleid");
+	if (particleID)	particle = OBJMGR->getParticle(particleID, initProperty);
 }
 void QeBase::updateRender(float time) {}
 void QeBase::updateCompute(float time) {}

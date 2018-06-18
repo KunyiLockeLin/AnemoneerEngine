@@ -241,6 +241,7 @@ void QeModel::setProperty() {
 	attachSkeletonName = AST->getXMLValue(initProperty, 1, "attachskeleton");
 
 	AST->getXMLiValue(particleID, *initProperty, 1, "paritcleid");
+	if (particleID && modelType != eModel_Particle)	particle = OBJMGR->getParticle(particleID, initProperty);
 
 	bufferData.material = pMaterial->value;
 

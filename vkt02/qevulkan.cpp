@@ -396,33 +396,38 @@ void QeVulkan::createDescriptorSetLayout() {
 	descriptorSetLayoutDatas.resize(eDescriptorSetLayout_MAX);
 
 	// eDescriptorSetLayout_Model
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model].resize(4);
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].startID = 0;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].count = 1;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].startID = 10;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].count = 3;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].type = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].startID = 20;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].count = 1;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].startID = 30;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].count = 1;
+	if (eDescriptorSetLayout_Model<eDescriptorSetLayout_MAX) {
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model].resize(4);
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].startID = 0;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][0].count = 1;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].startID = 10;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][1].count = 3;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].type = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].startID = 20;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][2].count = 1;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].startID = 30;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Model][3].count = 1;
+	}
 	// eDescriptorSetLayout_Common
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common].resize(2);
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].startID = 0;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].count = 1;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].startID = 10;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].count = 1;
+	if (eDescriptorSetLayout_Common < eDescriptorSetLayout_MAX) {
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common].resize(2);
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].startID = 0;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common][0].count = 1;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].startID = 10;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Common][1].count = 1;
+	}
 	// eDescriptorSetLayout_Postprocessing
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing].resize(1);
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].type = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].startID = 0;
-	descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].count = 1;
-
+	if (eDescriptorSetLayout_Postprocessing < eDescriptorSetLayout_MAX) {
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing].resize(1);
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].type = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].startID = 0;
+		descriptorSetLayoutDatas[eDescriptorSetLayout_Postprocessing][0].count = 1;
+	}
 	descriptorSetLayouts.resize(eDescriptorSetLayout_MAX);
 
 	for ( int i = 0; i< eDescriptorSetLayout_MAX;++i ) {
@@ -933,6 +938,8 @@ VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {
 
 void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
 
+	if (descriptorSet.type >= eDescriptorSetLayout_MAX) return;
+
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
@@ -1243,6 +1250,8 @@ VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 }
 
 void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet) {
+
+	if (descriptorSet.type >= eDescriptorSetLayout_MAX) return;
 
 	/*if (descriptorSet.type == eDescriptorSetLayout_Model) {
 		uint8_t i = 0;
