@@ -102,8 +102,13 @@ void QeViewport::addNewViewport() {
 	//viewports.resize(size+1);
 	viewports.push_back(vp);
 
-	viewports[size]->lights.push_back(ACT->light);
-	VK->createBuffer(viewports[size]->lightsBuffer, sizeof(viewports[size]->lights[0]->bufferData), nullptr);
+	QeDataDescriptorSetCommon data;
+	
+	if (ACT->light) {
+		viewports[size]->lights.push_back(ACT->light);
+		VK->createBuffer(viewports[size]->lightsBuffer, sizeof(viewports[size]->lights[0]->bufferData), nullptr);
+		data.lightsBuffer = viewports[size]->lightsBuffer.buffer;
+	}
 
 	QeAssetXML*node = AST->getXMLNode(initProperty, 1, "cameras");
 	if (node == nullptr || node->nexts.size() == 0) {
@@ -116,10 +121,7 @@ void QeViewport::addNewViewport() {
 	viewports[size]->camera = OBJMGR->getCamera(id+ int(viewports.size()), node);
 
 	VK->createBuffer(viewports[size]->environmentBuffer, sizeof(viewports[size]->environmentData), nullptr);
-	
-	QeDataDescriptorSetCommon data;
 	data.environmentBuffer = viewports[size]->environmentBuffer.buffer;
-	data.lightsBuffer = viewports[size]->lightsBuffer.buffer;
 
 	VK->createDescriptorSet(viewports[size]->commonDescriptorSet);
 	VK->updateDescriptorSet(&data, viewports[size]->commonDescriptorSet);
