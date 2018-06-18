@@ -113,7 +113,6 @@ void QeViewport::addNewViewport() {
 	QeAssetXML*node = AST->getXMLNode(initProperty, 1, "cameras");
 	if (node == nullptr || node->nexts.size() == 0) {
 		node = AST->getXMLNode(2, AST->CONFIG, "defaultCamera");
-		VP->init(node);
 	}
 	else node = node->nexts[0];
 
