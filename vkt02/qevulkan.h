@@ -65,7 +65,6 @@ enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Model = 0,
 	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
-	eDescriptorSetLayout_MAX = 3
 };
 
 struct QeDataDescriptorSet {
@@ -168,7 +167,15 @@ public:
 	VkQueue presentQueue;
 	VkQueue computeQueue;
 
-	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas;
+	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas = {
+		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 3 },
+			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 } },
+
+			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
+
+			{ { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 0, 1 } }
+	};
+
 	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 
 	VkDescriptorPool descriptorPool;

@@ -93,7 +93,7 @@ void QeParticle::init(QeAssetXML* _property) {
 	size.z = 1;
 
 	bufferData.material.baseColor = particles[0].color;
-	bufferData.param.x = float(bFollow + 1);
+	bufferData.param.y = float(bFollow + 1);
 
 	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
@@ -122,8 +122,8 @@ void QeParticle::createPipeline() {
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
 	if (particlesSize == 0) return;
-	//std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
-	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &shaderData[0]->descriptorSet.set, 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
+	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);
