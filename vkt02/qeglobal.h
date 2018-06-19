@@ -44,7 +44,7 @@ public:
 	QueenEngine*		engine = nullptr;
 	QeVulkan*			vulkan = nullptr;
 	QeWindow*			window = nullptr;
-	QeViewport*			viewport = nullptr;
+	QeGraphics*			graphics = nullptr;
 	QeMath*				math = nullptr;
 	QeAsset*			asset = nullptr;
 	QeObjectManger*		objMgr = nullptr;
@@ -57,7 +57,7 @@ public:
 #define QE		GLB.engine
 #define VK		GLB.vulkan
 #define WIN		GLB.window
-#define VP		GLB.viewport
+#define VP		GLB.graphics
 #define ACT		QE->currentActivity
 #define MATH	GLB.math
 #define AST		GLB.asset

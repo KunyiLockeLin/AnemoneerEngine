@@ -59,7 +59,7 @@ QeGlobal::QeGlobal() { init(); }
 void QeGlobal::init() {
 	if (engine == nullptr)		engine = new QueenEngine(key);
 	if (window == nullptr)		window = new QeWindow(key);
-	if (viewport == nullptr)	viewport = new QeViewport(key);
+	if (graphics == nullptr)	graphics = new QeGraphics(key);
 	if (math == nullptr)		math = new QeMath(key);
 	if (asset == nullptr)		asset = new QeAsset(key);
 	if (objMgr == nullptr)		objMgr = new QeObjectManger(key);
@@ -96,9 +96,9 @@ void QeGlobal::cleanup() {
 		delete encode;
 		encode = nullptr;
 	}
-	if (viewport != nullptr) {
-		delete viewport;
-		viewport = nullptr;
+	if (graphics != nullptr) {
+		delete graphics;
+		graphics = nullptr;
 	}
 	if (asset != nullptr) {
 		delete asset;

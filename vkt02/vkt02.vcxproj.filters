@@ -39,9 +39,6 @@
     <ClCompile Include="qemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qeviewport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qewindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,6 +81,9 @@
     <ClCompile Include="qebase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qegraphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -105,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qemodel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="qeviewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qewindow.h">
@@ -150,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qebase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qegraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -125,7 +125,7 @@ class QeLine;
 #include "qelight.h"
 #include "qewindow.h"
 #include "qecamera.h"
-#include "qeviewport.h"
+#include "qegraphics.h"
 #include "queenengine.h"
 #include "qeglobal.h"
 #include "qeactivity.h"

@@ -182,7 +182,7 @@
     <ClCompile Include="qeglobal.cpp" />
     <ClCompile Include="qelight.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="qeviewport.cpp" />
+    <ClCompile Include="qegraphics.cpp" />
     <ClCompile Include="qewindow.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -206,7 +206,7 @@
     <ClInclude Include="qemodel.h" />
     <ClInclude Include="qeglobal.h" />
     <ClInclude Include="qelight.h" />
-    <ClInclude Include="qeviewport.h" />
+    <ClInclude Include="qegraphics.h" />
     <ClInclude Include="qewindow.h" />
   </ItemGroup>
   <ItemGroup>
