@@ -49,11 +49,12 @@ public:
 	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model) :QeBase(_key), modelType(_type), modelBuffer(eBuffer_uniform){}
 	~QeModel();
 
+	int eid;
 	QeModelType modelType = eModel_Model;
 	QeActionState	actionState = eActionStateStop;
 	QeActionType	actionType = eActionTypeOnce;
-	uint16_t		currentActionID = 0;
-	unsigned int	currentActionFrame = 0;
+	int				currentActionID = 0;
+	int				currentActionFrame = 0;
 	float			currentActionTime = 0.f;
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
 	float actionSpeed = 0.f;
@@ -68,7 +69,7 @@ public:
 	int cullingDistance = 0;
 	int attachID = 0;
 	int cubeMapID = 0;
-	const char* attachSkeletonName = nullptr;
+	std::string attachSkeletonName;
 	bool bAlpha = false;
 
 	QeAssetModel* modelData = nullptr;

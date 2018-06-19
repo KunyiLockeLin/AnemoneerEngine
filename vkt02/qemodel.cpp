@@ -145,7 +145,7 @@ void QeModel::setMatModel() {
 		else {
 			QeModel* model = OBJMGR->getModel(attachID, nullptr);
 			if (model != nullptr) {
-				bufferData.model = model->getAttachMatrix(attachSkeletonName)*bufferData.model;
+				bufferData.model = model->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
 			}
 		}
 	}
@@ -153,7 +153,7 @@ void QeModel::setMatModel() {
 
 QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
 
-	if (attachSkeletonName == nullptr)	return bufferData.model;
+	if (attachSkeletonName == nullptr || strlen(attachSkeletonName)==0)	return bufferData.model;
 
 	size_t size = modelData->jointsAnimation.size();
 	if( size == 0 ) return bufferData.model;
@@ -203,30 +203,27 @@ void QeModel::setProperty() {
 	actionType = eActionTypeOnce;
 	actionState = eActionStateStop;
 	attachID = 0;
-	attachSkeletonName = nullptr;
+	attachSkeletonName = "";
 	actionSpeed = 0;
 	cubeMapID = 0;
 
-	AST->getXMLiValue(cubeMapID, *initProperty, 1, "cubemapid");
-	AST->getXMLbValue(bAlpha, *initProperty, 1, "alpha");
-	AST->getXMLuiValue(id, *initProperty, 1, "id");
-	AST->getXMLfValue(pos.x, *initProperty, 1, "posX");
-	AST->getXMLfValue(pos.y, *initProperty, 1, "posY");
-	AST->getXMLfValue(pos.z, *initProperty, 1, "posZ");
-	AST->getXMLfValue(size.x, *initProperty, 1, "scaleX");
-	AST->getXMLfValue(size.y, *initProperty, 1, "scaleY");
-	AST->getXMLfValue(size.z, *initProperty, 1, "scaleZ");
-	AST->getXMLiValue(speed, *initProperty, 1, "speed");
-	AST->getXMLbValue(bShow, *initProperty, 1, "show");
-	AST->getXMLiValue(cullingDistance, *initProperty, 1, "culling");
+	AST->getXMLiValue(&cubeMapID, initProperty, 1, "cubemapid");
+	AST->getXMLbValue(&bAlpha, initProperty, 1, "alpha");
+	AST->getXMLiValue(&id, initProperty, 1, "id");
+	AST->getXMLfValue(&pos.x, initProperty, 1, "posX");
+	AST->getXMLfValue(&pos.y, initProperty, 1, "posY");
+	AST->getXMLfValue(&pos.z, initProperty, 1, "posZ");
+	AST->getXMLfValue(&size.x, initProperty, 1, "scaleX");
+	AST->getXMLfValue(&size.y, initProperty, 1, "scaleY");
+	AST->getXMLfValue(&size.z, initProperty, 1, "scaleZ");
+	AST->getXMLiValue(&speed, initProperty, 1, "speed");
+	AST->getXMLbValue(&bShow, initProperty, 1, "show");
+	AST->getXMLiValue(&cullingDistance, initProperty, 1, "culling");
 
 	if (modelData && modelData->rootJoint) {
-		AST->getXMLfValue(actionSpeed, *initProperty, 1, "actionSpeed");
-		AST->getXMLuiValue(currentActionID, *initProperty, 1, "action");
-		int i = 0;
-		AST->getXMLiValue(i, *initProperty, 1, "actionType");
-
-		actionType = QeActionType(i);
+		AST->getXMLfValue(&actionSpeed, initProperty, 1, "actionSpeed");
+		AST->getXMLiValue(&currentActionID, initProperty, 1, "action");
+		AST->getXMLiValue((int*)&actionType, initProperty, 1, "actionType");
 		setAction(currentActionID, actionType);
 		actionPlay();
 		updateAction(0);
@@ -236,11 +233,12 @@ void QeModel::setProperty() {
 		}
 	}
 
-	AST->getXMLiValue(attachID, *initProperty, 1, "attachid");
+	AST->getXMLiValue(&attachID, initProperty, 1, "attachid");
 
-	attachSkeletonName = AST->getXMLValue(initProperty, 1, "attachskeleton");
+	const char* c = AST->getXMLValue(initProperty, 1, "attachskeleton");
+	if(c) attachSkeletonName = std::string(c);
 
-	AST->getXMLiValue(particleID, *initProperty, 1, "paritcleid");
+	AST->getXMLiValue(&particleID, initProperty, 1, "paritcleid");
 	if (particleID && modelType != eModel_Particle)	particle = OBJMGR->getParticle(particleID, initProperty);
 
 	bufferData.material = pMaterial->value;

@@ -4,12 +4,13 @@ void QeParticle::init(QeAssetXML* _property) {
 	
 	initProperty = _property;
 
-	AST->getXMLuiValue(id, *initProperty, 1, "paritcleid");
+	AST->getXMLiValue(&id, initProperty, 1, "paritcleid");
 
-	eid = AST->getXMLValue(initProperty, 1, "paritcleEid");
-	particleRule = AST->getParticle(eid.c_str());
+	AST->getXMLiValue(&eid, initProperty, 1, "paritcleEid");
+	
+	particleRule = AST->getParticle(toString(eid).c_str());
 
-	AST->getXMLbValue(bFollow, *_property, 1, "paritclefollow");
+	AST->getXMLbValue(&bFollow, initProperty, 1, "paritclefollow");
 
 	pMaterial = AST->getMaterialImage(particleRule->image);
 	
@@ -97,8 +98,9 @@ void QeParticle::init(QeAssetXML* _property) {
 
 	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
-	AST->getXMLiValue(attachID, *initProperty, 1, "id");
-	attachSkeletonName = AST->getXMLValue(initProperty, 1, "paritcleSkeleton");
+	AST->getXMLiValue(&attachID, initProperty, 1, "id");
+	const char* c = AST->getXMLValue(initProperty, 1, "attachskeleton");
+	if (c) attachSkeletonName = std::string(c);
 	pos = { 0,0,0 };
 }
 
@@ -192,7 +194,7 @@ void QeParticle::setMatModel() {
 		else {
 			QeModel* model = OBJMGR->getModel(attachID, nullptr);
 			if (model != nullptr) {
-				QeMatrix4x4f mat = model->getAttachMatrix(attachSkeletonName);
+				QeMatrix4x4f mat = model->getAttachMatrix(attachSkeletonName.c_str());
 				bufferData.model._30 += mat._30;
 				bufferData.model._31 += mat._31;
 				bufferData.model._32 += mat._32;

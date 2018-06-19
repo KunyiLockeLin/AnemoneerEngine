@@ -16,8 +16,8 @@ private:
 	QeObjectMangerKey key;
 public:
 
-	std::map<uint16_t, QeBase*> mgrObjs;
-	std::map<uint16_t, QeModel*> mgrModels;
+	std::map<int, QeBase*> mgrObjs;
+	std::map<int, QeModel*> mgrModels;
 	std::vector<QeModel*> mgrAlphaModels;
 	/*
 	const uint16_t ID_CAMERA_MIN			= 10000;

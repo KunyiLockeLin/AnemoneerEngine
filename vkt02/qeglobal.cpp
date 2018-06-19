@@ -2,6 +2,11 @@
 
 
 namespace  QeString {
+	std::string toString(const int & i) {
+		std::ostringstream oss;
+		oss << i;
+		return oss.str();
+	}
 	std::string operator+(std::string const &a, const int &b){
 		std::ostringstream oss;
 		oss << a << b;

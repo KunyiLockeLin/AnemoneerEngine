@@ -115,8 +115,8 @@ void QeCamera::init(QeAssetXML* _property) {
 	if (_property == nullptr) return;
 
 	initProperty = _property;
-	const char* c = AST->getXMLValue(_property, 1, "id");
-	if (c != nullptr)	id = atoi(c);
+	const char* c;
+	AST->getXMLiValue(&id, initProperty, 1, "id");
 
 	//VK->createBuffer(uboBuffer, sizeof(QeUBODataCamera), nullptr);
 
@@ -129,40 +129,24 @@ void QeCamera::init(QeAssetXML* _property) {
 	//if (c != nullptr)	type = QeCameraType(atoi(c));
 	//else				type = eCameraFirstPerson;
 
-	c = AST->getXMLValue(_property, 1, "posX");
-	if (c != nullptr)	pos.x = float(atof(c));
+	AST->getXMLfValue(&pos.x, initProperty, 1, "posX");
+	AST->getXMLfValue(&pos.y, initProperty, 1, "posY");
+	AST->getXMLfValue(&pos.z, initProperty, 1, "posZ");
+	
+	AST->getXMLfValue(&target.x, initProperty, 1, "targetX");
+	AST->getXMLfValue(&target.y, initProperty, 1, "targety");
+	AST->getXMLfValue(&target.z, initProperty, 1, "targetz");
 
-	c = AST->getXMLValue(_property, 1, "posY");
-	if (c != nullptr)	pos.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "posZ");
-	if (c != nullptr)	pos.z = float(atof(c));
+	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
+	AST->getXMLfValue(&up.y, initProperty, 1, "upY");
+	AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
 
-	c = AST->getXMLValue(_property, 1, "targetX");
-	if (c != nullptr)	target.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "targetY");
-	if (c != nullptr)	target.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "targetZ");
-	if (c != nullptr)	target.z = float(atof(c));
+	AST->getXMLfValue(&speed, initProperty, 1, "speed");
+	AST->getXMLiValue(&cullingDistance, initProperty, 1, "culling");
 
-	c = AST->getXMLValue(_property, 1, "upX");
-	if (c != nullptr)	up.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "upY");
-	if (c != nullptr)	up.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "upZ");
-	if (c != nullptr)	up.z = float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "speed");
-	if (c != nullptr)	speed = float(atof(c));
-
-	c = AST->getXMLValue(_property, 1, "culling");
-	if (c != nullptr)	cullingDistance = atoi(c);
-
-	c = AST->getXMLValue(_property, 1, "fov");
-	if (c != nullptr)	fov = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "near");
-	if (c != nullptr)	fnear = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "far");
-	if (c != nullptr)	ffar = float(atof(c));
+	AST->getXMLfValue(&fov, initProperty, 1, "fov");
+	AST->getXMLfValue(&fnear, initProperty, 1, "near");
+	AST->getXMLfValue(&ffar, initProperty, 1, "far");
 
 	face = MATH->normalize(target - pos);
 }

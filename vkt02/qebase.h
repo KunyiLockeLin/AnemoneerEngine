@@ -5,7 +5,7 @@
 class QeBase
 {
 public:
-	uint16_t id;
+	int id=0;
 	QeAssetXML* initProperty = nullptr;
 	QeVector3f pos;
 	int particleID = 0;

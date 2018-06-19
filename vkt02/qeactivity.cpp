@@ -3,28 +3,32 @@
 
 void QeActivity::init(QeAssetXML* _property) {
 	initProperty = _property;
-	name = _property->key.c_str();
+	name = initProperty->key;
 
-	const char * c = AST->getXMLValue(_property, 1, "id");
-	if (c != nullptr)	id = atoi(c);
+	QeAssetXML * node;
+	AST->getXMLiValue(&id, initProperty, 1, "id");
 
-	QeAssetXML * node = AST->getXMLNode(_property, 1, "ambientColor");
+	node = AST->getXMLNode(_property, 1, "ambientColor");
 	if (node == nullptr || node->eKeys.size() == 0)	node = AST->getXMLNode(2, AST->CONFIG, "defaultAmbientColor");
 
-	ambientColor = { float(atof(AST->getXMLValue(node, 1, "r"))),
-		float(atof(AST->getXMLValue(node, 1, "g"))), float(atof(AST->getXMLValue(node, 1, "b"))), 1.0f };
-
+	AST->getXMLfValue(&ambientColor.x, node, 1, "r");
+	AST->getXMLfValue(&ambientColor.y, node, 1, "g");
+	AST->getXMLfValue(&ambientColor.z, node, 1, "b");
+	ambientColor.w = 1.0f;
+	
 	VP->init(initProperty);
 
-	node = AST->getXMLNode(_property, 1, "lights");
+	node = AST->getXMLNode(initProperty, 1, "lights");
 	if (node == nullptr || node->nexts.size() == 0) {
 		node = AST->getXMLNode(2, AST->CONFIG, "defaultLight");
-		uint16_t id = atoi(AST->getXMLValue(node, 1, "id"));
+		int id;
+		AST->getXMLiValue(&id, initProperty, 1, "id");
 		light = OBJMGR->getLight(id, node);
 	}
 	else{
 		for (int index = 0; index < node->nexts.size(); ++index) {
-			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			int id;
+			AST->getXMLiValue(&id, initProperty, 1, "id");
 			light = OBJMGR->getLight(id, node->nexts[index]);
 		}
 	}
@@ -32,21 +36,24 @@ void QeActivity::init(QeAssetXML* _property) {
 	node = AST->getXMLNode(_property, 1, "cubemaps");
 	if (node != nullptr && node->nexts.size() > 0) {
 		for (int index = 0; index < node->nexts.size(); ++index) {
-			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			int id;
+			AST->getXMLiValue(&id, node->nexts[index], 1, "id");
 			OBJMGR->getCube(id, node->nexts[index]);
 		}
 	}
 	node = AST->getXMLNode(_property, 1, "models");
 	if (node != nullptr && node->nexts.size() > 0) {
 		for (int index = 0; index < node->nexts.size(); ++index) {
-			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			int id;
+			AST->getXMLiValue(&id, node->nexts[index], 1, "id");
 			OBJMGR->getModel(id, node->nexts[index]);
 		}
 	}
 	node = AST->getXMLNode(_property, 1, "points");
 	if (node != nullptr && node->nexts.size() > 0) {
 		for (int index = 0; index < node->nexts.size(); ++index) {
-			uint16_t id = atoi(AST->getXMLValue(node->nexts[index], 1, "id"));
+			int id;
+			AST->getXMLiValue(&id, node->nexts[index], 1, "id");
 			OBJMGR->getPoint(id, node->nexts[index]);
 		}
 	}

@@ -15,49 +15,33 @@ void QeLight::init(QeAssetXML* _property) {
 	if (_property == nullptr) return;
 
 	initProperty = _property;
-	const char* c = AST->getXMLValue(_property, 1, "id");
-	if (c != nullptr)	id = atoi(c);
+	const char* c;
+	AST->getXMLiValue(&id, initProperty, 1, "id");
 
-	c = AST->getXMLValue(_property, 1, "r");
-	if (c != nullptr)	bufferData.color.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "g");
-	if (c != nullptr)	bufferData.color.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "b");
-	if (c != nullptr)	bufferData.color.z = float(atof(c));
+	AST->getXMLfValue(&bufferData.color.x, initProperty, 1, "r");
+	AST->getXMLfValue(&bufferData.color.y, initProperty, 1, "g");
+	AST->getXMLfValue(&bufferData.color.z, initProperty, 1, "b");
 
-	c = AST->getXMLValue(_property, 1, "posX");
-	if (c != nullptr)	bufferData.pos.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "posY");
-	if (c != nullptr)	bufferData.pos.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "posZ");
-	if (c != nullptr)	bufferData.pos.z = float(atof(c));
+	AST->getXMLfValue(&pos.x, initProperty, 1, "posX");
+	AST->getXMLfValue(&pos.y, initProperty, 1, "posY");
+	AST->getXMLfValue(&pos.z, initProperty, 1, "posZ");
+	bufferData.pos = pos;
 
-	c = AST->getXMLValue(_property, 1, "rotateCenterX");
-	if (c != nullptr)	rotateCenter.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "rotateCenterY");
-	if (c != nullptr)	rotateCenter.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "rotateCenterZ");
-	if (c != nullptr)	rotateCenter.z = float(atof(c));
+	AST->getXMLfValue(&rotateCenter.x, initProperty, 1, "rotateCenterX");
+	AST->getXMLfValue(&rotateCenter.y, initProperty, 1, "rotateCenterY");
+	AST->getXMLfValue(&rotateCenter.z, initProperty, 1, "rotateCenterZ");
 
-	c = AST->getXMLValue(_property, 1, "dirX");
-	if (c != nullptr)	bufferData.dir.x = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "dirY");
-	if (c != nullptr)	bufferData.dir.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "dirZ");
-	if (c != nullptr)	bufferData.dir.z = float(atof(c));
+	AST->getXMLfValue(&bufferData.dir.x, initProperty, 1, "dirX");
+	AST->getXMLfValue(&bufferData.dir.y, initProperty, 1, "dirY");
+	AST->getXMLfValue(&bufferData.dir.z, initProperty, 1, "dirZ");
 
-	c = AST->getXMLValue(_property, 1, "speed");
-	if (c != nullptr)	speed = atoi(c);
+	AST->getXMLfValue(&speed, initProperty, 1, "speed");
 
-	c = AST->getXMLValue(_property, 1, "type");
-	if (c != nullptr)	bufferData.param.x = float(atoi(c));
-	c = AST->getXMLValue(_property, 1, "intensity");
-	if (c != nullptr)	bufferData.param.y = float(atof(c));
-	c = AST->getXMLValue(_property, 1, "coneAngle");
-	if (c != nullptr)	bufferData.param.z = float(atof(c));
+	AST->getXMLfValue(&bufferData.param.x, initProperty, 1, "type");
+	AST->getXMLfValue(&bufferData.param.y, initProperty, 1, "intensity");
+	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "coneAngle");
 
-	c = AST->getXMLValue(_property, 1, "show");
-	if (c != nullptr && atoi(c) == 1) bShow = true;
+	AST->getXMLbValue(&bShow, initProperty, 1, "show");
 
 	billboard = OBJMGR->getBillboard(id, initProperty);
 	//if (billboard->pMaterial->type == eMaterialPhong)

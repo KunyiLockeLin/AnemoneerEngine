@@ -2,13 +2,13 @@
 
 
 QeObjectManger::~QeObjectManger() {
-	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.begin();
+	std::map<int, QeBase*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
 		if ((it->second) != nullptr) delete (it->second);
 		++it;
 	}
 	mgrObjs.clear();
-	std::map<uint16_t, QeModel*>::iterator it1 = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
 	while (it1 != mgrModels.end()) {
 		if ((it1->second) != nullptr) delete (it1->second);
 		++it1;
@@ -28,7 +28,7 @@ QeBase* QeObjectManger::getPoint(int _id, QeAssetXML* _property) {
 	//if (it != mgrCameras.end())	return it->second;
 	//if (_id > ID_CAMERA_MAX || _id < ID_CAMERA_MIN) return nullptr;
 
-	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
+	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
 	if (it != mgrObjs.end())	return it->second;
 
 	if (!_property) return nullptr;
@@ -48,7 +48,7 @@ QeCamera* QeObjectManger::getCamera(int _id, QeAssetXML* _property) {
 	//if (it != mgrCameras.end())	return it->second;
 	//if (_id > ID_CAMERA_MAX || _id < ID_CAMERA_MIN) return nullptr;
 
-	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
+	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
 	if (it != mgrObjs.end())	return (QeCamera*)it->second;
 
 	if (!_property) return nullptr;
@@ -68,7 +68,7 @@ QeLight* QeObjectManger::getLight(int _id, QeAssetXML* _property) {
 
 	//std::map<int, QeLight*>::iterator it = mgrLights.find(_id);
 	//if (it != mgrLights.end())	return it->second;
-	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.find(_id);
+	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
 	if (it != mgrObjs.end())	return (QeLight*)it->second;
 
 	if (!_property) return nullptr;
@@ -106,7 +106,7 @@ QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
 	//std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	//if (it != mgrModels.end())	return it->second;
 
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
+	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeModel*)it->second;
 
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
@@ -138,7 +138,7 @@ QeCube* QeObjectManger::getCube(int _id, QeAssetXML* _property) {
 
 	//std::map<int, QeModel*>::iterator it = mgrCubes.find(_id);
 	//if (it != mgrCubes.end())	return  (QeCube*)it->second;
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
+	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeCube*)it->second;
 
 	if (_property == nullptr) return nullptr;
@@ -157,7 +157,7 @@ QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
 
 	//std::map<int, QeModel*>::iterator it = mgrBillboards.find(_id);
 	//if (it != mgrBillboards.end())	return (QeBillboard*)it->second;
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
+	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeBillboard*)it->second;
 
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
@@ -189,7 +189,7 @@ QeLine* QeObjectManger::getLine(int _id, QeAssetXML* _property, const char* line
 
 	//std::map<int, QeModel*>::iterator it = mgrLines.find(_id);
 	//if (it != mgrLines.end())	return (QeLine*)it->second;
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
+	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeLine*)it->second;
 
 	QeLine* newModel = new QeLine(key);
@@ -205,7 +205,7 @@ QeLine* QeObjectManger::getLine(int _id, QeAssetXML* _property, const char* line
 
 QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
 
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.find(_id);
+	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
 	if (it != mgrModels.end())	return (QeParticle*)it->second;
 
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
@@ -262,12 +262,12 @@ void QeObjectManger::addAlphaModels(QeModel* model) {
 }
 
 void QeObjectManger::updateRender(float _time) {
-	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.begin();
+	std::map<int, QeBase*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
 		it->second->updateRender(_time);
 		++it;
 	}
-	std::map<uint16_t, QeModel*>::iterator it1 = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
 	while (it1 != mgrModels.end()) {
 		it1->second->updateRender(_time);
 		++it1;
@@ -281,12 +281,12 @@ void QeObjectManger::updateRender(float _time) {
 
 void QeObjectManger::updateCompute(float _time) {
 
-	std::map<uint16_t, QeBase*>::iterator it = mgrObjs.begin();
+	std::map<int, QeBase*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
 		it->second->updateCompute(_time);
 		++it;
 	}
-	std::map<uint16_t, QeModel*>::iterator it1 = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
 	while (it1 != mgrModels.end()) {
 		it1->second->updateCompute(_time);
 		++it1;
@@ -300,7 +300,7 @@ void QeObjectManger::updateCompute(float _time) {
 
 void QeObjectManger::cleanupPipeline() {
 
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
 		it->second->cleanupPipeline();
 		++it;
@@ -314,7 +314,7 @@ void QeObjectManger::cleanupPipeline() {
 
 void QeObjectManger::recreatePipeline() {
 
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
 		it->second->updateShaderData();
 		it->second->createPipeline();
@@ -332,7 +332,7 @@ void QeObjectManger::recreatePipeline() {
 
 void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
 		it->second->updateDrawCommandBuffer(drawCommandBuffer);
 		++it;
@@ -347,7 +347,7 @@ void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer)
 
 void QeObjectManger::updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
-	std::map<uint16_t, QeModel*>::iterator it = mgrModels.begin();
+	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
 		it->second->updateComputeCommandBuffer(drawCommandBuffer);
 		++it;

@@ -8,8 +8,8 @@ public:
 	QeActivity(QeQueenEngineKey& _key) {}
 	~QeActivity() {}
 
-	uint16_t id;
-	const char* name = nullptr;
+	int id;
+	std::string name;
 	QeVector4f	ambientColor;
 	QeAssetXML* initProperty = nullptr;
 	QeLight * light = nullptr;

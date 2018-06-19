@@ -21,7 +21,7 @@ public:
 	~QeLight() {}
 
 	bool bShow = false;
-	int speed = 0;
+	float speed = 0.0f;
 	QeVector3f rotateCenter;
 
 	QeDataLight bufferData;

@@ -8,9 +8,9 @@ void QueenEngine::run() {
 
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
 
-	GLB.libGLFW = atoi(AST->getXMLValue(node, 1, "glfw"));
-	GLB.libGLM = atoi(AST->getXMLValue(node, 1, "glm"));
-	GLB.libGLI = atoi(AST->getXMLValue(node, 1, "gli"));
+	//GLB.libGLFW = atoi(AST->getXMLValue(node, 1, "glfw"));
+	//GLB.libGLM = atoi(AST->getXMLValue(node, 1, "glm"));
+	//GLB.libGLI = atoi(AST->getXMLValue(node, 1, "gli"));
 	
 	DEBUG->init();
 	WIN->init();

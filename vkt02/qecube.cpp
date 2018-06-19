@@ -6,7 +6,7 @@ void QeCube::init(QeAssetXML* _property) {
 	initProperty = _property;
 
 	modelData = AST->getModel("cube", true);
-	pMaterial = AST->getMaterialImage(AST->getXMLValue(_property, 1, "image"), true);
+	pMaterial = AST->getMaterialImage(AST->getXMLValue(initProperty, 1, "image"), true);
 
 	AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "cubemap"));
 	setProperty();

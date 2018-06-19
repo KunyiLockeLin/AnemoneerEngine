@@ -5,6 +5,7 @@
 
 namespace  QeString {
 
+	std::string toString(const int &i);
 	std::string operator+(std::string const &a, const int &b);
 	std::string operator+(std::string const &a, const size_t &b);
 	std::string operator+(std::string const &a, const float &b);
@@ -37,9 +38,9 @@ public:
 	~QeGlobal();
 
 	void restart();
-	bool libGLFW;
-	bool libGLM;
-	bool libGLI;
+	//bool libGLFW;
+	//bool libGLM;
+	//bool libGLI;
 	static QeGlobal&	getInstance();
 	QueenEngine*		engine = nullptr;
 	QeVulkan*			vulkan = nullptr;

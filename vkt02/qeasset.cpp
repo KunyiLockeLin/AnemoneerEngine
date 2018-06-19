@@ -445,50 +445,50 @@ std::vector<QeAssetJSON*>*	QeAsset::getJSONArrayNodes(QeAssetJSON* source, const
 	return nullptr;
 }
 
-bool QeAsset::getJSONbValue(bool& output, QeAssetJSON& source, int length, ...) {
+bool QeAsset::getJSONbValue(bool* output, QeAssetJSON* source, int length, ...) {
 	va_list keys;
 	va_start(keys, length);
 
 	const char** keys1 = new const char*[length];
 	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
 
-	const char* ret = getJSONValue(&source, keys1, length + 1);
+	const char* ret = getJSONValue(source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
 
-	if (ret) output = atoi(ret);
+	if (ret) *output = atoi(ret);
 
 	return ret;
 }
 
-bool QeAsset::getJSONiValue(int& output, QeAssetJSON& source, int length, ...) {
+bool QeAsset::getJSONiValue(int* output, QeAssetJSON* source, int length, ...) {
 	va_list keys;
 	va_start(keys, length);
 
 	const char** keys1 = new const char*[length];
 	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
 
-	const char* ret = getJSONValue(&source, keys1, length + 1);
+	const char* ret = getJSONValue(source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
 
-	if (ret) output = atoi(ret);
+	if (ret) *output = atoi(ret);
 
 	return ret;
 }
 
-bool QeAsset::getJSONfValue(float& output, QeAssetJSON& source, int length, ...) {
+bool QeAsset::getJSONfValue(float* output, QeAssetJSON* source, int length, ...) {
 	va_list keys;
 	va_start(keys, length);
 
 	const char** keys1 = new const char*[length];
 	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
 
-	const char* ret = getJSONValue(&source, keys1, length + 1);
+	const char* ret = getJSONValue(source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
 
-	if (ret) output = float(atof(ret));
+	if (ret) *output = float(atof(ret));
 
 	return ret;
 }
@@ -633,7 +633,7 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 	return source;
 }
 
-bool QeAsset::getXMLbValue(bool& output, QeAssetXML& source, int length, ...) {
+bool QeAsset::getXMLbValue(bool* output, QeAssetXML* source, int length, ...) {
 
 	va_list keys;
 	va_start(keys, length);
@@ -641,16 +641,16 @@ bool QeAsset::getXMLbValue(bool& output, QeAssetXML& source, int length, ...) {
 	const char** keys1 = new const char*[length];
 	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
 
-	const char* ret = getXMLValue(&source, keys1, length + 1);
+	const char* ret = getXMLValue(source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
 
-	if (ret) output = atoi(ret);
+	if (ret) *output = atoi(ret);
 
 	return ret;
 }
 
-bool QeAsset::getXMLuiValue(uint16_t& output, QeAssetXML& source, int length, ...) {
+bool QeAsset::getXMLiValue(int* output, QeAssetXML* source, int length, ...) {
 
 	va_list keys;
 	va_start(keys, length);
@@ -658,44 +658,27 @@ bool QeAsset::getXMLuiValue(uint16_t& output, QeAssetXML& source, int length, ..
 	const char** keys1 = new const char*[length];
 	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
 
-	const char* ret = getXMLValue(&source, keys1, length + 1);
+	const char* ret = getXMLValue(source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
 
-	if (ret) output = atoi(ret);
+	if (ret) *output = atoi(ret);
 
 	return ret;
 }
 
-bool QeAsset::getXMLiValue(int& output, QeAssetXML& source, int length, ...) {
-
+bool QeAsset::getXMLfValue(float* output, QeAssetXML* source, int length, ...) {
 	va_list keys;
 	va_start(keys, length);
 
 	const char** keys1 = new const char*[length];
 	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
 
-	const char* ret = getXMLValue(&source, keys1, length + 1);
+	const char* ret = getXMLValue(source, keys1, length + 1);
 	va_end(keys);
 	delete[] keys1;
 
-	if (ret) output = atoi(ret);
-
-	return ret;
-}
-
-bool QeAsset::getXMLfValue(float& output, QeAssetXML& source, int length, ...) {
-	va_list keys;
-	va_start(keys, length);
-
-	const char** keys1 = new const char*[length];
-	for (int i = 0; i< length; ++i)	keys1[i] = va_arg(keys, const char*);
-
-	const char* ret = getXMLValue(&source, keys1, length + 1);
-	va_end(keys);
-	delete[] keys1;
-
-	if (ret) output = float(atof(ret));
+	if (ret) *output = float(atof(ret));
 
 	return ret;
 }
