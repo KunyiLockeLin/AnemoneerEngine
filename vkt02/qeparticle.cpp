@@ -85,6 +85,7 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 	size.z = 1;
 
 	bufferData.material.baseColor = particles[0].color;
+	bufferData.param.y = float(bFollowPos + 1);
 
 	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
@@ -174,11 +175,11 @@ void QeParticle::setMatModel() {
 	if (parentOID > 0) {
 		QePoint* p = OBJMGR->getObject(parentOID);
 		if (p) {
-			//QeMatrix4x4f mat = p->getAttachMatrix(attachSkeletonName.c_str());
-			//bufferData.model._30 += mat._30;
-			//bufferData.model._31 += mat._31;
-			//bufferData.model._32 += mat._32;
-			bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
+			QeMatrix4x4f mat = p->getAttachMatrix(attachSkeletonName.c_str());
+			bufferData.model._30 += mat._30;
+			bufferData.model._31 += mat._31;
+			bufferData.model._32 += mat._32;
+			//bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
 		}
 	}
 }

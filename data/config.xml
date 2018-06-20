@@ -94,10 +94,10 @@
           </attach>
         </e>
       </lights>
-      <postprocessing frag="grayscalef.spv"/>
     </e>
     
     <e eid="28002">
+      <postprocessing frag="grayscalef.spv"/>
     </e>
   </scenes>
   
