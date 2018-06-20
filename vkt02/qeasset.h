@@ -124,19 +124,23 @@ enum QeAssetType {
 };
 
 struct QeAssetParticleRule {
-	QeVector4f count_life;			// 0: count, 1: count_range, 2: life(second), 3: life_range
-	QeVector4f init_pos_lw;			// 0: length, 1: length_range, 2: width, 3: width_range,
-	QeVector4f init_pos_hr;			// 0: height, 1: height_range, 2: radius, 3: radius_range,
-	QeVector4f init_speed_xy;		// 0: speed_x, 1: speed_x_range, 2: speed_y, 3: speed_y_range
-	QeVector4f init_speed_z_force_x;// 0: speed_z, 3: speed_z_range, 2: force_x 1: force_x_range
-	QeVector4f force_yz;			// 0: force_y 1: force_y_range, 2:force_z 3: force_z_range
-	QeVector4f rotate_xy;			// 0: rotate_x(degree), 1: roate_x_range, 2: rotate_y, 3: rotate_y_range,
-	QeVector4f rotate_z_color_r;	// 0: rotate_z, 1: roate_y_range, 2: color_r 3: color_r_range
-	QeVector4f color_gb;			// 0: color_g, 1: color_g_range, 2: color_b 3: color_b_range
-	QeVector4f alpha_born_size_x;	// 0: bAlpha, 1: bReborn, 2: size_x, 3: size_x_range 
-	QeVector4f size_y_init_pos_d;	// 0: size_y, 1: size_y_range, 2: degree, 3: degree_range
-	//QeVKImage* image = nullptr;
+
 	const char* image = nullptr;
+	bool bAlpha, bReborn;
+	int count_once, count_total, count_range;
+	int life_scend, life_range;
+	QeVector3f init_pos_square; // length, width, height 
+	QeVector3f init_pos_square_range; // length, width, height 
+	QeVector2f init_pos_cycle; // radius, degree 
+	QeVector2f init_pos_cycle_range; // radius, degree
+	QeVector3f init_speed; 
+	QeVector3f init_speed_range;
+	QeVector3f force;
+	QeVector3f force_range;
+	QeVector2f size;
+	QeVector2f size_range;
+	QeVector3f color;
+	QeVector3f color_range;
 };
 
 struct QeAssetXML {
