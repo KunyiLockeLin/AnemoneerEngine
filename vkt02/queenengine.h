@@ -16,12 +16,12 @@ private:
 	QeQueenEngineKey key;
 
 public:
-	QueenEngine(QeGlobalKey& _key) {}
-	~QueenEngine() {}
+	QueenEngine(QeGlobalKey& _key):sceneEID(0){}
+	//~QueenEngine() {}
 	void run();
 
-	std::string activityName = "";
-	QeActivity* currentActivity = nullptr;
+	int sceneEID;
+	QeActivity* activity = nullptr;
 	bool bClosed = false;
 	bool bRestart = false;
 	int currentRenderFPS = 0;

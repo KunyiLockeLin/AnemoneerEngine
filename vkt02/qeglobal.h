@@ -59,7 +59,7 @@ public:
 #define VK		GLB.vulkan
 #define WIN		GLB.window
 #define VP		GLB.graphics
-#define ACT		QE->currentActivity
+#define ACT		QE->activity
 #define MATH	GLB.math
 #define AST		GLB.asset
 #define OBJMGR	GLB.objMgr

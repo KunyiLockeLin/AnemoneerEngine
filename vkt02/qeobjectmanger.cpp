@@ -2,7 +2,7 @@
 
 
 QeObjectManger::~QeObjectManger() {
-	std::map<int, QeBase*>::iterator it = mgrObjs.begin();
+	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
 		if ((it->second) != nullptr) delete (it->second);
 		++it;
@@ -22,218 +22,103 @@ QeObjectManger::~QeObjectManger() {
 	mgrAlphaModels.clear();
 }
 
-QeBase* QeObjectManger::getPoint(int _id, QeAssetXML* _property) {
+QePoint* QeObjectManger::getObject(int _oid, QeAssetXML* _property, int _parentOID) {
 
-	//std::map<int, QeCamera*>::iterator it = mgrCameras.find(_id);
-	//if (it != mgrCameras.end())	return it->second;
-	//if (_id > ID_CAMERA_MAX || _id < ID_CAMERA_MIN) return nullptr;
+	if (!_oid && !_property)	return nullptr;
+	else if (!_oid)				AST->getXMLiValue(&_oid, _property, 1, "oid");
 
-	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
+	std::map<int, QePoint*>::iterator it = mgrObjs.find(_oid);
 	if (it != mgrObjs.end())	return it->second;
 
-	if (!_property) return nullptr;
+	std::map<int, QeModel*>::iterator it1 = mgrModels.find(_oid);
+	if (it1 != mgrModels.end())	return it1->second;
 
-	QeBase* newPoint = new QeBase(key);
-	//mgrCameras[_id] = newCamera;
-	mgrObjs[_id] = newPoint;
-	newPoint->init(_property);
-	//newCamera->id = _id;
-
-	return newPoint;
-}
-
-QeCamera* QeObjectManger::getCamera(int _id, QeAssetXML* _property) {
-
-	//std::map<int, QeCamera*>::iterator it = mgrCameras.find(_id);
-	//if (it != mgrCameras.end())	return it->second;
-	//if (_id > ID_CAMERA_MAX || _id < ID_CAMERA_MIN) return nullptr;
-
-	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
-	if (it != mgrObjs.end())	return (QeCamera*)it->second;
-
-	if (!_property) return nullptr;
-
-	QeCamera* newCamera = new QeCamera(key);
-	//mgrCameras[_id] = newCamera;
-	mgrObjs[_id] = newCamera;
-	newCamera->init(_property);
-	//newCamera->id = _id;
-
-	return newCamera;
-}
-
-QeLight* QeObjectManger::getLight(int _id, QeAssetXML* _property) {
-
-	//if (_id > ID_LIGHT_MAX || _id < ID_LIGHT_MIN) return nullptr;
-
-	//std::map<int, QeLight*>::iterator it = mgrLights.find(_id);
-	//if (it != mgrLights.end())	return it->second;
-	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
-	if (it != mgrObjs.end())	return (QeLight*)it->second;
-
-	if (!_property) return nullptr;
-
-	QeLight* newLight = new QeLight(key);
-	//mgrLights[_id] = newLight;
-	mgrObjs[_id] = newLight;
-	newLight->init(_property);
-	//newLight->id = _id;
-
-	return newLight;
-}
-/*
-QeActivity* QeObjectManger::getActivity(int _id, QeAssetXML* _property) {
-
-	//if (_id > ID_ACTIVITY_MAX || _id < ID_ACTIVITY_MIN) return nullptr;
-
-	//std::map<int, QeActivity*>::iterator it = mgrActivitys.find(_id);
-	//if (it != mgrActivitys.end())	return it->second;
-	std::map<int, QeBase*>::iterator it = mgrObjs.find(_id);
-	if (it != mgrObjs.end())	return (QeActivity*)it->second;
-
-	QeActivity* newActivity = new QeActivity(key);
-	//mgrActivitys[_id] = newActivity;
-	mgrObjs[_id] = newActivity;
-	newActivity->init(_property);
-
-	return newActivity;
-}
-*/
-QeModel* QeObjectManger::getModel(int _id, QeAssetXML* _property) {
-
-	//if (_id > ID_MODEL_MAX || _id < ID_MODEL_MIN) return nullptr;
-
-	//std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
-	//if (it != mgrModels.end())	return it->second;
-
-	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
-	if (it != mgrModels.end())	return (QeModel*)it->second;
-
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	if (it1 != mgrAlphaModels.end()) {
-		if ((*it1)->id == _id)	return *it1;
-		++it1;
-	}
-
-	if (_property == nullptr) return nullptr;
-
-	QeModel* newModel = new QeModel(key);
-	//mgrModels[newModel->id] = newModel;
-	
-	bool bAlpha = false;
-	const char *c = AST->getXMLValue(_property, 1, "alpha");
-	if (c != nullptr)	bAlpha = atoi(c);
-
-	if (bAlpha)	addAlphaModels(newModel);
-	else		mgrModels[_id] = newModel;
-
-	newModel->init(_property);
-	//newModel->id = _id;
-
-	VP->bUpdateDrawCommandBuffers = true;
-	return newModel;
-}
-
-QeCube* QeObjectManger::getCube(int _id, QeAssetXML* _property) {
-
-	//std::map<int, QeModel*>::iterator it = mgrCubes.find(_id);
-	//if (it != mgrCubes.end())	return  (QeCube*)it->second;
-	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
-	if (it != mgrModels.end())	return (QeCube*)it->second;
-
-	if (_property == nullptr) return nullptr;
-
-	QeCube* newModel = new QeCube(key);
-	//mgrCubes[newModel->id] = newModel;
-	mgrModels[_id] = newModel;
-	newModel->init(_property);
-	//newModel->id = _id;
-
-	VP->bUpdateDrawCommandBuffers = true;
-	return newModel;
-}
-
-QeBillboard* QeObjectManger::getBillboard(int _id,  QeAssetXML* _property) {
-
-	//std::map<int, QeModel*>::iterator it = mgrBillboards.find(_id);
-	//if (it != mgrBillboards.end())	return (QeBillboard*)it->second;
-	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
-	if (it != mgrModels.end())	return (QeBillboard*)it->second;
-
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	if (it1 != mgrAlphaModels.end()) {
-		if( (*it1)->id == _id )	return (QeBillboard*)*it1;
-		++it1;
+	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
+	if (it2 != mgrAlphaModels.end()) {
+		if ((*it2)->oid == _oid)	return *it2;
+		++it2;
 	}
 
 	if (!_property) return nullptr;
-
-	QeBillboard* newModel = new QeBillboard(key);
-	//mgrBillboards[_id] = newModel;
-	
-	bool bAlpha = false;
-	const char *c = AST->getXMLValue(_property, 1, "alpha");
-	if (c != nullptr )	bAlpha = atoi(c);
-	
-	if(bAlpha)	addAlphaModels(newModel);
-	else		mgrModels[_id] = newModel;
-
-	newModel->init(_property);
-	//newModel->id = _id;
-
-	VP->bUpdateDrawCommandBuffers = true;
-	return newModel;
-}
-
-QeLine* QeObjectManger::getLine(int _id, QeAssetXML* _property, const char* lineType) {
-
-	//std::map<int, QeModel*>::iterator it = mgrLines.find(_id);
-	//if (it != mgrLines.end())	return (QeLine*)it->second;
-	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
-	if (it != mgrModels.end())	return (QeLine*)it->second;
-
-	QeLine* newModel = new QeLine(key);
-	if (lineType) newModel->lineType = lineType;
-	//mgrLines[_id] = newModel;
-	mgrModels[_id] = newModel;
-	newModel->init(_property);
-	//newModel->id = _id;
-
-	VP->bUpdateDrawCommandBuffers = true;
-	return newModel;
-}
-
-QeParticle* QeObjectManger::getParticle(int _id, QeAssetXML* _property) {
-
-	std::map<int, QeModel*>::iterator it = mgrModels.find(_id);
-	if (it != mgrModels.end())	return (QeParticle*)it->second;
-
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	if (it1 != mgrAlphaModels.end()) {
-		if ((*it1)->id == _id)	return (QeParticle*)*it1;
-		++it1;
-	}
-
-	if (!_property) return nullptr;
-
-	QeParticle* newModel = new QeParticle(key);
-	//mgrBillboards[_id] = newModel;
-	const char * c = AST->getXMLValue(_property, 1, "paritcleEid");
 
 	bool bAlpha = false;
-	if (c) {
-		QeAssetParticleRule* p = AST->getParticle(c);
-		if (p->alpha_born_size_x.x)	bAlpha = true;
+	bool bCheckAlpha = false;
+	bool bRedner = false;
+	int type = _oid / 1000;
+
+	switch (type) {
+	case eObject_Point:
+	case eObject_Camera:
+	case eObject_Light:
+		break;
+
+	case eObject_Line:
+	case eObject_Cubemap:
+		bRedner = true;
+		break;
+
+	case eObject_Billboard:
+		bRedner = true;
+		bCheckAlpha = true;
+		break;
+	case eObject_Particle:
+		bRedner = true;
+		break;
+	case eObject_Model:
+		bRedner = true;
+		bCheckAlpha = true;
+		break;
+
+	default:
+		return nullptr;
 	}
 
-	if (bAlpha)	addAlphaModels(newModel);
-	else		mgrModels[_id] = newModel;
-	newModel->id = _id;
-	newModel->init(_property);
-	//newModel->id = _id;
+	int _eid = 0;
+	if (bRedner && bCheckAlpha && AST->getXMLiValue(&_eid, _property, 1, "eid")) {
 
-	VP->bUpdateDrawCommandBuffers = true;
-	return newModel;
+		QeAssetXML* node = AST->getXMLEditNode(QeObjectType(type), _eid);
+
+		if (node)	AST->getXMLbValue(&bAlpha, node, 1, "alpha");
+		else		return nullptr;
+	}
+
+	QePoint* newObject = nullptr;
+
+	switch (type) {
+	case eObject_Point:
+		newObject = new QePoint(key);
+		break;
+	case eObject_Camera:
+		newObject = new QeCamera(key);
+		break;
+	case eObject_Light:
+		newObject = new QeLight(key);
+		break;
+	case eObject_Line:
+		newObject = new QeLine(key);
+		break;
+	case eObject_Billboard:
+		newObject = new QeBillboard(key);
+		break;
+	case eObject_Cubemap:
+		newObject = new QeCubemap(key);
+		break;
+	case eObject_Particle:
+		newObject = new QeParticle(key);
+		break;
+	case eObject_Model:
+		newObject = new QeModel(key);
+		break;
+	}
+
+	if (!newObject) return newObject;
+
+	if (!bRedner) mgrObjs[_oid] = newObject;
+	else if (bAlpha) mgrAlphaModels.push_back((QeModel*)newObject);
+	else			 mgrModels[_oid] = (QeModel*)newObject;
+
+	newObject->init(_property, _parentOID);
+	return newObject;
 }
 
 void QeObjectManger::sortAlphaModels() {
@@ -255,14 +140,8 @@ void QeObjectManger::sortAlphaModels() {
 	}
 }
 
-void QeObjectManger::addAlphaModels(QeModel* model) {
-	
-	mgrAlphaModels.push_back(model);
-	VP->bUpdateDrawCommandBuffers = true;
-}
-
 void QeObjectManger::updateRender(float _time) {
-	std::map<int, QeBase*>::iterator it = mgrObjs.begin();
+	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
 		it->second->updateRender(_time);
 		++it;
@@ -281,7 +160,7 @@ void QeObjectManger::updateRender(float _time) {
 
 void QeObjectManger::updateCompute(float _time) {
 
-	std::map<int, QeBase*>::iterator it = mgrObjs.begin();
+	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
 		it->second->updateCompute(_time);
 		++it;
@@ -300,16 +179,7 @@ void QeObjectManger::updateCompute(float _time) {
 
 void QeObjectManger::cleanupPipeline() {
 
-	std::map<int, QeModel*>::iterator it = mgrModels.begin();
-	while (it != mgrModels.end()) {
-		it->second->cleanupPipeline();
-		++it;
-	}
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->cleanupPipeline();
-		++it1;
-	}
+	//VK->cleanupPipeline();
 }
 
 void QeObjectManger::recreatePipeline() {

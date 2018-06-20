@@ -2,23 +2,22 @@
 
 #include "qeheader.h"
 
-class QeActivity
-{
+class QeActivity {
+
 public:
 	QeActivity(QeQueenEngineKey& _key) {}
-	~QeActivity() {}
+	//~QeActivity() {}
 
-	int id;
-	std::string name;
+	int eid;
 	QeVector4f	ambientColor;
 	QeAssetXML* initProperty = nullptr;
 	QeLight * light = nullptr;
-	QeModel * axis = nullptr;
-	QeModel * grids = nullptr;
+	QeLine * axis = nullptr;
+	QeLine * grids = nullptr;
 
 	void init(QeAssetXML * _property);
 	void eventInput(QeInputData & inputData);
-	void updateRender(float time);
 	void updateCompute(float time);
+	void updateRender(float time);
 };
 

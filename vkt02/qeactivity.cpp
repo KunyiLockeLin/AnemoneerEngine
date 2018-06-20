@@ -3,62 +3,62 @@
 
 void QeActivity::init(QeAssetXML* _property) {
 	initProperty = _property;
-	name = initProperty->key;
 
 	QeAssetXML * node;
-	AST->getXMLiValue(&id, initProperty, 1, "id");
+	AST->getXMLiValue(&eid, initProperty, 1, "eid");
 
 	node = AST->getXMLNode(_property, 1, "ambientColor");
-	if (node == nullptr || node->eKeys.size() == 0)	node = AST->getXMLNode(2, AST->CONFIG, "defaultAmbientColor");
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default","ambientColor");
 
-	AST->getXMLfValue(&ambientColor.x, node, 1, "r");
-	AST->getXMLfValue(&ambientColor.y, node, 1, "g");
-	AST->getXMLfValue(&ambientColor.z, node, 1, "b");
-	ambientColor.w = 1.0f;
-	
+	if (node) {
+		AST->getXMLfValue(&ambientColor.x, node, 1, "r");
+		AST->getXMLfValue(&ambientColor.y, node, 1, "g");
+		AST->getXMLfValue(&ambientColor.z, node, 1, "b");
+		ambientColor.w = 1.0f;
+	}
+
 	VP->init(initProperty);
 
 	node = AST->getXMLNode(initProperty, 1, "lights");
-	if (node == nullptr || node->nexts.size() == 0) {
-		node = AST->getXMLNode(2, AST->CONFIG, "defaultLight");
-		int id;
-		AST->getXMLiValue(&id, initProperty, 1, "id");
-		light = OBJMGR->getLight(id, node);
-	}
-	else{
-		for (int index = 0; index < node->nexts.size(); ++index) {
-			int id;
-			AST->getXMLiValue(&id, initProperty, 1, "id");
-			light = OBJMGR->getLight(id, node->nexts[index]);
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "lights");
+	if (node){
+		size_t size = node->nexts.size();
+		for (int index = 0; index < size; ++index) {
+			light = (QeLight*)OBJMGR->getObject(0, node->nexts[index]);
 		}
 	}
 
-	node = AST->getXMLNode(_property, 1, "cubemaps");
-	if (node != nullptr && node->nexts.size() > 0) {
-		for (int index = 0; index < node->nexts.size(); ++index) {
-			int id;
-			AST->getXMLiValue(&id, node->nexts[index], 1, "id");
-			OBJMGR->getCube(id, node->nexts[index]);
+	node = AST->getXMLNode(initProperty, 1, "cubemaps");
+	if (node) {
+		size_t size = node->nexts.size();
+		for (int index = 0; index < size; ++index) {
+			OBJMGR->getObject(0, node->nexts[index]);
 		}
 	}
-	node = AST->getXMLNode(_property, 1, "models");
-	if (node != nullptr && node->nexts.size() > 0) {
-		for (int index = 0; index < node->nexts.size(); ++index) {
-			int id;
-			AST->getXMLiValue(&id, node->nexts[index], 1, "id");
-			OBJMGR->getModel(id, node->nexts[index]);
+
+	node = AST->getXMLNode(initProperty, 1, "models");
+	if (node) {
+		size_t size = node->nexts.size();
+		for (int index = 0; index < size; ++index) {
+			OBJMGR->getObject(0, node->nexts[index]);
 		}
 	}
-	node = AST->getXMLNode(_property, 1, "points");
-	if (node != nullptr && node->nexts.size() > 0) {
-		for (int index = 0; index < node->nexts.size(); ++index) {
-			int id;
-			AST->getXMLiValue(&id, node->nexts[index], 1, "id");
-			OBJMGR->getPoint(id, node->nexts[index]);
+
+	node = AST->getXMLNode(initProperty, 1, "points");
+	if (node) {
+		size_t size = node->nexts.size();
+		for (int index = 0; index < size; ++index) {
+			OBJMGR->getObject(0, node->nexts[index]);
 		}
 	}
-	axis = OBJMGR->getLine(1, initProperty, "axis");
-	grids = OBJMGR->getLine(2, initProperty, "grids");
+
+	node = AST->getXMLNode(_property, 1, "axis");
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "axis");
+	if (node)	axis = (QeLine*)OBJMGR->getObject(0, node);
+
+	node = AST->getXMLNode(_property, 1, "grids");
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "grids");
+	if (node)	grids = (QeLine*)OBJMGR->getObject(0, node);
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {
@@ -160,8 +160,5 @@ void QeActivity::eventInput(QeInputData & inputData) {
 	}
 }
 
-void QeActivity::updateRender(float time) {
-}
-
-void QeActivity::updateCompute(float time) {
-}
+void QeActivity::updateCompute(float time) {}
+void QeActivity::updateRender(float time) {}

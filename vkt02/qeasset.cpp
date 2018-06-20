@@ -633,6 +633,60 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 	return source;
 }
 
+const char* QeAsset::getEditType(QeObjectType type) {
+	
+	const char* out=nullptr;
+	switch (type) {
+	case eObject_Point:
+		out = "points";
+		break;
+	case eObject_Camera:
+		out = "cameras";
+		break;
+	case eObject_Light:
+		out = "lights";
+		break;
+	case eObject_Line:
+		out = "lines";
+		break;
+	case eObject_Billboard:
+		out = "billboards";
+		break;
+	case eObject_Cubemap:
+		out = "cubemaps";
+		break;
+	case eObject_Particle:
+		out = "particles";
+		break;
+	case eObject_Model:
+		out = "models";
+		break;
+	case eObject_Scene:
+		out = "scenes";
+		break;
+	}
+	return out;
+}
+
+
+QeAssetXML* QeAsset::getXMLEditNode(QeObjectType type, int eid) {
+	
+	const char* cType = getEditType(type);
+
+	if (!cType || strlen(cType) == 0) return nullptr;
+	QeAssetXML* node = getXMLNode( 2, CONFIG, cType);
+
+	if (node != nullptr && node->nexts.size() > 0) {
+		for (int index = 0; index < node->nexts.size(); ++index) {
+			int _eid=0;
+			AST->getXMLiValue(&_eid, node->nexts[index], 1, "eid");
+			if (_eid == eid) return node->nexts[index];
+		}
+	}
+	return nullptr;
+}
+
+
 bool QeAsset::getXMLbValue(bool* output, QeAssetXML* source, int length, ...) {
 
 	va_list keys;
@@ -987,23 +1041,25 @@ VkShaderModule QeAsset::getShader(const char* _filename) {
 	return shader;
 }
 
-QeAssetParticleRule* QeAsset::getParticle(const char* id) {
+QeAssetParticleRule* QeAsset::getParticle(int _eid) {
 
-	std::map<std::string, QeAssetParticleRule*>::iterator it = astParticles.find(id);
+	std::map<int, QeAssetParticleRule*>::iterator it = astParticles.find(_eid);
 	if (it != astParticles.end())	return it->second;
 
 	QeAssetXML* node = getXMLNode(2, AST->CONFIG, "particles");
 	if (node != nullptr && node->nexts.size() > 0) {
 		for (int index = 0; index < node->nexts.size(); ++index) {
-			if (strcmp(AST->getXMLValue(node->nexts[index], 1, "id"), id) == 0) {
+			int _eid1 = 0;
+			AST->getXMLiValue(&_eid1, node->nexts[index], 1, "eid");
+			if (_eid == _eid) {
 				QeAssetParticleRule* particle = ENCODE->decodeParticle(node->nexts[index]);
-				astParticles[std::string(id)] = particle;
+				astParticles[_eid] = particle;
 				return particle;
 			}
 		}
 	}
 	QeAssetParticleRule* particle = ENCODE->decodeParticle(node);
-	astParticles[std::string(id)] = particle;
+	astParticles[_eid] = particle;
 	return nullptr;
 }
 
@@ -1033,7 +1089,7 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 	return rtn.append(_filename);
 }
 
-void QeAsset::setShader(QeAssetShader& shader, QeAssetXML* shaderData, QeAssetXML* defaultShader) {
+void QeAsset::setGraphicsShader(QeAssetShader& shader, QeAssetXML* shaderData, const char* defaultShaderType) {
 
 	const char* c = nullptr;
 
@@ -1050,25 +1106,27 @@ void QeAsset::setShader(QeAssetShader& shader, QeAssetXML* shaderData, QeAssetXM
 		if (c != nullptr) shader.frag = getShader(c);
 	}
 
-	if (defaultShader) {
+	if (defaultShaderType && strlen(defaultShaderType)) {
+
+		QeAssetXML * node = getXMLNode(4, CONFIG, "default", "graphicsShader", defaultShaderType);
 		if (shader.vert == nullptr) {
-			c = getXMLValue(defaultShader, 1, "vert");
+			c = getXMLValue(node, 1, "vert");
 			if (c != nullptr) shader.vert = getShader(c);
 		}
 		if (shader.tesc == nullptr) {
-			c = getXMLValue(defaultShader, 1, "tesc");
+			c = getXMLValue(node, 1, "tesc");
 			if (c != nullptr) shader.tesc = getShader(c);
 		}
 		if (shader.tese == nullptr) {
-			c = getXMLValue(defaultShader, 1, "tese");
+			c = getXMLValue(node, 1, "tese");
 			if (c != nullptr) shader.tese = getShader(c);
 		}
 		if (shader.geom == nullptr) {
-			c = getXMLValue(defaultShader, 1, "geom");
+			c = getXMLValue(node, 1, "geom");
 			if (c != nullptr) shader.geom = getShader(c);
 		}
 		if (shader.frag == nullptr) {
-			c = getXMLValue(defaultShader, 1, "frag");
+			c = getXMLValue(node, 1, "frag");
 			if (c != nullptr) shader.frag = getShader(c);
 		}
 	}

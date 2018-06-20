@@ -1,28 +1,24 @@
 #include "qeheader.h"
 
 
-void QeBillboard::init(QeAssetXML* _property) {
+void QeBillboard::init(QeAssetXML* _property, int _parentOID) {
 
-	initProperty = _property;
+	QePoint::init(_property, _parentOID);
+	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"));
 
-	//modelData = AST->getModel("point");
-	pMaterial = AST->getMaterialImage(AST->getXMLValue(initProperty, 1, "image"));
-
-	AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "billboard"));
-	
-	setProperty();
+	AST->setGraphicsShader(mtlData->shader, editProperty, "billboard");
 }
 
 QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
+	descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
 	return descriptorSetData;
 }
 
 void QeBillboard::createPipeline() {
-	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, eGraphicsPipeLine_Point, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&mtlData->shader, eGraphicsPipeLine_Point, bAlpha);
 }
 
 void QeBillboard::setMatModel() {
@@ -30,15 +26,23 @@ void QeBillboard::setMatModel() {
 	//type = eBillboardFaceAndSize;
 	QeMatrix4x4f mat;
 	mat *= MATH->translate(pos);
-	//size = { 3,3,3 };
 	mat *= MATH->scale(size);
 
 	bufferData.model = mat;
 	bufferData.param.x = float(type);
-}
 
-//void QeBillboard::updateRender(float time) { updateUniformBuffer(); }
-//void QeBillboard::updateCompute(float time) {}
+	if (parentOID) {
+		QePoint* p = OBJMGR->getObject(parentOID);
+		if (p)	bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
+
+		if (bFollowColor) {
+			if (p->objectType == eObject_Light) {
+				QeLight * light = (QeLight*)p;
+				mtlData->value.baseColor = light->bufferData.color;
+			}
+		}  
+	}
+}
 
 void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 

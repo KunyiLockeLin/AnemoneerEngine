@@ -21,7 +21,7 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
-	AST->setShader(shader, AST->getXMLNode(initProperty, 1, "postprocessing"), AST->getXMLNode(3, AST->CONFIG, "defaultShader", "postprocessing"));
+	AST->setGraphicsShader(shader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing" );
 	VK->createDescriptorSet(postprocessingDescriptorSet);
 	VK->createSyncObjects(imageAvailableSemaphores, renderFinishedSemaphores, inFlightFences);
 }
@@ -79,7 +79,7 @@ void QeGraphics::updateViewport() {
 		viewports[i]->scissor.offset.x = int(viewports[i]->viewport.x);
 		viewports[i]->scissor.offset.y = int(viewports[i]->viewport.y);
 		viewports[i]->camera->faspect = viewports[i]->viewport.width / viewports[i]->viewport.height;
-		viewports[i]->camera->bUpdateBuffer = true;
+		viewports[i]->camera->bUpdate = true;
 	}
 }
 
@@ -110,14 +110,13 @@ void QeGraphics::addNewViewport() {
 		data.lightsBuffer = viewports[size]->lightsBuffer.buffer;
 	}
 
-	QeAssetXML*node = AST->getXMLNode(initProperty, 1, "cameras");
-	if (node == nullptr || node->nexts.size() == 0) {
-		node = AST->getXMLNode(2, AST->CONFIG, "defaultCamera");
-	}
-	else node = node->nexts[0];
+	QeAssetXML* node = AST->getXMLNode(initProperty, 1, "cameras");
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "cameras");
+	node = node->nexts[0];
 
-	uint16_t id = atoi(AST->getXMLValue(node, 1, "id"));
-	viewports[size]->camera = OBJMGR->getCamera(id+ int(viewports.size()), node);
+	int oid = 0;
+	AST->getXMLiValue(&oid, node, 1, "oid");
+	viewports[size]->camera = (QeCamera*)OBJMGR->getObject(oid+ int(viewports.size()), node);
 
 	VK->createBuffer(viewports[size]->environmentBuffer, sizeof(viewports[size]->environmentData), nullptr);
 	data.environmentBuffer = viewports[size]->environmentBuffer.buffer;
@@ -145,8 +144,8 @@ void QeGraphics::updateBuffer() {
 	bool b = false;
 	size_t size = viewports.size();
 	for (size_t i = 0; i<size ;++i) {
-		if (viewports[i]->camera->bUpdateBuffer) {
-			viewports[i]->camera->bUpdateBuffer = false;
+		if (viewports[i]->camera->bUpdate) {
+			viewports[i]->camera->bUpdate = false;
 
 			viewports[i]->environmentData.ambientColor = ACT->ambientColor;
 			viewports[i]->environmentData.camera = viewports[i]->camera->bufferData;
@@ -156,7 +155,7 @@ void QeGraphics::updateBuffer() {
 		}
 		size_t size1 = viewports[i]->lights.size();
 		for (size_t j = 0; j<size1 ; ++j) {
-			if (viewports[i]->lights[j]->bUpdateBuffer) {
+			if (viewports[i]->lights[j]->bUpdate) {
 				b = true;
 				std::vector<QeDataLight> data;
 				data.resize(size1);
@@ -173,7 +172,7 @@ void QeGraphics::updateBuffer() {
 		for (size_t i = 0; i < size; ++i) {
 			size_t size1 = viewports[i]->lights.size();
 			for (size_t j = 0; j < size1; ++j) {
-				viewports[i]->lights[j]->bUpdateBuffer = false;
+				viewports[i]->lights[j]->bUpdate = false;
 			}
 		}
 	}

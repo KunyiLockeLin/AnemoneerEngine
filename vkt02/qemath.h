@@ -53,6 +53,7 @@ struct QeVector3f {
 	QeVector3f& operator=(const QeVector4f& other);
 	QeVector3f& operator+=(const QeVector3f& other);
 	QeVector3f& operator-=(const QeVector3f& other);
+	QeVector3f& operator*=(const QeVector3f& other);
 	QeVector3f& operator-=(const float& other);
 	QeVector3f& operator/=(const float& other);
 	QeVector3f& operator*=(const float& other);

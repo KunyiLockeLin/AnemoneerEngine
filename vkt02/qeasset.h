@@ -174,7 +174,7 @@ public:
 	std::map<std::string, QeAssetMaterial*> astMaterials;
 	std::map<std::string, VkShaderModule> astShaders;
 	std::map<std::string, QeVKImage*> astTextures;
-	std::map<std::string, QeAssetParticleRule*> astParticles;
+	std::map<int, QeAssetParticleRule*> astParticles;
 
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset();
@@ -196,6 +196,8 @@ public:
 	bool getJSONiValue(int* output, QeAssetJSON* source, int length, ...);
 	bool getJSONfValue(float* output, QeAssetJSON* source, int length, ...);
 
+	const char* getEditType(QeObjectType type);
+
 	QeAssetXML* getXML(const char* _filePath);
 	const char* getXMLValue(int length, ...);
 	const char* getXMLValue(QeAssetXML* source, int length, ...);
@@ -203,6 +205,7 @@ public:
 	QeAssetXML* getXMLNode(int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
+	QeAssetXML* getXMLEditNode(QeObjectType type, int eid);
 	bool getXMLbValue(bool* output, QeAssetXML* source, int length, ...);
 	bool getXMLiValue(int* output, QeAssetXML* source, int length, ...);
 	bool getXMLfValue(float* output, QeAssetXML* source, int length, ...);
@@ -212,11 +215,11 @@ public:
 	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
 	QeVKImage* getImage(const char* _filename, bool bCubeMap=false);
 	VkShaderModule getShader(const char* _filename);
-	QeAssetParticleRule* getParticle(const char* _filename);
+	QeAssetParticleRule* getParticle(int eid);
 
 	std::vector<char> loadFile(const char* _filePath);
 	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
 
-	void setShader( QeAssetShader& shader, QeAssetXML* shaderData, QeAssetXML* defaultShader);
+	void setGraphicsShader( QeAssetShader& shader, QeAssetXML* shaderData, const char* defaultShaderType);
 };

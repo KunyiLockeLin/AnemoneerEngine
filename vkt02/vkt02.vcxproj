@@ -164,11 +164,11 @@
   <ItemGroup>
     <ClCompile Include="qeactivity.cpp" />
     <ClCompile Include="qeasset.cpp" />
-    <ClCompile Include="qebase.cpp" />
+    <ClCompile Include="qepoint.cpp" />
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
     <ClCompile Include="qecommand.cpp" />
-    <ClCompile Include="qecube.cpp" />
+    <ClCompile Include="qecubemap.cpp" />
     <ClCompile Include="qeline.cpp" />
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
@@ -188,11 +188,11 @@
   <ItemGroup>
     <ClInclude Include="qeactivity.h" />
     <ClInclude Include="qeasset.h" />
-    <ClInclude Include="qebase.h" />
+    <ClInclude Include="qepoint.h" />
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />
     <ClInclude Include="qecommand.h" />
-    <ClInclude Include="qecube.h" />
+    <ClInclude Include="qecubemap.h" />
     <ClInclude Include="qeline.h" />
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />

@@ -1,14 +1,20 @@
 #pragma once
 #include "qeheader.h"
 
+enum QeLineType {
+	eLine_default=0,
+	eLine_axis =1,
+	eLine_grids = 2,
+};
+
 class QeLine : public QeModel
 {
 public:
 
-	QeLine(QeObjectMangerKey& _key) :QeModel(_key, eModel_Line) {}
+	QeLine(QeObjectMangerKey& _key, QeObjectType _type = eObject_Line ):QeModel(_key, _type) {}
 	
-	std::string lineType;
-	virtual void init(QeAssetXML* _property);
+	QeLineType lineType;
+	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
 	virtual void createPipeline();
 	virtual void setMatModel();

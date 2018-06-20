@@ -1,23 +1,14 @@
 #include "qeheader.h"
 
-void QeParticle::init(QeAssetXML* _property) {
+void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 	
-	initProperty = _property;
+	QePoint::init(_property,  _parentOID);
 
-	AST->getXMLiValue(&id, initProperty, 1, "paritcleid");
-
-	AST->getXMLiValue(&eid, initProperty, 1, "paritcleEid");
+	particleRule = AST->getParticle(eid);
+	mtlData = AST->getMaterialImage(particleRule->image);
 	
-	particleRule = AST->getParticle(toString(eid).c_str());
-
-	AST->getXMLbValue(&bFollow, initProperty, 1, "paritclefollow");
-
-	pMaterial = AST->getMaterialImage(particleRule->image);
-	
-	computeShader = AST->getShader(AST->getXMLValue(3, AST->CONFIG, "computeShader", "particle"));
-	AST->setShader(shader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "particle"));
-
-	setProperty();
+	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "default", "computeShader", "particle"));
+	AST->setGraphicsShader(shader, nullptr, "particle");
 
 	// count
 	particlesSize = MATH->iRandom(int(particleRule->count_life.x), int(particleRule->count_life.y));
@@ -94,21 +85,16 @@ void QeParticle::init(QeAssetXML* _property) {
 	size.z = 1;
 
 	bufferData.material.baseColor = particles[0].color;
-	bufferData.param.y = float(bFollow + 1);
 
 	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
-	AST->getXMLiValue(&attachID, initProperty, 1, "id");
-	const char* c = AST->getXMLValue(initProperty, 1, "attachskeleton");
-	if (c) attachSkeletonName = std::string(c);
-	pos = { 0,0,0 };
 }
 
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
+	descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
 	descriptorSetData.texelBufferView = vertexBuffer.view;
 	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
 	return descriptorSetData;
@@ -147,6 +133,7 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 void QeParticle::updateCompute(float time) {
 
+	if (particlesSize == 0) return;
 	if (particleRule->alpha_born_size_x.y == 0) {
 		memcpy(bDeaths.data(), outBuffer.mapped, sizeof(bDeaths[0])*bDeaths.size());
 		memcpy(particles.data(), vertexBuffer.mapped, sizeof(particles[0])*particles.size());
@@ -184,21 +171,14 @@ void QeParticle::setMatModel() {
 
 	bufferData.model = mat;
 
-	if (attachID > 0) {
-		QeBase* base = OBJMGR->getPoint(attachID, nullptr);
-		if (base) {
-			bufferData.model._30 += base->pos.x;
-			bufferData.model._31 += base->pos.y;
-			bufferData.model._32 += base->pos.z;
-		}
-		else {
-			QeModel* model = OBJMGR->getModel(attachID, nullptr);
-			if (model != nullptr) {
-				QeMatrix4x4f mat = model->getAttachMatrix(attachSkeletonName.c_str());
-				bufferData.model._30 += mat._30;
-				bufferData.model._31 += mat._31;
-				bufferData.model._32 += mat._32;
-			}
+	if (parentOID > 0) {
+		QePoint* p = OBJMGR->getObject(parentOID);
+		if (p) {
+			//QeMatrix4x4f mat = p->getAttachMatrix(attachSkeletonName.c_str());
+			//bufferData.model._30 += mat._30;
+			//bufferData.model._31 += mat._31;
+			//bufferData.model._32 += mat._32;
+			bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
 		}
 	}
 }

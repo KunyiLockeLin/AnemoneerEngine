@@ -14,25 +14,20 @@ struct QeDataLight {
 	QeVector4f param; // 1: type, 2: intensity, 3: coneAngle
 };
 
-class QeLight:public QeBase
+class QeLight:public QePoint
 {
 public:
-	QeLight(QeObjectMangerKey& _key):QeBase(_key) {}
-	~QeLight() {}
+	QeLight(QeObjectMangerKey& _key, QeObjectType _type = eObject_Light) :QePoint(_key, _type) {}
+	//~QeLight() {}
 
-	bool bShow = false;
-	float speed = 0.0f;
+	float speed;
 	QeVector3f rotateCenter;
 
 	QeDataLight bufferData;
-	//VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+	bool bUpdate;
 
-	bool bUpdateBuffer = true;
-
-	void init(QeAssetXML* _property);
-	void updateRender(float time);
-	void updateCompute(float time);
-
-	QeBillboard* billboard = nullptr;
+	virtual void setProperty();
+	virtual void updateCompute(float time);
+	virtual void updateRender(float time);
 };
 

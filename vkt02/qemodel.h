@@ -4,18 +4,10 @@
 
 
 struct QeDataModel {
-	QeMatrix4x4f model;
-	QeMatrix4x4f joints[MAX_JOINT_NUM];
-	QeVector4f	param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none)
-	QeDataMaterial material;
-};
-
-enum QeModelType {
-	eModel_Model = 0,
-	eModel_Billboard = 1,
-	eModel_Line = 2,
-	eModel_Cube = 3,
-	eModel_Particle = 4,
+	QeMatrix4x4f	model;
+	QeMatrix4x4f	joints[MAX_JOINT_NUM];
+	QeVector4f		param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none)
+	QeDataMaterial	material;
 };
 
 enum QeActionType {
@@ -32,8 +24,8 @@ enum QeActionState {
 
 /*struct QeDataModelViewport {
 	QeMatrix4x4f normal;
-};*/
-
+};
+*/
 struct QeDataModelShader {
 	//QeDataModelViewport data;
 	//QeVKBuffer buffer;
@@ -42,38 +34,34 @@ struct QeDataModelShader {
 	QeDataModelShader():/*buffer(eBuffer_uniform),*/ descriptorSet(eDescriptorSetLayout_Model) {}
 };
 
-class QeModel:public QeBase
+
+class QeModel:public QePoint
 {
 public:
 
-	QeModel(QeObjectMangerKey& _key, QeModelType _type = eModel_Model) :QeBase(_key), modelType(_type), modelBuffer(eBuffer_uniform){}
-	~QeModel();
+	QeModel(QeObjectMangerKey& _key, QeObjectType _type = eObject_Model):QePoint(_key, _type), modelBuffer(eBuffer_uniform){}
+	//~QeModel(){}
 
-	int eid;
-	QeModelType modelType = eModel_Model;
-	QeActionState	actionState = eActionStateStop;
-	QeActionType	actionType = eActionTypeOnce;
-	int				currentActionID = 0;
-	int				currentActionFrame = 0;
-	float			currentActionTime = 0.f;
+	QeActionState	actionState;
+	QeActionType	actionType;
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
-	float actionSpeed = 0.f;
+	int				currentActionID;
+	int				currentActionFrame;
+	float			currentActionTime;
+	float			actionSpeed;
 
-	//QePipelineType pipelineType;
-	float face = 0.f;
-	float up = 0.f;
 	QeVector3f size;
-	int speed = 0;
-	bool bShow = true;
-	bool bCullingShow = true;
-	int cullingDistance = 0;
-	int attachID = 0;
-	int cubeMapID = 0;
-	std::string attachSkeletonName;
-	bool bAlpha = false;
+	float face;
+	float up;
+	int speed;
+	bool bShow;
+	bool bCullingShow;
+	int cullingDistance;
+	int cubemapOID;
+	bool bAlpha;
 
 	QeAssetModel* modelData = nullptr;
-	QeAssetMaterial* pMaterial = nullptr;
+	QeAssetMaterial* mtlData = nullptr;
 	VkShaderModule computeShader = VK_NULL_HANDLE;
 
 	QeDataModel bufferData;
@@ -86,14 +74,15 @@ public:
 
 	QeAssetShader normalShader;
 
+	virtual void init(QeAssetXML* _property, int _parentOID);
+	virtual void setProperty();
+	
 	void setShow(bool b);
 	void updateBuffer();
 	virtual void updateShowByCulling();
-	virtual void updateRender(float time);
+	//virtual void updateRender(float time) {}
 	virtual void updateCompute(float time);
 
-	virtual void init(QeAssetXML* _property);
-	virtual void setProperty();
 	void setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size);
 	void move(QeVector3f& _pos);
 	void setPosition(QeVector3f& _pos);
@@ -104,7 +93,6 @@ public:
 	void enlarge(QeVector3f& _size);
 	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
-	void cleanupPipeline();
 	void updateShaderData();
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
 	virtual void createPipeline();

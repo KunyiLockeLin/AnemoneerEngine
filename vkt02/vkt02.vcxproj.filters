@@ -69,19 +69,19 @@
     <ClCompile Include="qetimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qecube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qeparticle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qebase.cpp">
+    <ClCompile Include="qegraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qegraphics.cpp">
+    <ClCompile Include="qepoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qecubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,19 +137,19 @@
     <ClInclude Include="qetimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qecube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="qeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeparticle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qebase.h">
+    <ClInclude Include="qegraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qegraphics.h">
+    <ClInclude Include="qepoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qecubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

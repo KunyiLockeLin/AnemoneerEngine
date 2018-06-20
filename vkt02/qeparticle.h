@@ -6,8 +6,9 @@ class QeParticle : public QeModel
 {
 public:
 
-	QeParticle(QeObjectMangerKey& _key) :QeModel(_key, eModel_Particle), vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
-	~QeParticle() {}
+	QeParticle(QeObjectMangerKey& _key, QeObjectType _type = eObject_Particle) :QeModel(_key, _type), 
+				vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
+	//~QeParticle() {}
 
 	QeAssetShader shader;
 	QeAssetParticleRule* particleRule;
@@ -17,9 +18,7 @@ public:
 	QeVKBuffer vertexBuffer;
 	QeVKBuffer outBuffer;
 
-	bool bFollow=true;
-	
-	virtual void init(QeAssetXML* _property);
+	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
 	virtual void createPipeline();
 	virtual void setMatModel();

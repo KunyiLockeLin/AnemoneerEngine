@@ -1,26 +1,5 @@
 #include "qeheader.h"
 
-QeModel::~QeModel() {
-	cleanupPipeline();
-}
-
-void QeModel::cleanupPipeline() {
-	graphicsPipeline = VK_NULL_HANDLE;
-	normalPipeline = VK_NULL_HANDLE;
-
-	/*if (graphicsPipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(VK->device, graphicsPipeline, nullptr);
-		graphicsPipeline = VK_NULL_HANDLE;
-	}
-	if (normalPipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(VK->device, normalPipeline, nullptr);
-		normalPipeline = VK_NULL_HANDLE;
-	}*/
-	if (computePipeline != VK_NULL_HANDLE) {
-		vkDestroyPipeline(VK->device, computePipeline, nullptr);
-		computePipeline = VK_NULL_HANDLE;
-	}
-}
 
 void QeModel::updateShaderData() {
 	size_t size = VP->viewports.size();
@@ -46,18 +25,19 @@ void QeModel::updateShaderData() {
 QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageViews = pMaterial->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSamplers = pMaterial->image.pBaseColorMap->sampler;
-	descriptorSetData.normalMapImageViews = pMaterial->image.pNormalMap->view;
-	descriptorSetData.normalMapSamplers = pMaterial->image.pNormalMap->sampler;
+	descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
+	descriptorSetData.normalMapImageViews = mtlData->image.pNormalMap->view;
+	descriptorSetData.normalMapSamplers = mtlData->image.pNormalMap->sampler;
 	//descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
 
 	bufferData.param.x = 0;
-	if (cubeMapID > 0) {
-		QeModel* model = OBJMGR->getCube(cubeMapID, nullptr);
-		if (model != nullptr) {
-			descriptorSetData.cubeMapImageViews = model->pMaterial->image.pCubeMap->view;
-			descriptorSetData.cubeMapSamplers = model->pMaterial->image.pCubeMap->sampler;
+	if (cubemapOID > 0) {
+		QePoint* p = OBJMGR->getObject(cubemapOID);
+		if (p && p->objectType == eObject_Cubemap) {
+			QeCubemap * cube = (QeCubemap*)p;
+			descriptorSetData.cubeMapImageViews = cube->mtlData->image.pCubeMap->view;
+			descriptorSetData.cubeMapSamplers = cube->mtlData->image.pCubeMap->sampler;
 			bufferData.param.x = 1;
 		}
 	}
@@ -66,7 +46,7 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 
 void QeModel::createPipeline() {
 
-	graphicsPipeline = VK->createGraphicsPipeline(&pMaterial->shader, eGraphicsPipeLine_Triangle, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&mtlData->shader, eGraphicsPipeLine_Triangle, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
 		normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point);
@@ -135,124 +115,95 @@ void QeModel::setMatModel() {
 	
 	bufferData.model = mat;
 
-	if (attachID > 0) {
-		QeBase* base = OBJMGR->getPoint(attachID, nullptr);
-		if (base) {
-			bufferData.model._30 += base->pos.x;
-			bufferData.model._31 += base->pos.y;
-			bufferData.model._32 += base->pos.z;
-		}
-		else {
-			QeModel* model = OBJMGR->getModel(attachID, nullptr);
-			if (model != nullptr) {
-				bufferData.model = model->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
-			}
-		}
+	if (parentOID) {
+		QePoint* p = OBJMGR->getObject(parentOID);
+		if (p)	bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
 	}
 }
 
 QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
 
-	if (attachSkeletonName == nullptr || strlen(attachSkeletonName)==0)	return bufferData.model;
+	if (!attachSkeletonName || !strlen(attachSkeletonName))	return bufferData.model;
 
 	size_t size = modelData->jointsAnimation.size();
-	if( size == 0 ) return bufferData.model;
+	if( !size ) return bufferData.model;
 
-	size_t i;
-	for (i = 0; i<size ;++i ) {
-		if ( strcmp(attachSkeletonName, modelData->jointsAnimation[i].name) == 0) break;
+	for (size_t i = 0; i<size ;++i ) {
+		if (!strcmp(attachSkeletonName, modelData->jointsAnimation[i].name))
+				return bufferData.model*joints[i];
 	}
-
-	if (i == size) return bufferData.model;
-
-	return bufferData.model*joints[i];
+	return bufferData.model;
 }
 
+void QeModel::init(QeAssetXML* _property, int _parentOID) {
 
-void QeModel::init(QeAssetXML* _property) {
-
-	initProperty = _property;
-
-	const char* c = AST->getXMLValue(_property, 1, "obj");
+	QePoint::init(_property, _parentOID);
+	
+	const char* c = AST->getXMLValue(editProperty, 1, "obj");
 	modelData = AST->getModel(c);
-	pMaterial = modelData->pMaterial;
+	mtlData = modelData->pMaterial;
+	size *= modelData->scale;
 
-	if (modelData->animationNum > 0)
-		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "Action"));
-	else //if (pMaterial->type == eMaterialPBR)
-		AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "model"));
-	//else
-		//AST->setShader(pMaterial->shader, initProperty, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "obj"));
+	setAction(currentActionID, actionType);
+	updateAction(0);
 
-	AST->setShader(normalShader, nullptr, AST->getXMLNode(3, AST->CONFIG, "defaultShader", "normal"));
-
-	setProperty();
+	if (modelData->animationNum)
+		AST->setGraphicsShader(mtlData->shader, editProperty, "action");
+	else
+		AST->setGraphicsShader(mtlData->shader, editProperty, "model");
+	
+	AST->setGraphicsShader(normalShader, nullptr, "normal");
 }
 
 void QeModel::setProperty() {
+	QePoint::setProperty();
 
-	pos = { 0, 0, 0 };
 	face = 0.0f;
 	up = 0.0f;
+	cubemapOID = 0;
+	AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");
+	
+	bAlpha = false;
+	AST->getXMLbValue(&bAlpha, editProperty, 1, "alpha");
 
-	if(modelData)	size = modelData->scale;
-	else			size = { 1,1,1 };
-
-	speed = 0;
-	currentActionID = 0;
-	actionType = eActionTypeOnce;
-	actionState = eActionStateStop;
-	attachID = 0;
-	attachSkeletonName = "";
-	actionSpeed = 0;
-	cubeMapID = 0;
-
-	AST->getXMLiValue(&cubeMapID, initProperty, 1, "cubemapid");
-	AST->getXMLbValue(&bAlpha, initProperty, 1, "alpha");
-	AST->getXMLiValue(&id, initProperty, 1, "id");
-	AST->getXMLfValue(&pos.x, initProperty, 1, "posX");
-	AST->getXMLfValue(&pos.y, initProperty, 1, "posY");
-	AST->getXMLfValue(&pos.z, initProperty, 1, "posZ");
+	size = { 1.0f ,1.0f ,1.0f };
 	AST->getXMLfValue(&size.x, initProperty, 1, "scaleX");
 	AST->getXMLfValue(&size.y, initProperty, 1, "scaleY");
 	AST->getXMLfValue(&size.z, initProperty, 1, "scaleZ");
+
+	speed = 0;
 	AST->getXMLiValue(&speed, initProperty, 1, "speed");
+
+	bShow = true;
 	AST->getXMLbValue(&bShow, initProperty, 1, "show");
+
+	bCullingShow = false;
+	cullingDistance = 0;
 	AST->getXMLiValue(&cullingDistance, initProperty, 1, "culling");
 
-	if (modelData && modelData->rootJoint) {
-		AST->getXMLfValue(&actionSpeed, initProperty, 1, "actionSpeed");
-		AST->getXMLiValue(&currentActionID, initProperty, 1, "action");
-		AST->getXMLiValue((int*)&actionType, initProperty, 1, "actionType");
-		setAction(currentActionID, actionType);
-		actionPlay();
-		updateAction(0);
+	currentActionFrame = 0;
+	currentActionTime = 0.0f;
 
-		if (!AST->getXMLValue(initProperty, 1, "action")) {
-			actionStop();
-		}
-	}
-
-	AST->getXMLiValue(&attachID, initProperty, 1, "attachid");
-
-	const char* c = AST->getXMLValue(initProperty, 1, "attachskeleton");
-	if(c) attachSkeletonName = std::string(c);
-
-	AST->getXMLiValue(&particleID, initProperty, 1, "paritcleid");
-	if (particleID && modelType != eModel_Particle)	particle = OBJMGR->getParticle(particleID, initProperty);
-
-	bufferData.material = pMaterial->value;
+	actionSpeed = 0;
+	AST->getXMLfValue(&actionSpeed, initProperty, 1, "actionSpeed");
+	
+	actionState = eActionStateStop;
+	AST->getXMLiValue((int*)&actionState, initProperty, 1, "actionState");
+	
+	actionType = eActionTypeOnce;
+	AST->getXMLiValue((int*)&actionType, initProperty, 1, "actionType");
+	
+	currentActionID = 0;
+	AST->getXMLiValue(&currentActionID, initProperty, 1, "action");
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 }
 
 void QeModel::updateCompute(float time) {
 	updateShowByCulling();
-	if (speed != 0)	rotateFace(time*speed);
+	if (speed)	rotateFace(time*speed);
 	updateAction(time);
 	updateBuffer();
-}
-void QeModel::updateRender(float time) {
 }
 
 void QeModel::updateShowByCulling() {
@@ -261,7 +212,7 @@ void QeModel::updateShowByCulling() {
 	bool _bCullingShow = true;
 	float dis = MATH->distance(pos, camera->pos);
 
-	if (cullingDistance>0) {
+	if (cullingDistance) {
 		if (dis > cullingDistance) _bCullingShow = false;
 	}
 	else {
@@ -289,6 +240,7 @@ void QeModel::setShow(bool b) {
 void QeModel::updateBuffer() {
 
 	setMatModel();
+	bufferData.material = mtlData->value;
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 	
 	/*size_t size = shaderData.size();
@@ -325,7 +277,7 @@ void QeModel::actionStop()	{	actionState = eActionStateStop; }
 
 void QeModel::updateAction(float time) {
 
-	if (!modelData || actionState != eActionStatePlay) return;
+	if (!modelData || !modelData->rootJoint || (actionState != eActionStatePlay && time )) return;
 
 	float previousActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
 	float nextActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame + 1];
@@ -416,9 +368,7 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	if (VK->bShowNormal && normalPipeline->graphicsPipeline) {
 		vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-		//vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
 		vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
-		//vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 		vkCmdDraw(drawCommandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}
 }

@@ -329,6 +329,12 @@ QeVector3f& QeVector3f::operator-=(const QeVector3f& other) {
 	z -= other.z;
 	return *this;
 }
+QeVector3f& QeVector3f::operator*=(const QeVector3f& other) {
+	x *= other.x;
+	y *= other.y;
+	z *= other.z;
+	return *this;
+}
 QeVector3f& QeVector3f::operator-=(const float& other) {
 	x -= other;
 	y -= other;

@@ -16,13 +16,13 @@ void QueenEngine::run() {
 	WIN->init();
 	VK->init();
 
-	if(activityName.empty())
-		activityName = AST->getXMLValue(node, 1, "startScene");
+	if(sceneEID ==0)	AST->getXMLiValue(&sceneEID, node, 1, "startScene");
 	
-	QeAssetXML* startActivityNode = AST->getXMLNode(node, 1, activityName.c_str());
-	if (currentActivity) delete currentActivity;
-	currentActivity = new QeActivity(key);
-	currentActivity->init(startActivityNode);
+	node = AST->getXMLEditNode(eObject_Scene, sceneEID);
+	if (activity) delete activity;
+
+	activity = new QeActivity(key);
+	activity->init(node);
 	renderFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS")));
 	computeFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "computeFPS")));
 
