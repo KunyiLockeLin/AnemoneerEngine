@@ -73,14 +73,14 @@
 
     <e eid="28001">
       <models>
-        <e oid="14000" eid="14000" show="1" speed="0" posX="0" posY="-5" posZ="-3" actionState ="1" actionSpeed="0.1" action="0" actionType="2">
+        <e oid="14000" eid="14000" show="1" speed="0" posX="0" posY="-8" posZ="-3" actionState ="1" actionSpeed="0.1" action="0" actionType="2">
           <attach>
             <e oid="13000" eid="13000" show="1" followPos="1" followColor="0" attachskeleton="Armature_Bone_002" />
           </attach>
         </e>
       </models>
       <points>
-        <e oid="25000" posX="0" posY="5" posZ="0">
+        <e oid="25000" posX="0" posY="8" posZ="0">
           <attach>
             <e oid="13001" eid="13000" posX="1" posY="1" posZ="0" show="1" followPos="0" followColor="0"/>
           </attach>
@@ -118,7 +118,7 @@
   
   <particles>
     <e eid="13000" image="light.png" alpha ="1" reborn="1">
-      <count once ="10" total = "100" range="0"/>
+      <count once ="3" period="1000" total = "100" range="0"/>
       <life second="1" range="10"/>
       <init_pos length="0" length_range="1" width="0" width_range="1" height="" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
       <init_speed x="-0.1" x_range="0.5" y="-0.1" y_range="0.5" z="1" z_range="0.5"/>

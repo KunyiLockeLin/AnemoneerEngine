@@ -724,6 +724,7 @@ QeAssetParticleRule* QeEncode::decodeParticle(QeAssetXML* node) {
 	AST->getXMLbValue(&particle->bAlpha, node, 1, "alpha");
 	AST->getXMLbValue(&particle->bReborn, node, 1, "reborn");
 	AST->getXMLiValue(&particle->count_once, node, 2, "count", "once");
+	AST->getXMLiValue(&particle->count_period, node, 2, "count", "period");
 	AST->getXMLiValue(&particle->count_total, node, 2, "count", "total");
 	AST->getXMLiValue(&particle->count_range, node, 2, "count", "range");
 	AST->getXMLiValue(&particle->life_scend, node, 2, "life", "second");

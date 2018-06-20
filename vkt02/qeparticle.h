@@ -12,11 +12,13 @@ public:
 
 	QeAssetShader shader;
 	QeAssetParticleRule* particleRule;
-	uint32_t particlesSize;
+	int  totalParticlesSize;
+	int  currentParticlesSize;
 	std::vector<QeVertex> particles;
 	std::vector<int> bDeaths;
 	QeVKBuffer vertexBuffer;
 	QeVKBuffer outBuffer;
+	QeTimer periodTimer;
 
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);

@@ -127,7 +127,7 @@ struct QeAssetParticleRule {
 
 	const char* image = nullptr;
 	bool bAlpha, bReborn;
-	int count_once, count_total, count_range;
+	int count_once, count_period, count_total, count_range;
 	int life_scend, life_range;
 	QeVector3f init_pos_square; // length, width, height 
 	QeVector3f init_pos_square_range; // length, width, height 

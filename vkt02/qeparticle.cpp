@@ -11,12 +11,14 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 	AST->setGraphicsShader(shader, nullptr, "particle");
 
 	// count
-	particlesSize = MATH->iRandom(int(particleRule->count_total), int(particleRule->count_range));
-	particles.resize(particlesSize);
-	bDeaths.resize(particlesSize);
+	totalParticlesSize = MATH->iRandom(particleRule->count_total, particleRule->count_range);
+	currentParticlesSize = 0;// particleRule->count_once;
+	periodTimer.setTimer(particleRule->count_period);
+	particles.resize(totalParticlesSize);
+	bDeaths.resize(totalParticlesSize);
 	memset( bDeaths.data(), 0, sizeof(bDeaths[0])*bDeaths.size());
 
-	for (uint32_t i = 0; i < particlesSize; ++i) {
+	for (int i = 0; i < totalParticlesSize; ++i) {
 
 		// pos
 		particles[i].pos.z = MATH->fRandom(particleRule->init_pos_square.z, particleRule->init_pos_square_range.z)*(MATH->iRandom(0, 1) ? 1 : -1);
@@ -55,7 +57,7 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 		particles[i].normal.z = MATH->fRandom(particleRule->init_speed.z, particleRule->init_speed_range.z);
 
 		// life time
-		particles[i].normal.w = MATH->fRandom(particleRule->life_scend, particleRule->life_range);
+		particles[i].normal.w = float(MATH->iRandom(particleRule->life_scend, particleRule->life_range));
 
 		// init speed & life time = joint
 		particles[i].joint = particles[i].normal;
@@ -105,25 +107,25 @@ QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 
 void QeParticle::createPipeline() {
 
-	if (particlesSize == 0) return;
+	if (!totalParticlesSize) return;
 	graphicsPipeline = VK->createGraphicsPipeline(&shader, eGraphicsPipeLine_Point, bAlpha );
 	computePipeline = VK->createComputePipeline(computeShader);
 }
 
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
 
-	if (particlesSize == 0) return;
+	if (!currentParticlesSize) return;
 	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
 	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	vkCmdDispatch(computeCommandBuffer, particlesSize, 1, 1);
+	vkCmdDispatch(computeCommandBuffer, currentParticlesSize, 1, 1);
 }
 
 void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 
 	//if (!bShow || !bCullingShow) return;
-	if (particlesSize == 0) return;
+	if (!currentParticlesSize) return;
 
 	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(VP->currentCommandViewport);
 	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
@@ -131,12 +133,21 @@ void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
 	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
-	vkCmdDraw(drawCommandBuffer, particlesSize, 1, 0, 0);
+	vkCmdDraw(drawCommandBuffer, currentParticlesSize, 1, 0, 0);
 }
 
 void QeParticle::updateCompute(float time) {
 
-	if (!particlesSize) return;
+	if (!totalParticlesSize) return;
+
+	int passMilliSecond;
+	
+	if (periodTimer.checkTimer(passMilliSecond)) {
+		currentParticlesSize += particleRule->count_once;
+		if (currentParticlesSize > totalParticlesSize) currentParticlesSize = totalParticlesSize;
+		VP->bUpdateDrawCommandBuffers = true;
+	}
+
 	if (!particleRule->bReborn) {
 		memcpy(bDeaths.data(), outBuffer.mapped, sizeof(bDeaths[0])*bDeaths.size());
 		memcpy(particles.data(), vertexBuffer.mapped, sizeof(particles[0])*particles.size());
@@ -154,7 +165,8 @@ void QeParticle::updateCompute(float time) {
 		}
 
 		if (b) {
-			particlesSize = uint32_t(particles.size());
+			totalParticlesSize = int(particles.size());
+			if (currentParticlesSize > totalParticlesSize) currentParticlesSize = totalParticlesSize;
 			VK->setMemoryBuffer(vertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
 			VK->setMemoryBuffer(outBuffer, sizeof(bDeaths[0])*bDeaths.size(), bDeaths.data());
 			VP->bUpdateDrawCommandBuffers = true;
@@ -165,7 +177,7 @@ void QeParticle::updateCompute(float time) {
 
 void QeParticle::setMatModel() {
 
-	if (particlesSize == 0) return;
+	if (currentParticlesSize == 0) return;
 
 	QeMatrix4x4f mat;
 
