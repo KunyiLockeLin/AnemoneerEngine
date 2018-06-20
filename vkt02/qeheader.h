@@ -57,9 +57,7 @@ const int MAX_DESCRIPTOR_STORAG_NUM = UINT8_MAX;
 const int MAX_DESCRIPTOR_NUM = UINT8_MAX;
 const int MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
-const float GRIDS_SIZE = 1.0f;
 const int GRIDS_NUM = 10;
-const int AXIS_SIZE = 1;
 
 struct QeVKBuffer;
 struct QeVKImageBuffer;
@@ -77,7 +75,7 @@ struct QeDataMaterial;
 struct QeDataMaterialPhong;
 struct QeDataMaterialPBR;
 struct QeAssetImage;
-struct QeAssetShader;
+struct QeAssetGraphicsShader;
 struct QeUniformBufferObject;
 struct QeDataLight;
 struct QeHuffmanTree;

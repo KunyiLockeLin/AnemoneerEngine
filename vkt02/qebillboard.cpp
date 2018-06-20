@@ -5,8 +5,8 @@ void QeBillboard::init(QeAssetXML* _property, int _parentOID) {
 
 	QePoint::init(_property, _parentOID);
 	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"));
-
-	AST->setGraphicsShader(mtlData->shader, editProperty, "billboard");
+	bufferData.material = mtlData->value;
+	AST->setGraphicsShader(graphicsShader, editProperty, "billboard");
 }
 
 QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel(int index) {
@@ -15,33 +15,6 @@ QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel(int index) {
 	descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
 	return descriptorSetData;
-}
-
-void QeBillboard::createPipeline() {
-	graphicsPipeline = VK->createGraphicsPipeline(&mtlData->shader, eGraphicsPipeLine_Point, bAlpha);
-}
-
-void QeBillboard::setMatModel() {
-	
-	//type = eBillboardFaceAndSize;
-	QeMatrix4x4f mat;
-	mat *= MATH->translate(pos);
-	mat *= MATH->scale(size);
-
-	bufferData.model = mat;
-	bufferData.param.x = float(type);
-
-	if (parentOID) {
-		QePoint* p = OBJMGR->getObject(parentOID);
-		if (p)	bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
-
-		if (bFollowColor) {
-			if (p->objectType == eObject_Light) {
-				QeLight * light = (QeLight*)p;
-				mtlData->value.baseColor = light->bufferData.color;
-			}
-		}  
-	}
 }
 
 void QeBillboard::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {

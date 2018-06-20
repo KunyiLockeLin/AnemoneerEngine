@@ -7,8 +7,8 @@ void QeCubemap::init(QeAssetXML* _property, int _parentOID) {
 
 	modelData = AST->getModel("cube", true);
 	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"), true);
-
-	AST->setGraphicsShader(mtlData->shader, editProperty, "cubemap");
+	bufferData.material = mtlData->value;
+	AST->setGraphicsShader(graphicsShader, editProperty, "cubemap");
 }
 
 QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel(int index) {
@@ -17,10 +17,6 @@ QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel(int index) {
 	descriptorSetData.cubeMapImageViews = mtlData->image.pCubeMap->view;
 	descriptorSetData.cubeMapSamplers = mtlData->image.pCubeMap->sampler;
 	return descriptorSetData;
-}
-
-void QeCubemap::createPipeline() {
-	graphicsPipeline = VK->createGraphicsPipeline(&mtlData->shader, eGraphicsPipeLine_Triangle, bAlpha);
 }
 
 void QeCubemap::updateShowByCulling() {

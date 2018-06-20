@@ -25,9 +25,9 @@
 
     <lights>
       <e oid="27000" type="0" posX="5" posY="0" posZ="3" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="300" coneAngle="90" speed="20">
-        <attach>
+        <attachs>
           <e oid="11000" eid="11000" show="1" followPos="1" followColor="1"/>
-        </attach>
+        </attachs>
       </e>
     </lights>
        
@@ -59,9 +59,9 @@
       <terrains/>
       <models>
         <e oid="14000" eid="14000" show="1" speed="50" posX="0" posY="5" posZ="-1" actionState ="1" actionSpeed="1" action="0" actionType="2" >
-          <attach>
-            <e oid="14001" eid="14001" show="1" speed="100" posX="1" posY="1" posZ="0" follow="1" attachskeleton="Armature_Bone_002" />
-          </attach>
+          <attachs>
+            <e oid="14001" eid="14001" show="1" speed="100" follow="1" attachskeleton="Armature_Bone_002" />
+          </attachs>
         </e>
         <e oid="14002" eid="14002" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapOID="12000" culling="1000"/>    
       </models>
@@ -74,24 +74,24 @@
     <e eid="28001">
       <models>
         <e oid="14000" eid="14000" show="1" speed="0" posX="0" posY="-8" posZ="-3" actionState ="1" actionSpeed="0.1" action="0" actionType="2">
-          <attach>
+          <attachs>
             <e oid="13000" eid="13000" show="1" followPos="1" followColor="0" attachskeleton="Armature_Bone_002" />
-          </attach>
+          </attachs>
         </e>
       </models>
       <points>
-        <e oid="25000" posX="0" posY="8" posZ="0">
-          <attach>
-            <e oid="13001" eid="13000" posX="1" posY="1" posZ="0" show="1" followPos="0" followColor="0"/>
-          </attach>
+        <e oid="25000" posX="0" posY="5" posZ="0">
+          <attachs>
+            <e oid="13001" eid="13000" show="1" followPos="0" followColor="0"/>
+          </attachs>
         </e>
       </points>
       <lights>
         <e oid="27000" type="0" posX="5" posY="0" posZ="2" rotateCenterX="0" rotateCenterY="0" rotateCenterZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="200" coneAngle="90" speed="30">
-          <attach>
-            <e oid="11000" eid="11000" show="1"  followPos="1" followColor="1"/>
-            <e oid="13002" eid="13000" posX="1" posY="1" posZ="0" show="1" followPos="0" followColor="0"/>
-          </attach>
+          <attachs>
+            <e oid="11000" eid="11000" show="1" followPos="1" followColor="1"/>
+            <e oid="13002" eid="13000" show="1" followPos="0" followColor="0"/>
+          </attachs>
         </e>
       </lights>
     </e>

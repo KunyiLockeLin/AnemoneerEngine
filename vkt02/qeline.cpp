@@ -8,32 +8,15 @@ void QeLine::init(QeAssetXML* _property, int _parentOID) {
 	if(!strcmp(initProperty->key.c_str(), "e"))  modelData = AST->getModel("line");
 	else										 modelData = AST->getModel(initProperty->key.c_str());
 	
-	mtlData = AST->getMaterialImage("");
-	AST->setGraphicsShader(mtlData->shader, editProperty,"line");
+	//mtlData = AST->getMaterialImage("");
+	//bufferData.material = mtlData->value;
+	AST->setGraphicsShader(graphicsShader, editProperty,"line");
 }
 
 QeDataDescriptorSetModel QeLine::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	return descriptorSetData;
-}
-
-void QeLine::createPipeline() {
-	graphicsPipeline = VK->createGraphicsPipeline(&mtlData->shader, eGraphicsPipeLine_Point);
-}
-
-void QeLine::setMatModel() {
-
-	QeMatrix4x4f mat;
-
-	mat *= MATH->translate(pos);
-	mat *= MATH->rotateY(up);
-	mat *= MATH->rotateZ(face);
-	float dis = MATH->distance( VP->getTargetCamera()->pos, pos )/10;
-	dis = dis < 0.1f ? 0.1f : dis;
-	mat *= MATH->scale(size*dis);
-
-	bufferData.model = mat;
 }
 
 void QeLine::updateCompute(float time) {

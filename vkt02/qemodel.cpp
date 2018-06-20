@@ -46,11 +46,26 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 
 void QeModel::createPipeline() {
 
-	graphicsPipeline = VK->createGraphicsPipeline(&mtlData->shader, eGraphicsPipeLine_Triangle, bAlpha);
+	QeGraphicsPipelineType type;
+
+	switch (objectType) {
+	case eObject_Model:
+	case eObject_Cubemap:
+		type = eGraphicsPipeLine_Triangle;
+		break;
+	case eObject_Billboard:
+	case eObject_Line:
+	case eObject_Particle:
+		type = eGraphicsPipeLine_Point;
+		break;
+	}
+
+	graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
 		normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point);
 	}
+	if(computeShader) computePipeline = VK->createComputePipeline(computeShader);
 }
 
 void QeModel::setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size) {
@@ -104,24 +119,56 @@ void QeModel::setSize(QeVector3f& _size) {
 
 void QeModel::setMatModel() {
 
+	bool bRotate = true;
+
+	if (objectType == eObject_Billboard || objectType == eObject_Particle) bRotate = false;
+
 	QeMatrix4x4f mat;
 
 	mat *= MATH->translate(pos);
-	mat *= MATH->rotateY(up);
-	//mat *= MATH->rotate(up, QeVector3f(0.0f, 1.0f, 0.0f));
-	mat *= MATH->rotateZ(face);
-	//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
-	mat *= MATH->scale(size);
+
+	if (bRotate) {
+		mat *= MATH->rotateY(up);
+		//mat *= MATH->rotate(up, QeVector3f(0.0f, 1.0f, 0.0f));
+		mat *= MATH->rotateZ(face);
+		//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
+	}
+	float dis = 1.0f;
+	if (bSameSizefromCamera) {
+		dis = MATH->distance(VP->getTargetCamera()->pos, pos) / 10;
+		dis = dis < 0.1f ? 0.1f : dis;
+	}
+	mat *= MATH->scale(size*dis);
 	
 	bufferData.model = mat;
 
 	if (parentOID) {
 		QePoint* p = OBJMGR->getObject(parentOID);
-		if (p)	bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
+		if (p) {
+			if (bFollowColor) {
+				if (p->objectType == eObject_Model) {
+					QeModel * pm = (QeModel*)p;
+					bufferData.material.baseColor = pm->mtlData->value.baseColor;
+				}
+				else if (p->objectType == eObject_Light) {
+					QeLight * pl = (QeLight*)p;
+					bufferData.material.baseColor = pl->bufferData.color;
+				}
+			}
+			if (bRotate) {
+				bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str(), bRotate, true)*bufferData.model;
+			}
+			else {
+				QeMatrix4x4f mat = p->getAttachMatrix(attachSkeletonName.c_str(), bRotate, true);
+				bufferData.model._30 += mat._30;
+				bufferData.model._31 += mat._31;
+				bufferData.model._32 += mat._32;
+			}
+		}
 	}
 }
 
-QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
+QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName, bool bRotate, bool bScale) {
 
 	if (!attachSkeletonName || !strlen(attachSkeletonName))	return bufferData.model;
 
@@ -142,15 +189,16 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 	const char* c = AST->getXMLValue(editProperty, 1, "obj");
 	modelData = AST->getModel(c);
 	mtlData = modelData->pMaterial;
+	bufferData.material = mtlData->value;
 	size *= modelData->scale;
 
 	setAction(currentActionID, actionType);
 	updateAction(0);
 
 	if (modelData->animationNum)
-		AST->setGraphicsShader(mtlData->shader, editProperty, "action");
+		AST->setGraphicsShader(graphicsShader, editProperty, "action");
 	else
-		AST->setGraphicsShader(mtlData->shader, editProperty, "model");
+		AST->setGraphicsShader(graphicsShader, editProperty, "model");
 	
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
 }
@@ -160,6 +208,10 @@ void QeModel::setProperty() {
 
 	face = 0.0f;
 	up = 0.0f;
+
+	bSameSizefromCamera = false;
+	AST->getXMLbValue(&bSameSizefromCamera, initProperty, 1, "sameSizefromCamera");
+
 	cubemapOID = 0;
 	AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");
 	
@@ -240,7 +292,6 @@ void QeModel::setShow(bool b) {
 void QeModel::updateBuffer() {
 
 	setMatModel();
-	bufferData.material = mtlData->value;
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 	
 	/*size_t size = shaderData.size();
@@ -344,8 +395,7 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 }
 
 std::vector<VkDescriptorSet> QeModel::getDescriptorSets(int index) {
-	std::vector<VkDescriptorSet> descriptorSets = 
-	{	
+	std::vector<VkDescriptorSet> descriptorSets = {	
 		shaderData[index]->descriptorSet.set,
 		VP->viewports[index]->commonDescriptorSet.set
 	};

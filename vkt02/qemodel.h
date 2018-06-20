@@ -59,9 +59,12 @@ public:
 	int cullingDistance;
 	int cubemapOID;
 	bool bAlpha;
+	bool bSameSizefromCamera;
 
 	QeAssetModel* modelData = nullptr;
 	QeAssetMaterial* mtlData = nullptr;
+	QeAssetGraphicsShader graphicsShader;
+	QeAssetGraphicsShader normalShader;
 	VkShaderModule computeShader = VK_NULL_HANDLE;
 
 	QeDataModel bufferData;
@@ -71,8 +74,6 @@ public:
 	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
 	QeDataGraphicsPipeline* normalPipeline = nullptr;
 	VkPipeline computePipeline = VK_NULL_HANDLE;
-
-	QeAssetShader normalShader;
 
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual void setProperty();
@@ -103,7 +104,7 @@ public:
 	void actionStop();
 	void updateAction(float time);
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
-	QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName );
+	virtual QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName, bool bRotate, bool bScale);
 	std::vector<VkDescriptorSet> getDescriptorSets(int index);
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {}

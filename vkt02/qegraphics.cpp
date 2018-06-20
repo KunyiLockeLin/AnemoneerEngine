@@ -21,7 +21,7 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
-	AST->setGraphicsShader(shader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing" );
+	AST->setGraphicsShader(graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing" );
 	VK->createDescriptorSet(postprocessingDescriptorSet);
 	VK->createSyncObjects(imageAvailableSemaphores, renderFinishedSemaphores, inFlightFences);
 }
@@ -328,7 +328,7 @@ void QeGraphics::recreateRender() {
 	QeDataDescriptorSetPostprocessing data;
 	data.inputAttachImageViews = presentImage.view;
 	VK->updateDescriptorSet(&data, postprocessingDescriptorSet);
-	postprocessingPipeline = VK->createGraphicsPipeline(&shader, eGraphicsPipeLine_Postprogessing, false, 1);
+	postprocessingPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Postprogessing, false, 1);
 
 	OBJMGR->recreatePipeline();
 }

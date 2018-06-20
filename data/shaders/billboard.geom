@@ -11,15 +11,10 @@ void main(void)
 	outColor = inColor[0];
 
 	vec3 size = vec3(modelData.model[0].x,modelData.model[1].y,modelData.model[2].z);
-	if( modelData.param.x == 1 ){
-		float len = distance(modelData.model[3], environmentData.camera.pos)/10;
-		size *= len;
-	}
 
 	if(size.x >0 && size.y >0 && size.z >0 ){ 
 		mat4 model = modelData.model;
-		if(modelData.param.y == 1) model[3].xyz = gl_in[0].gl_Position.xyz;
-		else					   model[3].xyz += gl_in[0].gl_Position.xyz;
+		model[3].xyz += gl_in[0].gl_Position.xyz;
 
 		mat4 viewModel = environmentData.camera.view * model;
 		viewModel[0].x = size.x;

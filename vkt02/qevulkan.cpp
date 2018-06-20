@@ -949,7 +949,7 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
+QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
 
 	std::vector<QeDataGraphicsPipeline*>::iterator it = graphicsPipelines.begin();
 	while ( it != graphicsPipelines.end()) {

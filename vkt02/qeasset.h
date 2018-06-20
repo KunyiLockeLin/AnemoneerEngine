@@ -90,11 +90,11 @@ struct QeAssetImage {
 
 	//QeVKImage* pDiffuseMap = nullptr; // baseColorMap;
 	QeVKImage* pBaseColorMap = nullptr;
-	QeVKImage* pCubeMap = nullptr;;
-	QeVKImage* pNormalMap = nullptr;;
+	QeVKImage* pCubeMap = nullptr;
+	QeVKImage* pNormalMap = nullptr;
 };
 
-struct QeAssetShader {
+struct QeAssetGraphicsShader {
 
 	VkShaderModule vert = VK_NULL_HANDLE;
 	VkShaderModule tesc = VK_NULL_HANDLE;
@@ -107,7 +107,6 @@ struct QeAssetMaterial {
 
 	//QeMaterialType type = eMaterialPhong;
 	QeAssetImage image;
-	QeAssetShader shader;
 	QeDataMaterial value;
 
 	QeAssetMaterial() {}
@@ -225,5 +224,5 @@ public:
 	void imageFillto32bits(std::vector<unsigned char>* data, int bytes);
 	std::string combinePath(const char* _filename, QeAssetType dataType);
 
-	void setGraphicsShader( QeAssetShader& shader, QeAssetXML* shaderData, const char* defaultShaderType);
+	void setGraphicsShader( QeAssetGraphicsShader& shader, QeAssetXML* shaderData, const char* defaultShaderType);
 };

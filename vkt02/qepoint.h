@@ -18,13 +18,14 @@ public:
 	std::string attachSkeletonName;
 	bool bFollowPos;
 	bool bFollowColor;
-
+	bool bFollowSize;
+	bool bUpdate;
 	const QeObjectType objectType;
 
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual void setProperty();
 	virtual void reset();
-	virtual QeMatrix4x4f getAttachMatrix(const char* attachSkeletonName);
+	virtual QeMatrix4x4f getAttachMatrix(const char* attachSkeletonName, bool bRotate, bool bScale);
 	virtual void updateCompute(float time) {}
 	virtual void updateRender(float time) {}
 };

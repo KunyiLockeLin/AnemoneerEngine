@@ -23,7 +23,7 @@ void QePoint::setProperty() {
 	AST->getXMLbValue(&bFollowColor, initProperty, 1, "followColor");
 
 	attachOIDs.clear();
-	QeAssetXML * node = AST->getXMLNode(initProperty, 1, "attach");
+	QeAssetXML * node = AST->getXMLNode(initProperty, 1, "attachs");
 	if (node != nullptr && node->nexts.size() > 0) {
 		for (int index = 0; index < node->nexts.size(); ++index) {
 			QePoint * p = OBJMGR->getObject(0, node->nexts[index], oid);
@@ -40,7 +40,6 @@ void QePoint::reset() {
 	init(initProperty, parentOID);
 }
 
-QeMatrix4x4f QePoint::getAttachMatrix(const char* attachSkeletonName) {
-
+QeMatrix4x4f QePoint::getAttachMatrix(const char* attachSkeletonName, bool bRotate, bool bScale) {
 	return  MATH->translate(pos);
 }

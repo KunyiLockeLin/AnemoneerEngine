@@ -10,7 +10,7 @@ public:
 				vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
 	//~QeParticle() {}
 
-	QeAssetShader shader;
+	//QeAssetShader shader;
 	QeAssetParticleRule* particleRule;
 	int  totalParticlesSize;
 	int  currentParticlesSize;
@@ -22,8 +22,6 @@ public:
 
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
-	virtual void createPipeline();
-	virtual void setMatModel();
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer);
 	virtual void updateCompute(float time);

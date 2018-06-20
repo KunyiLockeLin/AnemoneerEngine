@@ -827,15 +827,15 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->scale = { 1, 1, 1 };
 		vertex.pos = { 0, 0, 0,1 };
 
-		vertex.normal = { AXIS_SIZE, 0, 0,1 };
+		vertex.normal = { 1, 0, 0,1 };
 		vertex.color = { 1, 0, 0,1 };
 		model->vertices.push_back(vertex);
 
-		vertex.normal = { 0, AXIS_SIZE, 0,1 };
+		vertex.normal = { 0, 1, 0,1 };
 		vertex.color = { 0, 1, 0,1 };
 		model->vertices.push_back(vertex);
 
-		vertex.normal = { 0, 0, AXIS_SIZE, 1 };
+		vertex.normal = { 0, 0, 1, 1 };
 		vertex.color = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
 		break;
@@ -1089,7 +1089,7 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 	return rtn.append(_filename);
 }
 
-void QeAsset::setGraphicsShader(QeAssetShader& shader, QeAssetXML* shaderData, const char* defaultShaderType) {
+void QeAsset::setGraphicsShader(QeAssetGraphicsShader& shader, QeAssetXML* shaderData, const char* defaultShaderType) {
 
 	const char* c = nullptr;
 

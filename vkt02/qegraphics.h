@@ -14,7 +14,7 @@ struct QeDataSubRender {
 	VkRenderPass renderPass;
 	VkCommandBuffer commandBuffer;
 	VkSemaphore semaphore = VK_NULL_HANDLE;
-	QeAssetShader shader;
+	QeAssetGraphicsShader graphicsShader;
 
 	QeDataDescriptorSet postprocessingDescriptorSet;
 	QeDataGraphicsPipeline* postprocessingPipeline = nullptr;
@@ -71,7 +71,7 @@ public:
 	VkFormat swapChainImageFormat;
 	std::vector<QeVKImage> swapChainImages;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
-	QeAssetShader shader;
+	QeAssetGraphicsShader graphicsShader;
 
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;

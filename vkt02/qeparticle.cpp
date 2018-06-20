@@ -8,7 +8,7 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 	mtlData = AST->getMaterialImage(particleRule->image);
 	
 	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "default", "computeShader", "particle"));
-	AST->setGraphicsShader(shader, nullptr, "particle");
+	AST->setGraphicsShader(graphicsShader, nullptr, "particle");
 
 	// count
 	totalParticlesSize = MATH->iRandom(particleRule->count_total, particleRule->count_range);
@@ -88,7 +88,9 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 	size.y = MATH->fRandom(particleRule->size.y, particleRule->size_range.y);
 	size.z = 1;
 
+	bufferData.material = mtlData->value;
 	bufferData.material.baseColor = particles[0].color;
+
 	bufferData.param.y = float(bFollowPos + 1);
 
 	VK->createBuffer(vertexBuffer, sizeof(particles[0]) * particles.size(), (void*)particles.data());
@@ -103,13 +105,6 @@ QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	descriptorSetData.texelBufferView = vertexBuffer.view;
 	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
 	return descriptorSetData;
-}
-
-void QeParticle::createPipeline() {
-
-	if (!totalParticlesSize) return;
-	graphicsPipeline = VK->createGraphicsPipeline(&shader, eGraphicsPipeLine_Point, bAlpha );
-	computePipeline = VK->createComputePipeline(computeShader);
 }
 
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
@@ -173,27 +168,4 @@ void QeParticle::updateCompute(float time) {
 		}
 	}
 	updateBuffer();
-}
-
-void QeParticle::setMatModel() {
-
-	if (currentParticlesSize == 0) return;
-
-	QeMatrix4x4f mat;
-
-	mat *= MATH->translate(pos);
-	mat *= MATH->scale(size);
-
-	bufferData.model = mat;
-
-	if (parentOID > 0) {
-		QePoint* p = OBJMGR->getObject(parentOID);
-		if (p) {
-			QeMatrix4x4f mat = p->getAttachMatrix(attachSkeletonName.c_str());
-			bufferData.model._30 += mat._30;
-			bufferData.model._31 += mat._31;
-			bufferData.model._32 += mat._32;
-			//bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str())*bufferData.model;
-		}
-	}
 }
