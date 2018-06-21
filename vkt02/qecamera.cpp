@@ -85,8 +85,8 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	}
 
 	QeMatrix4x4f mat;
-	mat *= MATH->rotate(_angle*speed, _axis);
 	mat *= MATH->translate(center);
+	mat *= MATH->rotate(_angle*speed, _axis);
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
 	face = MATH->normalize(center - pos);

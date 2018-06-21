@@ -38,12 +38,7 @@ void QeLight::updateCompute(float time) {
 	if (speed) {
 		float angle = -time * speed;
 
-		//QeVector3f vec = pos - center;
-		//QeVector3f up(0.0f, 0.0f, 1.0f);
-		//QeVector3f axis = MATH->cross(vec, up);
-
 		QeMatrix4x4f mat;
-		//mat *= MATH->rotate(angle, axis);
 		mat *= MATH->rotateZ(angle);
 		QeVector4f pos2 = bufferData.pos - center;
 		pos2 = mat* pos2;
