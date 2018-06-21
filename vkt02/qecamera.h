@@ -24,7 +24,7 @@ public:
 	QeVector3f up;
 	QeVector2i lastMousePos;
 	QeVector3f face;
-	
+
 	bool bUpdate;
 	QeDataCamera bufferData;
 

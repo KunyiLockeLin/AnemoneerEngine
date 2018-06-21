@@ -65,6 +65,22 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	while (_angle < -360) _angle += 360;
 
 	QeVector3f vec = pos - target;
+
+	if (_axis.y) {
+		float outPolarAngle, outAzimuthalAngle;
+		MATH->getAnglefromVector(vec, outPolarAngle, outAzimuthalAngle);
+
+		if (_angle < 0) {
+			if (outPolarAngle > 89) return;
+			float f = outPolarAngle - _angle;
+			if (f > 90) _angle = -90 + outPolarAngle;
+		} 
+		else if (_angle > 0) {
+			if (outPolarAngle < -89) return;
+			float f = outPolarAngle - _angle;
+			if (f < -90) _angle = 90 + outPolarAngle;
+		}
+	}
 	QeMatrix4x4f mat = MATH->rotate(_angle*speed, _axis);
 	mat *= MATH->translate(target);
 	QeVector4f v4(vec, 1);
