@@ -16,7 +16,7 @@ void QeLight::setProperty() {
 	AST->getXMLfValue(&bufferData.dir.y, initProperty, 1, "dirY");
 	AST->getXMLfValue(&bufferData.dir.z, initProperty, 1, "dirZ");
 
-	bufferData.param = { 1.0f, 1.0f, 1.0f, 1.0f };
+	bufferData.param = { 0.0f, 1000.0f, 90.0f, 1.0f };
 	AST->getXMLfValue(&bufferData.param.x, initProperty, 1, "type");
 	AST->getXMLfValue(&bufferData.param.y, initProperty, 1, "intensity");
 	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "coneAngle");
@@ -24,10 +24,10 @@ void QeLight::setProperty() {
 	speed = 0;
 	AST->getXMLfValue(&speed, initProperty, 1, "speed");
 
-	rotateCenter = { 1.0f, 1.0f, 1.0f };
-	AST->getXMLfValue(&rotateCenter.x, initProperty, 1, "rotateCenterX");
-	AST->getXMLfValue(&rotateCenter.y, initProperty, 1, "rotateCenterY");
-	AST->getXMLfValue(&rotateCenter.z, initProperty, 1, "rotateCenterZ");
+	center = { 0.0f, 0.0f, 0.0f };
+	AST->getXMLfValue(&center.x, initProperty, 1, "centerX");
+	AST->getXMLfValue(&center.y, initProperty, 1, "centerY");
+	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
 
 	bUpdate = true;
 }
@@ -37,13 +37,19 @@ void QeLight::updateCompute(float time) {
 
 	if (speed) {
 		float angle = -time * speed;
-		QeMatrix4x4f mat;
-		mat *= MATH->rotateZ(angle);
-		QeVector4f pos2 = bufferData.pos - rotateCenter;
-		pos2 = mat* pos2;
-		bufferData.pos = pos2 + rotateCenter;
 
-		pos = bufferData.pos;
+		//QeVector3f vec = pos - center;
+		//QeVector3f up(0.0f, 0.0f, 1.0f);
+		//QeVector3f axis = MATH->cross(vec, up);
+
+		QeMatrix4x4f mat;
+		//mat *= MATH->rotate(angle, axis);
+		mat *= MATH->rotateZ(angle);
+		QeVector4f pos2 = bufferData.pos - center;
+		pos2 = mat* pos2;
+		pos = pos2 + center;
+
+		bufferData.pos = pos;
 		bUpdate = true;
 	}
 }

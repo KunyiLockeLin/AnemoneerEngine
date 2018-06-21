@@ -20,7 +20,7 @@ public:
 	QeCamera(QeObjectMangerKey& _key, QeObjectType _type = eObject_Camera) :QePoint(_key, _type) {}
 	//~QeCamera() {}
 
-	QeVector3f target;
+	QeVector3f center;
 	QeVector3f up;
 	QeVector2i lastMousePos;
 	QeVector3f face;
@@ -40,7 +40,7 @@ public:
 	virtual void reset();
 	void setMatrix();
 	//void switchType(QeCameraType _type);
-	void setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up, float _fov, float _near, float _far );
+	void setCamera(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up, float _fov, float _near, float _far );
 	//void rotatePos(float _angle, QeVector3f _axis);
 	void rotateTarget(float _angle, QeVector3f _axis);
 	//void rotatePos(QeVector2i mousePos);

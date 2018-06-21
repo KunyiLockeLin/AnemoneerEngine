@@ -5,11 +5,11 @@ void QeCamera::setProperty() {
 	QePoint::setProperty();
 	//type = eCameraThirdPerson;
 
-	target = { 0.0f, 0.0f, 0.0f };
-	AST->getXMLfValue(&target.x, initProperty, 1, "targetX");
-	AST->getXMLfValue(&target.y, initProperty, 1, "targety");
-	AST->getXMLfValue(&target.z, initProperty, 1, "targetz");
-	face = MATH->normalize(target - pos);
+	center = { 0.0f, 0.0f, 0.0f };
+	AST->getXMLfValue(&center.x, initProperty, 1, "centerX");
+	AST->getXMLfValue(&center.y, initProperty, 1, "centerY");
+	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
+	face = MATH->normalize(center - pos);
 
 	up = { 0.0f, 0.0f, 1.0f };
 	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
@@ -34,14 +34,14 @@ void QeCamera::setProperty() {
 }
 
 
-void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up, float _fov, float _near, float _far) {
+void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up, float _fov, float _near, float _far) {
 	pos = _pos;
-	target = _target;
+	center = _center;
 	up = _up;
 	fov = _fov;
 	fnear = _near;
 	ffar = _far;
-	face = MATH->normalize(target - pos);
+	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }
 
@@ -64,7 +64,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	while (_angle > 360) _angle -= 360;
 	while (_angle < -360) _angle += 360;
 
-	QeVector3f vec = pos - target;
+	QeVector3f vec = pos - center;
 
 	if (_axis.y) {
 		
@@ -85,13 +85,11 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	}
 
 	QeMatrix4x4f mat;
-	//if( _axis.y )	mat *= MATH->rotateY(_angle*speed);
-	//else			mat *= MATH->rotateZ(_angle*speed);
 	mat *= MATH->rotate(_angle*speed, _axis);
-	mat *= MATH->translate(target);
+	mat *= MATH->translate(center);
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
-	face = MATH->normalize(target - pos);
+	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }
 
@@ -125,10 +123,11 @@ void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 
 	QeMatrix4x4f mat;
 
-	QeVector3f _face = MATH->normalize(target - pos);
+	QeVector3f _face = MATH->normalize(center - pos);
 
 	// forward
 	if (_dir.z) {
+		if (_dir.z >0 && MATH->length(pos - center) < 1) return;
 		mat = MATH->translate(_face*_dir.z*speed);
 	}
 	else {
@@ -149,11 +148,11 @@ void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
 
 	//if (type == eCameraFirstPerson) {
 	if(bMoveTarget) {
-		v4 = target;
+		v4 = center;
 		v4 = mat*v4;
-		target = v4;
+		center = v4;
 	}
-	face = MATH->normalize(target - pos);
+	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }
 
@@ -163,7 +162,7 @@ void QeCamera::reset() {
 }
 
 void QeCamera::setMatrix() {
-	bufferData.view = MATH->lookAt(pos, target, up);
+	bufferData.view = MATH->lookAt(pos, center, up);
 	bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
 	bufferData.pos = pos;
 }
@@ -178,5 +177,5 @@ void QeCamera::updateCompute(float time) {
 }
 
 void QeCamera::updateAxis() {
-	if(ACT && ACT->axis)	ACT->axis->pos = target;
+	if(ACT && ACT->axis)	ACT->axis->pos = center;
 }
