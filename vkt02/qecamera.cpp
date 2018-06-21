@@ -120,39 +120,30 @@ void QeCamera::zoomInOut(QeVector2i mousePos) {
 	lastMousePos = mousePos;
 }
 
-void QeCamera::move(QeVector3f _dir, bool bMoveTarget) {
+void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 
-	QeMatrix4x4f mat;
-
-	QeVector3f _face = MATH->normalize(center - pos);
-
+	QeVector3f move;
 	// forward
 	if (_dir.z) {
 		if (_dir.z >0 && MATH->length(pos - center) < 1) return;
-		mat = MATH->translate(_face*_dir.z*speed);
+		move = face * _dir.z*speed;
 	}
 	else {
-		QeVector3f _surface = MATH->normalize(MATH->cross(_face, up));
+		QeVector3f _surface = MATH->normalize(MATH->cross(face, up));
 		//left
 		if (_dir.x) {
-			mat = MATH->translate(_surface*_dir.x*speed);
+			move = _surface * _dir.x*speed;
 		}
 		//up
 		if (_dir.y) {
-			QeVector3f _up1 = MATH->cross(_surface, _face);
-			mat = MATH->translate(_up1*_dir.y*speed);
+			QeVector3f _up1 = MATH->cross(_surface, face);
+			move = _up1 * _dir.y*speed;
 		}
 	}
-	QeVector4f v4(pos, 1);
-	v4 = mat*v4;
-	pos = v4;
+	pos += move;
 
 	//if (type == eCameraFirstPerson) {
-	if(bMoveTarget) {
-		v4 = center;
-		v4 = mat*v4;
-		center = v4;
-	}
+	if(bMoveCenter)		center += move;
 	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }

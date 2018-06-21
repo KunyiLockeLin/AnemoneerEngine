@@ -47,7 +47,7 @@ public:
 	void rotateTarget(QeVector2i mousePos);
 	void setMousePos(QeVector2i mousePos);
 	void zoomInOut(QeVector2i mousePos);
-	void move(QeVector3f _dir, bool bMoveTarget = true);
+	void move(QeVector3f _dir, bool bMoveCenter = true);
 	//virtual void updateRender(float time) {}
 	virtual void updateCompute(float time);
 	void updateAxis();
