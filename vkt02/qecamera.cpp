@@ -65,7 +65,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	while (_angle < -360) _angle += 360;
 
 	QeVector3f vec = pos - center;
-
+	QeVector3f vn = MATH->normalize(vec);
 	if (_axis.y) {
 		
 		float outPolarAngle, outAzimuthalAngle;
@@ -81,7 +81,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 			float f = outPolarAngle + _angle;
 			if (f < -90) _angle = -90 - outPolarAngle;
 		}
-		_axis = MATH->cross(vec, up);
+		_axis = MATH->cross(vn, up);
 	}
 
 	QeMatrix4x4f mat;
@@ -89,6 +89,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	mat *= MATH->rotate(_angle*speed, _axis);
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
+
 	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }

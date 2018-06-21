@@ -22,6 +22,7 @@ public:
 
 	float speed;
 	QeVector3f center;
+	QeVector3f up;
 
 	QeDataLight bufferData;
 	bool bUpdate;

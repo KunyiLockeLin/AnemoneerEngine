@@ -28,6 +28,11 @@ void QeLight::setProperty() {
 	AST->getXMLfValue(&center.x, initProperty, 1, "centerX");
 	AST->getXMLfValue(&center.y, initProperty, 1, "centerY");
 	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
+	
+	up = { 0.0f, 0.0f, 1.0f };
+	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
+	AST->getXMLfValue(&up.y, initProperty, 1, "upY");
+	AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
 
 	bUpdate = true;
 }
