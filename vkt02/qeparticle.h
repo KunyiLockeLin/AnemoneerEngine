@@ -19,7 +19,8 @@ public:
 	QeVKBuffer vertexBuffer;
 	QeVKBuffer outBuffer;
 	QeTimer periodTimer;
-
+	
+	QeVertex createParticleData();
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);

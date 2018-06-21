@@ -155,20 +155,20 @@ void QeModel::setMatModel() {
 					bufferData.material.baseColor = pl->bufferData.color;
 				}
 			}
-			if (bRotate) {
-				bufferData.model = p->getAttachMatrix(attachSkeletonName.c_str(), bRotate, true)*bufferData.model;
-			}
-			else {
-				QeMatrix4x4f mat = p->getAttachMatrix(attachSkeletonName.c_str(), bRotate, true);
-				bufferData.model._30 += mat._30;
-				bufferData.model._31 += mat._31;
-				bufferData.model._32 += mat._32;
+			parentModel = p->getAttachMatrix(attachSkeletonName.c_str());
+			if (bFollowPos) {
+				if (!bRotate) {
+					parentModel._00 = 1; parentModel._01 = 0; parentModel._02 = 0;
+					parentModel._10 = 0; parentModel._11 = 1; parentModel._12 = 0;
+					parentModel._20 = 0; parentModel._21 = 0; parentModel._22 = 1;
+				}
+				bufferData.model = parentModel *bufferData.model;
 			}
 		}
 	}
 }
 
-QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName, bool bRotate, bool bScale) {
+QeMatrix4x4f QeModel::getAttachMatrix(const char* attachSkeletonName) {
 
 	if (!attachSkeletonName || !strlen(attachSkeletonName))	return bufferData.model;
 

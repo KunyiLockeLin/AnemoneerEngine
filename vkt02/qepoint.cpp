@@ -40,6 +40,6 @@ void QePoint::reset() {
 	init(initProperty, parentOID);
 }
 
-QeMatrix4x4f QePoint::getAttachMatrix(const char* attachSkeletonName, bool bRotate, bool bScale) {
-	return  MATH->translate(pos);
+QeMatrix4x4f QePoint::getAttachMatrix(const char* attachSkeletonName) {
+	return MATH->translate(pos);
 }

@@ -16,24 +16,12 @@ void main() {
 		pos.xyz += speed.xyz*pushConstant.DeltaTime;
 		speed.w -= pushConstant.DeltaTime;
 		speed.xyz += (force.xyz*pushConstant.DeltaTime);
+		outputData.death[gl_GlobalInvocationID.x] = 0;
 	}
 	else{
-		int times =  int(pos.w);
-		if(force.w>0 || times == 0){ // reborn
-			// init_pos = texCoord
-			++times;
-			pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+2) );
-			if(modelData.param.y == 1) pos.xyz += modelData.model[3].xyz;
-			pos.w = times;
-			
-			// init_speed & life time = joint
-			speed = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+5) );
-		}
-		else{
-			//atomicAdd(outputs.death, 1);
-			//atomicExchange(outputs.death, 1);
-			outputData.death[gl_GlobalInvocationID.x] = 1;
-		}
+		//atomicAdd(outputs.death, 1);
+		//atomicExchange(outputs.death, 1);
+		outputData.death[gl_GlobalInvocationID.x] = 1;
 	}
 	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
 	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );

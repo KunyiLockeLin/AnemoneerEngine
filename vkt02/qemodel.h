@@ -6,7 +6,7 @@
 struct QeDataModel {
 	QeMatrix4x4f	model;
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
-	QeVector4f		param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none)
+	QeVector4f		param; // 0: bCubemap
 	QeDataMaterial	material;
 };
 
@@ -60,6 +60,8 @@ public:
 	int cubemapOID;
 	bool bAlpha;
 	bool bSameSizefromCamera;
+	
+	QeMatrix4x4f parentModel;
 
 	QeAssetModel* modelData = nullptr;
 	QeAssetMaterial* mtlData = nullptr;
@@ -104,7 +106,7 @@ public:
 	void actionStop();
 	void updateAction(float time);
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
-	virtual QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName, bool bRotate, bool bScale);
+	virtual QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName);
 	std::vector<VkDescriptorSet> getDescriptorSets(int index);
 	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {}
