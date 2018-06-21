@@ -124,7 +124,6 @@ void QeModel::setMatModel() {
 	if (objectType == eObject_Billboard || objectType == eObject_Particle) bRotate = false;
 
 	QeMatrix4x4f mat;
-
 	mat *= MATH->translate(pos);
 
 	if (bRotate) {

@@ -52,13 +52,13 @@ void QeActivity::init(QeAssetXML* _property) {
 		}
 	}
 
-	node = AST->getXMLNode(_property, 1, "axis");
-	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "axis");
-	if (node)	axis = (QeLine*)OBJMGR->getObject(0, node);
-
 	node = AST->getXMLNode(_property, 1, "grids");
 	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "grids");
 	if (node)	grids = (QeLine*)OBJMGR->getObject(0, node);
+
+	node = AST->getXMLNode(_property, 1, "axis");
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "axis");
+	if (node)	axis = (QeLine*)OBJMGR->getObject(0, node);
 }
 
 void QeActivity::eventInput(QeInputData & inputData) {
@@ -101,16 +101,16 @@ void QeActivity::eventInput(QeInputData & inputData) {
 		switch (inputData.inputKey) {
 
 		case VK_UP:
-			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 1, 0));
-			break;
-		case VK_DOWN:
 			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 1, 0));
 			break;
+		case VK_DOWN:
+			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 1, 0));
+			break;
 		case VK_RIGHT:
-			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 0, 1));
+			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 0, 1));
 			break;
 		case VK_LEFT:
-			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 0, 1));
+			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 0, 1));
 			break;
 		case KEY_E:
 			VP->getTargetCamera()->move(QeVector3f(0, 1, 0));

@@ -67,21 +67,27 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 	QeVector3f vec = pos - target;
 
 	if (_axis.y) {
+		
 		float outPolarAngle, outAzimuthalAngle;
 		MATH->getAnglefromVector(vec, outPolarAngle, outAzimuthalAngle);
-
-		if (_angle < 0) {
+		float len = MATH->length(vec);
+		if (_angle > 0) {
 			if (outPolarAngle > 89) return;
-			float f = outPolarAngle - _angle;
-			if (f > 90) _angle = -90 + outPolarAngle;
+			float f = outPolarAngle + _angle;
+			if (f > 90) _angle = 90 - outPolarAngle;
 		} 
-		else if (_angle > 0) {
+		else if (_angle < 0) {
 			if (outPolarAngle < -89) return;
-			float f = outPolarAngle - _angle;
-			if (f < -90) _angle = 90 + outPolarAngle;
+			float f = outPolarAngle + _angle;
+			if (f < -90) _angle = -90 - outPolarAngle;
 		}
+		_axis = MATH->cross(vec, up);
 	}
-	QeMatrix4x4f mat = MATH->rotate(_angle*speed, _axis);
+
+	QeMatrix4x4f mat;
+	//if( _axis.y )	mat *= MATH->rotateY(_angle*speed);
+	//else			mat *= MATH->rotateZ(_angle*speed);
+	mat *= MATH->rotate(_angle*speed, _axis);
 	mat *= MATH->translate(target);
 	QeVector4f v4(vec, 1);
 	pos = mat*v4;
@@ -101,7 +107,7 @@ void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 void QeCamera::rotateTarget(QeVector2i mousePos){
 
 	rotateTarget(float(mousePos.x - lastMousePos.x), { 0.0f, 0.0f, 1.0f });
-	rotateTarget(float(mousePos.y - lastMousePos.y), { 0.0f, 1.0f, 0.0f });
+	rotateTarget(-float(mousePos.y - lastMousePos.y), { 0.0f, 1.0f, 0.0f });
 	lastMousePos = mousePos;
 }
 
