@@ -16,7 +16,7 @@
   <default>
     <ambientColor r="0" g="0.5" b="0.5"/>
     
-    <axis oid="10000"/>
+    <axis oid="10000" sameSizefromCamera ="1"/>
     <grids oid="10001" sameSizefromCamera ="1"/>
 
     <cameras>

@@ -30,6 +30,7 @@ void QeCamera::setProperty() {
 
 	ffar = 1000.0f;
 	AST->getXMLfValue(&ffar, initProperty, 1, "far");
+	bUpdate = true;
 }
 
 
