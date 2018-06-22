@@ -72,22 +72,8 @@
     </e>
 
     <e eid="28001">
-      <models>
-        <e oid="14000" eid="14000" show="1" speed="0" posX="0" posY="-8" posZ="-3" actionState ="1" actionSpeed="0.1" action="0" actionType="2">
-          <attachs>
-            <e oid="13000" eid="13000" show="1" followPos="1" followColor="0" attachskeleton="Armature_Bone_002" />
-          </attachs>
-        </e>
-      </models>
-      <points>
-        <e oid="25000" posX="0" posY="5" posZ="0">
-          <attachs>
-            <e oid="13001" eid="13000" show="1" followPos="1" followColor="0"/>
-          </attachs>
-        </e>
-      </points>
       <lights>
-        <e oid="27000" type="0" posX="3" posY="0" posZ="3" centerX="0" centerY="0" centerZ="3" upX="0" upY="0" upZ="1" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="200" coneAngle="90" speed="30">
+        <e oid="27000" type="0" posX="3" posY="0" posZ="3" centerX="0" centerY="0" centerZ="0" upX="1" upY="0" upZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="200" coneAngle="90" speed="100">
           <attachs>
             <e oid="11000" eid="11000" show="1" followPos="1" followColor="1"/>
             <e oid="13002" eid="13000" show="1" followPos="0" followColor="0"/>
@@ -118,11 +104,11 @@
   
   <particles>
     <e eid="13000" image="light.png" alpha ="1" reborn="1">
-      <count once ="3" period="10" total = "50" range="0"/>
-      <life second="5" range="50"/>
-      <init_pos length="0" length_range="1" width="0" width_range="1" height="" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
-      <init_speed x="-0.1" x_range="0.2" y="-0.1" y_range="0.2" z="0.5" z_range="1"/>
-      <force x="0" x_range="0" y="0" y_range="0" z="-1" z_range="0.3"/>
+      <count once ="5" period="10" total = "300" range="0"/>
+      <life second="1" range="1"/>
+      <init_pos length="0" length_range="0" width="0" width_range="0" height="" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
+      <init_speed x="-0.1" x_range="0.2" y="-0.1" y_range="0.2" z="0.5" z_range="0"/>
+      <force x="0" x_range="0" y="0" y_range="0" z="-0.3" z_range="0.3"/>
       <size x="0.2" x_range="0" y="0.2" y_range="0" />
       <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1"/>
      </e>

@@ -5,7 +5,6 @@ void QeLight::setProperty() {
 	QePoint::setProperty();
 
 	bufferData.pos = pos;
-	initPos = pos;
 	bufferData.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	AST->getXMLfValue(&bufferData.color.x, initProperty, 1, "r");
 	AST->getXMLfValue(&bufferData.color.y, initProperty, 1, "g");
@@ -28,7 +27,7 @@ void QeLight::setProperty() {
 	AST->getXMLfValue(&center.x, initProperty, 1, "centerX");
 	AST->getXMLfValue(&center.y, initProperty, 1, "centerY");
 	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
-	QeVector3f vec = { pos - center };
+	vec = MATH->normalize( pos - center );
 	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
 
 	up = { 0.0f, 0.0f, 1.0f };
@@ -43,11 +42,10 @@ void QeLight::setProperty() {
 void QeLight::updateCompute(float time) {
 
 	if (speed) {
-		float angle = -time * speed;
+		float angle = time * speed;
 
-		QeVector3f vec = MATH->normalize(center - initPos);
-		//QeVector3f vec = MATH->normalize( MATH->cross(initPos -center, up) );
-		//vec = {0,0,1};
+		//QeVector3f vec1 = MATH->normalize( MATH->cross(vec, up) );
+		//vec1 = {0,0,1};
 		polarAngle += vec.z*angle;
 		azimuthalAngle += MATH->length(QeVector2f(vec.x, vec.y))*angle;
 

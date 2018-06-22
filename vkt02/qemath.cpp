@@ -763,8 +763,12 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 }
 
 void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
-	outPolarAngle = atan( (fastSqrt(inV.x*inV.x + inV.y*inV.y))/ inV.z )*RADIANS_TO_DEGREES;
-	outAzimuthalAngle = atan(inV.y/inV.x)*RADIANS_TO_DEGREES;
+	
+	if (!inV.z) outPolarAngle = 90;
+	else		outPolarAngle = atan( (fastSqrt(inV.x*inV.x + inV.y*inV.y))/ inV.z )*RADIANS_TO_DEGREES;
+	
+	if(!inV.x)	outAzimuthalAngle = 90;
+	else		outAzimuthalAngle = atan(inV.y/inV.x)*RADIANS_TO_DEGREES;
 
 	if (inV.x < 0)		outAzimuthalAngle = 180 + outAzimuthalAngle;
 	else if (inV.y < 0)	outAzimuthalAngle = 360 + outAzimuthalAngle;

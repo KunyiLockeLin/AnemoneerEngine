@@ -24,7 +24,7 @@ public:
 	float polarAngle, azimuthalAngle;
 	QeVector3f center;
 	QeVector3f up;
-	QeVector3f initPos;
+	QeVector3f vec;
 	QeDataLight bufferData;
 	bool bUpdate;
 
