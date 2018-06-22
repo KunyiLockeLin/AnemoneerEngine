@@ -138,9 +138,11 @@ public:
 	QeMatrix4x4f transform(QeVector3f& tanslation, QeVector4f& rotation, QeVector3f& scale);
 	QeVector3f normalize(QeVector3f& _vec);
 	QeVector4f normalize(QeVector4f& _vec);
+	float length(QeVector2f& _vec);
 	float length(QeVector3f& _vec);
 	float length(QeVector4f& _vec);
 	float distance(QeVector3f& _from, QeVector3f& _to);
+	float dot(QeVector2f& _vec1, QeVector2f& _vec2);
 	float dot(QeVector3f& _vec1, QeVector3f& _vec2);
 	float dot(QeVector4f& _vec1, QeVector4f& _vec2);
 	QeVector3f cross(QeVector3f& _vec1, QeVector3f& _vec2);
@@ -154,6 +156,6 @@ public:
 	float getAnglefromVectors(QeVector3f& v1, QeVector3f& v2 );
 	void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
 	void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
-	void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
+	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
 
 };

@@ -1,5 +1,6 @@
 ﻿#include "qeheader.h"
 
+float QeMath::dot(QeVector2f& _vec1, QeVector2f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y; }
 float QeMath::dot(QeVector3f& _vec1, QeVector3f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
 float QeMath::dot(QeVector4f& _vec1, QeVector4f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
 
@@ -63,6 +64,7 @@ QeVector4f QeMath::normalize(QeVector4f& _vec) { return _vec / length(_vec); }
 
 float QeMath::distance(QeVector3f& _from, QeVector3f& _to) { return length(_to - _from); }
 
+float QeMath::length(QeVector2f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 float QeMath::length(QeVector3f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 float QeMath::length(QeVector4f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 
@@ -792,24 +794,29 @@ void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAn
 	pos = center + vec;
 }
 
-void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop ) {
+/*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop ) {
 	QeVector3f vec = MATH->normalize(pos - center);
 
 	float polarAngle, azimuthalAngle;
 	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
-	if (polarAngle < 0.1f && angle < 0) return;
-	if (polarAngle > 179.9f && angle > 0) return;
 
+	if (bStopTop) {
+		if (polarAngle < 0.1f && angle < 0) return;
+		if (polarAngle > 179.9f && angle > 0) return;
+	}
 	if (axis.x) {
 		polarAngle += angle;
-		if (polarAngle > 180) {
-			polarAngle = 179.99f;
-		}
-		else if (polarAngle < 0) {
-			polarAngle = 0.01f;
+
+		if (bStopTop){
+			if (polarAngle > 180) {
+				polarAngle = 179.99f;
+			}
+			else if (polarAngle < 0) {
+				polarAngle = 0.01f;
+			}
 		}
 	}
 	else if (axis.y)	azimuthalAngle += angle;
 
 	MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
-}
+}*/

@@ -101,16 +101,16 @@ void QeActivity::eventInput(QeInputData & inputData) {
 		switch (inputData.inputKey) {
 
 		case VK_UP:
-			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 1, 0));
+			VP->getTargetCamera()->rotateTarget(10, { 1, 0 });
 			break;
 		case VK_DOWN:
-			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 1, 0));
+			VP->getTargetCamera()->rotateTarget(-10, { 1, 0 });
 			break;
 		case VK_RIGHT:
-			VP->getTargetCamera()->rotateTarget(10, QeVector3f(0, 0, 1));
+			VP->getTargetCamera()->rotateTarget(10, { 0, 1 });
 			break;
 		case VK_LEFT:
-			VP->getTargetCamera()->rotateTarget(-10, QeVector3f(0, 0, 1));
+			VP->getTargetCamera()->rotateTarget(-10, { 0, 1 });
 			break;
 		case KEY_E:
 			VP->getTargetCamera()->move(QeVector3f(0, 1, 0));

@@ -27,6 +27,7 @@ public:
 
 	bool bUpdate;
 	QeDataCamera bufferData;
+	float polarAngle, azimuthalAngle;
 
 	float fov;
 	float fnear;
@@ -41,7 +42,7 @@ public:
 	void setMatrix();
 	//void switchType(QeCameraType _type);
 	//void rotatePos(float _angle, QeVector3f _axis);
-	void rotateTarget(float _angle, QeVector3f _axis);
+	void rotateTarget(float _angle, QeVector2f _axis);
 	//void rotatePos(QeVector2i mousePos);
 	void rotateTarget(QeVector2i mousePos);
 	void setMousePos(QeVector2i mousePos);
