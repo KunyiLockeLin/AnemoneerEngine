@@ -43,7 +43,7 @@ QeVertex QeParticle::createParticleData() {
 	case 0:
 		particle.pos.x = MATH->fRandom(particleRule->init_pos_square.x, particleRule->init_pos_square_range.x)*(MATH->iRandom(0, 1) ? 1 : -1);
 		particle.pos.y = MATH->fRandom(-(particleRule->init_pos_square.y + particleRule->init_pos_square_range.y),
-			(particleRule->init_pos_square.z + particleRule->init_pos_square_range.z) * 2);
+			(particleRule->init_pos_square.y + particleRule->init_pos_square_range.y) * 2);
 		break;
 	case 1:
 		particle.pos.x = MATH->fRandom(-(particleRule->init_pos_square.x + particleRule->init_pos_square_range.x),

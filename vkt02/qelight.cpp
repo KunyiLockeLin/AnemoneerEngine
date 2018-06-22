@@ -29,10 +29,10 @@ void QeLight::setProperty() {
 	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
 
 	up = { 0.0f, 0.0f, 1.0f };
-	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
-	AST->getXMLfValue(&up.y, initProperty, 1, "upY");
-	AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
-	//up = MATH->normalize(MATH->cross(up, (pos - center)) );
+	AST->getXMLfValue(&up.x, initProperty, 1, "axisX");
+	AST->getXMLfValue(&up.y, initProperty, 1, "axisY");
+	AST->getXMLfValue(&up.z, initProperty, 1, "axisZ");
+	up = MATH->normalize(MATH->cross(up, (pos - center)) );
 	bUpdate = true;
 }
 

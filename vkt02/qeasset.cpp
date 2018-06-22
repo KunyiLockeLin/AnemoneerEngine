@@ -1046,21 +1046,10 @@ QeAssetParticleRule* QeAsset::getParticle(int _eid) {
 	std::map<int, QeAssetParticleRule*>::iterator it = astParticles.find(_eid);
 	if (it != astParticles.end())	return it->second;
 
-	QeAssetXML* node = getXMLNode(2, AST->CONFIG, "particles");
-	if (node != nullptr && node->nexts.size() > 0) {
-		for (int index = 0; index < node->nexts.size(); ++index) {
-			int _eid1 = 0;
-			AST->getXMLiValue(&_eid1, node->nexts[index], 1, "eid");
-			if (_eid == _eid) {
-				QeAssetParticleRule* particle = ENCODE->decodeParticle(node->nexts[index]);
-				astParticles[_eid] = particle;
-				return particle;
-			}
-		}
-	}
+	QeAssetXML* node = getXMLEditNode(eObject_Particle, _eid);
 	QeAssetParticleRule* particle = ENCODE->decodeParticle(node);
 	astParticles[_eid] = particle;
-	return nullptr;
+	return particle;
 }
 
 std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
