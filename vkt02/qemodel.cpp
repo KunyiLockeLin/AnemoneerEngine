@@ -133,7 +133,7 @@ void QeModel::setMatModel() {
 		//mat *= MATH->rotate(face, QeVector3f(0.0f, 0.0f, 1.0f));
 	}
 	float dis = 1.0f;
-	if (bSameSizefromCamera) {
+	if (bFixSize) {
 		dis = MATH->length(VP->getTargetCamera()->pos - pos) / 10;
 		dis = dis < 0.1f ? 0.1f : dis;
 	}
@@ -208,8 +208,8 @@ void QeModel::setProperty() {
 	face = 0.0f;
 	up = 0.0f;
 
-	bSameSizefromCamera = false;
-	AST->getXMLbValue(&bSameSizefromCamera, initProperty, 1, "sameSizefromCamera");
+	bFixSize = false;
+	AST->getXMLbValue(&bFixSize, initProperty, 1, "fixSize");
 
 	cubemapOID = 0;
 	AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");

@@ -59,7 +59,7 @@ public:
 	int cullingDistance;
 	int cubemapOID;
 	bool bAlpha;
-	bool bSameSizefromCamera;
+	bool bFixSize;
 	
 	QeMatrix4x4f parentModel;
 

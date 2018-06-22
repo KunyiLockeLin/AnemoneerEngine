@@ -16,8 +16,8 @@
   <default>
     <ambientColor r="0" g="0.5" b="0.5"/>
     
-    <axis oid="10000" sameSizefromCamera ="1"/>
-    <grids oid="10001" sameSizefromCamera ="1"/>
+    <axis oid="10000" fixSize ="1"/>
+    <grids oid="10001" fixSize ="1"/>
 
     <cameras>
       <e oid="26000" posX="15" posY="0" posZ="5" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
