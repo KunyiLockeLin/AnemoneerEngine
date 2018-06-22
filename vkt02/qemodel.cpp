@@ -134,7 +134,7 @@ void QeModel::setMatModel() {
 	}
 	float dis = 1.0f;
 	if (bSameSizefromCamera) {
-		dis = MATH->distance(VP->getTargetCamera()->pos, pos) / 10;
+		dis = MATH->length(VP->getTargetCamera()->pos - pos) / 10;
 		dis = dis < 0.1f ? 0.1f : dis;
 	}
 	mat *= MATH->scale(size*dis);
@@ -261,7 +261,7 @@ void QeModel::updateShowByCulling() {
 	if (!bShow) return;
 	QeCamera* camera = VP->getTargetCamera();
 	bool _bCullingShow = true;
-	float dis = MATH->distance(pos, camera->pos);
+	float dis = MATH->length(pos - camera->pos);
 
 	if (cullingDistance) {
 		if (dis > cullingDistance) _bCullingShow = false;
@@ -270,7 +270,7 @@ void QeModel::updateShowByCulling() {
 		if (dis > camera->cullingDistance) _bCullingShow = false;
 	}
 
-	if (_bCullingShow) {
+	if (objectType != eObject_Cubemap && _bCullingShow) {
 		float angle = MATH->getAnglefromVectors(camera->face, pos - camera->pos);
 		if (angle > 100 || angle < -100) _bCullingShow = false;
 	}

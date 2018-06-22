@@ -125,7 +125,7 @@ public:
 	void iRandoms(int start, int range, int size, int* ret);
 	float fRandom(float start, float range);
 	void fRandoms(float start, float range, int size, float* ret);
-	QeMatrix4x4f lookAt(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up);
+	QeMatrix4x4f lookAt(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up);
 	QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
 	QeMatrix4x4f translate(QeVector3f& _pos);
 	QeMatrix4x4f rotate(float _angle, QeVector3f _axis);
@@ -141,7 +141,6 @@ public:
 	float length(QeVector2f& _vec);
 	float length(QeVector3f& _vec);
 	float length(QeVector4f& _vec);
-	float distance(QeVector3f& _from, QeVector3f& _to);
 	float dot(QeVector2f& _vec1, QeVector2f& _vec2);
 	float dot(QeVector3f& _vec1, QeVector3f& _vec2);
 	float dot(QeVector4f& _vec1, QeVector4f& _vec2);

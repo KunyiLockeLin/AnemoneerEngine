@@ -9,5 +9,4 @@ public:
 
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
-	virtual void updateShowByCulling();
 };

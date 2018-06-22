@@ -18,22 +18,3 @@ QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel(int index) {
 	descriptorSetData.cubeMapSamplers = mtlData->image.pCubeMap->sampler;
 	return descriptorSetData;
 }
-
-void QeCubemap::updateShowByCulling() {
-	if (!bShow) return;
-	QeCamera* camera = VP->getTargetCamera();
-	bool _bCullingShow = true;
-	float dis = MATH->distance(pos, camera->pos);
-
-	if (cullingDistance>0) {
-		if (dis > cullingDistance) _bCullingShow = false;
-	}
-	else {
-		if (dis > camera->cullingDistance) _bCullingShow = false;
-	}
-
-	if (_bCullingShow != bCullingShow) {
-		bCullingShow = _bCullingShow;
-		VP->bUpdateDrawCommandBuffers = true;
-	}
-}

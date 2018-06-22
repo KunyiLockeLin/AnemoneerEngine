@@ -131,7 +131,9 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 	QeVector3f move;
 	// forward
 	if (_dir.z) {
-		if (_dir.z >0 && MATH->length(pos - center) < 1) return;
+		if (_dir.z > 0 && MATH->length(pos - center) < 1) {
+			return;
+		}
 		move = face * _dir.z;
 	}
 	else {

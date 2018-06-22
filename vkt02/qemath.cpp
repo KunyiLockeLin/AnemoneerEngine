@@ -62,8 +62,6 @@ QeVector3f QeMath::cross(QeVector3f& _vec1, QeVector3f& _vec2) {
 QeVector3f QeMath::normalize(QeVector3f& _vec) { return _vec / length(_vec); }
 QeVector4f QeMath::normalize(QeVector4f& _vec) { return _vec / length(_vec); }
 
-float QeMath::distance(QeVector3f& _from, QeVector3f& _to) { return length(_to - _from); }
-
 float QeMath::length(QeVector2f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 float QeMath::length(QeVector3f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 float QeMath::length(QeVector4f& _vec) { return fastSqrt(dot(_vec, _vec)); }
@@ -88,10 +86,10 @@ float QeMath::fastSqrt(float _number) {
 }
 
 
-QeMatrix4x4f QeMath::lookAt(QeVector3f& _pos, QeVector3f& _target, QeVector3f& _up) {
+QeMatrix4x4f QeMath::lookAt(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up) {
 
 	QeMatrix4x4f _rtn;
-	QeVector3f _face = normalize(_target - _pos);
+	QeVector3f _face = normalize(_center - _pos);
 	QeVector3f _surface = normalize(cross(_face, _up));
 	QeVector3f _up1 = cross(_surface, _face);
 

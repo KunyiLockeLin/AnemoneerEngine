@@ -130,8 +130,8 @@ void QeObjectManger::sortAlphaModels() {
 	
 	for (size_t i = 0; i<size ;++i) {
 		for (size_t j = i + 1; j < size; ++j) {
-			float dis1 = MATH->distance( camera->pos, mgrAlphaModels[i]->pos);
-			float dis2 = MATH->distance(camera->pos, mgrAlphaModels[j]->pos);
+			float dis1 = MATH->length( camera->pos - mgrAlphaModels[i]->pos);
+			float dis2 = MATH->length(camera->pos - mgrAlphaModels[j]->pos);
 
 			if (dis1 < dis2) {
 				std::swap(mgrAlphaModels[i], mgrAlphaModels[j]);
