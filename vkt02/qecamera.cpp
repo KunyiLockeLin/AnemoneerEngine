@@ -10,8 +10,8 @@ void QeCamera::setProperty() {
 	AST->getXMLfValue(&center.y, initProperty, 1, "centerY");
 	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
 	face = MATH->normalize(center - pos);
-	QeVector3f vec = { pos - center };
-	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
+	//QeVector3f vec = { pos - center };
+	//MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
 
 	up = { 0.0f, 0.0f, 1.0f };
 	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
@@ -52,9 +52,30 @@ void QeCamera::setProperty() {
 
 void QeCamera::rotateTarget(float _angle, QeVector2f _axis) {
 
-	_angle *= speed;
+	QeVector3f vec = { pos - center };
+	float polarAngle, azimuthalAngle;
+	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
 
-	if (polarAngle < 0.1f && _angle < 0) return;
+	if ( (polarAngle < 1 && _angle < 0)|| (polarAngle > 179 && _angle > 0) ) return;
+	
+	_angle *= speed;
+	QeMatrix4x4f mat;
+	mat *= MATH->translate(center);
+
+	if ( _axis.x) {
+		float f = polarAngle + _angle;
+		if (f < 1)			_angle = -polarAngle;
+		else if (f > 179)	_angle = 180 - polarAngle;
+
+		QeVector3f up2 = MATH->normalize(MATH->cross(up, vec));
+		mat *= MATH->rotate(_angle, up2);
+	}
+	else	mat *= MATH->rotate(_angle, up);
+	
+	QeVector4f vec4 = QeVector4f(vec, 1.0f);
+	pos = mat * vec4;
+
+	/*if (polarAngle < 0.1f && _angle < 0) return;
 	if (polarAngle > 179.9f && _angle > 0) return;
 	
 	if (_axis.x) {
@@ -74,7 +95,7 @@ void QeCamera::rotateTarget(float _angle, QeVector2f _axis) {
 	while (azimuthalAngle > 360) azimuthalAngle -= 360;
 	while (azimuthalAngle < -360) azimuthalAngle += 360;
 
-	MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
+	MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);*/
 	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }
@@ -91,7 +112,7 @@ void QeCamera::rotateTarget(float _angle, QeVector2f _axis) {
 void QeCamera::rotateTarget(QeVector2i mousePos){
 
 	rotateTarget(float(mousePos.x - lastMousePos.x), { 0.0f, 1.0f });
-	rotateTarget(-float(mousePos.y - lastMousePos.y), { 1.0f, 0.0f });
+	rotateTarget(float(mousePos.y - lastMousePos.y), { 1.0f, 0.0f });
 	lastMousePos = mousePos;
 }
 

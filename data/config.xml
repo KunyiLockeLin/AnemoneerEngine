@@ -9,7 +9,7 @@
   <glfw>0</glfw>
   <glm>0</glm>
   <gli>0</gli>
-  <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
+  <envir renderFPS="20" computeFPS="20" width="1152" height="648" />
   <webenvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   
@@ -73,7 +73,7 @@
 
     <e eid="28001">
       <lights>
-        <e oid="27000" type="0" posX="3" posY="0" posZ="3" centerX="0" centerY="0" centerZ="0" upX="1" upY="0" upZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="200" coneAngle="90" speed="100">
+        <e oid="27000" type="0" posX="0" posY="3" posZ="3" centerX="0" centerY="0" centerZ="0" upX="1" upY="0" upZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="200" coneAngle="90" speed="100">
           <attachs>
             <e oid="11000" eid="11000" show="1" followPos="1" followColor="1"/>
             <e oid="13002" eid="13000" show="1" followPos="0" followColor="0"/>

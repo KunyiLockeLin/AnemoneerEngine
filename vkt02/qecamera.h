@@ -27,7 +27,7 @@ public:
 
 	bool bUpdate;
 	QeDataCamera bufferData;
-	float polarAngle, azimuthalAngle;
+	//float polarAngle, azimuthalAngle;
 
 	float fov;
 	float fnear;

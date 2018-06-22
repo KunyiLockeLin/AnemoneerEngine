@@ -27,14 +27,12 @@ void QeLight::setProperty() {
 	AST->getXMLfValue(&center.x, initProperty, 1, "centerX");
 	AST->getXMLfValue(&center.y, initProperty, 1, "centerY");
 	AST->getXMLfValue(&center.z, initProperty, 1, "centerZ");
-	vec = MATH->normalize( pos - center );
-	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
 
 	up = { 0.0f, 0.0f, 1.0f };
 	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
 	AST->getXMLfValue(&up.y, initProperty, 1, "upY");
 	AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
-
+	//up = MATH->normalize(MATH->cross(up, (pos - center)) );
 	bUpdate = true;
 }
 
@@ -42,19 +40,12 @@ void QeLight::setProperty() {
 void QeLight::updateCompute(float time) {
 
 	if (speed) {
-		float angle = time * speed;
 
-		//QeVector3f vec1 = MATH->normalize( MATH->cross(vec, up) );
-		//vec1 = {0,0,1};
-		polarAngle += vec.z*angle;
-		azimuthalAngle += MATH->length(QeVector2f(vec.x, vec.y))*angle;
-
-		while (polarAngle > 360) polarAngle -= 360;
-		while (polarAngle < -360) polarAngle += 360;
-		while (azimuthalAngle > 360) azimuthalAngle -= 360;
-		while (azimuthalAngle < -360) azimuthalAngle += 360;
-
-		MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
+		QeMatrix4x4f mat;
+		mat *= MATH->translate(center);
+		mat *= MATH->rotate(time * speed, up);
+		QeVector4f vec4 = QeVector4f({ pos - center }, 1.0f);
+		pos = mat * vec4;
 
 		bufferData.pos = pos;
 		bUpdate = true;
