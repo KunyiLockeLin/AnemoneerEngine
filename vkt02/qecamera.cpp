@@ -51,27 +51,7 @@ void QeCamera::setProperty() {
 void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
 
 	_angle *= speed;
-
-	QeVector3f vec = MATH->normalize(pos - center);
-	
-	float polarAngle, azimuthalAngle;
-	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
-	if (polarAngle < 0.1f && _angle < 0) return;
-	if (polarAngle > 179.9f && _angle > 0) return;
-
-	if (_axis.y) {
-		polarAngle += _angle;
-		if (polarAngle > 180) {
-			polarAngle = 179.99f;
-		}
-		else if (polarAngle < 0) {
-			polarAngle = 0.01f;
-		}
-	}
-	else if (_axis.z)	azimuthalAngle += _angle;
-
-	MATH->rotatefromCenter( center, pos, polarAngle, azimuthalAngle);
-	
+	MATH->rotatefromCenter(center, pos, QeVector2f(_axis.y, _axis.z), _angle, true);
 	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }

@@ -791,3 +791,25 @@ void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAn
 
 	pos = center + vec;
 }
+
+void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop ) {
+	QeVector3f vec = MATH->normalize(pos - center);
+
+	float polarAngle, azimuthalAngle;
+	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
+	if (polarAngle < 0.1f && angle < 0) return;
+	if (polarAngle > 179.9f && angle > 0) return;
+
+	if (axis.x) {
+		polarAngle += angle;
+		if (polarAngle > 180) {
+			polarAngle = 179.99f;
+		}
+		else if (polarAngle < 0) {
+			polarAngle = 0.01f;
+		}
+	}
+	else if (axis.y)	azimuthalAngle += angle;
+
+	MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
+}
