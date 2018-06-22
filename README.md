@@ -1,8 +1,8 @@
 # QueenEngine
   - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0
   
-    ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample01.jpg)
-    ![alt text](https://github.com/KunyiLockeLin/Vulkan/blob/master/sample02.jpg)
+    ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample01.jpg)
+    ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample02.jpg)
     
 # Feature:
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
