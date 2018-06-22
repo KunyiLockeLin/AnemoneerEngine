@@ -24,7 +24,7 @@
     </cameras>
 
     <lights>
-      <e oid="27000" type="0" posX="5" posY="0" posZ="3" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="300" coneAngle="90" speed="20">
+        <e oid="27000" type="0" posX="5" posY="0" posZ="3" centerX="0" centerY="0" centerZ="3" axisX="0" axisY="1" axisZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="300" coneAngle="90" speed="50">
         <attachs>
           <e oid="11000" eid="11000" show="1" followPos="1" followColor="1"/>
         </attachs>
@@ -97,7 +97,6 @@
     </e>
     
     <e eid="28002">
-      <postprocessing frag="grayscalef.spv"/>
     </e>
   </scenes>
   
