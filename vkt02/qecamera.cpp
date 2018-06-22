@@ -30,18 +30,7 @@ void QeCamera::setProperty() {
 
 	ffar = 1000.0f;
 	AST->getXMLfValue(&ffar, initProperty, 1, "far");
-	bUpdate = true;
-}
 
-
-void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up, float _fov, float _near, float _far) {
-	pos = _pos;
-	center = _center;
-	up = _up;
-	fov = _fov;
-	fnear = _near;
-	ffar = _far;
-	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }
 
@@ -60,36 +49,29 @@ void QeCamera::setCamera(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up,
 }*/
 
 void QeCamera::rotateTarget(float _angle, QeVector3f _axis) {
+
+	_angle *= speed;
+
+	QeVector3f vec = MATH->normalize(pos - center);
 	
-	while (_angle > 360) _angle -= 360;
-	while (_angle < -360) _angle += 360;
+	float polarAngle, azimuthalAngle;
+	MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
+	if (polarAngle < 0.1f && _angle < 0) return;
+	if (polarAngle > 179.9f && _angle > 0) return;
 
-	QeVector3f vec = pos - center;
-	QeVector3f vn = MATH->normalize(vec);
 	if (_axis.y) {
-		
-		float outPolarAngle, outAzimuthalAngle;
-		MATH->getAnglefromVector(vec, outPolarAngle, outAzimuthalAngle);
-		float len = MATH->length(vec);
-		if (_angle > 0) {
-			if (outPolarAngle > 89) return;
-			float f = outPolarAngle + _angle;
-			if (f > 90) _angle = 90 - outPolarAngle;
-		} 
-		else if (_angle < 0) {
-			if (outPolarAngle < -89) return;
-			float f = outPolarAngle + _angle;
-			if (f < -90) _angle = -90 - outPolarAngle;
+		polarAngle += _angle;
+		if (polarAngle > 180) {
+			polarAngle = 179.99f;
 		}
-		_axis = MATH->cross(vn, up);
+		else if (polarAngle < 0) {
+			polarAngle = 0.01f;
+		}
 	}
+	else if (_axis.z)	azimuthalAngle += _angle;
 
-	QeMatrix4x4f mat;
-	mat *= MATH->translate(center);
-	mat *= MATH->rotate(_angle*speed, _axis);
-	QeVector4f v4(vec, 1);
-	pos = mat*v4;
-
+	MATH->rotatefromCenter( center, pos, polarAngle, azimuthalAngle);
+	
 	face = MATH->normalize(center - pos);
 	bUpdate = true;
 }
@@ -126,20 +108,21 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 	// forward
 	if (_dir.z) {
 		if (_dir.z >0 && MATH->length(pos - center) < 1) return;
-		move = face * _dir.z*speed;
+		move = face * _dir.z;
 	}
 	else {
 		QeVector3f _surface = MATH->normalize(MATH->cross(face, up));
 		//left
 		if (_dir.x) {
-			move = _surface * _dir.x*speed;
+			move = _surface * _dir.x;
 		}
 		//up
 		if (_dir.y) {
 			QeVector3f _up1 = MATH->cross(_surface, face);
-			move = _up1 * _dir.y*speed;
+			move = _up1 * _dir.y;
 		}
 	}
+	move *= speed;
 	pos += move;
 
 	//if (type == eCameraFirstPerson) {

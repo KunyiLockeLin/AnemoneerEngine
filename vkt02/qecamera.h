@@ -40,7 +40,6 @@ public:
 	virtual void reset();
 	void setMatrix();
 	//void switchType(QeCameraType _type);
-	void setCamera(QeVector3f& _pos, QeVector3f& _center, QeVector3f& _up, float _fov, float _near, float _far );
 	//void rotatePos(float _angle, QeVector3f _axis);
 	void rotateTarget(float _angle, QeVector3f _axis);
 	//void rotatePos(QeVector2i mousePos);

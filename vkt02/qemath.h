@@ -153,4 +153,5 @@ public:
 	QeVector3f interpolatePos(QeVector3f& start, QeVector3f& end, float progression);
 	float getAnglefromVectors(QeVector3f& v1, QeVector3f& v2 );
 	void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
+	void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
 };

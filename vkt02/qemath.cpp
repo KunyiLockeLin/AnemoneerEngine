@@ -761,6 +761,33 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 }
 
 void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
-	outPolarAngle = atan( inV.z / (fastSqrt(inV.x*inV.x + inV.y*inV.y)) )*RADIANS_TO_DEGREES;
+	outPolarAngle = atan( (fastSqrt(inV.x*inV.x + inV.y*inV.y))/ inV.z )*RADIANS_TO_DEGREES;
 	outAzimuthalAngle = atan(inV.y/inV.x)*RADIANS_TO_DEGREES;
+
+	if (inV.x < 0)		outAzimuthalAngle = 180 + outAzimuthalAngle;
+	else if (inV.y < 0)	outAzimuthalAngle = 360 + outAzimuthalAngle;
+
+	if (inV.z < 0)		outPolarAngle = 180 + outPolarAngle;
+}
+
+void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle) {
+
+	QeVector3f vec = pos - center;
+	float len = MATH->length(vec);
+
+	while (polarAngle > 360) polarAngle -= 360;
+	while (polarAngle < -360) polarAngle += 360;
+
+	while (azimuthalAngle > 360) azimuthalAngle -= 360;
+	while (azimuthalAngle < -360) azimuthalAngle += 360;
+
+	float polarAngle2 = polarAngle * MATH->DEGREES_TO_RADIANS;
+	float azimuthalAngle2 = azimuthalAngle * MATH->DEGREES_TO_RADIANS;
+
+	vec.z = len * cos(polarAngle2);
+	float sinP = len * sin(polarAngle2);
+	vec.x = sinP * cos(azimuthalAngle2);
+	vec.y = sinP * sin(azimuthalAngle2);
+
+	pos = center + vec;
 }
