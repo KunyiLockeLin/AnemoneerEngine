@@ -134,8 +134,8 @@ void QeModel::setMatModel() {
 	}
 	float dis = 1.0f;
 	if (bFixSize) {
-		dis = MATH->length(VP->getTargetCamera()->pos - pos) / 10;
-		dis = dis < 0.1f ? 0.1f : dis;
+		dis = MATH->length(VP->getTargetCamera()->pos - pos);
+		dis = dis < 0.1f ? 0.01f : dis/10;
 	}
 	mat *= MATH->scale(size*dis);
 	
