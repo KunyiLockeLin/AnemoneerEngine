@@ -281,82 +281,84 @@ void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain,
 	}
 }
 
-VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
-	VkAttachmentDescription colorAttachment1 = {};
-	//colorAttachment1.flags = 0;
-	colorAttachment1.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-	colorAttachment1.format = swapChainImageFormat;
-	colorAttachment1.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment1.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment1.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment1.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment1.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment1.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment1.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, bool bMainRender) {
 
-	VkAttachmentDescription colorAttachment2 = {};
-	//colorAttachment2.flags = 0;
-	colorAttachment2.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-	colorAttachment2.format = swapChainImageFormat;
-	colorAttachment2.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment2.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment2.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colorAttachment2.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment2.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment2.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment2.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	std::vector<VkAttachmentDescription> attachments;
+	attachments.resize(subpassNum+1);
 
-	VkAttachmentDescription depthAttachment = {};
-	//depthAttachment.flags = 0;
-	depthAttachment.format = findDepthFormat();
-	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+	attachments[0].format = format;
+	attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
+	attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	
+	if (subpassNum == 1 && bMainRender) {
+		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	}
+	else {
+		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	}
 
-	VkAttachmentReference colorAttachmentRef1 = {};
-	colorAttachmentRef1.attachment = 0;
-	colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	attachments[1].format = findDepthFormat();
+	attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
+	attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+	if (subpassNum == 2 && bMainRender) {
+		attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		attachments[2].format = format;
+		attachments[2].samples = VK_SAMPLE_COUNT_1_BIT;
+		attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[2].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachments[2].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		attachments[2].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	}
+
+	std::vector<VkSubpassDescription> subpasses;
+	subpasses.resize(subpassNum);
+
+	VkAttachmentReference colorAttachmentRef = {};
+	colorAttachmentRef.attachment = 0;
+	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 	VkAttachmentReference depthAttachmentRef = {};
 	depthAttachmentRef.attachment = 1;
 	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	VkAttachmentReference inputAttachmentRef = {};
-	inputAttachmentRef.attachment = 0;
-	inputAttachmentRef.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	subpasses[0].flags = 0;
+	subpasses[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpasses[0].colorAttachmentCount = 1;
+	subpasses[0].pColorAttachments = &colorAttachmentRef;
+	subpasses[0].pDepthStencilAttachment = &depthAttachmentRef;
 
-	VkAttachmentReference colorAttachmentRef2 = {};
-	colorAttachmentRef2.attachment = 2;
-	colorAttachmentRef2.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	if (subpassNum == 2) {
 
-	VkSubpassDescription subpass1 = {};
-	subpass1.flags = 0;
-	subpass1.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass1.colorAttachmentCount = 1;
-	subpass1.pColorAttachments = &colorAttachmentRef1;
-	subpass1.pDepthStencilAttachment = &depthAttachmentRef;
-	
-	VkSubpassDescription subpass2 = {};
-	subpass2.flags = 0;
-	subpass2.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass2.inputAttachmentCount = 1;
-	subpass2.pInputAttachments = &inputAttachmentRef;
-	subpass2.colorAttachmentCount = 1;
-	subpass2.pColorAttachments = &colorAttachmentRef2;
+		VkAttachmentReference inputAttachmentRef = {};
+		inputAttachmentRef.attachment = 0;
+		inputAttachmentRef.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-	/*VkSubpassDependency dependency = {};
-	dependency.srcSubpass = 0;
-	dependency.dstSubpass = 1;
-	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-	dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
-	dependency.dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-	*/
+		VkAttachmentReference colorAttachmentRef1 = {};
+		colorAttachmentRef1.attachment = 2;
+		colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		subpasses[1].flags = 0;
+		subpasses[1].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpasses[1].inputAttachmentCount = 1;
+		subpasses[1].pInputAttachments = &inputAttachmentRef;
+		subpasses[1].colorAttachmentCount = 1;
+		subpasses[1].pColorAttachments = &colorAttachmentRef1;
+	}
+
 	std::array<VkSubpassDependency, 2> dependencies;
 
 	dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -375,8 +377,6 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat& swapChainImageFormat) {
 	dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
 	dependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 	
-	std::array<VkAttachmentDescription, 3> attachments = { colorAttachment1, depthAttachment, colorAttachment2 };
-	std::array<VkSubpassDescription, 2> subpasses = { subpass1, subpass2 };
 	VkRenderPassCreateInfo renderPassInfo = {};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
@@ -464,17 +464,20 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, 
-								  std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) {
+void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& presentImage, QeVKImage& depthImage,
+								  std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, int subpassNum, bool bMainRender) {
 	framebuffers.resize(swapChainImages.size());
 
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
-		std::array<VkImageView, 3> attachments = {
-			//swapChainImageViews[i],
-			sceneImage.view,
-			depthImage.view,
-			swapChainImages[i].view
-		};
+
+		std::vector<VkImageView> attachments;
+		attachments.resize(subpassNum + 1);
+		if (!bMainRender || subpassNum > 1) attachments[0] = presentImage.view;
+		else								attachments[0] = swapChainImages[i].view;
+		
+		attachments[1] = depthImage.view;
+
+		if (bMainRender && subpassNum>1) attachments[2] = swapChainImages[i].view;
 
 		VkFramebufferCreateInfo framebufferInfo = {};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;

@@ -3,25 +3,6 @@
 #include "qeheader.h"
 
 
-struct QeDataSubRender {
-
-	std::vector<VkViewport> viewports;
-	std::vector<VkRect2D> scissors;
-	std::vector<QeCamera*> cameras;
-
-	VkDescriptorImageInfo descriptor;
-	QeVKImage presentImage, depthImage;
-	VkRenderPass renderPass;
-	VkCommandBuffer commandBuffer;
-	VkSemaphore semaphore = VK_NULL_HANDLE;
-	QeAssetGraphicsShader graphicsShader;
-
-	QeDataDescriptorSet postprocessingDescriptorSet;
-	QeDataGraphicsPipeline* postprocessingPipeline = nullptr;
-
-	QeDataSubRender():presentImage(eImage_inputAttach), depthImage(eImage_depth), postprocessingDescriptorSet(eDescriptorSetLayout_Postprocessing){}
-};
-
 struct QeDataEnvironment {
 	QeVector4f ambientColor;
 	QeDataCamera camera;
@@ -43,6 +24,24 @@ struct QeDataViewport {
 		commonDescriptorSet(eDescriptorSetLayout_Common) {}
 };
 
+struct QeDataSubRender {
+
+	std::vector<QeDataViewport*> viewports;
+
+	VkDescriptorImageInfo descriptor;
+	QeVKImage presentImage, depthImage;
+	VkRenderPass renderPass;
+	VkFramebuffer frameBuffer;
+	VkCommandBuffer commandBuffer;
+	VkSemaphore semaphore = VK_NULL_HANDLE;
+	QeAssetGraphicsShader graphicsShader;
+	int subpassNum;
+	QeDataDescriptorSet postprocessingDescriptorSet;
+	QeDataGraphicsPipeline* postprocessingPipeline = nullptr;
+
+	QeDataSubRender() :presentImage(eImage_inputAttach), depthImage(eImage_depth), postprocessingDescriptorSet(eDescriptorSetLayout_Postprocessing) {}
+};
+
 class QeGraphics
 {
 public:
@@ -60,7 +59,7 @@ public:
 	std::vector<QeDataViewport*> viewports;
 	VkViewport mainViewport;
 	VkRect2D mainScissor;
-
+	int subpassNum;
 	QeVKImage presentImage, depthImage;
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
@@ -101,6 +100,7 @@ public:
 	//VkSemaphore textOverlayComplete;
 
 	void createRender();
+	void createSubRender();
 	void cleanupRender();
 	void recreateRender();
 	void drawFrame();

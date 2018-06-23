@@ -188,8 +188,8 @@ public:
 	void createLogicalDevice();
 
 	void createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<QeVKImage>& swapChainImages);
-	VkRenderPass createRenderPass(VkFormat& swapChainImageFormat);
-	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& sceneImage, QeVKImage& depthImage, std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
+	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& presentImage, QeVKImage& depthImage, std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, int subpassNum, bool bMainRender);
 	void createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
 	void createCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers, size_t size);
 	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);

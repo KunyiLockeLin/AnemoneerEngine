@@ -21,8 +21,14 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
-	AST->setGraphicsShader(graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing" );
-	VK->createDescriptorSet(postprocessingDescriptorSet);
+	QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
+	if (node) {
+		subpassNum = 2;
+		AST->setGraphicsShader(graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
+		VK->createDescriptorSet(postprocessingDescriptorSet);
+	}
+	else subpassNum = 1;
+
 	VK->createSyncObjects(imageAvailableSemaphores, renderFinishedSemaphores, inFlightFences);
 }
 
@@ -254,9 +260,9 @@ void QeGraphics::drawFrame() {
 void QeGraphics::createRender() {
 
 	VK->createSwapChain(VK->surface, swapChain, swapChainExtent, swapChainImageFormat, swapChainImages);
-	renderPass = VK->createRenderPass(swapChainImageFormat );
+	renderPass = VK->createRenderPass(swapChainImageFormat, subpassNum, true );
 	VK->createPresentDepthImage(presentImage, depthImage, swapChainExtent);
-	VK->createFramebuffers(swapChainFramebuffers, presentImage, depthImage, swapChainImages, swapChainExtent, renderPass);
+	VK->createFramebuffers(swapChainFramebuffers, presentImage, depthImage, swapChainImages, swapChainExtent, renderPass, subpassNum, true);
 	VK->createCommandBuffers(drawCommandBuffers, swapChainImages.size());
 
 	mainViewport.minDepth = 0.0f;
@@ -270,6 +276,53 @@ void QeGraphics::createRender() {
 	mainScissor.offset.y = int(mainViewport.y);
 	mainScissor.extent.height = uint32_t(mainViewport.height);
 	mainScissor.extent.width = uint32_t(mainViewport.width);
+}
+
+void QeGraphics::createSubRender() {
+
+	QeDataSubRender subRender;
+
+	QeDataViewport* vp = new QeDataViewport();
+	subRender.viewports.push_back(vp);
+
+	VkExtent2D size;
+	size.width = swapChainExtent.width / 2;
+	size.height = swapChainExtent.height / 2;
+
+	vp->viewport.minDepth = 0.0f;
+	vp->viewport.maxDepth = 1.0f;
+	vp->viewport.width = float(size.width);
+	vp->viewport.height = float(size.height);
+	vp->viewport.x = vp->viewport.width/2;
+	vp->viewport.y = vp->viewport.height/2;
+	vp->scissor.offset.x = uint32_t(vp->viewport.x);
+	vp->scissor.offset.y = uint32_t(vp->viewport.y);
+	vp->scissor.extent.height = uint32_t(vp->viewport.height);
+	vp->scissor.extent.width = uint32_t(vp->viewport.width);
+
+	QeDataDescriptorSetCommon data;
+
+	QeAssetXML* node = AST->getXMLNode(initProperty, 1, "cameras");
+	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "cameras");
+	node = node->nexts[0];
+
+	int oid = 0;
+	AST->getXMLiValue(&oid, node, 1, "oid");
+	vp->camera = (QeCamera*)OBJMGR->getObject(oid + int(viewports.size()), node);
+
+	VK->createBuffer(vp->environmentBuffer, sizeof(vp->environmentData), nullptr);
+	data.environmentBuffer = vp->environmentBuffer.buffer;
+
+	VK->createDescriptorSet(vp->commonDescriptorSet);
+	VK->updateDescriptorSet(&data, vp->commonDescriptorSet);
+
+	VK->createPresentDepthImage(subRender.presentImage, subRender.depthImage, size);
+	subRender.subpassNum = 1;
+	subRender.renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, subRender.subpassNum, false);
+
+
+	subRenders.push_back(subRender);
+	bRecreateRender = true;
 }
 
 void QeGraphics::cleanupRender() {
@@ -322,14 +375,15 @@ void QeGraphics::recreateRender() {
 
 	cleanupRender();
 	createRender();
-
+	//createSubRender();
 	updateViewport();
 
-	QeDataDescriptorSetPostprocessing data;
-	data.inputAttachImageViews = presentImage.view;
-	VK->updateDescriptorSet(&data, postprocessingDescriptorSet);
-	postprocessingPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Postprogessing, false, 1);
-
+	if (subpassNum > 1) {
+		QeDataDescriptorSetPostprocessing data;
+		data.inputAttachImageViews = presentImage.view;
+		VK->updateDescriptorSet(&data, postprocessingDescriptorSet);
+		postprocessingPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Postprogessing, false, 1);
+	}
 	OBJMGR->recreatePipeline();
 }
 
@@ -404,13 +458,14 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			OBJMGR->updateDrawCommandBuffer(drawCommandBuffers[i]);
 		}
-		vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdSetViewport(drawCommandBuffers[i], 0, 1, &mainViewport);
-		vkCmdSetScissor(drawCommandBuffers[i], 0, 1, &mainScissor);
-		vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &postprocessingDescriptorSet.set, 0, nullptr);
-		vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline->graphicsPipeline);
-		vkCmdDraw(drawCommandBuffers[i], 1, 1, 0, 0);
-		
+		if (subpassNum > 1) {
+			vkCmdNextSubpass(drawCommandBuffers[i], VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdSetViewport(drawCommandBuffers[i], 0, 1, &mainViewport);
+			vkCmdSetScissor(drawCommandBuffers[i], 0, 1, &mainScissor);
+			vkCmdBindDescriptorSets(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &postprocessingDescriptorSet.set, 0, nullptr);
+			vkCmdBindPipeline(drawCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, postprocessingPipeline->graphicsPipeline);
+			vkCmdDraw(drawCommandBuffers[i], 1, 1, 0, 0);
+		}
 		vkCmdEndRenderPass(drawCommandBuffers[i]);
 		if (vkEndCommandBuffer(drawCommandBuffers[i]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 	}
