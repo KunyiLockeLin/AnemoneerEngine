@@ -52,9 +52,13 @@ void QeActivity::init(QeAssetXML* _property) {
 		}
 	}
 
+	gridsNum = 0;
 	node = AST->getXMLNode(_property, 1, "grids");
 	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "grids");
-	if (node)	grids = (QeLine*)OBJMGR->getObject(0, node);
+	if (node) {
+		AST->getXMLiValue(&gridsNum, node, 1, "num");
+		grids = (QeLine*)OBJMGR->getObject(0, node);
+	}
 
 	node = AST->getXMLNode(_property, 1, "axis");
 	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "axis");

@@ -14,6 +14,7 @@ public:
 	QeLight * light = nullptr;
 	QeLine * axis = nullptr;
 	QeLine * grids = nullptr;
+	int gridsNum;
 
 	void init(QeAssetXML * _property);
 	void eventInput(QeInputData & inputData);

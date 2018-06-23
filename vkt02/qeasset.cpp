@@ -844,13 +844,13 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->scale = { 1 , 1 , 1 };
 		vertex.color = { 0.5f, 0.5f, 0.5f,1.0f };
 
-		for (index = -GRIDS_NUM; index <= GRIDS_NUM; ++index) {
-			vertex.pos = { index, -GRIDS_NUM, 0,1 };
-			vertex.normal = { 0, GRIDS_NUM*2, 0, 1 };
+		for (index = -ACT->gridsNum; index <= ACT->gridsNum; ++index) {
+			vertex.pos = { index, -ACT->gridsNum, 0,1 };
+			vertex.normal = { 0, ACT->gridsNum *2, 0, 1 };
 			model->vertices.push_back(vertex);
 
-			vertex.pos = { -GRIDS_NUM, index, 0,1 };
-			vertex.normal = { GRIDS_NUM*2, 0, 0, 1 };
+			vertex.pos = { -ACT->gridsNum, index, 0,1 };
+			vertex.normal = { ACT->gridsNum *2, 0, 0, 1 };
 			model->vertices.push_back(vertex);
 		}
 		break;

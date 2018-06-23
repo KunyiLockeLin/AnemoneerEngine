@@ -57,7 +57,6 @@ const int MAX_DESCRIPTOR_STORAG_NUM = UINT8_MAX;
 const int MAX_DESCRIPTOR_NUM = UINT8_MAX;
 const int MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
-const int GRIDS_NUM = 10;
 
 struct QeVKBuffer;
 struct QeVKImageBuffer;
