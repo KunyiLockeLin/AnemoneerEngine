@@ -946,12 +946,13 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, bool bAlpha, uint8_t subpassIndex) {
+QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha, uint8_t subpassIndex) {
 
 	std::vector<QeDataGraphicsPipeline*>::iterator it = graphicsPipelines.begin();
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == shader->vert && (*it)->shader->tesc == shader->tesc && (*it)->shader->tese == shader->tese &&
-			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->bAlpha == bAlpha && (*it)->subpassIndex == subpassIndex) {
+			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->renderPass == renderpass &&
+			(*it)->bAlpha == bAlpha && (*it)->subpassIndex == subpassIndex) {
 			return *it;
 		}
 		++it;
@@ -1160,7 +1161,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = VP->renderPass;
+	pipelineInfo.renderPass = renderpass;
 	pipelineInfo.subpass = subpassIndex;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -1181,6 +1182,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	s->bAlpha = bAlpha;
 	s->subpassIndex = subpassIndex;
 	s->type = type;
+	s->renderPass = renderpass;
 	s->graphicsPipeline = graphicsPipeline;
 	graphicsPipelines.push_back(s);
 

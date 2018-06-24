@@ -60,10 +60,10 @@ void QeModel::createPipeline() {
 		break;
 	}
 
-	graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, VP->renderPass, bAlpha);
 
 	if (VK->bShowNormal && normalShader.vert) {
-		normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point);
+		normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, VP->renderPass);
 	}
 	if(computeShader) computePipeline = VK->createComputePipeline(computeShader);
 }

@@ -396,7 +396,7 @@ void QeGraphics::recreateRender() {
 		QeDataDescriptorSetPostprocessing data;
 		data.inputAttachImageViews = presentImage.view;
 		VK->updateDescriptorSet(&data, postprocessingDescriptorSet);
-		postprocessingPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Postprogessing, false, 1);
+		postprocessingPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Postprogessing, renderPass, false, 1);
 	}
 	OBJMGR->recreatePipeline();
 }
