@@ -464,32 +464,30 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-void QeVulkan::createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& presentImage, QeVKImage& depthImage,
-								  std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, int subpassNum, bool bMainRender) {
-	framebuffers.resize(swapChainImages.size());
-
-	for (size_t i = 0; i < swapChainImages.size(); i++) {
-
-		std::vector<VkImageView> attachments;
-		attachments.resize(subpassNum + 1);
-		if (!bMainRender || subpassNum > 1) attachments[0] = presentImage.view;
-		else								attachments[0] = swapChainImages[i].view;
+VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* swapChainImage, VkExtent2D swapChainExtent, VkRenderPass renderPass, int subpassNum, bool bMainRender) {
+	
+	std::vector<VkImageView> attachments;
+	attachments.resize(subpassNum + 1);
+	if (!bMainRender || subpassNum > 1) attachments[0] = presentImage->view;
+	else								attachments[0] = swapChainImage->view;
 		
-		attachments[1] = depthImage.view;
+	attachments[1] = depthImage->view;
 
-		if (bMainRender && subpassNum>1) attachments[2] = swapChainImages[i].view;
+	if (bMainRender && subpassNum>1) attachments[2] = swapChainImage->view;
 
-		VkFramebufferCreateInfo framebufferInfo = {};
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-		framebufferInfo.pAttachments = attachments.data();
-		framebufferInfo.width = swapChainExtent.width;
-		framebufferInfo.height = swapChainExtent.height;
-		framebufferInfo.layers = 1;
+	VkFramebufferCreateInfo framebufferInfo = {};
+	framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	framebufferInfo.renderPass = renderPass;
+	framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+	framebufferInfo.pAttachments = attachments.data();
+	framebufferInfo.width = swapChainExtent.width;
+	framebufferInfo.height = swapChainExtent.height;
+	framebufferInfo.layers = 1;
 
-		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &framebuffers[i]) != VK_SUCCESS)	LOG("failed to create framebuffer!");
-	}
+	VkFramebuffer framebuffer;
+	if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &framebuffer) != VK_SUCCESS)	LOG("failed to create framebuffer!");
+	
+	return framebuffer;
 }
 
 void QeVulkan::createCommandPool() {
@@ -690,23 +688,18 @@ uint32_t QeVulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pro
 	return VK_NULL_HANDLE;
 }
 
-void QeVulkan::createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences) {
+void QeVulkan::createSyncObject(VkSemaphore* semaphore, VkFence* fence) {
 
-	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-
-	VkSemaphoreCreateInfo semaphoreInfo = {};
-	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-	VkFenceCreateInfo fenceInfo = {};
-	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) LOG("failed to create synchronization objects for a frame!");
+	if (semaphore) {
+		VkSemaphoreCreateInfo semaphoreInfo = {};
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+		vkCreateSemaphore(device, &semaphoreInfo, nullptr, semaphore);
+	}
+	if (fence) {
+		VkFenceCreateInfo fenceInfo = {};
+		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+		vkCreateFence(device, &fenceInfo, nullptr, fence);
 	}
 }
 
@@ -877,16 +870,17 @@ VKAPI_ATTR VkBool32 VKAPI_CALL QeVulkan::debugCallback(VkDebugReportFlagsEXT fla
 	return VK_FALSE;
 }
 
-void QeVulkan::createCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers, size_t size) {
-	commandBuffers.resize(size);
+VkCommandBuffer QeVulkan::createCommandBuffer() {
 
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.commandPool = commandPool;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
+	allocInfo.commandBufferCount = 1;
 
-	if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) LOG("failed to allocate command buffers!");
+	VkCommandBuffer commandBuffer;
+	if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) LOG("failed to allocate command buffers!");
+	return commandBuffer;
 }
 
 VkSurfaceKHR QeVulkan::createSurface(HWND& window, HINSTANCE& windowInstance) {

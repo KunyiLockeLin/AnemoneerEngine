@@ -4,7 +4,7 @@
 QeGraphics ::~QeGraphics() {
 	cleanupRender();
 
-	for (size_t i = 0; i < VK->MAX_FRAMES_IN_FLIGHT; i++) {
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(VK->device, renderFinishedSemaphores[i], nullptr);
 		vkDestroySemaphore(VK->device, imageAvailableSemaphores[i], nullptr);
 		vkDestroyFence(VK->device, inFlightFences[i], nullptr);
@@ -29,7 +29,14 @@ void QeGraphics::init(QeAssetXML* _property) {
 	}
 	else subpassNum = 1;
 
-	VK->createSyncObjects(imageAvailableSemaphores, renderFinishedSemaphores, inFlightFences);
+	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
+	for (int i = 0;i<MAX_FRAMES_IN_FLIGHT; ++i) {
+		VK->createSyncObject(&imageAvailableSemaphores[i], &inFlightFences[i]);
+		VK->createSyncObject(&renderFinishedSemaphores[i], nullptr);
+	}
 }
 
 void QeGraphics::updateViewport() {
@@ -254,7 +261,7 @@ void QeGraphics::drawFrame() {
 
 	else if (result != VK_SUCCESS)	LOG("failed to present swap chain image!");
 
-	currentFrame = (++currentFrame) % VK->MAX_FRAMES_IN_FLIGHT;
+	currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;
 }
 
 void QeGraphics::createRender() {
@@ -262,9 +269,14 @@ void QeGraphics::createRender() {
 	VK->createSwapChain(VK->surface, swapChain, swapChainExtent, swapChainImageFormat, swapChainImages);
 	renderPass = VK->createRenderPass(swapChainImageFormat, subpassNum, true );
 	VK->createPresentDepthImage(presentImage, depthImage, swapChainExtent);
-	VK->createFramebuffers(swapChainFramebuffers, presentImage, depthImage, swapChainImages, swapChainExtent, renderPass, subpassNum, true);
-	VK->createCommandBuffers(drawCommandBuffers, swapChainImages.size());
 
+	size_t size = swapChainImages.size();
+	swapChainFramebuffers.resize(size);
+	drawCommandBuffers.resize(size);
+	for (size_t i = 0; i < size; ++i) {
+		swapChainFramebuffers[i] = VK->createFramebuffer(&presentImage, &depthImage, &swapChainImages[i], swapChainExtent, renderPass, subpassNum, true);
+		drawCommandBuffers[i] = VK->createCommandBuffer();
+	}
 	mainViewport.minDepth = 0.0f;
 	mainViewport.maxDepth = 1.0f;
 	mainViewport.x = 0.0f;
@@ -319,7 +331,9 @@ void QeGraphics::createSubRender() {
 	VK->createPresentDepthImage(subRender.presentImage, subRender.depthImage, size);
 	subRender.subpassNum = 1;
 	subRender.renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, subRender.subpassNum, false);
-
+	subRender.frameBuffer = VK->createFramebuffer(&subRender.presentImage, &subRender.depthImage, nullptr, size, subRender.renderPass, subRender.subpassNum, false);
+	subRender.commandBuffer = VK->createCommandBuffer();
+	VK->createSyncObject(&subRender.semaphore, nullptr);
 
 	subRenders.push_back(subRender);
 	bRecreateRender = true;

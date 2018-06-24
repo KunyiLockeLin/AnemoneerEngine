@@ -52,6 +52,7 @@ public:
 	QeAssetXML* initProperty;
 
 	std::vector<QeDataSubRender> subRenders;
+	const int MAX_FRAMES_IN_FLIGHT = 2;
 
 	// main render
 	int currentCommandViewport = 0;

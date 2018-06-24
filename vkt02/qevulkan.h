@@ -139,7 +139,6 @@ public:
 	QeVulkan(QeGlobalKey& _key) {}
 	~QeVulkan();
 
-	const int MAX_FRAMES_IN_FLIGHT = 2;
 	const std::vector<const char*> validationLayers = {	"VK_LAYER_LUNARG_standard_validation"};
 	const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
@@ -189,10 +188,10 @@ public:
 
 	void createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<QeVKImage>& swapChainImages);
 	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
-	void createFramebuffers(std::vector<VkFramebuffer>& framebuffers, QeVKImage& presentImage, QeVKImage& depthImage, std::vector<QeVKImage>& swapChainImages, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, int subpassNum, bool bMainRender);
+	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* swapChainImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
 	void createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
-	void createCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers, size_t size);
-	void createSyncObjects(std::vector<VkSemaphore>& imageAvailableSemaphores, std::vector<VkSemaphore>& renderFinishedSemaphores, std::vector<VkFence>& inFlightFences);
+	VkCommandBuffer createCommandBuffer();
+	void createSyncObject(VkSemaphore* semaphore, VkFence* inFlightFences);
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 
 	void createDescriptorSetLayout();
