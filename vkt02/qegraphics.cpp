@@ -4,13 +4,13 @@
 QeGraphics ::~QeGraphics() {
 	cleanupRender();
 
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		vkDestroySemaphore(VK->device, renderFinishedSemaphores[i], nullptr);
-		vkDestroySemaphore(VK->device, imageAvailableSemaphores[i], nullptr);
+	for (size_t i = 0; i < swapChainImages.size(); i++)
 		vkDestroyFence(VK->device, inFlightFences[i], nullptr);
-	}
-	renderFinishedSemaphores.clear();
-	imageAvailableSemaphores.clear();
+	
+	vkDestroySemaphore(VK->device, renderFinishedSemaphore, nullptr);
+	vkDestroySemaphore(VK->device, imageAvailableSemaphore, nullptr);
+	//renderFinishedSemaphores.clear();
+	//imageAvailableSemaphores.clear();
 	inFlightFences.clear();
 }
 
@@ -28,15 +28,6 @@ void QeGraphics::init(QeAssetXML* _property) {
 		VK->createDescriptorSet(postprocessingDescriptorSet);
 	}
 	else subpassNum = 1;
-
-	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-
-	for (int i = 0;i<MAX_FRAMES_IN_FLIGHT; ++i) {
-		VK->createSyncObject(&imageAvailableSemaphores[i], &inFlightFences[i]);
-		VK->createSyncObject(&renderFinishedSemaphores[i], nullptr);
-	}
 }
 
 void QeGraphics::updateViewport() {
@@ -214,11 +205,13 @@ void QeGraphics::updateRender(float time) {
 
 void QeGraphics::drawFrame() {
 
+	static int currentFrame = 0;
+
 	vkWaitForFences(VK->device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	vkResetFences(VK->device, 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(VK->device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(VK->device, swapChain, std::numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		bRecreateRender = true;
@@ -226,20 +219,41 @@ void QeGraphics::drawFrame() {
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image! "+ result);
 
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+	size_t size = subRenders.size();
+	for (size_t i = 0; i<size ;++i ) {
+		if (subRenders.size() > 0) {
+
+			VkSubmitInfo submitInfo = {};
+			submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			submitInfo.commandBufferCount = 1;
+			submitInfo.pCommandBuffers = &subRenders[i].commandBuffer;
+			submitInfo.waitSemaphoreCount = 1;
+			if(i==0)	submitInfo.pWaitSemaphores = &imageAvailableSemaphore;
+			else		submitInfo.pWaitSemaphores = &subRenders[i-1].semaphore;
+			submitInfo.pWaitDstStageMask = waitStages;
+			submitInfo.signalSemaphoreCount = 1;
+			submitInfo.pSignalSemaphores = &subRenders[i].semaphore;
+
+			result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]);
+			if (result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
+		}
+	}
 
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &drawCommandBuffers[imageIndex];
 	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
+	if(size>0)
+		submitInfo.pWaitSemaphores = &subRenders[size-1].semaphore;
+	else 
+		submitInfo.pWaitSemaphores = &imageAvailableSemaphore;
 
-	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
+	submitInfo.pWaitDstStageMask = waitStages;
 	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = signalSemaphores;
+	submitInfo.pSignalSemaphores = &renderFinishedSemaphore;
 
 	result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]);
 	if( result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
@@ -248,20 +262,18 @@ void QeGraphics::drawFrame() {
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.pNext = nullptr;
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = signalSemaphores;
-
-	VkSwapchainKHR swapChains[] = { swapChain };
+	presentInfo.pWaitSemaphores = &renderFinishedSemaphore;
 	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = swapChains;
+	presentInfo.pSwapchains = &swapChain;
 	presentInfo.pImageIndices = &imageIndex;
 
 	result = vkQueuePresentKHR(VK->presentQueue, &presentInfo);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)	bRecreateRender = true;
-
 	else if (result != VK_SUCCESS)	LOG("failed to present swap chain image!");
 
-	currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;
+	currentFrame = (++currentFrame) % swapChainImages.size();
+	vkQueueWaitIdle(VK->graphicsQueue);
 }
 
 void QeGraphics::createRender() {
@@ -273,10 +285,16 @@ void QeGraphics::createRender() {
 	size_t size = swapChainImages.size();
 	swapChainFramebuffers.resize(size);
 	drawCommandBuffers.resize(size);
+	inFlightFences.resize(size);
+
 	for (size_t i = 0; i < size; ++i) {
 		swapChainFramebuffers[i] = VK->createFramebuffer(&presentImage, &depthImage, &swapChainImages[i], swapChainExtent, renderPass, subpassNum, true);
 		drawCommandBuffers[i] = VK->createCommandBuffer();
+		inFlightFences[i] = VK->createSyncObjectFence();
 	}
+	imageAvailableSemaphore = VK->createSyncObjectSemaphore();
+	renderFinishedSemaphore = VK->createSyncObjectSemaphore();
+
 	mainViewport.minDepth = 0.0f;
 	mainViewport.maxDepth = 1.0f;
 	mainViewport.x = 0.0f;
@@ -293,24 +311,22 @@ void QeGraphics::createRender() {
 void QeGraphics::createSubRender() {
 
 	QeDataSubRender subRender;
+	subRender.size.offset.x = 0;
+	subRender.size.offset.y = 0;
+	subRender.size.extent.width = swapChainExtent.width / 2;
+	subRender.size.extent.height = swapChainExtent.height / 2;
 
 	QeDataViewport* vp = new QeDataViewport();
 	subRender.viewports.push_back(vp);
 
-	VkExtent2D size;
-	size.width = swapChainExtent.width / 2;
-	size.height = swapChainExtent.height / 2;
-
 	vp->viewport.minDepth = 0.0f;
 	vp->viewport.maxDepth = 1.0f;
-	vp->viewport.width = float(size.width);
-	vp->viewport.height = float(size.height);
-	vp->viewport.x = vp->viewport.width/2;
-	vp->viewport.y = vp->viewport.height/2;
-	vp->scissor.offset.x = uint32_t(vp->viewport.x);
-	vp->scissor.offset.y = uint32_t(vp->viewport.y);
-	vp->scissor.extent.height = uint32_t(vp->viewport.height);
-	vp->scissor.extent.width = uint32_t(vp->viewport.width);
+	vp->scissor.offset = subRender.size.offset;
+	vp->scissor.extent = subRender.size.extent;
+	vp->viewport.width = float(subRender.size.extent.width);
+	vp->viewport.height = float(subRender.size.extent.height);
+	vp->viewport.x = float(subRender.size.offset.x);
+	vp->viewport.y = float(subRender.size.offset.y);
 
 	QeDataDescriptorSetCommon data;
 
@@ -328,12 +344,12 @@ void QeGraphics::createSubRender() {
 	VK->createDescriptorSet(vp->commonDescriptorSet);
 	VK->updateDescriptorSet(&data, vp->commonDescriptorSet);
 
-	VK->createPresentDepthImage(subRender.presentImage, subRender.depthImage, size);
+	VK->createPresentDepthImage(subRender.presentImage, subRender.depthImage, subRender.size.extent);
 	subRender.subpassNum = 1;
 	subRender.renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, subRender.subpassNum, false);
-	subRender.frameBuffer = VK->createFramebuffer(&subRender.presentImage, &subRender.depthImage, nullptr, size, subRender.renderPass, subRender.subpassNum, false);
+	subRender.frameBuffer = VK->createFramebuffer(&subRender.presentImage, &subRender.depthImage, nullptr, subRender.size.extent, subRender.renderPass, subRender.subpassNum, false);
 	subRender.commandBuffer = VK->createCommandBuffer();
-	VK->createSyncObject(&subRender.semaphore, nullptr);
+	subRender.semaphore = VK->createSyncObjectSemaphore();
 
 	subRenders.push_back(subRender);
 	bRecreateRender = true;
@@ -425,7 +441,40 @@ void QeGraphics::recreateRender() {
 
 void QeGraphics::updateDrawCommandBuffers() {
 
-	size_t size = drawCommandBuffers.size();
+	size_t size = subRenders.size();
+	for (size_t i = 0; i<size ; ++i) {
+
+		VkCommandBufferBeginInfo beginInfo = {};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		vkBeginCommandBuffer(subRenders[i].commandBuffer, &beginInfo);
+
+		std::array<VkClearValue, 2> clearValues = {};
+		clearValues[0].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+
+		VkRenderPassBeginInfo renderPassInfo = {};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = subRenders[i].renderPass;
+		renderPassInfo.framebuffer = subRenders[i].frameBuffer;
+		renderPassInfo.renderArea.offset = subRenders[i].size.offset;
+		renderPassInfo.renderArea.extent = subRenders[i].size.extent;
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
+
+		vkCmdBeginRenderPass(subRenders[i].commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		size_t size1 = subRenders[i].viewports.size();
+		for (currentCommandViewport = 0; currentCommandViewport<size1; ++currentCommandViewport) {
+			vkCmdSetViewport(subRenders[i].commandBuffer, 0, 1, &subRenders[i].viewports[currentCommandViewport]->viewport);
+			vkCmdSetScissor(subRenders[i].commandBuffer, 0, 1, &subRenders[i].viewports[currentCommandViewport]->scissor);
+			vkCmdSetLineWidth(subRenders[i].commandBuffer, 2.0f);
+		}
+		vkCmdEndRenderPass(subRenders[i].commandBuffer);
+		if (vkEndCommandBuffer(subRenders[i].commandBuffer) != VK_SUCCESS)	LOG("failed to record command buffer!");
+	}
+
+	size = drawCommandBuffers.size();
 	for (size_t i = 0; i < size; i++) {
 		VkCommandBufferBeginInfo beginInfo = {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -443,14 +492,8 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 		// graphics shader
 		std::array<VkClearValue, 3> clearValues = {};
-		if (ACT != nullptr) {
-			clearValues[0].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-			clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-		}
-		else {
-			clearValues[0].color = { 0, 0.5f, 0.5f, 1.0f };
-			clearValues[2].color = { 0, 0.5f, 0.5f, 1.0f };
-		}
+		clearValues[0].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		VkRenderPassBeginInfo renderPassInfo = {};

@@ -25,10 +25,15 @@ void QeModel::updateShaderData() {
 QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
-	descriptorSetData.normalMapImageViews = mtlData->image.pNormalMap->view;
-	descriptorSetData.normalMapSamplers = mtlData->image.pNormalMap->sampler;
+
+	if (mtlData->image.pBaseColorMap) {
+		descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
+		descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
+	}
+	if (mtlData->image.pNormalMap) {
+		descriptorSetData.normalMapImageViews = mtlData->image.pNormalMap->view;
+		descriptorSetData.normalMapSamplers = mtlData->image.pNormalMap->sampler;
+	}
 	//descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
 
 	bufferData.param.x = 0;
@@ -187,7 +192,10 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 	
 	const char* c = AST->getXMLValue(editProperty, 1, "obj");
 	modelData = AST->getModel(c);
-	mtlData = modelData->pMaterial;
+	if(modelData->pMaterial)	mtlData = modelData->pMaterial;
+	else 						mtlData = AST->getMaterialImage("");
+
+
 	bufferData.material = mtlData->value;
 	size *= modelData->scale;
 

@@ -27,6 +27,7 @@ struct QeDataViewport {
 struct QeDataSubRender {
 
 	std::vector<QeDataViewport*> viewports;
+	VkRect2D size;
 
 	VkDescriptorImageInfo descriptor;
 	QeVKImage presentImage, depthImage;
@@ -52,7 +53,6 @@ public:
 	QeAssetXML* initProperty;
 
 	std::vector<QeDataSubRender> subRenders;
-	const int MAX_FRAMES_IN_FLIGHT = 2;
 
 	// main render
 	int currentCommandViewport = 0;
@@ -64,7 +64,6 @@ public:
 	QeVKImage presentImage, depthImage;
 	VkRenderPass renderPass = VK_NULL_HANDLE;
 	std::vector<VkCommandBuffer> drawCommandBuffers;
-	std::vector<VkSemaphore> imageAvailableSemaphores;
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	VkExtent2D swapChainExtent;
@@ -73,9 +72,9 @@ public:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	QeAssetGraphicsShader graphicsShader;
 
-	std::vector<VkSemaphore> renderFinishedSemaphores;
+	VkSemaphore imageAvailableSemaphore;
+	VkSemaphore renderFinishedSemaphore;
 	std::vector<VkFence> inFlightFences;
-	size_t currentFrame = 0;
 
 	QeDataDescriptorSet postprocessingDescriptorSet;
 	QeDataGraphicsPipeline* postprocessingPipeline = nullptr;

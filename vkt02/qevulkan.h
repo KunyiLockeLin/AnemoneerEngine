@@ -192,7 +192,8 @@ public:
 	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* swapChainImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
 	void createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
 	VkCommandBuffer createCommandBuffer();
-	void createSyncObject(VkSemaphore* semaphore, VkFence* inFlightFences);
+	VkSemaphore createSyncObjectSemaphore();
+	VkFence createSyncObjectFence();
 	VkSurfaceKHR createSurface(HWND& window, HINSTANCE& windowInstance);
 
 	void createDescriptorSetLayout();

@@ -688,19 +688,25 @@ uint32_t QeVulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pro
 	return VK_NULL_HANDLE;
 }
 
-void QeVulkan::createSyncObject(VkSemaphore* semaphore, VkFence* fence) {
+VkSemaphore QeVulkan::createSyncObjectSemaphore() {
 
-	if (semaphore) {
-		VkSemaphoreCreateInfo semaphoreInfo = {};
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-		vkCreateSemaphore(device, &semaphoreInfo, nullptr, semaphore);
-	}
-	if (fence) {
-		VkFenceCreateInfo fenceInfo = {};
-		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		vkCreateFence(device, &fenceInfo, nullptr, fence);
-	}
+	VkSemaphoreCreateInfo semaphoreInfo = {};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	VkSemaphore semaphore;
+	vkCreateSemaphore(device, &semaphoreInfo, nullptr, &semaphore);
+	return semaphore;
+}
+
+VkFence QeVulkan::createSyncObjectFence() {
+
+	VkFenceCreateInfo fenceInfo = {};
+	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	VkFence fence;
+	vkCreateFence(device, &fenceInfo, nullptr, &fence);
+	return fence;
 }
 
 VkSurfaceFormatKHR QeVulkan::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {

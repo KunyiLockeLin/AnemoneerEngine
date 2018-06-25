@@ -746,17 +746,19 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 	char type = 0;
 
-	if (strcmp("cube", _filename)==0)	type = 4;
-	else if (strcmp("axis", _filename) == 0)	type = 5;
-	else if (strcmp("grids", _filename) == 0)	type = 6;
-	else if (strcmp("line", _filename) == 0 )	type = 7;
+	if (strcmp("cube", _filename)==0)	type = eModelData_cube;
+	else if (strcmp("axis", _filename) == 0)	type = eModelData_axis;
+	else if (strcmp("grids", _filename) == 0)	type = eModelData_grids;
+	else if (strcmp("line", _filename) == 0 )	type = eModelData_line;
+	else if (strcmp("plane", _filename) == 0)	type = eModelData_plane;
+
 	else {
 
 		char *ret = strrchr((char*)_filename, '.');
 
 		//if (strcmp(ret + 1, "obj") == 0)		type = 0;
 		//else 
-			if (strcmp(ret + 1, "gltf") == 0)	type = 1;
+			if (strcmp(ret + 1, "gltf") == 0)	type = eModelData_gltf;
 		//else if (strcmp(ret + 1, "glb") == 0)	type = 2;
 	}
 
@@ -767,19 +769,19 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 	int index = 0;
 
 	switch (type) {
-	case 0:
+	//case 0:
 		//buffer = loadFile(_filePath.c_str());
 		//model = ENCODE->decodeOBJ(buffer.data()); 
-		break;
-	case 1:
+	//	break;
+	case eModelData_gltf:
 		json = getJSON(_filePath.c_str());
 		model = ENCODE->decodeGLTF(json, bCubeMap);
 		break;
-	case 2:
+	//case 2:
 		//	model = ENCODE->decodeGLB(0);		
-		break;
+	//	break;
 
-	case 4:
+	case eModelData_cube:
 
 		model = new QeAssetModel();
 		model->scale = { 1,1,1 };
@@ -821,7 +823,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.normal = { 0, 0, -1,1 };
 		model->vertices.push_back(vertex);
 		break;
-	case 5:
+	case eModelData_axis:
 
 		model = new QeAssetModel();
 		model->scale = { 1, 1, 1 };
@@ -839,7 +841,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.color = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
 		break;
-	case 6:
+	case eModelData_grids:
 		model = new QeAssetModel();
 		model->scale = { 1 , 1 , 1 };
 		vertex.color = { 0.5f, 0.5f, 0.5f,1.0f };
@@ -854,7 +856,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 			model->vertices.push_back(vertex);
 		}
 		break;
-	case 7:
+	case eModelData_line:
 
 		model = new QeAssetModel();
 		model->scale = { 1, 1, 1 };
@@ -863,6 +865,34 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.color = { 0, 0, 0,1 };
 		vertex.pos = { 0, 0, 0,1 };
 		model->vertices.push_back(vertex);
+		break;
+
+	case eModelData_plane:
+
+		model = new QeAssetModel();
+		model->scale = { 1,1,1 };
+		model->indices = { 0,2,1, 1,2,3 };
+
+		model->indexSize = int(model->indices.size());
+		vertex.uv = { 0,0,0,0 };
+		vertex.color = { 1, 1, 1,1 };
+
+		vertex.pos = { -0.5f, -0.5f, 0.0f,1.0f };
+		vertex.normal = { 0, 0, 1,1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { -0.5f, 0.5f, 0.0f,1.0f};
+		vertex.normal = { 0, 0, 1,1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 0.5f, -0.5f, 0.0f,1.0f };
+		vertex.normal = { 0, 0, 1,1 };
+		model->vertices.push_back(vertex);
+
+		vertex.pos = { 0.5f, 0.5f, 0.0f,1.0f };
+		vertex.normal = { 0, 0, 1,1 };
+		model->vertices.push_back(vertex);
+		break;
 	}
 
 	//VK->createBufferData((void*)model->vertices.data(), sizeof(model->vertices[0]) * model->vertices.size(), model->vertex.buffer, model->vertex.memory, &model->vertex.mapped);
