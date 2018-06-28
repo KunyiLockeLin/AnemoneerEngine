@@ -55,8 +55,10 @@ void QeModel::createPipeline() {
 
 	switch (objectType) {
 	case eObject_Model:
-	case eObject_Cubemap:
 		type = eGraphicsPipeLine_Triangle;
+		break;
+	case eObject_Cubemap:
+		type = eGraphicsPipeLine_Cubemap;
 		break;
 	case eObject_Billboard:
 	case eObject_Line:
@@ -67,9 +69,8 @@ void QeModel::createPipeline() {
 
 	graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, VP->renderPass, bAlpha);
 
-	if (VK->bShowNormal && normalShader.vert) {
-		normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, VP->renderPass);
-	}
+	if (VK->bShowNormal && normalShader.vert)	normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, VP->renderPass);
+	
 	if(computeShader) computePipeline = VK->createComputePipeline(computeShader);
 }
 
@@ -194,7 +195,6 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 	modelData = AST->getModel(c);
 	if(modelData->pMaterial)	mtlData = modelData->pMaterial;
 	else 						mtlData = AST->getMaterialImage("");
-
 
 	bufferData.material = mtlData->value;
 	size *= modelData->scale;

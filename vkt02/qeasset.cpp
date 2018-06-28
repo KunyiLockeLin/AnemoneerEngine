@@ -785,11 +785,11 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 		model = new QeAssetModel();
 		model->scale = { 1,1,1 };
-		model->indices = { 3,1,0,5,7,4,1,4,0,2,5,1,7,2,3,7,0,4,2,1,3,6,7,5,5,4,1,6,5,2,6,2,7,3,0,7 };
-		//model->indices = { 1,3,0,7,5,4,4,1,0,5,2,1,2,7,3,0,7,4,1,2,3,7,6,5,4,5,1,5,6,2,2,6,7,0,3,7 };
+		model->indices = { 1,3,0,7,5,4,4,1,0,5,2,1,2,7,3,0,7,4,1,2,3,7,6,5,4,5,1,5,6,2,2,6,7,0,3,7 };
 
 		model->indexSize = int(model->indices.size());
 		vertex.uv = { 0,0,0,0 };
+		vertex.color = {1,1,1,1};
 
 		vertex.pos = { 1, -1, -1,1 };
 		vertex.normal = { 0, 0, -1,1 };
@@ -939,6 +939,7 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	if (it != astMaterials.end())	return it->second;
 
 	QeAssetMaterial* mtl = new QeAssetMaterial();
+	mtl->value.baseColor = {1,1,1,1};
 	//mtl->value.phong.ambient = { 1,1,1,1 };
 	//mtl->value.phong.diffuse = { 1,1,1,1 };
 	//mtl->value.phong.specular = { 1,1,1,1 };

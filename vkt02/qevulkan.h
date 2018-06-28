@@ -129,6 +129,7 @@ enum QeGraphicsPipelineType {
 	eGraphicsPipeLine_Line = 1,
 	eGraphicsPipeLine_Triangle = 2,
 	eGraphicsPipeLine_Postprogessing = 3,
+	eGraphicsPipeLine_Cubemap = 4,
 };
 
 struct QeDataGraphicsPipeline {
@@ -137,7 +138,6 @@ struct QeDataGraphicsPipeline {
 	QeGraphicsPipelineType type;
 	VkRenderPass		renderPass;
 	bool bAlpha;
-	uint8_t subpassIndex;
 };
 
 // VK_CHECK_RESULT
@@ -238,7 +238,7 @@ public:
 	void createDescriptorPool();
 	void createDescriptorSet(QeDataDescriptorSet& descriptorSet);
 	void updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet);
-	QeDataGraphicsPipeline* createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha = false, uint8_t subpassIndex = 0);
+	QeDataGraphicsPipeline* createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha = false);
 	VkPipeline createComputePipeline(VkShaderModule shader);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
 	void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);

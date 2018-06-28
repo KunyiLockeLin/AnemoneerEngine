@@ -952,13 +952,13 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha, uint8_t subpassIndex) {
+QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha) {
 
 	std::vector<QeDataGraphicsPipeline*>::iterator it = graphicsPipelines.begin();
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == shader->vert && (*it)->shader->tesc == shader->tesc && (*it)->shader->tese == shader->tese &&
 			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->renderPass == renderpass &&
-			(*it)->bAlpha == bAlpha && (*it)->subpassIndex == subpassIndex) {
+			(*it)->bAlpha == bAlpha) {
 			return *it;
 		}
 		++it;
@@ -1067,7 +1067,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = (bShowMesh && type != eGraphicsPipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
-	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+	rasterizer.cullMode = (type == eGraphicsPipeLine_Cubemap)? VK_CULL_MODE_FRONT_BIT: VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f;
@@ -1168,7 +1168,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
 	pipelineInfo.renderPass = renderpass;
-	pipelineInfo.subpass = subpassIndex;
+	pipelineInfo.subpass = (type == eGraphicsPipeLine_Postprogessing) ? 1 : 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 	if (shader->tesc && shader->tese) {
@@ -1186,7 +1186,6 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	QeDataGraphicsPipeline* s = new QeDataGraphicsPipeline();
 	s->shader = shader;
 	s->bAlpha = bAlpha;
-	s->subpassIndex = subpassIndex;
 	s->type = type;
 	s->renderPass = renderpass;
 	s->graphicsPipeline = graphicsPipeline;
