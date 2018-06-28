@@ -60,7 +60,8 @@ public:
 	int cubemapOID;
 	bool bAlpha;
 	bool bFixSize;
-	
+
+
 	QeMatrix4x4f parentModel;
 
 	QeAssetModel* modelData = nullptr;

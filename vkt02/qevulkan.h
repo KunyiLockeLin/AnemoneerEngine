@@ -65,6 +65,8 @@ enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Model = 0,
 	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
+	eDescriptorSetLayout_render = 3,
+
 };
 
 struct QeDataDescriptorSet {
@@ -102,14 +104,19 @@ struct QeDataDescriptorSetModel {
 	VkSampler	cubeMapSampler = VK_NULL_HANDLE;
 	VkImageView normalMapImageView = VK_NULL_HANDLE;
 	VkSampler	normalMapSampler = VK_NULL_HANDLE;
-	VkImageView mirrorImageView = VK_NULL_HANDLE;
-	VkSampler	mirrorSampler = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
 	VkBufferView texelBufferView = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
 	VkBuffer	computeShaderoutputBuffer = VK_NULL_HANDLE;
+};
+
+struct QeDataDescriptorSetRender {
+
+	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
+	VkImageView renderImageView = VK_NULL_HANDLE;
+	VkSampler	renderSampler = VK_NULL_HANDLE;
 };
 
 struct QeDataDescriptorSetPostprocessing {
@@ -170,7 +177,7 @@ public:
 	VkQueue computeQueue;
 
 	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas = {
-		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 4 },
+		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 3 },
 			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 } },
 
 			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },

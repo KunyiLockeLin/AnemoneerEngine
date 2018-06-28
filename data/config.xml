@@ -53,9 +53,14 @@
   <scenes>
     <e eid="28000">
       <models>
-        <e oid="14002" eid="14002" show="1" speed="3" posX="0" posY="0" posZ="0"/>
-        <e oid="14001" eid="14004" show="1" speed="0" posX="0" posY="0" posZ="-3" scaleX="20" scaleY="20" scaleZ="20"/>
+        <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="0" posZ="0"/>
       </models>
+      <renders>
+        <e oid="14001" eid="14004" show="1" speed="0" posX="0" posY="0" posZ="-3" scaleX="20" scaleY="20" scaleZ="20" cameraOID="26000"/>
+      </renders>
+      <cameras>
+        <e oid="26000" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
+      </cameras>
     </e>
     
     <e eid ="28001">
@@ -111,6 +116,7 @@
     <e eid="14002" obj="box.gltf" alpha="0"/>
     <e eid="14003" obj="box.gltf" tesc="basetc.spv" tese="basete.spv" alpha="0"/>
     <e eid="14004" obj="plane" alpha="0" frag="basef.spv"/>
+    <e eid="14005" obj="cube" alpha="0" frag="basef.spv"/>
   </models>
   
   <billboards>
