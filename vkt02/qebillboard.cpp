@@ -12,8 +12,8 @@ void QeBillboard::init(QeAssetXML* _property, int _parentOID) {
 QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel(int index) {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
+	descriptorSetData.baseColorMapImageView = mtlData->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSampler = mtlData->image.pBaseColorMap->sampler;
 	return descriptorSetData;
 }
 

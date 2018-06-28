@@ -27,12 +27,12 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
 	if (mtlData->image.pBaseColorMap) {
-		descriptorSetData.baseColorMapImageViews = mtlData->image.pBaseColorMap->view;
-		descriptorSetData.baseColorMapSamplers = mtlData->image.pBaseColorMap->sampler;
+		descriptorSetData.baseColorMapImageView = mtlData->image.pBaseColorMap->view;
+		descriptorSetData.baseColorMapSampler = mtlData->image.pBaseColorMap->sampler;
 	}
 	if (mtlData->image.pNormalMap) {
-		descriptorSetData.normalMapImageViews = mtlData->image.pNormalMap->view;
-		descriptorSetData.normalMapSamplers = mtlData->image.pNormalMap->sampler;
+		descriptorSetData.normalMapImageView = mtlData->image.pNormalMap->view;
+		descriptorSetData.normalMapSampler = mtlData->image.pNormalMap->sampler;
 	}
 	//descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
 
@@ -41,8 +41,8 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 		QePoint* p = OBJMGR->getObject(cubemapOID);
 		if (p && p->objectType == eObject_Cubemap) {
 			QeCubemap * cube = (QeCubemap*)p;
-			descriptorSetData.cubeMapImageViews = cube->mtlData->image.pCubeMap->view;
-			descriptorSetData.cubeMapSamplers = cube->mtlData->image.pCubeMap->sampler;
+			descriptorSetData.cubeMapImageView = cube->mtlData->image.pCubeMap->view;
+			descriptorSetData.cubeMapSampler = cube->mtlData->image.pCubeMap->sampler;
 			bufferData.param.x = 1;
 		}
 	}

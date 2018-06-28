@@ -410,7 +410,7 @@ void QeGraphics::recreateRender() {
 
 	if (subpassNum > 1) {
 		QeDataDescriptorSetPostprocessing data;
-		data.inputAttachImageViews = presentImage.view;
+		data.inputAttachImageView = presentImage.view;
 		VK->updateDescriptorSet(&data, postprocessingDescriptorSet);
 		postprocessingPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Postprogessing, renderPass, false, 1);
 	}
