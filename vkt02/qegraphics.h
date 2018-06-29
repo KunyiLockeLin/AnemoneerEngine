@@ -70,7 +70,7 @@ public:
 
 	int currentTargetViewport = 0;
 
-	VkSemaphore renderCompleteSemaphore;
+	VkSemaphore renderCompleteSemaphore = VK_NULL_HANDLE;
 	std::vector<VkFence> fences;
 
 	void init(QeAssetXML* _property);

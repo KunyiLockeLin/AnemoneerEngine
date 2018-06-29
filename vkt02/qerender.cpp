@@ -4,9 +4,8 @@
 void QeRender::init(QeAssetXML* _property, int _parentOID) {
 
 	QePoint::init(_property, _parentOID);
-	modelData = AST->getModel("plane");
-
 	AST->setGraphicsShader(graphicsShader, editProperty, "render");
+	QeDataRender* render = VP->getSubRender(cameraOID);
 }
 
 QeDataDescriptorSetModel QeRender::createDescriptorSetModel() {

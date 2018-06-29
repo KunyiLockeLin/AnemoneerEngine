@@ -40,7 +40,7 @@
       <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
       <action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
       <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
-      <render vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>
+      <render vert="basev.spv" geom="billboardg.spv" frag="texturemf.spv"/>
       <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
     </graphicsShader>
   
@@ -56,6 +56,9 @@
       <models>
         <e oid="14002" eid="14005" show="1" speed="10" posX="0" posY="-3" posZ="0"/>
       </models>
+      <renders>
+        <e oid="15000" show="1" posX="0" posY="3" posZ="-2" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26000"/>
+      </renders>
     </e>
     
     <e eid ="28001">

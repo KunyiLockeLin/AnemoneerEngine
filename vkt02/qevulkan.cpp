@@ -226,7 +226,16 @@ void QeVulkan::createLogicalDevice() {
 	vkGetDeviceQueue(device, indices.computeFamily, 0, &computeQueue);
 }
 
-void QeVulkan::createSwapchain(VkSurfaceKHR& surface, QeDataSwapchain* swapchain ) {
+int QeVulkan::getSwapchainSize() {
+	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
+	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
+		imageCount = swapChainSupport.capabilities.maxImageCount;
+	
+	return imageCount;
+}
+
+void QeVulkan::createSwapchain( QeDataSwapchain* swapchain ) {
 	
 	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
 
@@ -234,9 +243,7 @@ void QeVulkan::createSwapchain(VkSurfaceKHR& surface, QeDataSwapchain* swapchain
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
 	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
 
-	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
-		imageCount = swapChainSupport.capabilities.maxImageCount;
+	uint32_t imageCount = getSwapchainSize();
 
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;

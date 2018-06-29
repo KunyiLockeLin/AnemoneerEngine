@@ -47,7 +47,7 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
-	renderCompleteSemaphore = VK->createSyncObjectSemaphore();
+	createRender(0);
 }
 
 void QeGraphics::updateViewport() {
@@ -218,7 +218,8 @@ void QeGraphics::updateCompute(float time) {
 
 		cleanupRender();
 
-		if (!swapchain.khr)	VK->createSwapchain(VK->surface, &swapchain);
+		if(!renderCompleteSemaphore) renderCompleteSemaphore = VK->createSyncObjectSemaphore();
+		if (!swapchain.khr)			VK->createSwapchain(&swapchain);
 		size_t size = swapchain.images.size();
 
 		if (fences.empty()) {
@@ -391,13 +392,13 @@ QeDataRender* QeGraphics::createRender(int cameraOID) {
 			AST->setGraphicsShader(render->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
 			VK->createDescriptorSet(render->descriptorSet);
 		}
-		size1 = swapchain.images.size();
+		size1 = VK->getSwapchainSize();
 	}
 
 	render->frameBuffers.resize(size1);
 	render->commandBuffers.resize(size1);
 	render->semaphore = VK->createSyncObjectSemaphore();
-
+	addNewViewport(size);
 	return render;
 }
 
@@ -405,7 +406,7 @@ QeDataRender* QeGraphics::createRender(int cameraOID) {
 QeDataRender * QeGraphics::getSubRender(int cameraOID) {
 	size_t size = renders.size();
 
-	for (size_t i = 0; i<size; ++i) {
+	for (size_t i = 1; i<size; ++i) {
 		if (renders[i]->viewports[0]->camera->oid == cameraOID) return renders[i];
 	}
 	return createRender();
