@@ -68,6 +68,9 @@ QePoint* QeObjectManger::getObject(int _oid, QeAssetXML* _property, int _parentO
 		bRedner = true;
 		bCheckAlpha = true;
 		break;
+	case eObject_Render:
+		bRedner = true;
+		break;
 
 	default:
 		return nullptr;
@@ -109,6 +112,9 @@ QePoint* QeObjectManger::getObject(int _oid, QeAssetXML* _property, int _parentO
 	case eObject_Model:
 		newObject = new QeModel(key);
 		break;
+	case eObject_Render:
+		newObject = new QeRender(key);
+		break;
 	}
 
 	if (!newObject) return newObject;
@@ -121,9 +127,8 @@ QePoint* QeObjectManger::getObject(int _oid, QeAssetXML* _property, int _parentO
 	return newObject;
 }
 
-void QeObjectManger::sortAlphaModels() {
+void QeObjectManger::sortAlphaModels(QeCamera * camera) {
 
-	QeCamera * camera = VP->viewports[VP->currentCommandViewport]->camera;
 	if (!camera) return;
 	
 	size_t size = mgrAlphaModels.size();
@@ -200,31 +205,31 @@ void QeObjectManger::recreatePipeline() {
 }
 
 
-void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
 	
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		it->second->updateDrawCommandBuffer(drawCommandBuffer);
+		it->second->updateDrawCommandBuffer(commandBuffer, camera, commonDescriptorSet);
 		++it;
 	}
-	sortAlphaModels();
+	sortAlphaModels(camera);
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->updateDrawCommandBuffer(drawCommandBuffer);
+		(*it1)->updateDrawCommandBuffer(commandBuffer, camera, commonDescriptorSet);
 		++it1;
 	}
 }
 
-void QeObjectManger::updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+void QeObjectManger::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
 
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		it->second->updateComputeCommandBuffer(drawCommandBuffer);
+		it->second->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
 		++it;
 	}
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->updateComputeCommandBuffer(drawCommandBuffer);
+		(*it1)->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
 		++it1;
 	}
 }

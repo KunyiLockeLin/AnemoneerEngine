@@ -20,8 +20,8 @@ void main()
 		vec4 worldTagnet = jointTransform * inTangent;
 		totalTangent += worldTagnet * inWeight[i];
 	}
-	
 	gl_Position = totalLocalPos;
+
 	outNormal = totalNormal.xyz;
 	outTangent = totalTangent;
 	outColor = inColor.xyz;

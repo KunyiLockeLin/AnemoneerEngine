@@ -174,6 +174,7 @@ void QeCamera::updateCompute(float time) {
 	if (bUpdate) {
 		updateAxis();
 		setMatrix();
+		bUpdate = false;
 	}
 }
 

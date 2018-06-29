@@ -22,8 +22,8 @@ public:
 	
 	QeVertex createParticleData();
 	virtual void init(QeAssetXML* _property, int _parentOID);
-	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
-	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
-	virtual void updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer);
+	virtual QeDataDescriptorSetModel createDescriptorSetModel();
+	virtual void updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
+	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
 	virtual void updateCompute(float time);
 };

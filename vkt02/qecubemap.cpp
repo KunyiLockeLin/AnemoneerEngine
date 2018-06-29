@@ -11,7 +11,7 @@ void QeCubemap::init(QeAssetXML* _property, int _parentOID) {
 	AST->setGraphicsShader(graphicsShader, editProperty, "cubemap");
 }
 
-QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel(int index) {
+QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.cubeMapImageView = mtlData->image.pCubeMap->view;

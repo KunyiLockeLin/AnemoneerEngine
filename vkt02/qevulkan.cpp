@@ -35,6 +35,13 @@ QeVKImage::~QeVKImage(){
 	}
 }
 
+QeDataDescriptorSet::~QeDataDescriptorSet() {
+	if (set) {
+		vkFreeDescriptorSets(VK->device, VK->descriptorPool, 1, &set);
+		set = VK_NULL_HANDLE;
+	}
+}
+
  QeVulkan::~QeVulkan() {
 
 	vkDestroySurfaceKHR(VK->instance, surface, nullptr);
@@ -219,7 +226,7 @@ void QeVulkan::createLogicalDevice() {
 	vkGetDeviceQueue(device, indices.computeFamily, 0, &computeQueue);
 }
 
-void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<QeVKImage>& swapChainImages) {
+void QeVulkan::createSwapchain(VkSurfaceKHR& surface, QeDataSwapchain* swapchain ) {
 	
 	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
 
@@ -263,20 +270,20 @@ void QeVulkan::createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain,
 	createInfo.clipped = VK_TRUE;
 	//createInfo.oldSwapchain = oldSwapchain;
 
-	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)	LOG("failed to create swap chain!");
+	if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapchain->khr) != VK_SUCCESS)	LOG("failed to create swap chain!");
 
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
-	swapChainImages.resize(imageCount, eImage_swapchain);
+	vkGetSwapchainImagesKHR(device, swapchain->khr, &imageCount, nullptr);
+	swapchain->images.resize(imageCount, eImage_swapchain);
 	std::vector<VkImage> swapchainImages2;
 	swapchainImages2.resize(imageCount);
-	vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapchainImages2.data());
+	vkGetSwapchainImagesKHR(device, swapchain->khr, &imageCount, swapchainImages2.data());
 
-	swapChainImageFormat = surfaceFormat.format;
-	swapChainExtent = extent;
+	swapchain->format = surfaceFormat.format;
+	swapchain->extent = extent;
 
 	for (uint32_t i = 0; i < imageCount; i++) {
-		swapChainImages[i].image = swapchainImages2[i];
-		createImage(swapChainImages[i], 0, 0, 0, swapChainImageFormat, nullptr);
+		swapchain->images[i].image = swapchainImages2[i];
+		createImage(swapchain->images[i], 0, 0, 0, swapchain->format, nullptr);
 		//swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
@@ -464,16 +471,17 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* swapChainImage, VkExtent2D swapChainExtent, VkRenderPass renderPass, int subpassNum, bool bMainRender) {
+VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D swapChainExtent, VkRenderPass renderPass, int subpassNum, bool bMainRender) {
 	
 	std::vector<VkImageView> attachments;
 	attachments.resize(subpassNum + 1);
-	if (!bMainRender || subpassNum > 1) attachments[0] = presentImage->view;
-	else								attachments[0] = swapChainImage->view;
+	if (subpassNum > 1) {
+		attachments[0] = attachImage->view;
+		attachments[2] = presentImage->view;
+	}
+	else	attachments[0] = presentImage->view;
 		
 	attachments[1] = depthImage->view;
-
-	if (bMainRender && subpassNum>1) attachments[2] = swapChainImage->view;
 
 	VkFramebufferCreateInfo framebufferInfo = {};
 	framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -503,16 +511,18 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent) {
+void QeVulkan::createPresentDepthImage(QeVKImage* presentImage, QeVKImage* depthImage, VkExtent2D& swapChainExtent) {
 	VkFormat depthFormat = findDepthFormat();
 
 	int imageSize = swapChainExtent.width*swapChainExtent.height * 4;
 
-	createImage(depthImage, imageSize, swapChainExtent.width, swapChainExtent.height, depthFormat, nullptr);
-	transitionImageLayout(depthImage.image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	if (depthImage) {
+		createImage(*depthImage, imageSize, swapChainExtent.width, swapChainExtent.height, depthFormat, nullptr);
+		transitionImageLayout(depthImage->image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	}
 
-	createImage(presentImage, imageSize, swapChainExtent.width, swapChainExtent.height, VK_FORMAT_B8G8R8A8_UNORM, nullptr);
-
+	if(presentImage)
+		createImage(*presentImage, imageSize, swapChainExtent.width, swapChainExtent.height, VK_FORMAT_B8G8R8A8_UNORM, nullptr);
 }
 
 VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
@@ -915,20 +925,6 @@ void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
 
 	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet.set) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
 }
-
-/*void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size, void** mapped) {
-
-	if(!(*mapped)) vkMapMemory(device, memory, 0, size, 0, mapped);
-	memcpy(*mapped, data, size);
-}
-
-void QeVulkan::setMemory(VkDeviceMemory& memory, void* data, VkDeviceSize size) {
-
-	void* buf;
-	vkMapMemory(device, memory, 0, size, 0, &buf);
-	memcpy(buf, data, size);
-	vkUnmapMemory(device, memory);
-}*/
 
 void QeVulkan::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 5> poolSizes = {};
@@ -1520,8 +1516,6 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, 
 
 	case eImage_inputAttach:
 		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT; // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
-		data = new unsigned char[size];
-		memset(data, 0, size);
 		break;
 
 	case eImage_swapchain:

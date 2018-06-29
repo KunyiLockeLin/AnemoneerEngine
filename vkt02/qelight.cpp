@@ -48,7 +48,7 @@ void QeLight::updateCompute(float time) {
 		pos = mat * vec4;
 
 		bufferData.pos = pos;
-		bUpdate = true;
+		bUpdate = false;
 	}
 }
 

@@ -2,7 +2,12 @@
 
 
 void QeModel::updateShaderData() {
-	size_t size = VP->viewports.size();
+
+	if (!descriptorSet.set) {
+		VK->createDescriptorSet(descriptorSet);
+		VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+	}
+	/*size_t size = VP->viewports.size();
 	size_t i = shaderData.size();
 
 	if ( size>i ) {
@@ -16,13 +21,16 @@ void QeModel::updateShaderData() {
 			VK->updateDescriptorSet(&createDescriptorSetModel(int(i)), shaderData[i]->descriptorSet);
 		}
 	}
-	for (; i > size; --i) {
+	for (; i > size; --i) {+		QeModel	{actionState=eActionStateStop (0) actionType=eActionTypeOnce (0) joints=0x000001cdfc453cb0 {{_00=1.00000000 ...}, ...} ...}	QeModel
+
 		delete shaderData[i - 1];
 		shaderData.pop_back();
 	}
+	*/
 }
 
-QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
+
+QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
@@ -52,6 +60,9 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel(int index) {
 void QeModel::createPipeline() {
 
 	QeGraphicsPipelineType type;
+	VkRenderPass renderPass;
+	QeDataRender * render = VP->renders[0];
+	renderPass = render->renderPass;
 
 	switch (objectType) {
 	case eObject_Model:
@@ -60,6 +71,11 @@ void QeModel::createPipeline() {
 	case eObject_Cubemap:
 		type = eGraphicsPipeLine_Cubemap;
 		break;
+	case eObject_Render:
+		type = eGraphicsPipeLine_Point;
+		render = VP->getSubRender(cameraOID);
+		renderPass = render->renderPass;
+		break;
 	case eObject_Billboard:
 	case eObject_Line:
 	case eObject_Particle:
@@ -67,9 +83,9 @@ void QeModel::createPipeline() {
 		break;
 	}
 
-	graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, VP->renderPass, bAlpha);
+	graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, renderPass, bAlpha);
 
-	if (VK->bShowNormal && normalShader.vert)	normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, VP->renderPass);
+	if (VK->bShowNormal && normalShader.vert)	normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, renderPass);
 	
 	if(computeShader) computePipeline = VK->createComputePipeline(computeShader);
 }
@@ -222,6 +238,9 @@ void QeModel::setProperty() {
 	cubemapOID = 0;
 	AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");
 	
+	cameraOID = 0;
+	AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");
+
 	bAlpha = false;
 	AST->getXMLbValue(&bAlpha, editProperty, 1, "alpha");
 
@@ -236,7 +255,6 @@ void QeModel::setProperty() {
 	bShow = true;
 	AST->getXMLbValue(&bShow, initProperty, 1, "show");
 
-	bCullingShow = false;
 	cullingDistance = 0;
 	AST->getXMLiValue(&cullingDistance, initProperty, 1, "culling");
 
@@ -259,34 +277,29 @@ void QeModel::setProperty() {
 }
 
 void QeModel::updateCompute(float time) {
-	updateShowByCulling();
 	if (speed)	rotateFace(time*speed);
 	updateAction(time);
 	updateBuffer();
 }
 
-void QeModel::updateShowByCulling() {
-	if (!bShow) return;
-	QeCamera* camera = VP->getTargetCamera();
+bool QeModel::isShowByCulling(QeCamera* camera) {
+	if (!bShow) return false;
 	bool _bCullingShow = true;
 	float dis = MATH->length(pos - camera->pos);
 
 	if (cullingDistance) {
-		if (dis > cullingDistance) _bCullingShow = false;
+		if (dis > cullingDistance) return false;
 	}
 	else {
-		if (dis > camera->cullingDistance) _bCullingShow = false;
+		if (dis > camera->cullingDistance) return false;
 	}
 
 	if (objectType != eObject_Cubemap && _bCullingShow) {
 		float angle = MATH->getAnglefromVectors(camera->face, pos - camera->pos);
-		if (angle > 100 || angle < -100) _bCullingShow = false;
+		if (angle > 100 || angle < -100) return false;
 	}
 
-	if (_bCullingShow != bCullingShow) {
-		bCullingShow = _bCullingShow;
-		VP->bUpdateDrawCommandBuffers = true;
-	}
+	return true;
 }
 
 void QeModel::setShow(bool b) {
@@ -401,31 +414,50 @@ void QeModel::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parent
 	}
 }
 
-std::vector<VkDescriptorSet> QeModel::getDescriptorSets(int index) {
+std::vector<VkDescriptorSet> QeModel::getDescriptorSets( QeDataDescriptorSet* commonDescriptorSet) {
 	std::vector<VkDescriptorSet> descriptorSets = {	
-		shaderData[index]->descriptorSet.set,
-		VP->viewports[index]->commonDescriptorSet.set
+		descriptorSet.set,
+		commonDescriptorSet->set
 	};
 	return descriptorSets;
 }
 
-void QeModel::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+void QeModel::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
 
-	if (!bShow || !bCullingShow) return;
+	if (!bShow || !isShowByCulling(camera)) return;
 	
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(VP->currentCommandViewport);
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(commonDescriptorSet);
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
 	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-	vkCmdBindIndexBuffer(drawCommandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
-	vkCmdDrawIndexed(drawCommandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+
+	switch (objectType) {
+	case eObject_Model:
+	case eObject_Cubemap:
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdBindIndexBuffer(commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+		break;
+	
+	case eObject_Billboard:
+	case eObject_Render:
+		vkCmdDraw(commandBuffer, 1, 1, 0, 0);
+		break;
+
+	case eObject_Line:
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdDraw(commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
+		break;
+
+	//case eObject_Particle:
+	//	break;
+	}
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 
 	if (VK->bShowNormal && normalPipeline->graphicsPipeline) {
-		vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-		vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
-		vkCmdDraw(drawCommandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &modelData->vertex.buffer, { 0 });
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
+		vkCmdDraw(commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}
 }

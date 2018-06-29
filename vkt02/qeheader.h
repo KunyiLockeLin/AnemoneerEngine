@@ -82,13 +82,15 @@ struct QeAssetXML;
 struct QeAssetJSON;
 struct QeSkeleton;
 struct QeInputData;
+struct QeDataSwapchain;
 class QePoint;
 class QeEncode;
 class QeMath;
 class QeAsset;
 class QeModel;
 class QeBillboard;
-class QeCube;
+class QeCubemap;
+class QeRender;
 class QeParticle;
 class QeCompute;
 class QeCamera;
@@ -115,6 +117,7 @@ class QeLine;
 #include "qeasset.h"
 #include "qepoint.h"
 #include "qemodel.h"
+#include "qerender.h"
 #include "qebillboard.h"
 #include "qeline.h"
 #include "qecubemap.h"

@@ -99,7 +99,7 @@ QeVertex QeParticle::createParticleData() {
 }
 
 
-QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
+QeDataDescriptorSetModel QeParticle::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	descriptorSetData.baseColorMapImageView = mtlData->image.pBaseColorMap->view;
@@ -109,28 +109,28 @@ QeDataDescriptorSetModel QeParticle::createDescriptorSetModel(int index) {
 	return descriptorSetData;
 }
 
-void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& computeCommandBuffer) {
+void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
 
 	if (!currentParticlesSize) return;
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(0);
-	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(commonDescriptorSet);
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
-	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	vkCmdDispatch(computeCommandBuffer, currentParticlesSize, 1, 1);
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+	vkCmdDispatch(commandBuffer, currentParticlesSize, 1, 1);
 }
 
-void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer) {
+void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
 
-	//if (!bShow || !bCullingShow) return;
+	if (!bShow || !isShowByCulling(camera)) return;
 	if (!currentParticlesSize) return;
 
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(VP->currentCommandViewport);
-	vkCmdBindDescriptorSets(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(commonDescriptorSet);
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(drawCommandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
-	vkCmdBindPipeline(drawCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
-	vkCmdDraw(drawCommandBuffer, currentParticlesSize, 1, 0, 0);
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
+	vkCmdDraw(commandBuffer, currentParticlesSize, 1, 0, 0);
 }
 
 void QeParticle::updateCompute(float time) {

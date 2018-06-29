@@ -74,6 +74,7 @@ struct QeDataDescriptorSet {
 	VkDescriptorSet set= VK_NULL_HANDLE;
 
 	QeDataDescriptorSet(QeDescriptorSetLayoutType _type) :type(_type) {}
+	~QeDataDescriptorSet();
 };
 
 struct QeDataDescriptorSetLayout {
@@ -196,10 +197,10 @@ public:
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 
-	void createSwapChain(VkSurfaceKHR& surface, VkSwapchainKHR& swapChain, VkExtent2D& swapChainExtent, VkFormat& swapChainImageFormat, std::vector<QeVKImage>& swapChainImages);
+	void createSwapchain(VkSurfaceKHR& surface, QeDataSwapchain* swapchain);
 	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
-	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* swapChainImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
-	void createPresentDepthImage(QeVKImage& presentImage, QeVKImage& depthImage, VkExtent2D& swapChainExtent);
+	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
+	void createPresentDepthImage(QeVKImage* presentImage, QeVKImage* depthImage, VkExtent2D& swapChainExtent);
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
 	VkFence createSyncObjectFence();

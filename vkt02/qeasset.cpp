@@ -664,6 +664,8 @@ const char* QeAsset::getEditType(QeObjectType type) {
 	case eObject_Scene:
 		out = "scenes";
 		break;
+	case eObject_Render:
+		out = "models";
 	}
 	return out;
 }
@@ -823,6 +825,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.normal = { 0, 0, -1,1 };
 		model->vertices.push_back(vertex);
 		break;
+
 	case eModelData_axis:
 
 		model = new QeAssetModel();
@@ -841,7 +844,9 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.color = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
 		break;
+
 	case eModelData_grids:
+
 		model = new QeAssetModel();
 		model->scale = { 1 , 1 , 1 };
 		vertex.color = { 0.5f, 0.5f, 0.5f,1.0f };
@@ -856,6 +861,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 			model->vertices.push_back(vertex);
 		}
 		break;
+
 	case eModelData_line:
 
 		model = new QeAssetModel();

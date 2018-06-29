@@ -44,6 +44,14 @@ void QeActivity::init(QeAssetXML* _property) {
 		}
 	}
 
+	node = AST->getXMLNode(initProperty, 1, "renders");
+	if (node) {
+		size_t size = node->nexts.size();
+		for (int index = 0; index < size; ++index) {
+			OBJMGR->getObject(0, node->nexts[index]);
+		}
+	}
+
 	node = AST->getXMLNode(initProperty, 1, "points");
 	if (node) {
 		size_t size = node->nexts.size();

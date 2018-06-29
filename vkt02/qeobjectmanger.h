@@ -37,6 +37,8 @@ enum QeObjectType {
 	eObject_Cubemap = 12,
 	eObject_Particle = 13,
 	eObject_Model = 14,
+	eObject_Render = 15,
+
 };
 
 class QeObjectMangerKey {
@@ -62,7 +64,7 @@ public:
 
 	QePoint* getObject(int _oid, QeAssetXML* _property=nullptr, int _parentOID=0);
 
-	void sortAlphaModels();
+	void sortAlphaModels(QeCamera* camera);
 
 	void updateCompute(float _time);
 	void updateRender(float _time);
@@ -70,6 +72,6 @@ public:
 	void cleanupPipeline();
 	void recreatePipeline();
 
-	void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer);
-	void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
+	void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
+	void updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
 };

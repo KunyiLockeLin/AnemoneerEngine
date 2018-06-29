@@ -22,74 +22,67 @@ struct QeDataViewport {
 
 	QeDataViewport():environmentBuffer(eBuffer_uniform), lightsBuffer(eBuffer_storage),
 		commonDescriptorSet(eDescriptorSetLayout_Common) {}
+
+	~QeDataViewport();
 };
 
-struct QeDataSubRender {
+struct QeDataRender {
 
 	std::vector<QeDataViewport*> viewports;
-	VkRect2D size;
+	int cameraOID;
+	VkViewport viewport;
+	VkRect2D scissor;
 
-	VkDescriptorImageInfo descriptor;
-	QeVKImage presentImage, depthImage;
-	VkRenderPass renderPass;
-	VkFramebuffer frameBuffer;
-	VkCommandBuffer commandBuffer;
+	QeVKImage presentImage, depthImage, attachImage;
+	std::vector<VkFramebuffer> frameBuffers;
+	std::vector<VkCommandBuffer> commandBuffers;
 	VkSemaphore semaphore = VK_NULL_HANDLE;
-	QeAssetGraphicsShader graphicsShader;
+	
+	VkRenderPass renderPass;
 	int subpassNum;
-	QeDataDescriptorSet postprocessingDescriptorSet;
-	QeDataGraphicsPipeline* postprocessingPipeline = nullptr;
+	QeAssetGraphicsShader graphicsShader;
+	QeDataDescriptorSet descriptorSet;
+	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
 
-	QeDataSubRender() :presentImage(eImage_inputAttach), depthImage(eImage_depth), postprocessingDescriptorSet(eDescriptorSetLayout_Postprocessing) {}
+	QeDataRender() :presentImage(eImage_2D), attachImage(eImage_inputAttach), depthImage(eImage_depth), 
+		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
+	~QeDataRender();
+};
+
+struct QeDataSwapchain {
+	VkSwapchainKHR khr = VK_NULL_HANDLE;
+	VkExtent2D extent;
+	VkFormat format;
+	std::vector<QeVKImage> images;
 };
 
 class QeGraphics
 {
 public:
 
-	QeGraphics(QeGlobalKey& _key):presentImage(eImage_inputAttach), depthImage(eImage_depth), postprocessingDescriptorSet(eDescriptorSetLayout_Postprocessing) {}
+	QeGraphics(QeGlobalKey& _key) {}
 	~QeGraphics();
 
 	QeAssetXML* initProperty;
 
-	std::vector<QeDataSubRender> subRenders;
+	std::vector<QeDataRender*> renders; // 0:main render
+	QeDataSwapchain swapchain;
 
-	// main render
-	int currentCommandViewport = 0;
 	int currentTargetViewport = 0;
-	std::vector<QeDataViewport*> viewports;
-	VkViewport mainViewport;
-	VkRect2D mainScissor;
-	int subpassNum;
-	QeVKImage presentImage, depthImage;
-	VkRenderPass renderPass = VK_NULL_HANDLE;
-	std::vector<VkCommandBuffer> drawCommandBuffers;
 
-	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
-	VkExtent2D swapChainExtent;
-	VkFormat swapChainImageFormat;
-	std::vector<QeVKImage> swapChainImages;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-	QeAssetGraphicsShader graphicsShader;
-
-	VkSemaphore imageAvailableSemaphore;
-	VkSemaphore renderFinishedSemaphore;
-	std::vector<VkFence> inFlightFences;
-
-	QeDataDescriptorSet postprocessingDescriptorSet;
-	QeDataGraphicsPipeline* postprocessingPipeline = nullptr;
-	//
+	VkSemaphore renderCompleteSemaphore;
+	std::vector<VkFence> fences;
 
 	void init(QeAssetXML* _property);
-	void addNewViewport();
-	void popViewport();
+	void addNewViewport(size_t renderIndex = 0);
+	void popViewport(size_t renderIndex = 0);
 	void updateViewport();
 	void updateBuffer();
 	void updateRender(float time);
 	void updateCompute(float time);
 	void setTargetCamera(int index);
 	QeCamera* getTargetCamera();
-
+	QeDataRender * getSubRender(int cameraOID);
 	//bool bUpdateComputeCommandBuffers = false;
 	bool bUpdateDrawCommandBuffers = false;
 	bool bRecreateRender = false;
@@ -99,10 +92,9 @@ public:
 
 	//VkSemaphore textOverlayComplete;
 
-	void createRender();
-	void createSubRender();
+	QeDataRender* createRender(int cameraOID=0);
+	void refreshRender();
 	void cleanupRender();
-	void recreateRender();
 	void drawFrame();
 	void updateDrawCommandBuffers();
 	//void updateComputeCommandBuffers();

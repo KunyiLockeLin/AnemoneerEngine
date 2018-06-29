@@ -233,9 +233,13 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append(device);
 	windowTitle.append(" - ");
 	windowTitle.append(std::to_string(QE->currentComputeFPS));
+	windowTitle.append("/");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "computeFPS"));
 	windowTitle.append(" compute fps");
 	windowTitle.append(" - ");
 	windowTitle.append(std::to_string(QE->currentRenderFPS));
+	windowTitle.append("/");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS"));
 	windowTitle.append(" render fps");
 	return windowTitle;
 }

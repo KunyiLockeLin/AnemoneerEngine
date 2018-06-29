@@ -25,21 +25,22 @@ enum QeActionState {
 /*struct QeDataModelViewport {
 	QeMatrix4x4f normal;
 };
-*/
+
 struct QeDataModelShader {
 	//QeDataModelViewport data;
 	//QeVKBuffer buffer;
 	QeDataDescriptorSet descriptorSet;
 
-	QeDataModelShader():/*buffer(eBuffer_uniform),*/ descriptorSet(eDescriptorSetLayout_Model) {}
+	QeDataModelShader():buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
 };
-
+*/
 
 class QeModel:public QePoint
 {
 public:
 
-	QeModel(QeObjectMangerKey& _key, QeObjectType _type = eObject_Model):QePoint(_key, _type), modelBuffer(eBuffer_uniform){}
+	QeModel(QeObjectMangerKey& _key, QeObjectType _type = eObject_Model):QePoint(_key, _type), 
+		modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
 	//~QeModel(){}
 
 	QeActionState	actionState;
@@ -55,12 +56,11 @@ public:
 	float up;
 	int speed;
 	bool bShow;
-	bool bCullingShow;
 	int cullingDistance;
 	int cubemapOID;
 	bool bAlpha;
 	bool bFixSize;
-
+	int cameraOID;
 
 	QeMatrix4x4f parentModel;
 
@@ -73,7 +73,8 @@ public:
 	QeDataModel bufferData;
 	QeVKBuffer modelBuffer;
 
-	std::vector<QeDataModelShader*> shaderData;
+	//std::vector<QeDataModelShader*> shaderData;
+	QeDataDescriptorSet descriptorSet;
 	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
 	QeDataGraphicsPipeline* normalPipeline = nullptr;
 	VkPipeline computePipeline = VK_NULL_HANDLE;
@@ -83,7 +84,7 @@ public:
 	
 	void setShow(bool b);
 	void updateBuffer();
-	virtual void updateShowByCulling();
+	virtual bool isShowByCulling(QeCamera* camera);
 	//virtual void updateRender(float time) {}
 	virtual void updateCompute(float time);
 
@@ -98,7 +99,7 @@ public:
 	void setSize(QeVector3f& _size);
 	virtual void setMatModel();
 	void updateShaderData();
-	virtual QeDataDescriptorSetModel createDescriptorSetModel(int index);
+	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 	virtual void createPipeline();
  
 	bool setAction(unsigned int actionID, QeActionType playType);
@@ -108,7 +109,7 @@ public:
 	void updateAction(float time);
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	virtual QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName);
-	std::vector<VkDescriptorSet> getDescriptorSets(int index);
-	virtual void updateDrawCommandBuffer(VkCommandBuffer& drawCommandBuffer);
-	virtual void updateComputeCommandBuffer(VkCommandBuffer& drawCommandBuffer) {}
+	std::vector<VkDescriptorSet> getDescriptorSets(QeDataDescriptorSet* commonDescriptorSet);
+	virtual void updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
+	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {}
 };

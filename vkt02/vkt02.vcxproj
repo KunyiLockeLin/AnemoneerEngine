@@ -173,6 +173,7 @@
     <ClCompile Include="qelog.cpp" />
     <ClCompile Include="qeobjectmanger.cpp" />
     <ClCompile Include="qeparticle.cpp" />
+    <ClCompile Include="qerender.cpp" />
     <ClCompile Include="qetimer.cpp" />
     <ClCompile Include="qevulkan.cpp" />
     <ClCompile Include="qeencode.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="qelog.h" />
     <ClInclude Include="qeobjectmanger.h" />
     <ClInclude Include="qeparticle.h" />
+    <ClInclude Include="qerender.h" />
     <ClInclude Include="qetimer.h" />
     <ClInclude Include="qevulkan.h" />
     <ClInclude Include="qeencode.h" />
@@ -219,7 +221,6 @@
     <None Include="..\data\shaders\billboard.geom" />
     <None Include="..\data\shaders\compile.bat" />
     <None Include="..\data\shaders\cubemap.frag" />
-    <None Include="..\data\shaders\cubemap.geom" />
     <None Include="..\data\shaders\grayscale.frag" />
     <None Include="..\data\shaders\header.comp" />
     <None Include="..\data\shaders\header.frag" />

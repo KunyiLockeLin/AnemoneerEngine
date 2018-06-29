@@ -84,6 +84,9 @@
     <ClCompile Include="qecubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qerender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -152,6 +155,9 @@
     <ClInclude Include="qecubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qerender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\data\shaders\pbr.frag">
@@ -203,9 +209,6 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\cubemap.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
-    <None Include="..\data\shaders\cubemap.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\texture.frag">
