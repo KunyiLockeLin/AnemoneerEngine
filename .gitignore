@@ -4,6 +4,7 @@
 *.pdb
 *.idb
 *.log
+*.obj
 *.exe
 *.ilk
 *.ipch
