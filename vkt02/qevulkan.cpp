@@ -1546,6 +1546,10 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, 
 		bSampler = true;
 		break;
 
+	case eImage_render:
+		usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		bSampler = true;
+		break;
 	//case eImage_inputAttach:
 	//	usage = ;
 	//	break;

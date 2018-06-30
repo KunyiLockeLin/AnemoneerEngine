@@ -46,6 +46,7 @@ enum QeVKImageType {
 	eImage_inputAttach = 2,
 	eImage_2D = 3,
 	eImage_cube = 4,
+	eImage_render = 5,
 };
 
 struct QeVKImage {

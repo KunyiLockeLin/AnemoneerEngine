@@ -48,7 +48,7 @@ struct QeDataRender {
 	QeDataDescriptorSet descriptorSet;
 	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
 
-	QeDataRender() :presentImage(eImage_2D), attachImage(eImage_inputAttach), depthImage(eImage_depth), 
+	QeDataRender() :presentImage(eImage_render), attachImage(eImage_inputAttach), depthImage(eImage_depth), 
 		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataRender();
 };
