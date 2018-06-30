@@ -35,10 +35,14 @@ struct QeDataRender {
 
 	QeVKImage presentImage, depthImage, attachImage;
 	std::vector<VkFramebuffer> frameBuffers;
+
+	std::vector<VkCommandBufferBeginInfo> commandBeginInfos;
 	std::vector<VkCommandBuffer> commandBuffers;
 	VkSemaphore semaphore = VK_NULL_HANDLE;
 	
 	VkRenderPass renderPass;
+	std::vector<VkRenderPassBeginInfo> renderPassInfos;
+
 	int subpassNum;
 	QeAssetGraphicsShader graphicsShader;
 	QeDataDescriptorSet descriptorSet;
@@ -47,6 +51,13 @@ struct QeDataRender {
 	QeDataRender() :presentImage(eImage_2D), attachImage(eImage_inputAttach), depthImage(eImage_depth), 
 		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataRender();
+};
+
+enum QeRenderType {
+	eRender_main = 0,
+	eRender_mirror =1,
+	eRender_shadow = 2,
+	eRender_others = 3,
 };
 
 struct QeDataSwapchain {

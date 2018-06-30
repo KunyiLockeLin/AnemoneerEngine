@@ -66,7 +66,6 @@ enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
 	eDescriptorSetLayout_render = 3,
-
 };
 
 struct QeDataDescriptorSet {

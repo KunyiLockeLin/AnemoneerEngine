@@ -57,7 +57,12 @@
         <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="-3" posZ="0"/>
       </models>
       <renders>
+        <e oid="15000" show="1" posX="0" posY="3" posZ="-3" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100"/>
       </renders>
+      <cameras>
+        <e oid="26000" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
+        <e oid="26100" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
+      </cameras>
     </e>
     
     <e eid ="28001">
@@ -133,7 +138,7 @@
       <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.3" z_range="0.5"/>
       <force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5"/>
       <size x="0.2" x_range="0" y="0.2" y_range="0" />
-      <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1"/>
+      <color r="0" r_range="1" g="0" g_range="0" b="0" b_range="0"/>
      </e>
     <e eid="13001" image="light.png" alpha ="1" reborn="1">
       <count once ="5" period="10" total = "100" range="0"/>

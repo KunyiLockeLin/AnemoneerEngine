@@ -17,8 +17,6 @@ void QeActivity::init(QeAssetXML* _property) {
 		ambientColor.w = 1.0f;
 	}
 
-	VP->init(initProperty);
-
 	node = AST->getXMLNode(initProperty, 1, "lights");
 	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "lights");
 	if (node){
@@ -27,6 +25,8 @@ void QeActivity::init(QeAssetXML* _property) {
 			light = (QeLight*)OBJMGR->getObject(0, node->nexts[index]);
 		}
 	}
+
+	VP->init(initProperty);
 
 	node = AST->getXMLNode(initProperty, 1, "cubemaps");
 	if (node) {

@@ -321,7 +321,7 @@ void QeGraphics::refreshRender() {
 		size = 1;
 	}
 
-	for (size_t i = 0;i<size;++i ) {
+	for (size_t i = 0; i < size; ++i) {
 
 		QeDataRender * render = renders[i];
 		render->viewport.minDepth = 0.0f;
@@ -329,7 +329,7 @@ void QeGraphics::refreshRender() {
 		render->viewport.x = 0.0f;
 		render->viewport.y = 0.0f;
 
-		if (i == 0) {
+		if (i == 0){
 			render->viewport.height = float(swapchain.extent.height);
 			render->viewport.width = float(swapchain.extent.width);
 		}
@@ -403,6 +403,9 @@ QeDataRender* QeGraphics::createRender(int cameraOID) {
 
 	render->frameBuffers.resize(size1);
 	render->commandBuffers.resize(size1);
+	render->commandBeginInfos.resize(size1);
+	render->renderPassInfos.resize(size1);
+
 	render->semaphore = VK->createSyncObjectSemaphore();
 	addNewViewport(size);
 	return render;
@@ -499,37 +502,38 @@ void QeGraphics::updateDrawCommandBuffers() {
 		QeDataRender * render = renders[i];
 		size_t size1 = render->commandBuffers.size();
 
+		// graphics shader
+		std::vector<VkClearValue> clearValues;
+		clearValues.resize(render->subpassNum + 1);
+
+		clearValues[0].color = { ACT->ambientColor.x + i / 2, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+
+		if (render->subpassNum > 1)
+			clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+
 		for (size_t j = 0; j < size1; ++j) {
-			VkCommandBufferBeginInfo beginInfo = {};
-			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-			beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-			vkBeginCommandBuffer(render->commandBuffers[j], &beginInfo);
+			//VkCommandBufferBeginInfo beginInfo = {};
+			render->commandBeginInfos[j].sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+			//render->commandBeginInfos[j].flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+			vkBeginCommandBuffer(render->commandBuffers[j], &render->commandBeginInfos[j]);
 
 			// pushConstants
 			VK->updatePushConstnats(render->commandBuffers[j]);
 
 			//compute shader
 			OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
+			
+			//VkRenderPassBeginInfo renderPassInfo = {};
+			render->renderPassInfos[j].sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+			render->renderPassInfos[j].renderPass = render->renderPass;
+			render->renderPassInfos[j].renderArea = render->scissor;
+			render->renderPassInfos[j].clearValueCount = uint32_t(clearValues.size());
+			render->renderPassInfos[j].pClearValues = clearValues.data();
+			render->renderPassInfos[j].framebuffer = render->frameBuffers[j];
 
-			// graphics shader
-			std::vector<VkClearValue> clearValues;
-			clearValues.resize(render->subpassNum+1);
-			 
-			clearValues[0].color = { ACT->ambientColor.x+ i/2, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-			clearValues[1].depthStencil = { 1.0f, 0 };
-
-			if (render->subpassNum > 1)
-				clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-
-			VkRenderPassBeginInfo renderPassInfo = {};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = render->renderPass;
-			renderPassInfo.framebuffer = render->frameBuffers[j];
-			renderPassInfo.renderArea = render->scissor;
-			renderPassInfo.clearValueCount = uint32_t(clearValues.size());
-			renderPassInfo.pClearValues = clearValues.data();
-
-			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass(render->commandBuffers[j], &render->renderPassInfos[j], VK_SUBPASS_CONTENTS_INLINE);
 
 			size_t size2 = render->viewports.size();
 			for (size_t k = 0; k < size2; ++k) {
@@ -537,7 +541,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
 				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
 
-				OBJMGR->updateDrawCommandBuffer(render->commandBuffers[j], render->viewports[k]->camera, &render->viewports[k]->commonDescriptorSet);
+				OBJMGR->updateDrawCommandBuffer(render->commandBuffers[j], render->viewports[k]->camera, &render->viewports[k]->commonDescriptorSet, render->renderPass);
 			}
 
 			if (render->subpassNum > 1) {
