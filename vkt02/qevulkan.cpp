@@ -521,18 +521,18 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createPresentDepthImage(QeVKImage* presentImage, QeVKImage* depthImage, VkExtent2D& swapChainExtent) {
-	VkFormat depthFormat = findDepthFormat();
+void QeVulkan::createPresentDepthImage(QeVKImage* presentImage, QeVKImage* depthImage, VkExtent2D& size) {
 
-	int imageSize = swapChainExtent.width*swapChainExtent.height * 4;
+	int imageSize = size.width*size.height * 4;
 
 	if (depthImage) {
-		createImage(*depthImage, imageSize, swapChainExtent.width, swapChainExtent.height, depthFormat, nullptr);
+		VkFormat depthFormat = findDepthFormat();
+		createImage(*depthImage, imageSize, size.width, size.height, depthFormat, nullptr);
 		transitionImageLayout(depthImage->image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 	}
 
 	if(presentImage)
-		createImage(*presentImage, imageSize, swapChainExtent.width, swapChainExtent.height, VK_FORMAT_B8G8R8A8_UNORM, nullptr);
+		createImage(*presentImage, imageSize, size.width, size.height, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 }
 
 VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
@@ -731,10 +731,10 @@ VkFence QeVulkan::createSyncObjectFence() {
 
 VkSurfaceFormatKHR QeVulkan::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
 	if (availableFormats.size() == 1 && availableFormats[0].format == VK_FORMAT_UNDEFINED)
-		return{ VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
+		return{ VK_FORMAT_R8G8B8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
 
 	for (const auto& availableFormat : availableFormats) {
-		if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+		if (availableFormat.format == VK_FORMAT_R8G8B8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 			return availableFormat;
 		}
 	}
