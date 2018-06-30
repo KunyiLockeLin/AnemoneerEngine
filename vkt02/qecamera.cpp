@@ -122,7 +122,7 @@ void QeCamera::setMousePos(QeVector2i mousePos) {
 
 void QeCamera::zoomInOut(QeVector2i mousePos) {
 	
-	move( { 0, 0, -(mousePos.y - lastMousePos.y) / 10 }, false);
+	move( { 0, 0, -(mousePos.x - lastMousePos.x) / 10 }, false);
 	lastMousePos = mousePos;
 }
 
