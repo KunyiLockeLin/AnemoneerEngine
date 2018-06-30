@@ -54,10 +54,10 @@
   <scenes>
     <e eid="28000">
       <models>
-        <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="-3" posZ="0"/>
+        <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="0" posZ="0"/>
       </models>
       <renders>
-        <e oid="15000" show="1" posX="0" posY="3" posZ="-3" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100"/>
+        <e oid="15000" show="1" posX="0" posY="2" posZ="-3" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100"/>
       </renders>
       <cameras>
         <e oid="26000" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="100"/>
@@ -66,7 +66,6 @@
     </e>
     
     <e eid ="28001">
-      <postprocessing frag="grayscalef.spv"/>
       <ambientColor r="0.0" g="0.5" b="0.5"/>
       <cubemaps>
         <e oid="12000" eid="12000" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
@@ -75,7 +74,7 @@
       <models>
         <e oid="14000" eid="14000" show="1" speed="50" posX="0" posY="5" posZ="-1" actionState ="1" actionSpeed="1" action="0" actionType="2" >
           <attachs>
-            <e oid="14001" eid="14001" show="1" speed="100" followPos="1" followColor="0" attachskeleton="Armature_Bone_002" />
+            <e oid="14001" eid="14001" show="1" speed="100" scaleX="2" scaleY="2" scaleZ="2" followPos="1" followColor="0" attachskeleton="Armature_Bone_002" />
           </attachs>
         </e>
         <e oid="14002" eid="14002" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapOID="12000" culling="1000"/>    
@@ -110,6 +109,10 @@
         </e>
       </lights>
     </e>
+
+    <e eid="28003">
+      <postprocessing frag="grayscalef.spv"/>
+    </e>
   </scenes>
   
   <models>
@@ -120,6 +123,7 @@
     <e eid="14004" obj="plane" alpha="0" frag="basef.spv"/>
     <e eid="14006" obj="plane" alpha="0"/>
     <e eid="14005" obj="cube" alpha="0" frag="basef.spv"/>
+    <e eid="14007" obj="cube" alpha="0"/>
   </models>
   
   <billboards>

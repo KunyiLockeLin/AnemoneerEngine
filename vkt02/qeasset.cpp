@@ -868,7 +868,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->scale = { 1, 1, 1 };
 		vertex.normal = { 1, 0, 0,1 };
 		vertex.uv = { 0, 0,1,1 };
-		vertex.color = { 0, 0, 0,1 };
+		vertex.color = { 1, 1, 1,1 };
 		vertex.pos = { 0, 0, 0,1 };
 		model->vertices.push_back(vertex);
 		break;
