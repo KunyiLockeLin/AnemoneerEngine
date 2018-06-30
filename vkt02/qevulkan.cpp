@@ -308,9 +308,12 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, bool bM
 	attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	
-	if (subpassNum == 1 && bMainRender) {
+	if (subpassNum == 1 ) {
 		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		if(bMainRender)
+			attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		else
+			attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 	}
 	else {
 		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -478,7 +481,7 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D swapChainExtent, VkRenderPass renderPass, int subpassNum, bool bMainRender) {
+VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender) {
 	
 	std::vector<VkImageView> attachments;
 	attachments.resize(subpassNum + 1);
@@ -495,8 +498,8 @@ VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* de
 	framebufferInfo.renderPass = renderPass;
 	framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 	framebufferInfo.pAttachments = attachments.data();
-	framebufferInfo.width = swapChainExtent.width;
-	framebufferInfo.height = swapChainExtent.height;
+	framebufferInfo.width = size.width;
+	framebufferInfo.height = size.height;
 	framebufferInfo.layers = 1;
 
 	VkFramebuffer framebuffer;

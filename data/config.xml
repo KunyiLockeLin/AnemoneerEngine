@@ -35,12 +35,12 @@
       <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
       <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
       <normal vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
+      <render vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
       <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
       <particle vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>
       <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
       <action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
       <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
-      <render vert="basev.spv" geom="billboardg.spv" frag="texturemf.spv"/>
       <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
     </graphicsShader>
   
