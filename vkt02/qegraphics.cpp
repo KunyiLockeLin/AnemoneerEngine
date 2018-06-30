@@ -409,7 +409,7 @@ QeDataRender * QeGraphics::getSubRender(int cameraOID) {
 	for (size_t i = 1; i<size; ++i) {
 		if (renders[i]->viewports[0]->camera->oid == cameraOID) return renders[i];
 	}
-	return createRender();
+	return createRender(cameraOID);
 }
 
 void QeGraphics::cleanupRender() {
