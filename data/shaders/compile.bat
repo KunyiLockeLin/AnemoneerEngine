@@ -9,6 +9,7 @@
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V billboard.geom -o billboardg.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V texturev.frag -o texturevf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V texturem.frag -o texturemf.spv
+%VULKAN_SDK%/Bin32/glslangValidator.exe -V mirror.frag -o mirrorf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V cubemap.frag -o cubemapf.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V skeleton.vert -o skeletonv.spv
 %VULKAN_SDK%/Bin32/glslangValidator.exe -V toon.frag -o toonf.spv
