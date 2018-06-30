@@ -8,4 +8,5 @@
 *.exe
 *.ilk
 *.ipch
+*.spv
 .vs/vkt/v15/.suo
