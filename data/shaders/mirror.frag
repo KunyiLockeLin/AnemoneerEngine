@@ -5,7 +5,7 @@
 
 void main() {
 
-	vec4 inUV4_2 = inUV4 ;/// inUV4.w;
+	vec4 inUV4_2 = inUV4/ inUV4.w;
 	vec4 texColor = texture(baseColorMapSampler, inUV4_2.xy);
 	outColor = texColor;
 }

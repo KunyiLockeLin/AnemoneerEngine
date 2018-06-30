@@ -200,14 +200,12 @@ void QeGraphics::updateBuffer() {
 				sizeof(viewport->environmentData), &viewport->environmentData);
 
 			size_t size2 = viewport->lights.size();
+			std::vector<QeDataLight> data;
+			data.resize(size2);
 			for (size_t k = 0; k < size2; ++k) {
-				std::vector<QeDataLight> data;
-				data.resize(size1);
-				for (size_t j = 0; j < size1; ++j) {
-					data[j] = viewport->lights[k]->bufferData;
-				}
-				VK->setMemoryBuffer(viewport->lightsBuffer, sizeof(data[0])*size1, data.data());
+					data[k] = viewport->lights[k]->bufferData;
 			}
+			VK->setMemoryBuffer(viewport->lightsBuffer, sizeof(data[0])*size2, data.data());
 		}
 	}
 }
