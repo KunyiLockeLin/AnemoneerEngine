@@ -521,13 +521,6 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createDepthImage(QeVKImage* depthImage, VkExtent2D& size) {
-
-	VkFormat depthFormat = findDepthFormat();
-	createImage(*depthImage, 0, size, depthFormat, nullptr);
-	transitionImageLayout(depthImage->image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-}
-
 VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
 	for (VkFormat format : candidates) {
 		VkFormatProperties props;
@@ -1516,6 +1509,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 	case eImage_depth:
 		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+		if(format == VK_FORMAT_UNDEFINED) format = findDepthFormat();
 		break;
 
 	case eImage_inputAttach:
@@ -1629,6 +1623,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 
 	// data
 	if (data)	setMemoryImage(image, dataSize, imageSize, format, data, 0);
+	if (image.type == eImage_depth) transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 

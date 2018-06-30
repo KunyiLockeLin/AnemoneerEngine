@@ -16,7 +16,7 @@ QeDataDescriptorSetModel QeRender::createDescriptorSetModel() {
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	QeDataRender* render = VP->getSubRender(cameraOID);
 
-	descriptorSetData.baseColorMapImageView = render->presentImage.view;
-	descriptorSetData.baseColorMapSampler = render->presentImage.sampler;
+	descriptorSetData.baseColorMapImageView = render->attachImage.view;
+	descriptorSetData.baseColorMapSampler = render->attachImage.sampler;
 	return descriptorSetData;
 }

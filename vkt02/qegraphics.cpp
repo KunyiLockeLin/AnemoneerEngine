@@ -341,25 +341,25 @@ void QeGraphics::refreshRender() {
 		render->scissor.offset.y = int(render->viewport.y);
 		render->scissor.extent.height = int(render->viewport.height);
 		render->scissor.extent.width = int(render->viewport.width);
+		VK->createImage(render->depthImage, 0, render->scissor.extent, VK->findDepthFormat(), nullptr);
 
 		if (i==0) {
 			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, true);
 
 			if (render->subpassNum > 1) {
-				VK->createDepthImage(&render->depthImage, render->scissor.extent);
+				render->attachImage.type = eImage_inputAttach;
 				VK->createImage(render->attachImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 				render->graphicsPipeline = VK->createGraphicsPipeline(&render->graphicsShader, eGraphicsPipeLine_Postprogessing, render->renderPass);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->attachImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 			}
-			else VK->createDepthImage(&render->depthImage, render->scissor.extent);
 
 		}
 		else {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, false);
-			VK->createDepthImage(&render->depthImage, render->scissor.extent);
-			VK->createImage(render->presentImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+			render->attachImage.type = eImage_render;
+			VK->createImage(render->attachImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 		}
 
 		size_t size1 = render->frameBuffers.size();
@@ -374,7 +374,7 @@ void QeGraphics::refreshRender() {
 						render->scissor.extent, render->renderPass, render->subpassNum, true);
 			}
 			else {
-				render->frameBuffers[j] = VK->createFramebuffer(&render->presentImage, &render->depthImage, nullptr, 
+				render->frameBuffers[j] = VK->createFramebuffer(&render->attachImage, &render->depthImage, nullptr,
 					render->scissor.extent, render->renderPass, render->subpassNum, false);
 			}
 			render->commandBuffers[j] = VK->createCommandBuffer();

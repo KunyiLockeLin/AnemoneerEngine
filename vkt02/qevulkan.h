@@ -51,7 +51,7 @@ enum QeVKImageType {
 
 struct QeVKImage {
 
-	const QeVKImageType type;
+	QeVKImageType type;
 	VkImage image = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
@@ -200,7 +200,6 @@ public:
 	void createSwapchain(QeDataSwapchain* swapchain);
 	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
 	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
-	void createDepthImage(QeVKImage* depthImage, VkExtent2D& size);
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
 	VkFence createSyncObjectFence();
