@@ -33,14 +33,17 @@ void main(void)
 
 		gl_Position = mvp*vec4( 0.0, 2.0, 0.0, 1.0 );
 		outUV = vec2( -1.0, 0.0 );
+		outUV4 = gl_Position;
 		EmitVertex();
 
 		gl_Position = mvp*vec4( 0.0, 0.0, 0.0, 1.0 );
 		outUV = vec2( 1.0, 0.0 );
+		outUV4 = gl_Position;
 		EmitVertex();
   
   		gl_Position = mvp*vec4( 2.0, 0.0, 0.0, 1.0 );
 		outUV = vec2( 1.0, 2.0 );
+		outUV4 = gl_Position;
 		EmitVertex();
 	}
 	gl_ViewportIndex = gl_InvocationID;
