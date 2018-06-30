@@ -328,9 +328,15 @@ void QeGraphics::refreshRender() {
 		render->viewport.maxDepth = 1.0f;
 		render->viewport.x = 0.0f;
 		render->viewport.y = 0.0f;
-		render->viewport.height = float(swapchain.extent.height);
-		render->viewport.width = float(swapchain.extent.width);
 
+		if (i == 0) {
+			render->viewport.height = float(swapchain.extent.height);
+			render->viewport.width = float(swapchain.extent.width);
+		}
+		else {
+			render->viewport.height = 256.0f;
+			render->viewport.width = 256.0f;
+		}
 		render->scissor.offset.x = int(render->viewport.x);
 		render->scissor.offset.y = int(render->viewport.y);
 		render->scissor.extent.height = int(render->viewport.height);
@@ -340,18 +346,18 @@ void QeGraphics::refreshRender() {
 			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, true);
 
 			if (render->subpassNum > 1) {
-				VK->createPresentDepthImage(&render->attachImage, &render->depthImage, swapchain.extent);
+				VK->createPresentDepthImage(&render->attachImage, &render->depthImage, render->scissor.extent);
 				render->graphicsPipeline = VK->createGraphicsPipeline(&render->graphicsShader, eGraphicsPipeLine_Postprogessing, render->renderPass);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->attachImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 			}
-			else VK->createPresentDepthImage(nullptr , &render->depthImage, swapchain.extent);
+			else VK->createPresentDepthImage(nullptr , &render->depthImage, render->scissor.extent);
 
 		}
 		else {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, false);
-			VK->createPresentDepthImage(&render->presentImage, &render->depthImage, swapchain.extent);
+			VK->createPresentDepthImage(&render->presentImage, &render->depthImage, render->scissor.extent);
 		}
 
 		size_t size1 = render->frameBuffers.size();
@@ -488,7 +494,7 @@ void QeGraphics::cleanupRender() {
 void QeGraphics::updateDrawCommandBuffers() {
 
 	int size = int(renders.size());
-	for (int i = size-1; i>-1 ; --i) {
+	for (int i = 0; i<size ; ++i) {
 
 		QeDataRender * render = renders[i];
 		size_t size1 = render->commandBuffers.size();
