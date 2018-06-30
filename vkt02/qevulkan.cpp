@@ -1049,8 +1049,8 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	if (type == eGraphicsPipeLine_Point || type == eGraphicsPipeLine_Postprogessing)	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-	else if(type == eGraphicsPipeLine_Line)								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	if (type == eGraphicsPipeLine_Point || type == eGraphicsPipeLine_Postprogessing || type == eGraphicsPipeLine_Line)	
+		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	else if (shader->tesc && shader->tese )								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
 	else																inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
