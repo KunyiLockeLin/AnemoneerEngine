@@ -211,9 +211,6 @@
     <None Include="..\data\shaders\cubemap.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\texture.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\billboard.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -245,6 +242,12 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\header.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\texturem.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\texturev.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

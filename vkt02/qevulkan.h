@@ -200,7 +200,7 @@ public:
 	void createSwapchain(QeDataSwapchain* swapchain);
 	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
 	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
-	void createPresentDepthImage(QeVKImage* presentImage, QeVKImage* depthImage, VkExtent2D& size);
+	void createDepthImage(QeVKImage* depthImage, VkExtent2D& size);
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
 	VkFence createSyncObjectFence();
@@ -215,8 +215,6 @@ public:
 	VkFormat findDepthFormat();
 	bool hasStencilComponent(VkFormat format);
 
-	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels=1);
-	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer);
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -246,6 +244,8 @@ public:
 	
 	void createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
 	void setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
-	void createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data);
-	void setMemoryImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data, uint8_t layer);
+	void createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data);
+	void setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, uint8_t layer);
+	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels = 1);
+	void copyBufferToImage(VkBuffer buffer, VkImage image, VkExtent2D& imageSize, int layer);
 };

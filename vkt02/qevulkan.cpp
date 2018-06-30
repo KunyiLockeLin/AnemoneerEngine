@@ -290,7 +290,7 @@ void QeVulkan::createSwapchain( QeDataSwapchain* swapchain ) {
 
 	for (uint32_t i = 0; i < imageCount; i++) {
 		swapchain->images[i].image = swapchainImages2[i];
-		createImage(swapchain->images[i], 0, 0, 0, swapchain->format, nullptr);
+		createImage(swapchain->images[i], 0, swapchain->extent, swapchain->format, nullptr);
 		//swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
@@ -521,18 +521,11 @@ void QeVulkan::createCommandPool() {
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)	LOG("failed to create graphics command pool!");
 }
 
-void QeVulkan::createPresentDepthImage(QeVKImage* presentImage, QeVKImage* depthImage, VkExtent2D& size) {
+void QeVulkan::createDepthImage(QeVKImage* depthImage, VkExtent2D& size) {
 
-	int imageSize = size.width*size.height * 4;
-
-	if (depthImage) {
-		VkFormat depthFormat = findDepthFormat();
-		createImage(*depthImage, imageSize, size.width, size.height, depthFormat, nullptr);
-		transitionImageLayout(depthImage->image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-	}
-
-	if(presentImage)
-		createImage(*presentImage, imageSize, size.width, size.height, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+	VkFormat depthFormat = findDepthFormat();
+	createImage(*depthImage, 0, size, depthFormat, nullptr);
+	transitionImageLayout(depthImage->image, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
@@ -631,7 +624,7 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 	endSingleTimeCommands(commandBuffer);
 }
 
-void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, int layer) {
+void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, VkExtent2D& imageSize, int layer) {
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
 	VkBufferImageCopy region = {};
@@ -643,7 +636,7 @@ void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width,
 	region.imageSubresource.baseArrayLayer = layer;
 	region.imageSubresource.layerCount = 1;
 	region.imageOffset = { 0, 0, 0 };
-	region.imageExtent = { width, height, 1 };
+	region.imageExtent = { imageSize.width, imageSize.height, 1 };
 
 	vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
@@ -1502,10 +1495,11 @@ void QeVulkan::setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data
 	}
 }
 
-void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data) {
+void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data) {
+
+	if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
 
 	uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
-
 	VkImageTiling tiling= VK_IMAGE_TILING_OPTIMAL;
 	VkImageUsageFlags usage;
 	VkMemoryPropertyFlags properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -1561,8 +1555,8 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, 
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.flags = createFlags;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.extent.width = width;
-		imageInfo.extent.height = height;
+		imageInfo.extent.width = imageSize.width;
+		imageInfo.extent.height = imageSize.height;
 		imageInfo.extent.depth = 1;
 		imageInfo.mipLevels = mipLevels;
 		imageInfo.arrayLayers = arrayLayer;
@@ -1634,19 +1628,21 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize size, uint16_t width, 
 	}
 
 	// data
-	if (data)	setMemoryImage(image, size, width, height, format, data, 0);
+	if (data)	setMemoryImage(image, dataSize, imageSize, format, data, 0);
 }
 
 
-void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize size, uint16_t width, uint16_t height, VkFormat format, void* data, uint8_t layer) {
+void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, uint8_t layer) {
+
+	if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
 
 	uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 	QeVKBuffer staging(eBuffer);
-	createBuffer(staging, size, data);
+	createBuffer(staging, dataSize, data);
 
 	transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
 	//transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-	copyBufferToImage(staging.buffer, image.image, static_cast<uint32_t>(width), static_cast<uint32_t>(height), layer);
+	copyBufferToImage(staging.buffer, image.image, imageSize, layer);
 	//generateMipmaps(image, width, height, mipLevels);
 }

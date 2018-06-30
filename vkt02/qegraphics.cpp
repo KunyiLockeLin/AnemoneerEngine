@@ -346,18 +346,20 @@ void QeGraphics::refreshRender() {
 			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, true);
 
 			if (render->subpassNum > 1) {
-				VK->createPresentDepthImage(&render->attachImage, &render->depthImage, render->scissor.extent);
+				VK->createDepthImage(&render->depthImage, render->scissor.extent);
+				VK->createImage(render->attachImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 				render->graphicsPipeline = VK->createGraphicsPipeline(&render->graphicsShader, eGraphicsPipeLine_Postprogessing, render->renderPass);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->attachImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 			}
-			else VK->createPresentDepthImage(nullptr , &render->depthImage, render->scissor.extent);
+			else VK->createDepthImage(&render->depthImage, render->scissor.extent);
 
 		}
 		else {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, false);
-			VK->createPresentDepthImage(&render->presentImage, &render->depthImage, render->scissor.extent);
+			VK->createDepthImage(&render->depthImage, render->scissor.extent);
+			VK->createImage(render->presentImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 		}
 
 		size_t size1 = render->frameBuffers.size();

@@ -1038,8 +1038,9 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		uint32_t mipLevels = 1;// static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 
 		//VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
-		if(i == 0)	VK->createImage(*image, data.size(), width, height, format, (void*)data.data());
-		else		VK->setMemoryImage(*image, data.size(), width, height, format, (void*)data.data(), i);
+		VkExtent2D imageSize = { width, height };
+		if(i == 0)	VK->createImage(*image, data.size(), imageSize, format, (void*)data.data());
+		else		VK->setMemoryImage(*image, data.size(), imageSize, format, (void*)data.data(), i);
 	}
 	//image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap, mipLevels);
 

@@ -239,7 +239,8 @@
     <None Include="..\data\shaders\postprocessing.frag" />
     <None Include="..\data\shaders\postprocessing.geom" />
     <None Include="..\data\shaders\skeleton.vert" />
-    <None Include="..\data\shaders\texture.frag" />
+    <None Include="..\data\shaders\texturem.frag" />
+    <None Include="..\data\shaders\texturev.frag" />
     <None Include="..\data\shaders\toon.frag" />
   </ItemGroup>
   <ItemGroup>
