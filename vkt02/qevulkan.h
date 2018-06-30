@@ -199,7 +199,7 @@ public:
 	int getSwapchainSize();
 	void createSwapchain(QeDataSwapchain* swapchain);
 	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
-	VkFramebuffer createFramebuffer( QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender);
+	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int length, ... ); // VkImageView
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
 	VkFence createSyncObjectFence();

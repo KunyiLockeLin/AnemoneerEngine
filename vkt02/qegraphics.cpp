@@ -367,15 +367,15 @@ void QeGraphics::refreshRender() {
 
 			if (i == 0) {
 				if (render->subpassNum > 1)
-					render->frameBuffers[j] = VK->createFramebuffer(&swapchain.images[j], &render->depthImage, &render->attachImage,
-						render->scissor.extent, render->renderPass, render->subpassNum, true);
+					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
+						3, render->attachImage.view, render->depthImage.view, swapchain.images[j].view );
 				else
-					render->frameBuffers[j] = VK->createFramebuffer(&swapchain.images[j], &render->depthImage, nullptr,
-						render->scissor.extent, render->renderPass, render->subpassNum, true);
+					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
+						2, swapchain.images[j].view, render->depthImage.view );
 			}
 			else {
-				render->frameBuffers[j] = VK->createFramebuffer(&render->attachImage, &render->depthImage, nullptr,
-					render->scissor.extent, render->renderPass, render->subpassNum, false);
+				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
+					2,render->attachImage.view, render->depthImage.view );
 			}
 			render->commandBuffers[j] = VK->createCommandBuffer();
 		}

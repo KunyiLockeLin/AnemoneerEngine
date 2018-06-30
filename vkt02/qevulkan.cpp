@@ -329,7 +329,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, bool bM
 	attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	if (subpassNum == 2 && bMainRender) {
+	if (subpassNum == 2) {
 		attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[2].format = format;
 		attachments[2].samples = VK_SAMPLE_COUNT_1_BIT;
@@ -481,17 +481,17 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-VkFramebuffer QeVulkan::createFramebuffer(QeVKImage* presentImage, QeVKImage* depthImage, QeVKImage* attachImage, VkExtent2D size, VkRenderPass renderPass, int subpassNum, bool bMainRender) {
+VkFramebuffer QeVulkan::createFramebuffer(VkRenderPass renderPass, VkExtent2D size, int length, ...) {
 	
 	std::vector<VkImageView> attachments;
-	attachments.resize(subpassNum + 1);
-	if (subpassNum > 1) {
-		attachments[0] = attachImage->view;
-		attachments[2] = presentImage->view;
-	}
-	else	attachments[0] = presentImage->view;
-		
-	attachments[1] = depthImage->view;
+	attachments.resize(length);
+
+	va_list keys;
+	va_start(keys, length);
+
+	for (int i = 0; i < length; ++i)	attachments[i] = va_arg(keys, const VkImageView);
+	
+	va_end(keys);
 
 	VkFramebufferCreateInfo framebufferInfo = {};
 	framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
