@@ -267,8 +267,9 @@ void QeGraphics::drawFrame() {
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image! "+ result);
 
 	VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	--size;
 
-	for (int i = size-1; i>-1 ;--i ) {
+	for (int i = size; i>-1 ;--i ) {
 
 		QeDataRender * render = renders[i];
 
@@ -280,7 +281,7 @@ void QeGraphics::drawFrame() {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = &render->semaphore;
 
-		if(i==(size-1))
+		if(i==size)
 			submitInfo.pWaitSemaphores = &renderCompleteSemaphore;
 		else
 			submitInfo.pWaitSemaphores = &renders[i+1]->semaphore;
