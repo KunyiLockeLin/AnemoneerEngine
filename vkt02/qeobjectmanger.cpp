@@ -205,17 +205,17 @@ void QeObjectManger::recreatePipeline() {
 }
 
 
-void QeObjectManger::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet, VkRenderPass& renderPass) {
+void QeObjectManger::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	
 	std::map<int, QeModel*>::iterator it = mgrModels.begin();
 	while (it != mgrModels.end()) {
-		it->second->updateDrawCommandBuffer(commandBuffer, camera, commonDescriptorSet, renderPass);
+		it->second->updateDrawCommandBuffer(command);
 		++it;
 	}
-	sortAlphaModels(camera);
+	sortAlphaModels(command->camera);
 	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
 	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->updateDrawCommandBuffer(commandBuffer, camera, commonDescriptorSet, renderPass);
+		(*it1)->updateDrawCommandBuffer(command);
 		++it1;
 	}
 }

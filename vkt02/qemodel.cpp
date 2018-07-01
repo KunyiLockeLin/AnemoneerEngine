@@ -394,12 +394,13 @@ std::vector<VkDescriptorSet> QeModel::getDescriptorSets( QeDataDescriptorSet* co
 	return descriptorSets;
 }
 
-void QeModel::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet, VkRenderPass& renderPass) {
+void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
-	if (!bShow || !isShowByCulling(camera)) return;
-	
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(commonDescriptorSet);
-	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+	if (!bShow || !isShowByCulling(command->camera)) return;
+	//if (command->type != eRender_main && objectType == eObject_Render) return;
+
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(command->commonDescriptorSet);
+	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	QeGraphicsPipelineType type;
 	
@@ -417,27 +418,27 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* 
 		type = eGraphicsPipeLine_Point;
 		break;
 	}
-	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, renderPass, bAlpha);
+	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, command->renderPass, bAlpha);
 	
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
+	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
 	VkDeviceSize offsets[] = { 0 };
 
 	switch (objectType) {
 	case eObject_Model:
 	case eObject_Cubemap:
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-		vkCmdBindIndexBuffer(commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdBindIndexBuffer(command->commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 		break;
 
 	case eObject_Render:
 	case eObject_Billboard:
-		vkCmdDraw(commandBuffer, 1, 1, 0, 0);
+		vkCmdDraw(command->commandBuffer, 1, 1, 0, 0);
 		break;
 
 	case eObject_Line:
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-		vkCmdDraw(commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
+		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 		break;
 
 	//case eObject_Particle:
@@ -447,10 +448,10 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* 
 
 	if (VK->bShowNormal && normalShader.vert ) {
 
-		QeDataGraphicsPipeline* normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, renderPass, false);
+		QeDataGraphicsPipeline* normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, command->renderPass, false);
 
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &modelData->vertex.buffer, { 0 });
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
-		vkCmdDraw(commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
+		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, { 0 });
+		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
+		vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}
 }

@@ -109,6 +109,6 @@ public:
 	void setChildrenJointTransform( QeDataJoint& joint, QeMatrix4x4f &parentTransform);
 	virtual QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName);
 	std::vector<VkDescriptorSet> getDescriptorSets(QeDataDescriptorSet* commonDescriptorSet);
-	virtual void updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet, VkRenderPass& renderPass);
+	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {}
 };

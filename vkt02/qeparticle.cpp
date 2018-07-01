@@ -119,20 +119,20 @@ void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCa
 	vkCmdDispatch(commandBuffer, currentParticlesSize, 1, 1);
 }
 
-void QeParticle::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet, VkRenderPass& renderPass) {
+void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
-	if (!bShow || !isShowByCulling(camera)) return;
+	if (!bShow || !isShowByCulling(command->camera)) return;
 	if (!currentParticlesSize) return;
 
-	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(commonDescriptorSet);
-	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(command->commonDescriptorSet);
+	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
-	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Point, renderPass, bAlpha);
+	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Point, command->renderPass, bAlpha);
 
 	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
-	vkCmdDraw(commandBuffer, currentParticlesSize, 1, 0, 0);
+	vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
+	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
+	vkCmdDraw(command->commandBuffer, currentParticlesSize, 1, 0, 0);
 }
 
 void QeParticle::updateCompute(float time) {

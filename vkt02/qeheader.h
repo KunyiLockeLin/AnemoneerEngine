@@ -83,6 +83,7 @@ struct QeAssetJSON;
 struct QeSkeleton;
 struct QeInputData;
 struct QeDataSwapchain;
+struct QeDataDrawCommand;
 class QePoint;
 class QeEncode;
 class QeMath;

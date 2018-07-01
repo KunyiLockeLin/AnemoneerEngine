@@ -556,7 +556,13 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
 				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
 
-				OBJMGR->updateDrawCommandBuffer(render->commandBuffers[j], render->viewports[k]->camera, &render->viewports[k]->commonDescriptorSet, render->renderPass);
+				QeDataDrawCommand command1;
+				command1.camera = render->viewports[k]->camera;
+				command1.commandBuffer = render->commandBuffers[j];
+				command1.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+				command1.renderPass = render->renderPass;
+				command1.type = QeRenderType(i);
+				OBJMGR->updateDrawCommandBuffer(&command1);
 			}
 
 			if (render->subpassNum > 1) {

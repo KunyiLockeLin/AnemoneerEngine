@@ -60,6 +60,14 @@ struct QeDataSwapchain {
 	std::vector<QeVKImage> images;
 };
 
+struct QeDataDrawCommand {
+	VkCommandBuffer commandBuffer;
+	QeCamera* camera;
+	QeDataDescriptorSet* commonDescriptorSet;
+	VkRenderPass renderPass;
+	QeRenderType type;
+};
+
 class QeGraphics
 {
 public:

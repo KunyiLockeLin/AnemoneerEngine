@@ -73,5 +73,5 @@ public:
 	void recreatePipeline();
 
 	void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
-	void updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet, VkRenderPass& renderPass);
+	void updateDrawCommandBuffer(QeDataDrawCommand* command );
 };
