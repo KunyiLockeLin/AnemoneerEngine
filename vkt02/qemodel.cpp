@@ -397,7 +397,7 @@ std::vector<VkDescriptorSet> QeModel::getDescriptorSets( QeDataDescriptorSet* co
 void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
 	if (!bShow || !isShowByCulling(command->camera)) return;
-	//if (command->type != eRender_main && objectType == eObject_Render) return;
+	if (command->type != eRender_main && objectType == eObject_Render) return;
 
 	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(command->commonDescriptorSet);
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
