@@ -152,7 +152,7 @@ void QeGraphics::addNewViewport(size_t renderIndex) {
 
 		AST->getXMLiValue(&oid, node->nexts[index], 1, "oid");
 
-		if (renders[renderIndex]->cameraOID == 0 || oid == renders[renderIndex]->cameraOID) {
+		if (oid == renders[renderIndex]->cameraOID) {
 			node = node->nexts[index];
 			break;
 		}
@@ -385,11 +385,16 @@ QeDataRender* QeGraphics::createRender(int cameraOID) {
 	QeDataRender * render = new QeDataRender();
 	renders.push_back(render);
 
+	if (cameraOID == 0) {
+		AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");
+		if(cameraOID==0)	AST->getXMLiValue(&cameraOID, AST->getXMLNode(2, AST->CONFIG, "default"), 1, "cameraOID");
+	}
+
 	render->cameraOID = cameraOID;
 	render->subpassNum = 1;
 
 	size_t size1 = 1;
-	if (size == 0 && cameraOID == 0) {
+	if (size == 0) {
 
 		QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
 		if (node) {
