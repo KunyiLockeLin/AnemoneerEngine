@@ -345,10 +345,10 @@ void QeGraphics::refreshRender() {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_shadow);
 			render->depthImage.type = eImage_shadow;
 		}
-		else if (i == eRender_mirror) {
+		else if (i == eRender_color) {
 			render->scissor.extent = { 256, 256 };
 
-			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_mirror);
+			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color);
 			render->colorImage.type = eImage_render;
 			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 
@@ -377,7 +377,7 @@ void QeGraphics::refreshRender() {
 					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
 						2, swapchain.images[j].view, render->depthImage.view );
 			}
-			else if(i==eRender_mirror) {
+			else if(i== eRender_color) {
 				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
 					2,render->colorImage.view, render->depthImage.view );
 			}

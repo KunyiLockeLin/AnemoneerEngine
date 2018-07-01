@@ -35,7 +35,7 @@
       <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
       <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
       <normal vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
-      <render vert="pointv.spv" geom="billboardg.spv" frag="mirrorf.spv"/>
+      <render vert="pointv.spv" geom="billboardg.spv" frag="renderf.spv"/>
       <shadow vert="pointv.spv" geom="billboardg.spv" frag="shadowf.spv"/>
       <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
       <particle vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>

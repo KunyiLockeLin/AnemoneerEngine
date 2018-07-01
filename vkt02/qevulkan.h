@@ -20,8 +20,8 @@ struct SwapChainSupportDetails {
 
 enum QeRenderType {
 	eRender_main = 0,
-	eRender_mirror = 2,
-	eRender_shadow = 1,
+	eRender_color = 1,
+	eRender_shadow = 2,
 	eRender_others = 3,
 	eRender_max = 4
 };
