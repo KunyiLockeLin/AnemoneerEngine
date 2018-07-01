@@ -96,11 +96,11 @@ void QeGraphics::updateViewport() {
 
 			viewport->viewport.minDepth = 0.0f;
 			viewport->viewport.maxDepth = 1.0f;
-			viewport->viewport.x = (i%xNum)*eWidth;
-			viewport->viewport.y = (i / xNum)*eHeight;
+			viewport->viewport.x = (j%xNum)*eWidth;
+			viewport->viewport.y = (j / xNum)*eHeight;
 			viewport->viewport.height = eHeight;
 
-			if ((i + 1) != size1)
+			if ((j + 1) != size1)
 				viewport->viewport.width = eWidth;
 			else
 				viewport->viewport.width = width - viewport->viewport.x;
@@ -257,9 +257,8 @@ void QeGraphics::drawFrame() {
 	vkResetFences(VK->device, 1, &fences[currentFrame]);
 
 	int size = int(renders.size());
-	--size;
 	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(VK->device, swapchain.khr, std::numeric_limits<uint64_t>::max(), renders[size]->semaphore, VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(VK->device, swapchain.khr, UINT64_MAX, renderCompleteSemaphore, fences[currentFrame], &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		bRecreateRender = true;
@@ -267,9 +266,9 @@ void QeGraphics::drawFrame() {
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image! "+ result);
 
-	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-	for (int i = size; i>-1 ;--i ) {
+	for (int i = size-1; i>-1 ;--i ) {
 
 		QeDataRender * render = renders[i];
 
@@ -277,18 +276,19 @@ void QeGraphics::drawFrame() {
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.commandBufferCount = 1;
 		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.pWaitSemaphores = &render->semaphore;
-		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.pWaitDstStageMask = &waitStage;
 		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = &render->semaphore;
 
-		if (i == eRender_main) {
+		if(i==(size-1))
+			submitInfo.pWaitSemaphores = &renderCompleteSemaphore;
+		else
+			submitInfo.pWaitSemaphores = &renders[i+1]->semaphore;
+
+		if (i == eRender_main)
 			submitInfo.pCommandBuffers = &render->commandBuffers[imageIndex];
-			submitInfo.pSignalSemaphores = &renderCompleteSemaphore;
-		}
-		else {
+		else 
 			submitInfo.pCommandBuffers = &render->commandBuffers[0];
-			submitInfo.pSignalSemaphores = &renders[i - 1]->semaphore;
-		}
 
 		result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, fences[currentFrame]);
 		if (result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
@@ -298,7 +298,7 @@ void QeGraphics::drawFrame() {
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.pNext = nullptr;
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &renderCompleteSemaphore;
+	presentInfo.pWaitSemaphores = &renders[0]->semaphore;
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &swapchain.khr;
 	presentInfo.pImageIndices = &imageIndex;

@@ -22,8 +22,7 @@ enum QeRenderType {
 	eRender_main = 0,
 	eRender_color = 1,
 	eRender_shadow = 2,
-	eRender_others = 3,
-	eRender_max = 4
+	eRender_ui = 3,
 };
 
 enum QeVKBufferType {

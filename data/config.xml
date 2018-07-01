@@ -62,7 +62,7 @@
       </renders>
       <cameras>
         <e oid="26000" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="1000"/>
-        <e oid="26100" posX="50" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="1000"/>
+        <e oid="26100" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="1000"/>
       </cameras>
     </e>
     
