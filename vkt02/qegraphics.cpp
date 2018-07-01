@@ -521,7 +521,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 		std::vector<VkClearValue> clearValues;
 		clearValues.resize(render->subpassNum + 1);
 
-		clearValues[0].color = { ACT->ambientColor.x+float(i)/2 , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		clearValues[0].color = { ACT->ambientColor.x , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		if (render->subpassNum > 1)
@@ -556,13 +556,13 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
 				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
 
-				QeDataDrawCommand command1;
-				command1.camera = render->viewports[k]->camera;
-				command1.commandBuffer = render->commandBuffers[j];
-				command1.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
-				command1.renderPass = render->renderPass;
-				command1.type = QeRenderType(i);
-				OBJMGR->updateDrawCommandBuffer(&command1);
+				QeDataDrawCommand command;
+				command.camera = render->viewports[k]->camera;
+				command.commandBuffer = render->commandBuffers[j];
+				command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+				command.renderPass = render->renderPass;
+				command.type = QeRenderType(i);
+				OBJMGR->updateDrawCommandBuffer(&command);
 			}
 
 			if (render->subpassNum > 1) {

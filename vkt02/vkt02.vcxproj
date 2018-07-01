@@ -230,7 +230,6 @@
     <None Include="..\data\shaders\header.tese" />
     <None Include="..\data\shaders\header.vert" />
     <None Include="..\data\shaders\line.geom" />
-    <None Include="..\data\shaders\mirror.frag" />
     <None Include="..\data\shaders\particle.comp" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />
@@ -239,6 +238,7 @@
     <None Include="..\data\shaders\point.vert" />
     <None Include="..\data\shaders\postprocessing.frag" />
     <None Include="..\data\shaders\postprocessing.geom" />
+    <None Include="..\data\shaders\render.frag" />
     <None Include="..\data\shaders\shadow.frag" />
     <None Include="..\data\shaders\skeleton.vert" />
     <None Include="..\data\shaders\texturem.frag" />
