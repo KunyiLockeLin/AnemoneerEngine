@@ -33,7 +33,7 @@ struct QeDataRender {
 	VkViewport viewport;
 	VkRect2D scissor;
 
-	QeVKImage attachImage, depthImage;
+	QeVKImage colorImage, depthImage;
 	std::vector<VkFramebuffer> frameBuffers;
 
 	std::vector<VkCommandBufferBeginInfo> commandBeginInfos;
@@ -48,16 +48,9 @@ struct QeDataRender {
 	QeDataDescriptorSet descriptorSet;
 	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
 
-	QeDataRender() :attachImage(eImage_inputAttach), depthImage(eImage_depth),
+	QeDataRender() :colorImage(eImage_inputAttach), depthImage(eImage_depth),
 		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataRender();
-};
-
-enum QeRenderType {
-	eRender_main = 0,
-	eRender_mirror =1,
-	eRender_shadow = 2,
-	eRender_others = 3,
 };
 
 struct QeDataSwapchain {
@@ -93,7 +86,7 @@ public:
 	void updateCompute(float time);
 	void setTargetCamera(int index);
 	QeCamera* getTargetCamera();
-	QeDataRender * getSubRender(int cameraOID);
+	QeDataRender * getRender(QeRenderType type, int cameraOID);
 	//bool bUpdateComputeCommandBuffers = false;
 	bool bUpdateDrawCommandBuffers = false;
 	bool bRecreateRender = false;
@@ -103,7 +96,7 @@ public:
 
 	//VkSemaphore textOverlayComplete;
 
-	QeDataRender* createRender(int cameraOID=0);
+	QeDataRender* createRender(QeRenderType type, int cameraOID=0);
 	void refreshRender();
 	void cleanupRender();
 	void drawFrame();

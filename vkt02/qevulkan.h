@@ -18,6 +18,14 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
+enum QeRenderType {
+	eRender_main = 0,
+	eRender_mirror = 2,
+	eRender_shadow = 1,
+	eRender_others = 3,
+	eRender_max = 4
+};
+
 enum QeVKBufferType {
 	eBuffer = 0,
 	eBuffer_vertex = 1,
@@ -47,6 +55,7 @@ enum QeVKImageType {
 	eImage_2D = 3,
 	eImage_cube = 4,
 	eImage_render = 5,
+	eImage_shadow = 6,
 };
 
 struct QeVKImage {
@@ -79,8 +88,8 @@ struct QeDataDescriptorSet {
 
 struct QeDataDescriptorSetLayout {
 	VkDescriptorType type;
-	uint8_t startID;
-	uint8_t count;
+	int startID;
+	int count;
 };
 
 struct QeDataDescriptorSetCommon {
@@ -105,6 +114,8 @@ struct QeDataDescriptorSetModel {
 	VkSampler	cubeMapSampler = VK_NULL_HANDLE;
 	VkImageView normalMapImageView = VK_NULL_HANDLE;
 	VkSampler	normalMapSampler = VK_NULL_HANDLE;
+	VkImageView shadowMapImageView = VK_NULL_HANDLE;
+	VkSampler	shadowMapSampler = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
 	VkBufferView texelBufferView = VK_NULL_HANDLE;
@@ -178,8 +189,8 @@ public:
 	VkQueue computeQueue;
 
 	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas = {
-		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 3 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 } },
+		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 4 },
+			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 }},
 
 			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
 
@@ -198,7 +209,7 @@ public:
 	void createLogicalDevice();
 	int getSwapchainSize();
 	void createSwapchain(QeDataSwapchain* swapchain);
-	VkRenderPass createRenderPass(VkFormat format, int subpassNum, bool bMainRender);
+	VkRenderPass createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType);
 	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int length, ... ); // VkImageView
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();

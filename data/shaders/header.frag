@@ -6,6 +6,7 @@
 layout( set = layoutSet_Model, binding = Model_image + 0) uniform sampler2D	baseColorMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 1) uniform samplerCube	cubeMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 2) uniform sampler2D	normalMapSampler;
+layout( set = layoutSet_Model, binding = Model_image + 3) uniform sampler2D	shadowMapSampler;
 
 layout (input_attachment_index=0, set=layoutSet_Postprocessing, binding= Postprocessing_attach + 0) uniform subpassInput inputAttachment;
 

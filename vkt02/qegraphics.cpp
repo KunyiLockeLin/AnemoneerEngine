@@ -47,7 +47,7 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
-	createRender(0);
+	createRender(eRender_main);
 }
 
 void QeGraphics::updateViewport() {
@@ -281,7 +281,7 @@ void QeGraphics::drawFrame() {
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.signalSemaphoreCount = 1;
 
-		if (i == 0) {
+		if (i == eRender_main) {
 			submitInfo.pCommandBuffers = &render->commandBuffers[imageIndex];
 			submitInfo.pSignalSemaphores = &renderCompleteSemaphore;
 		}
@@ -315,71 +315,82 @@ void QeGraphics::drawFrame() {
 void QeGraphics::refreshRender() {
 	size_t size = renders.size();
 	if (!size) {
-		createRender();
+		createRender(eRender_main);
 		size = 1;
 	}
 
 	for (size_t i = 0; i < size; ++i) {
 
 		QeDataRender * render = renders[i];
-		render->viewport.minDepth = 0.0f;
-		render->viewport.maxDepth = 1.0f;
-		render->viewport.x = 0.0f;
-		render->viewport.y = 0.0f;
 
-		if (i == 0){
-			render->viewport.height = float(swapchain.extent.height);
-			render->viewport.width = float(swapchain.extent.width);
-		}
-		else {
-			render->viewport.height = 256.0f;
-			render->viewport.width = 256.0f;
-		}
-		render->scissor.offset.x = int(render->viewport.x);
-		render->scissor.offset.y = int(render->viewport.y);
-		render->scissor.extent.height = int(render->viewport.height);
-		render->scissor.extent.width = int(render->viewport.width);
-		VK->createImage(render->depthImage, 0, render->scissor.extent, VK->findDepthFormat(), nullptr);
+		if (i == eRender_main) {
 
-		if (i==0) {
-			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, true);
+			render->scissor.extent = swapchain.extent;
+			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, eRender_main);
 
 			if (render->subpassNum > 1) {
-				render->attachImage.type = eImage_inputAttach;
-				VK->createImage(render->attachImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+				render->colorImage.type = eImage_inputAttach;
+				VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 				render->graphicsPipeline = VK->createGraphicsPipeline(&render->graphicsShader, eGraphicsPipeLine_Postprogessing, render->renderPass);
 				QeDataDescriptorSetPostprocessing data;
-				data.inputAttachImageView = render->attachImage.view;
+				data.inputAttachImageView = render->colorImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 			}
+
+			render->depthImage.type = eImage_depth;
 		}
-		else {
-			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, false);
-			render->attachImage.type = eImage_render;
-			VK->createImage(render->attachImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+		else if(i==eRender_shadow){
+			render->scissor.extent = {256, 256};
+
+			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_shadow);
+			render->depthImage.type = eImage_shadow;
 		}
+		else if (i == eRender_mirror) {
+			render->scissor.extent = { 256, 256 };
+
+			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_mirror);
+			render->colorImage.type = eImage_render;
+			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+
+			render->depthImage.type = eImage_depth;
+		}
+
+		VK->createImage(render->depthImage, 0, render->scissor.extent, VK->findDepthFormat(), nullptr);
+		
+		render->scissor.offset = { 0, 0 };
+		render->viewport.minDepth = 0.0f;
+		render->viewport.maxDepth = 1.0f;
+		render->viewport.x = float(render->scissor.offset.x);
+		render->viewport.y = float(render->scissor.offset.y);
+		render->viewport.height = float(render->scissor.extent.height);
+		render->viewport.width = float(render->scissor.extent.width);
+
 
 		size_t size1 = render->frameBuffers.size();
 		for (size_t j = 0; j < size1; ++j) {
 
-			if (i == 0) {
+			if (i == eRender_main) {
 				if (render->subpassNum > 1)
 					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-						3, render->attachImage.view, render->depthImage.view, swapchain.images[j].view );
+						3, render->colorImage.view, render->depthImage.view, swapchain.images[j].view );
 				else
 					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
 						2, swapchain.images[j].view, render->depthImage.view );
 			}
-			else {
+			else if(i==eRender_mirror) {
 				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-					2,render->attachImage.view, render->depthImage.view );
+					2,render->colorImage.view, render->depthImage.view );
+			}
+			else if (i == eRender_shadow) {
+				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
+					1, render->depthImage.view);
 			}
 			render->commandBuffers[j] = VK->createCommandBuffer();
 		}
 	}
 }
 
-QeDataRender* QeGraphics::createRender(int cameraOID) {
+QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID) {
 
 	size_t size = renders.size();
 	QeDataRender * render = new QeDataRender();
@@ -394,7 +405,7 @@ QeDataRender* QeGraphics::createRender(int cameraOID) {
 	render->subpassNum = 1;
 
 	size_t size1 = 1;
-	if (size == 0) {
+	if (size == eRender_main) {
 
 		QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
 		if (node) {
@@ -416,13 +427,13 @@ QeDataRender* QeGraphics::createRender(int cameraOID) {
 }
 
 
-QeDataRender * QeGraphics::getSubRender(int cameraOID) {
+QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID) {
 	size_t size = renders.size();
 
 	for (size_t i = 1; i<size; ++i) {
 		if (renders[i]->viewports[0]->camera->oid == cameraOID) return renders[i];
 	}
-	return createRender(cameraOID);
+	return createRender(type, cameraOID);
 }
 
 void QeGraphics::cleanupRender() {
