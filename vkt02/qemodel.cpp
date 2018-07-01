@@ -115,7 +115,7 @@ void QeModel::setMatModel() {
 
 	bool bRotate = true;
 
-	if (objectType == eObject_Billboard || objectType == eObject_Render|| objectType == eObject_Particle) bRotate = false;
+	if (objectType == eObject_Billboard || objectType == eObject_Particle) bRotate = false;
 
 	QeMatrix4x4f mat;
 	mat *= MATH->translate(pos);
@@ -405,17 +405,17 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* 
 	
 	switch (objectType) {
 	case eObject_Model:
-	type = eGraphicsPipeLine_Triangle;
-	break;
+		type = eGraphicsPipeLine_Triangle;
+		break;
 	case eObject_Cubemap:
-	type = eGraphicsPipeLine_Cubemap;
-	break;
+		type = eGraphicsPipeLine_Cubemap;
+		break;
 	case eObject_Render:
 	case eObject_Billboard:
 	case eObject_Line:
 	case eObject_Particle:
-	type = eGraphicsPipeLine_Point;
-	break;
+		type = eGraphicsPipeLine_Point;
+		break;
 	}
 	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, renderPass, bAlpha);
 	
@@ -429,9 +429,9 @@ void QeModel::updateDrawCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* 
 		vkCmdBindIndexBuffer(commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
 		vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 		break;
-	
-	case eObject_Billboard:
+
 	case eObject_Render:
+	case eObject_Billboard:
 		vkCmdDraw(commandBuffer, 1, 1, 0, 0);
 		break;
 

@@ -4,6 +4,7 @@
 void QeRender::init(QeAssetXML* _property, int _parentOID) {
 
 	QePoint::init(_property, _parentOID);
+	//modelData = AST->getModel("plane");
 	AST->setGraphicsShader(graphicsShader, editProperty, "render");
 	bufferData.material.baseColor = {1,1,1,1};
 

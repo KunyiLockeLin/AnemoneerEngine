@@ -352,7 +352,6 @@ void QeGraphics::refreshRender() {
 				data.inputAttachImageView = render->attachImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 			}
-
 		}
 		else {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, false);

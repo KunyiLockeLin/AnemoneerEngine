@@ -887,14 +887,17 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		vertex.normal = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
 
+		vertex.uv = { 1,0,0,0 };
 		vertex.pos = { -0.5f, 0.5f, 0.0f,1.0f};
 		vertex.normal = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
 
+		vertex.uv = { 0,1,0,0 };
 		vertex.pos = { 0.5f, -0.5f, 0.0f,1.0f };
 		vertex.normal = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
 
+		vertex.uv = { 1,1,0,0 };
 		vertex.pos = { 0.5f, 0.5f, 0.0f,1.0f };
 		vertex.normal = { 0, 0, 1,1 };
 		model->vertices.push_back(vertex);
