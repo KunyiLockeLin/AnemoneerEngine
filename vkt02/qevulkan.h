@@ -146,7 +146,7 @@ enum QeGraphicsPipelineType {
 struct QeDataGraphicsPipeline {
 	VkPipeline graphicsPipeline;
 	QeAssetGraphicsShader* shader;
-	QeGraphicsPipelineType type;
+	QeGraphicsPipelineType graphicsType;
 	VkRenderPass		renderPass;
 	bool bAlpha;
 };
@@ -246,7 +246,7 @@ public:
 	void createDescriptorPool();
 	void createDescriptorSet(QeDataDescriptorSet& descriptorSet);
 	void updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet);
-	QeDataGraphicsPipeline* createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha = false);
+	QeDataGraphicsPipeline* createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType graphicsType, VkRenderPass renderpass, bool bAlpha = false);
 	VkPipeline createComputePipeline(VkShaderModule shader);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
 	void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);

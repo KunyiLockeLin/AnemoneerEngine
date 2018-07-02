@@ -982,13 +982,13 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType type, VkRenderPass renderpass, bool bAlpha) {
+QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType graphicsType, VkRenderPass renderpass, bool bAlpha) {
 
 	std::vector<QeDataGraphicsPipeline*>::iterator it = graphicsPipelines.begin();
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == shader->vert && (*it)->shader->tesc == shader->tesc && (*it)->shader->tese == shader->tese &&
-			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->renderPass == renderpass &&
-			(*it)->bAlpha == bAlpha) {
+			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->renderPass == renderpass && 
+			(*it)->bAlpha == bAlpha && (*it)->graphicsType == graphicsType) {
 			return *it;
 		}
 		++it;
@@ -1021,11 +1021,31 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 		shaderStages.push_back(teseShaderStageInfo);
 	}
 	if (shader->geom != VK_NULL_HANDLE) {
+		
+		struct SpecializationData {
+			int graphicsType;
+		} specializationData;
+
+		specializationData.graphicsType = graphicsType;
+
+		std::array<VkSpecializationMapEntry, 1> specializationMapEntries;
+		specializationMapEntries[0].constantID = 0;
+		specializationMapEntries[0].size = sizeof(specializationData.graphicsType);
+		specializationMapEntries[0].offset = 0;
+
+		VkSpecializationInfo specializationInfo{};
+		specializationInfo.dataSize = sizeof(specializationData);
+		specializationInfo.mapEntryCount = static_cast<uint32_t>(specializationMapEntries.size());
+		specializationInfo.pMapEntries = specializationMapEntries.data();
+		specializationInfo.pData = &specializationData;
+
 		VkPipelineShaderStageCreateInfo geomShaderStageInfo = {};
 		geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
 		geomShaderStageInfo.module = shader->geom;
 		geomShaderStageInfo.pName = "main";
+		geomShaderStageInfo.pSpecializationInfo = &specializationInfo;
+
 		shaderStages.push_back(geomShaderStageInfo);
 	}
 	if (shader->frag != VK_NULL_HANDLE) {
@@ -1035,39 +1055,13 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 		fragShaderStageInfo.module = shader->frag;
 		fragShaderStageInfo.pName = "main";
 
-		/*
-		// Shader bindings based on specialization constants are marked by the new "constant_id" layout qualifier:
-		//	layout (constant_id = 0) const int LIGHTING_MODEL = 0;
-		//	layout (constant_id = 1) const float PARAM_TOON_DESATURATION = 0.0f;
-		struct SpecializationData {
-			uint32_t lightingModel;
-			float toonDesaturationFactor = 0.5f;
-		} specializationData;
-
-		std::array<VkSpecializationMapEntry, 2> specializationMapEntries;
-		specializationMapEntries[0].constantID = 0;
-		specializationMapEntries[0].size = sizeof(specializationData.lightingModel);
-		specializationMapEntries[0].offset = 0;
-
-		specializationMapEntries[1].constantID = 1;
-		specializationMapEntries[1].size = sizeof(specializationData.toonDesaturationFactor);
-		specializationMapEntries[1].offset = offsetof(SpecializationData, toonDesaturationFactor);
-		
-		VkSpecializationInfo specializationInfo{};
-		specializationInfo.dataSize = sizeof(specializationData);
-		specializationInfo.mapEntryCount = static_cast<uint32_t>(specializationMapEntries.size());
-		specializationInfo.pMapEntries = specializationMapEntries.data();
-		specializationInfo.pData = &specializationData;
-
-		fragShaderStageInfo.pSpecializationInfo = &specializationInfo;
-		*/
 		shaderStages.push_back(fragShaderStageInfo);
 	}
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	if (type == eGraphicsPipeLine_Postprogessing) { // bVetex
+	if (graphicsType == eGraphicsPipeLine_Postprogessing) { // bVetex
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
 		vertexInputInfo.vertexAttributeDescriptionCount = 0;
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
@@ -1087,7 +1081,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	if (type == eGraphicsPipeLine_Point || type == eGraphicsPipeLine_Postprogessing || type == eGraphicsPipeLine_Line)	
+	if (graphicsType == eGraphicsPipeLine_Point || graphicsType == eGraphicsPipeLine_Postprogessing || graphicsType == eGraphicsPipeLine_Line)
 		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	else if (shader->tesc && shader->tese )								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
 	else																inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -1096,8 +1090,8 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = (bShowMesh && type != eGraphicsPipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
-	rasterizer.cullMode = (type == eGraphicsPipeLine_Cubemap)? VK_CULL_MODE_FRONT_BIT: VK_CULL_MODE_BACK_BIT;
+	rasterizer.polygonMode = (bShowMesh && graphicsType != eGraphicsPipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+	rasterizer.cullMode = (graphicsType == eGraphicsPipeLine_Cubemap)? VK_CULL_MODE_FRONT_BIT: VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f;
@@ -1126,7 +1120,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 
-	if (type == eGraphicsPipeLine_Postprogessing) { // DepthTest
+	if (graphicsType == eGraphicsPipeLine_Postprogessing) { // DepthTest
 		depthStencil.depthTestEnable = VK_FALSE;
 		depthStencil.depthWriteEnable = VK_FALSE;
 	}
@@ -1198,7 +1192,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
 	pipelineInfo.renderPass = renderpass;
-	pipelineInfo.subpass = (type == eGraphicsPipeLine_Postprogessing) ? 1 : 0;
+	pipelineInfo.subpass = (graphicsType == eGraphicsPipeLine_Postprogessing) ? 1 : 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 	if (shader->tesc && shader->tese) {
@@ -1216,7 +1210,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	QeDataGraphicsPipeline* s = new QeDataGraphicsPipeline();
 	s->shader = shader;
 	s->bAlpha = bAlpha;
-	s->type = type;
+	s->graphicsType = graphicsType;
 	s->renderPass = renderpass;
 	s->graphicsPipeline = graphicsPipeline;
 	graphicsPipelines.push_back(s);

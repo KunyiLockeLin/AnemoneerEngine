@@ -2,6 +2,7 @@
 #extension GL_ARB_viewport_array : enable
 #extension GL_ARB_shading_language_420pack : enable
 
+layout (constant_id = 0) const int graphicsType = 0;
 
 layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inUV[];
