@@ -55,7 +55,7 @@ struct QeDataMaterial {
 layout( set = layoutSet_Model, binding = Model_uniform + 0) uniform QeDataModel {
 	mat4 model;
 	mat4 joints[MAX_JOINT_NUM];
-	vec4 param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none)
+	vec4 param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none), 2: outline width
 	QeDataMaterial mtl;
 } modelData;
 

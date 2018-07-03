@@ -230,6 +230,7 @@
     <None Include="..\data\shaders\header.tese" />
     <None Include="..\data\shaders\header.vert" />
     <None Include="..\data\shaders\line.geom" />
+    <None Include="..\data\shaders\outline.geom" />
     <None Include="..\data\shaders\particle.comp" />
     <None Include="..\data\shaders\pbr.frag" />
     <None Include="..\data\shaders\pbr.geom" />

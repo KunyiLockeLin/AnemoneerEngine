@@ -58,7 +58,6 @@ public:
 	bool bShow;
 	int cullingDistance;
 	int cubemapOID;
-	bool bAlpha;
 	bool bFixSize;
 	int cameraOID;
 
@@ -68,6 +67,9 @@ public:
 	QeAssetMaterial* mtlData = nullptr;
 	QeAssetGraphicsShader graphicsShader;
 	QeAssetGraphicsShader normalShader;
+	QeAssetGraphicsShader outlineShader;
+	QeDataGraphicsPipeline graphicsPipeline;
+
 	VkShaderModule computeShader = VK_NULL_HANDLE;
 
 	QeDataModel bufferData;

@@ -46,7 +46,7 @@ struct QeDataRender {
 	int subpassNum;
 	QeAssetGraphicsShader graphicsShader;
 	QeDataDescriptorSet descriptorSet;
-	QeDataGraphicsPipeline* graphicsPipeline = nullptr;
+	QeDataGraphicsPipeline graphicsPipeline;
 
 	QeDataRender() :colorImage(eImage_inputAttach), depthImage(eImage_depth),
 		descriptorSet(eDescriptorSetLayout_Postprocessing) {}

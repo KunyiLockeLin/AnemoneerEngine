@@ -37,7 +37,6 @@ QeDataRender::~QeDataRender() {
 		vkDestroySemaphore(VK->device, semaphore, nullptr);
 		semaphore = VK_NULL_HANDLE;
 	}
-	graphicsPipeline = nullptr;
 }
 
 
@@ -332,7 +331,6 @@ void QeGraphics::refreshRender() {
 			if (render->subpassNum > 1) {
 				render->colorImage.type = eImage_inputAttach;
 				VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
-				render->graphicsPipeline = VK->createGraphicsPipeline(&render->graphicsShader, eGraphicsPipeLine_Postprogessing, render->renderPass);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->colorImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
@@ -355,7 +353,7 @@ void QeGraphics::refreshRender() {
 
 			render->depthImage.type = eImage_depth;
 		}
-
+		render->graphicsPipeline.renderPass = render->renderPass;
 		VK->createImage(render->depthImage, 0, render->scissor.extent, VK->findDepthFormat(), nullptr);
 		
 		render->scissor.offset = { 0, 0 };
@@ -411,7 +409,14 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID) {
 		QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
 		if (node) {
 			render->subpassNum = 2;
+
+			render->graphicsPipeline.bAlpha = false;
+			render->graphicsPipeline.bStencilBuffer = false;
+			render->graphicsPipeline.type = eGraphicsPipeLine_Postprogessing;
+
 			AST->setGraphicsShader(render->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
+			render->graphicsPipeline.shader = &render->graphicsShader;
+
 			VK->createDescriptorSet(render->descriptorSet);
 		}
 		size1 = VK->getSwapchainSize();
@@ -481,7 +486,7 @@ void QeGraphics::cleanupRender() {
 	//swapChainImages.clear();
 
 	for (size_t i = 0;i<VK->graphicsPipelines.size();++i ) {
-		vkDestroyPipeline(VK->device, VK->graphicsPipelines[i]->graphicsPipeline, nullptr);
+		vkDestroyPipeline(VK->device, VK->graphicsPipelines[i]->pipeline, nullptr);
 		delete VK->graphicsPipelines[i];
 	}
 	VK->graphicsPipelines.clear();
@@ -571,7 +576,8 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->descriptorSet.set, 0, nullptr);
-				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, render->graphicsPipeline->graphicsPipeline);
+
+				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->graphicsPipeline) );
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 			}
 			vkCmdEndRenderPass(render->commandBuffers[j]);

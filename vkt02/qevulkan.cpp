@@ -982,51 +982,51 @@ void QeVulkan::createDescriptorPool() {
 	if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) LOG("failed to create descriptor pool!");
 }
 
-QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* shader, QeGraphicsPipelineType graphicsType, VkRenderPass renderpass, bool bAlpha) {
+VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 
 	std::vector<QeDataGraphicsPipeline*>::iterator it = graphicsPipelines.begin();
 	while ( it != graphicsPipelines.end()) {
-		if ((*it)->shader->vert == shader->vert && (*it)->shader->tesc == shader->tesc && (*it)->shader->tese == shader->tese &&
-			(*it)->shader->geom == shader->geom && (*it)->shader->frag == shader->frag && (*it)->renderPass == renderpass && 
-			(*it)->bAlpha == bAlpha && (*it)->graphicsType == graphicsType) {
-			return *it;
+		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
+			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
+			(*it)->bAlpha == data->bAlpha && (*it)->type == data->type && (*it)->bStencilBuffer == data->bStencilBuffer) {
+			return (*it)->pipeline;
 		}
 		++it;
 	}
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
-	if (shader->vert != VK_NULL_HANDLE) {
+	if (data->shader->vert != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
 		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-		vertShaderStageInfo.module = shader->vert;
+		vertShaderStageInfo.module = data->shader->vert;
 		vertShaderStageInfo.pName = "main";
 		shaderStages.push_back(vertShaderStageInfo);
 	}
-	if (shader->tesc != VK_NULL_HANDLE) {
+	if (data->shader->tesc != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo tescShaderStageInfo = {};
 		tescShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		tescShaderStageInfo.stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-		tescShaderStageInfo.module = shader->tesc;
+		tescShaderStageInfo.module = data->shader->tesc;
 		tescShaderStageInfo.pName = "main";
 		shaderStages.push_back(tescShaderStageInfo);
 	}	
-	if (shader->tese != VK_NULL_HANDLE) {
+	if (data->shader->tese != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo teseShaderStageInfo = {};
 		teseShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		teseShaderStageInfo.stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-		teseShaderStageInfo.module = shader->tese;
+		teseShaderStageInfo.module = data->shader->tese;
 		teseShaderStageInfo.pName = "main";
 		shaderStages.push_back(teseShaderStageInfo);
 	}
-	if (shader->geom != VK_NULL_HANDLE) {
+	if (data->shader->geom != VK_NULL_HANDLE) {
 		
 		struct SpecializationData {
 			int graphicsType;
 		} specializationData;
 
-		specializationData.graphicsType = graphicsType;
+		specializationData.graphicsType = data->type;
 
 		std::array<VkSpecializationMapEntry, 1> specializationMapEntries;
 		specializationMapEntries[0].constantID = 0;
@@ -1042,17 +1042,17 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 		VkPipelineShaderStageCreateInfo geomShaderStageInfo = {};
 		geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-		geomShaderStageInfo.module = shader->geom;
+		geomShaderStageInfo.module = data->shader->geom;
 		geomShaderStageInfo.pName = "main";
 		geomShaderStageInfo.pSpecializationInfo = &specializationInfo;
 
 		shaderStages.push_back(geomShaderStageInfo);
 	}
-	if (shader->frag != VK_NULL_HANDLE) {
+	if (data->shader->frag != VK_NULL_HANDLE) {
 		VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
 		fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		fragShaderStageInfo.module = shader->frag;
+		fragShaderStageInfo.module = data->shader->frag;
 		fragShaderStageInfo.pName = "main";
 
 		shaderStages.push_back(fragShaderStageInfo);
@@ -1061,7 +1061,7 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	if (graphicsType == eGraphicsPipeLine_Postprogessing) { // bVetex
+	if (data->type == eGraphicsPipeLine_Postprogessing) { // bVetex
 		vertexInputInfo.vertexBindingDescriptionCount = 0;
 		vertexInputInfo.vertexAttributeDescriptionCount = 0;
 		vertexInputInfo.pVertexBindingDescriptions = nullptr;
@@ -1081,17 +1081,17 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	if (graphicsType == eGraphicsPipeLine_Point || graphicsType == eGraphicsPipeLine_Postprogessing || graphicsType == eGraphicsPipeLine_Line)
+	if (data->type == eGraphicsPipeLine_Point || data->type == eGraphicsPipeLine_Postprogessing || data->type == eGraphicsPipeLine_Line)
 		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-	else if (shader->tesc && shader->tese )								inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
-	else																inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	else if (data->shader->tesc && data->shader->tese )	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
+	else												inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 	VkPipelineRasterizationStateCreateInfo rasterizer = {};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = (bShowMesh && graphicsType != eGraphicsPipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
-	rasterizer.cullMode = (graphicsType == eGraphicsPipeLine_Cubemap)? VK_CULL_MODE_FRONT_BIT: VK_CULL_MODE_BACK_BIT;
+	rasterizer.polygonMode = (bShowMesh && data->type != eGraphicsPipeLine_Postprogessing) ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+	rasterizer.cullMode = (data->type == eGraphicsPipeLine_Cubemap)? VK_CULL_MODE_FRONT_BIT: VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f;
@@ -1108,38 +1108,49 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	multisampling.alphaToCoverageEnable = VK_FALSE;// VK_TRUE;
 	multisampling.alphaToOneEnable = VK_FALSE;
 
-	VkStencilOpState stencil_test_parameters = {};
-	stencil_test_parameters.failOp = VK_STENCIL_OP_KEEP;
-	stencil_test_parameters.passOp = VK_STENCIL_OP_KEEP;
-	stencil_test_parameters.depthFailOp = VK_STENCIL_OP_KEEP;
-	stencil_test_parameters.compareOp = VK_COMPARE_OP_ALWAYS;
-	stencil_test_parameters.compareMask = 0;
-	stencil_test_parameters.writeMask = 0;
-	stencil_test_parameters.reference = 0;
-
 	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 
-	if (graphicsType == eGraphicsPipeLine_Postprogessing) { // DepthTest
+	if (data->type == eGraphicsPipeLine_Postprogessing) { // DepthTest
 		depthStencil.depthTestEnable = VK_FALSE;
 		depthStencil.depthWriteEnable = VK_FALSE;
 	}
 	else {
 		depthStencil.depthTestEnable = VK_TRUE;
 		depthStencil.depthWriteEnable = VK_TRUE;
+		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;// VK_COMPARE_OP_LESS;
+		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
+		depthStencil.front = depthStencil.back;
+
+		if (data->bStencilBuffer) {
+			depthStencil.stencilTestEnable = VK_TRUE;
+
+			depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
+			depthStencil.back.failOp = VK_STENCIL_OP_REPLACE;
+			depthStencil.back.depthFailOp = VK_STENCIL_OP_REPLACE;
+			depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
+			depthStencil.back.compareMask = 0xff;
+			depthStencil.back.writeMask = 0xff;
+			depthStencil.back.reference = 1;
+			depthStencil.front = depthStencil.back;
+
+			if (data->type == eGraphicsPipeLine_stencilBuffer) {
+				rasterizer.cullMode = VK_CULL_MODE_NONE;
+
+				depthStencil.depthTestEnable = VK_FALSE;
+				depthStencil.back.compareOp = VK_COMPARE_OP_NOT_EQUAL;
+				depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
+				depthStencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
+				depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
+				depthStencil.front = depthStencil.back;
+			}
+		}
 	}
-	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;// VK_COMPARE_OP_LESS;
-	depthStencil.depthBoundsTestEnable = VK_FALSE;
-	depthStencil.minDepthBounds = 0;
-	depthStencil.maxDepthBounds = 1;
-	depthStencil.stencilTestEnable = VK_FALSE;
-	depthStencil.front = stencil_test_parameters;
-	depthStencil.back = stencil_test_parameters;
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 	
-	if (!bAlpha) { // Alpha
+	if (!data->bAlpha) { // Alpha
 		colorBlendAttachment.blendEnable = VK_FALSE;
 	}
 	else {
@@ -1191,11 +1202,11 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = renderpass;
-	pipelineInfo.subpass = (graphicsType == eGraphicsPipeLine_Postprogessing) ? 1 : 0;
+	pipelineInfo.renderPass = data->renderPass;
+	pipelineInfo.subpass = (data->type == eGraphicsPipeLine_Postprogessing) ? 1 : 0;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-	if (shader->tesc && shader->tese) {
+	if (data->shader->tesc && data->shader->tese) {
 		VkPipelineTessellationStateCreateInfo tessellationInfo = {};
 		tessellationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 		tessellationInfo.pNext = nullptr;
@@ -1204,20 +1215,19 @@ QeDataGraphicsPipeline* QeVulkan::createGraphicsPipeline(QeAssetGraphicsShader* 
 		pipelineInfo.pTessellationState = &tessellationInfo;
 	}
 
-	VkPipeline graphicsPipeline;
-	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");
+	VkPipeline pipeline;
+	if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS) LOG("failed to create graphics pipeline!");
 	
 	QeDataGraphicsPipeline* s = new QeDataGraphicsPipeline();
-	s->shader = shader;
-	s->bAlpha = bAlpha;
-	s->graphicsType = graphicsType;
-	s->renderPass = renderpass;
-	s->graphicsPipeline = graphicsPipeline;
+	s->shader = data->shader;
+	s->bAlpha = data->bAlpha;
+	s->bStencilBuffer = data->bStencilBuffer;
+	s->type = data->type;
+	s->renderPass = data->renderPass;
+	s->pipeline = pipeline;
 	graphicsPipelines.push_back(s);
 
-	size_t size = graphicsPipelines.size();
-
-	return graphicsPipelines[size-1];
+	return pipeline;
 }
 
 VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {

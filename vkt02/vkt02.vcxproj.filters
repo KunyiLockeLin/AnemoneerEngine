@@ -256,6 +256,9 @@
     <None Include="..\data\shaders\render.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\outline.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

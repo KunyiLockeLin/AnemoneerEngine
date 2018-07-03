@@ -6,6 +6,7 @@
 %VULKAN_SDK%/Bin/glslangValidator.exe -V base.frag -o basef.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V point.vert -o pointv.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V line.geom -o lineg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V outline.geom -o outlineg.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V billboard.geom -o billboardg.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V texturev.frag -o texturevf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V texturem.frag -o texturemf.spv

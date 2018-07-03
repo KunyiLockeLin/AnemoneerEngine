@@ -42,6 +42,7 @@
       <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
       <action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
       <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
+      <outline vert="basev.spv" geom="outlineg.spv" frag="basef.spv"/>
       <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
     </graphicsShader>
   
@@ -55,7 +56,7 @@
   <scenes>
     <e eid="28000" cameraOID="26000">
       <models>
-        <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="-3" posZ="0"/>
+        <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="-3" posZ="0" lineWidth="0.05"/>
       </models>
       <renders>
         <e oid="15000" show="1" posX="0" posY="1" posZ="4" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100"/>

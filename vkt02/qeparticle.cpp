@@ -19,7 +19,7 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 	memset( bDeaths.data(), 0, sizeof(bDeaths[0])*bDeaths.size());
 
 	// ahlpa
-	bAlpha = particleRule->bAlpha;
+	graphicsPipeline.bAlpha = particleRule->bAlpha;
 
 	// size
 	size.x = MATH->fRandom(particleRule->size.x, particleRule->size_range.x);
@@ -127,11 +127,13 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(command->commonDescriptorSet);
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
-	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, eGraphicsPipeLine_Point, command->renderPass, bAlpha);
+	graphicsPipeline.renderPass = command->renderPass;
+	graphicsPipeline.type = eGraphicsPipeLine_Point;
+	graphicsPipeline.shader = &graphicsShader;
 
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &vertexBuffer.buffer, offsets);
-	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
+	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
 	vkCmdDraw(command->commandBuffer, currentParticlesSize, 1, 0, 0);
 }
 

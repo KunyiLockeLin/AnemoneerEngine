@@ -196,6 +196,8 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 		AST->setGraphicsShader(graphicsShader, editProperty, "model");
 	
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
+	AST->setGraphicsShader(outlineShader, nullptr, "outline");
+
 }
 
 void QeModel::setProperty() {
@@ -209,12 +211,12 @@ void QeModel::setProperty() {
 
 	cubemapOID = 0;
 	AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");
-	
+
 	cameraOID = 0;
 	AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");
 
-	bAlpha = false;
-	AST->getXMLbValue(&bAlpha, editProperty, 1, "alpha");
+	graphicsPipeline.bAlpha = false;
+	AST->getXMLbValue(&graphicsPipeline.bAlpha, editProperty, 1, "alpha");
 
 	size = { 1.0f ,1.0f ,1.0f };
 	AST->getXMLfValue(&size.x, initProperty, 1, "scaleX");
@@ -235,17 +237,22 @@ void QeModel::setProperty() {
 
 	actionSpeed = 0;
 	AST->getXMLfValue(&actionSpeed, initProperty, 1, "actionSpeed");
-	
+
 	actionState = eActionStateStop;
 	AST->getXMLiValue((int*)&actionState, initProperty, 1, "actionState");
-	
+
 	actionType = eActionTypeOnce;
 	AST->getXMLiValue((int*)&actionType, initProperty, 1, "actionType");
-	
+
 	currentActionID = 0;
 	AST->getXMLiValue(&currentActionID, initProperty, 1, "action");
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
+
+	bufferData.param.z = 0.0f;
+	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "lineWidth");
+	graphicsPipeline.bStencilBuffer = (bufferData.param.z ? true : false);
+
 }
 
 void QeModel::updateCompute(float time) {
@@ -403,7 +410,8 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	QeGraphicsPipelineType type;
-	
+	VkDeviceSize offsets[] = { 0 };
+
 	switch (objectType) {
 	case eObject_Model:
 		type = eGraphicsPipeLine_Triangle;
@@ -418,10 +426,21 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 		type = eGraphicsPipeLine_Point;
 		break;
 	}
-	QeDataGraphicsPipeline* graphicsPipeline = VK->createGraphicsPipeline(&graphicsShader, type, command->renderPass, bAlpha);
+	if (graphicsPipeline.bStencilBuffer && outlineShader.vert) {
+		graphicsPipeline.renderPass = command->renderPass;
+		graphicsPipeline.type = eGraphicsPipeLine_stencilBuffer;
+		graphicsPipeline.shader = &outlineShader;
+
+		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
+		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdBindIndexBuffer(command->commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+	}
+	graphicsPipeline.renderPass = command->renderPass;
+	graphicsPipeline.type = type;
+	graphicsPipeline.shader = &graphicsShader;
 	
-	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline->graphicsPipeline);
-	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
 
 	switch (objectType) {
 	case eObject_Model:
@@ -448,10 +467,10 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
 	if (VK->bShowNormal && normalShader.vert ) {
 
-		QeDataGraphicsPipeline* normalPipeline = VK->createGraphicsPipeline(&normalShader, eGraphicsPipeLine_Point, command->renderPass, false);
+		graphicsPipeline.type = eGraphicsPipeLine_Point;
+		graphicsPipeline.shader = &normalShader;
 
-		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, { 0 });
-		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, normalPipeline->graphicsPipeline);
+		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
 		vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}
 }
