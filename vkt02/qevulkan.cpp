@@ -301,7 +301,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 
 	if (renderType == eRender_shadow) {
 		attachments.resize(1);
-		attachments[0].format = (format== VK_FORMAT_UNDEFINED)?findDepthFormat(): format;
+		attachments[0].format = (format== VK_FORMAT_UNDEFINED)?findDepthStencilFormat(): format;
 		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -333,11 +333,11 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 			attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		}
 
-		attachments[1].format = findDepthFormat();
+		attachments[1].format = findDepthStencilFormat();
 		attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -576,17 +576,17 @@ VkFormat QeVulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, 
 	return VK_FORMAT_UNDEFINED;
 }
 
-VkFormat QeVulkan::findDepthFormat() {
+VkFormat QeVulkan::findDepthStencilFormat() {
 	return findSupportedFormat(
-	{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+	{ VK_FORMAT_D16_UNORM_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT_S8_UINT },
 		VK_IMAGE_TILING_OPTIMAL,
 		VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
 	);
 }
 
-bool QeVulkan::hasStencilComponent(VkFormat format) {
-	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
-}
+/*bool QeVulkan::hasStencilComponent(VkFormat format) {
+	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT || format == VK_FORMAT_D16_UNORM_S8_UINT;
+}*/
 
 void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
 	
@@ -601,9 +601,9 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 	barrier.image = image;
 
 	if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
-		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 
-		if (hasStencilComponent(format))	barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		//if (hasStencilComponent(format))	barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
 	}
 	else	barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
@@ -1119,8 +1119,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		depthStencil.depthTestEnable = VK_TRUE;
 		depthStencil.depthWriteEnable = VK_TRUE;
 		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;// VK_COMPARE_OP_LESS;
-		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
 		depthStencil.front = depthStencil.back;
+		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
 
 		if (data->bStencilBuffer) {
 			depthStencil.stencilTestEnable = VK_TRUE;
@@ -1136,7 +1136,6 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 
 			if (data->type == eGraphicsPipeLine_stencilBuffer) {
 				rasterizer.cullMode = VK_CULL_MODE_NONE;
-
 				depthStencil.depthTestEnable = VK_FALSE;
 				depthStencil.back.compareOp = VK_COMPARE_OP_NOT_EQUAL;
 				depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
@@ -1554,10 +1553,10 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 	bool bSampler = false;
 	
 	switch ( image.type ) {
-	case eImage_depth:
+	case eImage_depthStencil:
 		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-		if(format == VK_FORMAT_UNDEFINED) format = findDepthFormat();
+		if(format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
 		break;
 
 	case eImage_inputAttach:
@@ -1590,7 +1589,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 	case eImage_shadow:
 		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-		if (format == VK_FORMAT_UNDEFINED) format = findDepthFormat();
+		if (format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
 		bSampler = true;
 		break;
 	//case eImage_inputAttach:
@@ -1678,7 +1677,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 
 	// data
 	if (data)	setMemoryImage(image, dataSize, imageSize, format, data, 0);
-	if (image.type == eImage_depth) transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	if (image.type == eImage_depthStencil) transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 

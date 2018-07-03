@@ -426,16 +426,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 		type = eGraphicsPipeLine_Point;
 		break;
 	}
-	if (graphicsPipeline.bStencilBuffer && outlineShader.vert) {
-		graphicsPipeline.renderPass = command->renderPass;
-		graphicsPipeline.type = eGraphicsPipeLine_stencilBuffer;
-		graphicsPipeline.shader = &outlineShader;
 
-		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
-		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
-		vkCmdBindIndexBuffer(command->commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
-	}
 	graphicsPipeline.renderPass = command->renderPass;
 	graphicsPipeline.type = type;
 	graphicsPipeline.shader = &graphicsShader;
@@ -464,6 +455,14 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	//	break;
 	}
 	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+	if (graphicsPipeline.bStencilBuffer && outlineShader.vert) {
+		
+		graphicsPipeline.type = eGraphicsPipeLine_stencilBuffer;
+		graphicsPipeline.shader = &outlineShader;
+
+		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
+		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+	}
 
 	if (VK->bShowNormal && normalShader.vert ) {
 

@@ -336,13 +336,13 @@ void QeGraphics::refreshRender() {
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 			}
 
-			render->depthImage.type = eImage_depth;
+			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		else if(i==eRender_shadow){
 			render->scissor.extent = {256, 256};
 
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_shadow);
-			render->depthImage.type = eImage_shadow;
+			render->depthStencilImage.type = eImage_shadow;
 		}
 		else if (i == eRender_color) {
 			render->scissor.extent = { 256, 256 };
@@ -351,10 +351,10 @@ void QeGraphics::refreshRender() {
 			render->colorImage.type = eImage_render;
 			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 
-			render->depthImage.type = eImage_depth;
+			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		render->graphicsPipeline.renderPass = render->renderPass;
-		VK->createImage(render->depthImage, 0, render->scissor.extent, VK->findDepthFormat(), nullptr);
+		VK->createImage(render->depthStencilImage, 0, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
 		
 		render->scissor.offset = { 0, 0 };
 		render->viewport.minDepth = 0.0f;
@@ -371,18 +371,18 @@ void QeGraphics::refreshRender() {
 			if (i == eRender_main) {
 				if (render->subpassNum > 1)
 					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-						3, render->colorImage.view, render->depthImage.view, swapchain.images[j].view );
+						3, render->colorImage.view, render->depthStencilImage.view, swapchain.images[j].view );
 				else
 					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-						2, swapchain.images[j].view, render->depthImage.view );
+						2, swapchain.images[j].view, render->depthStencilImage.view );
 			}
 			else if(i== eRender_color) {
 				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-					2,render->colorImage.view, render->depthImage.view );
+					2,render->colorImage.view, render->depthStencilImage.view );
 			}
 			else if (i == eRender_shadow) {
 				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
-					1, render->depthImage.view);
+					1, render->depthStencilImage.view);
 			}
 			render->commandBuffers[j] = VK->createCommandBuffer();
 		}

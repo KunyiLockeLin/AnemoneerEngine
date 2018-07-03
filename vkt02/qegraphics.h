@@ -33,7 +33,7 @@ struct QeDataRender {
 	VkViewport viewport;
 	VkRect2D scissor;
 
-	QeVKImage colorImage, depthImage;
+	QeVKImage colorImage, depthStencilImage;
 	std::vector<VkFramebuffer> frameBuffers;
 
 	std::vector<VkCommandBufferBeginInfo> commandBeginInfos;
@@ -48,7 +48,7 @@ struct QeDataRender {
 	QeDataDescriptorSet descriptorSet;
 	QeDataGraphicsPipeline graphicsPipeline;
 
-	QeDataRender() :colorImage(eImage_inputAttach), depthImage(eImage_depth),
+	QeDataRender() :colorImage(eImage_inputAttach), depthStencilImage(eImage_depthStencil),
 		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataRender();
 };

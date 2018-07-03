@@ -48,7 +48,7 @@ struct QeVKBuffer {
 };
 
 enum QeVKImageType {
-	eImage_depth = 0,
+	eImage_depthStencil = 0,
 	eImage_swapchain = 1,
 	eImage_inputAttach = 2,
 	eImage_2D = 3,
@@ -223,8 +223,8 @@ public:
 
 	void createCommandPool();
 	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
-	VkFormat findDepthFormat();
-	bool hasStencilComponent(VkFormat format);
+	VkFormat findDepthStencilFormat();
+	//bool hasStencilComponent(VkFormat format);
 
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
