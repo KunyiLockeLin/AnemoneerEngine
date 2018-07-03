@@ -671,20 +671,24 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	QeAssetMaterial *pMaterial = new QeAssetMaterial();
 	//pMaterial->type = eMaterialPBR;
 	model->pMaterial = pMaterial;
-	
-	int textureIndex = atoi(AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index"));
-	std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
-	const char* texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
-	
-	if(bCubeMap)pMaterial->image.pCubeMap = AST->getImage(texturePath, bCubeMap);
-	else		pMaterial->image.pBaseColorMap = AST->getImage(texturePath, bCubeMap);
-	
-	textureIndex = atoi(AST->getJSONValue(json, 3, "materials", "normalTexture", "index"));
-	imageJSON = AST->getJSONArrayNodes(json, 1, "images");
-	texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
+	c = AST->getJSONValue(json, 4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index");
+	if (c) {
+		int textureIndex = atoi(c);
+		std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
+		const char* texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
 
-	pMaterial->image.pNormalMap = AST->getImage(texturePath, bCubeMap);
+		if (bCubeMap)pMaterial->image.pCubeMap = AST->getImage(texturePath, bCubeMap);
+		else		pMaterial->image.pBaseColorMap = AST->getImage(texturePath, bCubeMap);
+	}
 
+	c = AST->getJSONValue(json, 3, "materials", "normalTexture", "index");
+	if (c) {
+		int textureIndex = atoi(AST->getJSONValue(json, 3, "materials", "normalTexture", "index"));
+		std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
+		const char*  texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
+
+		pMaterial->image.pNormalMap = AST->getImage(texturePath, bCubeMap);
+	}
 	std::vector<std::string>* baseColorJ = AST->getJSONArrayValues(json, 3, "materials", "pbrMetallicRoughness", "baseColorFactor");
 	//QeDataMaterialPBR mtl;
 	QeDataMaterial mtl;
