@@ -295,7 +295,7 @@ void QeVulkan::createSwapchain( QeDataSwapchain* swapchain ) {
 	}
 }
 
-VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType) {
+VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType, int multi_sample_anti_aliasing) {
 
 	std::vector<VkAttachmentDescription> attachments;
 
@@ -1122,7 +1122,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		depthStencil.front = depthStencil.back;
 		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
 
-		if (data->bStencilBuffer) {
+		//if (data->bStencilBuffer) {
 			depthStencil.stencilTestEnable = VK_TRUE;
 
 			depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
@@ -1143,7 +1143,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 				depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
 				depthStencil.front = depthStencil.back;
 			}
-		}
+		//}
 	}
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment = {};

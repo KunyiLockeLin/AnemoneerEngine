@@ -210,7 +210,7 @@ public:
 	void createLogicalDevice();
 	int getSwapchainSize();
 	void createSwapchain(QeDataSwapchain* swapchain);
-	VkRenderPass createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType);
+	VkRenderPass createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType, int multi_sample_anti_aliasing=0);
 	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int length, ... ); // VkImageView
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
