@@ -78,7 +78,7 @@
   - https://github.com/KhronosGroup/glTF-Tutorials/tree/master/gltfTutorial
   - https://github.com/KhronosGroup/glTF-Blender-Exporter
   - https://learnopengl.com/
-  - https://learnopengl-cn.readthedocs.io/zh/latest/
+  - https://learnopengl-cn.github.io/
   - http://www.opengl-tutorial.org/
   - http://lodev.org/lodepng/
   - https://github.com/KhronosGroup/glTF-WebGL-PBR
