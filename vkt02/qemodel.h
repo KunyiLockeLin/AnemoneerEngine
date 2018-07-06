@@ -58,6 +58,7 @@ public:
 	bool bShow;
 	int cullingDistance;
 	int cubemapOID;
+	VkExtent2D renderSize;
 	bool bFixSize;
 	int cameraOID;
 

@@ -46,7 +46,7 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
-	createRender(eRender_main);
+	createRender(eRender_main, 0, {0,0});
 }
 
 void QeGraphics::updateViewport() {
@@ -315,7 +315,7 @@ void QeGraphics::drawFrame() {
 void QeGraphics::refreshRender() {
 	size_t size = renders.size();
 	if (!size) {
-		createRender(eRender_main);
+		createRender(eRender_main, 0, { 0,0 });
 		size = 1;
 	}
 
@@ -339,14 +339,10 @@ void QeGraphics::refreshRender() {
 			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		else if(i==eRender_shadow){
-			render->scissor.extent = {256, 256};
-
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_shadow);
 			render->depthStencilImage.type = eImage_shadow;
 		}
 		else if (i == eRender_color) {
-			render->scissor.extent = { 256, 256 };
-
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color);
 			render->colorImage.type = eImage_render;
 			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
@@ -389,7 +385,7 @@ void QeGraphics::refreshRender() {
 	}
 }
 
-QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID) {
+QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExtent2D renderSize) {
 
 	size_t size = renders.size();
 	QeDataRender * render = new QeDataRender();
@@ -402,6 +398,7 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID) {
 
 	render->cameraOID = cameraOID;
 	render->subpassNum = 1;
+	render->scissor.extent = renderSize;
 
 	size_t size1 = 1;
 	if (size == eRender_main) {
@@ -433,13 +430,13 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID) {
 }
 
 
-QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID) {
+QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize) {
 	size_t size = renders.size();
 
 	for (size_t i = 1; i<size; ++i) {
 		if (renders[i]->viewports[0]->camera->oid == cameraOID) return renders[i];
 	}
-	return createRender(type, cameraOID);
+	return createRender(type, cameraOID, renderSize);
 }
 
 void QeGraphics::cleanupRender() {

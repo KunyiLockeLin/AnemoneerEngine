@@ -247,6 +247,12 @@ void QeModel::setProperty() {
 	currentActionID = 0;
 	AST->getXMLiValue(&currentActionID, initProperty, 1, "action");
 
+	renderSize.width = 0;
+	AST->getXMLiValue((int*)&renderSize.width, initProperty, 1, "width");
+
+	renderSize.height = 0;
+	AST->getXMLiValue((int*)&renderSize.height, initProperty, 1, "height");
+
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
 	bufferData.param.z = 0.0f;

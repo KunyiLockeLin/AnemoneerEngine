@@ -94,7 +94,7 @@ public:
 	void updateCompute(float time);
 	void setTargetCamera(int index);
 	QeCamera* getTargetCamera();
-	QeDataRender * getRender(QeRenderType type, int cameraOID);
+	QeDataRender * getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);
 	//bool bUpdateComputeCommandBuffers = false;
 	bool bUpdateDrawCommandBuffers = false;
 	bool bRecreateRender = false;
@@ -104,7 +104,7 @@ public:
 
 	//VkSemaphore textOverlayComplete;
 
-	QeDataRender* createRender(QeRenderType type, int cameraOID=0);
+	QeDataRender* createRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);
 	void refreshRender();
 	void cleanupRender();
 	void drawFrame();
