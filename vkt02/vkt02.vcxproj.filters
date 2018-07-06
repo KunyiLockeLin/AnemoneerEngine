@@ -181,9 +181,6 @@
     <None Include="..\data\shaders\skeleton.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\base.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\postprocessing.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -257,6 +254,12 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\outline.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\basem.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\basev.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

@@ -3,7 +3,8 @@
 %VULKAN_SDK%/Bin/glslangValidator.exe -V base.tesc -o basetc.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V base.tese -o basete.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V base.geom -o baseg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V base.frag -o basef.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V basem.frag -o basemf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V basev.frag -o basevf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V point.vert -o pointv.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V line.geom -o lineg.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V outline.geom -o outlineg.spv

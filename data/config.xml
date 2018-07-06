@@ -12,6 +12,7 @@
   <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
   <webenvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
+  <msaa>1</msaa>
   
   <default cameraOID="26000">
     <ambientColor r="0" g="0.5" b="0.5"/>
@@ -32,9 +33,8 @@
     </lights>
        
     <graphicsShader>
-      <base vert="basev.spv" tesc="basetc.spv" tese="basete.spv" geom="baseg.spv" frag="basef.spv"/>
-      <line vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
-      <normal vert="basev.spv" geom="lineg.spv"  frag="basef.spv"/>
+      <line vert="basev.spv" geom="lineg.spv"  frag="basevf.spv"/>
+      <normal vert="basev.spv" geom="lineg.spv"  frag="basevf.spv"/>
       <render vert="pointv.spv" geom="billboardg.spv" frag="renderf.spv"/>
       <shadow vert="pointv.spv" geom="billboardg.spv" frag="shadowf.spv"/>
       <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
@@ -42,7 +42,7 @@
       <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
       <action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
       <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
-      <outline vert="basev.spv" geom="outlineg.spv" frag="basef.spv"/>
+      <outline vert="basev.spv" geom="outlineg.spv" frag="basemf.spv"/>
       <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
     </graphicsShader>
   
@@ -119,9 +119,9 @@
     <e eid="14001" obj="ball.gltf" alpha="0"/>
     <e eid="14002" obj="box.gltf" alpha="0"/>
     <e eid="14003" obj="box.gltf" tesc="basetc.spv" tese="basete.spv" alpha="0"/>
-    <e eid="14004" obj="plane" alpha="0" frag="basef.spv"/>
+    <e eid="14004" obj="plane" alpha="0" frag="basevf.spv"/>
     <e eid="14006" obj="plane" alpha="0"/>
-    <e eid="14005" obj="cube" alpha="0" frag="basef.spv"/>
+    <e eid="14005" obj="cube" alpha="0" frag="basevf.spv"/>
   </models>
   
   <billboards>
