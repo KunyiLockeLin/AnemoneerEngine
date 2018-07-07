@@ -203,6 +203,8 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 void QeModel::setProperty() {
 	QePoint::setProperty();
 
+	graphicsPipeline.objectType = objectType;
+
 	face = 0.0f;
 	up = 0.0f;
 
@@ -257,8 +259,6 @@ void QeModel::setProperty() {
 
 	bufferData.param.z = 0.0f;
 	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "lineWidth");
-	graphicsPipeline.bStencilBuffer = (bufferData.param.z ? true : false);
-
 }
 
 void QeModel::updateCompute(float time) {
@@ -415,26 +415,11 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(command->commonDescriptorSet);
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
-	QeGraphicsPipelineType type;
+
 	VkDeviceSize offsets[] = { 0 };
 
-	switch (objectType) {
-	case eObject_Model:
-		type = eGraphicsPipeLine_Triangle;
-		break;
-	case eObject_Cubemap:
-		type = eGraphicsPipeLine_Cubemap;
-		break;
-	case eObject_Render:
-	case eObject_Billboard:
-	case eObject_Line:
-	case eObject_Particle:
-		type = eGraphicsPipeLine_Point;
-		break;
-	}
-
 	graphicsPipeline.renderPass = command->renderPass;
-	graphicsPipeline.type = type;
+	graphicsPipeline.minorType = eGraphicsPipeLine_none;
 	graphicsPipeline.shader = &graphicsShader;
 	
 	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
@@ -460,10 +445,10 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	//case eObject_Particle:
 	//	break;
 	}
-	//vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
-	if (graphicsPipeline.bStencilBuffer && outlineShader.vert) {
+
+	if (bufferData.param.z  && outlineShader.vert) {
 		
-		graphicsPipeline.type = eGraphicsPipeLine_stencilBuffer;
+		graphicsPipeline.minorType = eGraphicsPipeLine_stencilBuffer;
 		graphicsPipeline.shader = &outlineShader;
 
 		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
@@ -472,7 +457,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
 	if (VK->bShowNormal && normalShader.vert ) {
 
-		graphicsPipeline.type = eGraphicsPipeLine_Point;
+		graphicsPipeline.minorType = eGraphicsPipeLine_normal;
 		graphicsPipeline.shader = &normalShader;
 
 		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));

@@ -128,7 +128,7 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
 	graphicsPipeline.renderPass = command->renderPass;
-	graphicsPipeline.type = eGraphicsPipeLine_Point;
+	graphicsPipeline.minorType = eGraphicsPipeLine_none;
 	graphicsPipeline.shader = &graphicsShader;
 
 	VkDeviceSize offsets[] = { 0 };
