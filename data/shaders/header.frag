@@ -19,6 +19,5 @@ layout(location = 4) in vec3 inBiTanget;
 layout(location = 5) in vec3 inPostion;
 layout(location = 6) in vec3 inLighttoVertex;
 layout(location = 7) in vec3 inUV3;
-layout(location = 8) in vec4 inUV4;
 
 layout(location = 0) out vec4 outColor;

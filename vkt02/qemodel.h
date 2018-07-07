@@ -57,7 +57,8 @@ public:
 	int speed;
 	bool bShow;
 	int cullingDistance;
-	int cubemapOID;
+	//int cubemapOID;
+	QeVKImage* cubemapImage;
 	VkExtent2D renderSize;
 	bool bFixSize;
 	int cameraOID;

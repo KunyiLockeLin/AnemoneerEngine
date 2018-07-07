@@ -56,7 +56,7 @@
   <scenes>
     <e eid="28000" cameraOID="26000">
       <models>
-        <e oid="14002" eid="14002" show="1" speed="10" posX="0" posY="-3" posZ="0" lineWidth="0.1"/>
+        <e oid="14002" eid="14005" show="1" speed="10" posX="0" posY="-3" posZ="0" lineWidth="0.1"/>
       </models>
       <renders>
         <e oid="15000" show="1" posX="0" posY="1" posZ="4" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100" width="800" height="450"/>
@@ -79,7 +79,7 @@
             <e oid="14001" eid="14001" show="1" speed="100" scaleX="2" scaleY="2" scaleZ="2" followPos="1" followColor="0" attachskeleton="Armature_Bone_002" />
           </attachs>
         </e>
-        <e oid="14002" eid="14002" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" cubemapOID="12000" culling="1000"/>    
+        <e oid="14002" eid="14007" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" culling="1000"/>    
       </models>
       <points/>
     </e>
@@ -120,8 +120,10 @@
     <e eid="14002" obj="box.gltf" alpha="0"/>
     <e eid="14003" obj="box.gltf" tesc="basetc.spv" tese="basete.spv" alpha="0"/>
     <e eid="14004" obj="plane" alpha="0" frag="basevf.spv"/>
-    <e eid="14006" obj="plane" alpha="0"/>
     <e eid="14005" obj="cube" alpha="0" frag="basevf.spv"/>
+    <e eid="14006" obj="plane" alpha="0"/>
+    <e eid="14007" obj="box.gltf" cubemapImage="cubemap1.png" alpha="0" frag="cubemapreflectf.spv"/>
+
   </models>
   
   <billboards>

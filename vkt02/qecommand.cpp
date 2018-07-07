@@ -11,7 +11,7 @@ void QeCommand::inputCommand(std::string& command) {
 	while (input >> result)
 		res.push_back(result);
 
-	if (res[0].compare("restart") == 0) {
+	if (res[0].compare("scene") == 0) {
 		QE->bRestart = true;
 		if (res.size() > 1)	QE->sceneEID = atoi(res[1].c_str());
 	}

@@ -42,10 +42,16 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 		descriptorSetData.normalMapImageView = mtlData->image.pNormalMap->view;
 		descriptorSetData.normalMapSampler = mtlData->image.pNormalMap->sampler;
 	}
+	bufferData.param.x = 0;
+	if (cubemapImage) {
+		descriptorSetData.cubeMapImageView = cubemapImage->view;
+		descriptorSetData.cubeMapSampler = cubemapImage->sampler;
+		bufferData.param.x = 1;
+	}
 	//descriptorSetData.modelViewportBuffer = shaderData[index]->buffer.buffer;
 
-	bufferData.param.x = 0;
-	if (cubemapOID > 0) {
+	//bufferData.param.x = 0;
+	/*if (cubemapOID > 0) {
 		QePoint* p = OBJMGR->getObject(cubemapOID);
 		if (p && p->objectType == eObject_Cubemap) {
 			QeCubemap * cube = (QeCubemap*)p;
@@ -53,7 +59,7 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 			descriptorSetData.cubeMapSampler = cube->mtlData->image.pCubeMap->sampler;
 			bufferData.param.x = 1;
 		}
-	}
+	}*/
 	return descriptorSetData;
 }
 
@@ -211,8 +217,12 @@ void QeModel::setProperty() {
 	bFixSize = false;
 	AST->getXMLbValue(&bFixSize, initProperty, 1, "fixSize");
 
-	cubemapOID = 0;
-	AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");
+	//cubemapOID = 0;
+	//AST->getXMLiValue(&cubemapOID, initProperty, 1, "cubemapOID");
+	cubemapImage = nullptr;
+	const char *c = AST->getXMLValue(editProperty, 1, "cubemapImage");
+	if (c) cubemapImage = AST->getImage(c, true);
+
 
 	cameraOID = 0;
 	AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");

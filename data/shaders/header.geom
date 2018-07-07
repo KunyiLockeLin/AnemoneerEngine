@@ -19,4 +19,3 @@ layout(location = 4) out vec3 outBiTanget;
 layout(location = 5) out vec3 outPostion;
 layout(location = 6) out vec3 outLighttoVertex;
 layout(location = 7) out vec3 outUV3;
-layout(location = 8) out vec4 outUV4;
