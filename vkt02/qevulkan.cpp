@@ -988,7 +988,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
 			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
-			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType) {
+			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType 
+			/*&& (*it)->bStencilBuffer == data->bStencilBuffer*/) {
 			return (*it)->pipeline;
 		}
 		++it;
@@ -1170,26 +1171,26 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
 
 		//if (data->bStencilBuffer) {
-		depthStencil.stencilTestEnable = VK_TRUE;
+			depthStencil.stencilTestEnable = VK_TRUE;
 
-		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
-		depthStencil.back.failOp = VK_STENCIL_OP_REPLACE;
-		depthStencil.back.depthFailOp = VK_STENCIL_OP_REPLACE;
-		depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
-		depthStencil.back.compareMask = 0xff;
-		depthStencil.back.writeMask = 0xff;
-		depthStencil.back.reference = 1;
-		depthStencil.front = depthStencil.back;
-
-		if (data->minorType == eGraphicsPipeLine_stencilBuffer) {
-			rasterizer.cullMode = VK_CULL_MODE_NONE;
-			depthStencil.depthTestEnable = VK_FALSE;
-			depthStencil.back.compareOp = VK_COMPARE_OP_NOT_EQUAL;
-			depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
-			depthStencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
+			depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
+			depthStencil.back.failOp = VK_STENCIL_OP_REPLACE;
+			depthStencil.back.depthFailOp = VK_STENCIL_OP_REPLACE;
 			depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
+			depthStencil.back.compareMask = 0xff;
+			depthStencil.back.writeMask = 0xff;
+			depthStencil.back.reference = 1;
 			depthStencil.front = depthStencil.back;
-		}
+
+			if (data->minorType == eGraphicsPipeLine_stencilBuffer) {
+				rasterizer.cullMode = VK_CULL_MODE_NONE;
+				depthStencil.depthTestEnable = VK_FALSE;
+				depthStencil.back.compareOp = VK_COMPARE_OP_NOT_EQUAL;
+				depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
+				depthStencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
+				depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
+				depthStencil.front = depthStencil.back;
+			}
 		//}
 	}
 	else {
@@ -1273,6 +1274,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	QeDataGraphicsPipeline* s = new QeDataGraphicsPipeline();
 	s->shader = data->shader;
 	s->bAlpha = data->bAlpha;
+	//s->bStencilBuffer = data->bStencilBuffer;
 	s->objectType = data->objectType;
 	s->minorType = data->minorType;
 	s->renderPass = data->renderPass;
