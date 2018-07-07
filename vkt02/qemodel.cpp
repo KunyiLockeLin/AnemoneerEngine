@@ -188,8 +188,11 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 	const char* c = AST->getXMLValue(editProperty, 1, "obj");
 	modelData = AST->getModel(c);
 	if(modelData->pMaterial)	mtlData = modelData->pMaterial;
-	else 						mtlData = AST->getMaterialImage("");
-
+	else {
+		c = AST->getXMLValue(editProperty, 1, "image");
+		if(c)	mtlData = AST->getMaterialImage(c);
+		else	mtlData = AST->getMaterialImage("");
+	}
 	bufferData.material = mtlData->value;
 	size *= modelData->scale;
 

@@ -830,103 +830,133 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->indices = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35 };
 
 		model->indexSize = int(model->indices.size());
-		vertex.uv = { 0,0,0,0 };
 		vertex.color = {1,1,1,1};
-
+		
+		//
 		vertex.normal = { 0, 0, -1,1 };
 		vertex.pos = { 1, -1, -1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, 1, -1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, 1, -1,1 };
+		vertex.uv = { 1,0,0,0 };
 		model->vertices.push_back(vertex);
 
+		vertex.pos = { 1, -1, -1,1 };
+		vertex.uv = { 0,0,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, -1, -1,1 };
+		vertex.uv = { 0,1,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, 1, -1,1 };
+		vertex.uv = { 1,1,0,0 };
+		model->vertices.push_back(vertex);
+		//
 		vertex.normal = { 0, 0, 1,1 };
 		vertex.pos = { -1, 1, 1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, -1, 1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, 1, 1,1 };
+		vertex.uv = { 1,0,0,0 };
 		model->vertices.push_back(vertex);
 
+		vertex.pos = { -1, 1, 1,1 };
+		vertex.uv = { 0,0,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, -1, 1,1 };
+		vertex.uv = { 0,1,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { 1, -1, 1,1 };
+		vertex.uv = { 1,1,0,0 };
+		model->vertices.push_back(vertex);
+		//
 		vertex.normal = { 1, 0, 0,1 };
 		vertex.pos = { 1, 1, 1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, -1, -1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, 1, -1,1 };
+		vertex.uv = { 1,0,0,0 };
 		model->vertices.push_back(vertex);
 
+		vertex.pos = { 1, 1, 1,1 };
+		vertex.uv = { 0,0,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { 1, -1, 1,1 };
+		vertex.uv = { 0,1,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { 1, -1, -1,1 };
+		vertex.uv = { 1,1,0,0 };
+		model->vertices.push_back(vertex);
+		//
 		vertex.normal = { 0, -1, 0,1 };
 		vertex.pos = { 1, -1, 1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, -1, -1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, -1, -1,1 };
+		vertex.uv = { 1,0,0,0 };
 		model->vertices.push_back(vertex);
 
+		vertex.pos = { 1, -1, 1,1 };
+		vertex.uv = { 0,0,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, -1, 1,1 };
+		vertex.uv = { 0,1,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, -1, -1,1 };
+		vertex.uv = { 1,1,0,0 };
+		model->vertices.push_back(vertex);
+		//
 		vertex.normal = { -1, 0, 0,1 };
 		vertex.pos = { -1, -1, -1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, 1, 1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, 1, -1,1 };
+		vertex.uv = { 1,0,0,0 };
 		model->vertices.push_back(vertex);
 
+		vertex.pos = { -1, -1, -1,1 };
+		vertex.uv = { 0,0,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, -1, 1,1 };
+		vertex.uv = { 0,1,0,0 };
+		model->vertices.push_back(vertex);
+		vertex.pos = { -1, 1, 1,1 };
+		vertex.uv = { 1,1,0,0 };
+		model->vertices.push_back(vertex);
+		//
 		vertex.normal = { 0, 1, 0,1 };
 		vertex.pos = { 1, 1, -1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, 1, 1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { 1, 1, 1,1 };
+		vertex.uv = { 1,0,0,0 };
 		model->vertices.push_back(vertex);
 
-		vertex.normal = { 0, 0, -1,1 };
-		vertex.pos = { 1, -1, -1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, -1, -1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, 1, -1,1 };
-		model->vertices.push_back(vertex);
-
-		vertex.normal = { 0, 0, 1,1 };
-		vertex.pos = { -1, 1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, -1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { 1, -1, 1,1 };
-		model->vertices.push_back(vertex);
-
-		vertex.normal = { 1, 0, 0,1 };
-		vertex.pos = { 1, 1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { 1, -1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { 1, -1, -1,1 };
-		model->vertices.push_back(vertex);
-
-		vertex.normal = { 0, -1, 0,1 };
-		vertex.pos = { 1, -1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, -1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, -1, -1,1 };
-		model->vertices.push_back(vertex);
-
-		vertex.normal = { -1, 0, 0,1 };
-		vertex.pos = { -1, -1, -1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, -1, 1,1 };
-		model->vertices.push_back(vertex);
-		vertex.pos = { -1, 1, 1,1 };
-		model->vertices.push_back(vertex);
-
-		vertex.normal = { 0, 1, 0,1 };
 		vertex.pos = { 1, 1, -1,1 };
+		vertex.uv = { 0,0,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, 1, -1,1 };
+		vertex.uv = { 0,1,0,0 };
 		model->vertices.push_back(vertex);
 		vertex.pos = { -1, 1, 1,1 };
+		vertex.uv = { 1,1,0,0 };
 		model->vertices.push_back(vertex);
 		break;
 
@@ -1052,7 +1082,7 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	if (it != astMaterials.end())	return it->second;
 
 	QeAssetMaterial* mtl = new QeAssetMaterial();
-	mtl->value.baseColor = {1,1,1,1};
+	mtl->value.baseColor = {0,0,0,1};
 	//mtl->value.phong.ambient = { 1,1,1,1 };
 	//mtl->value.phong.diffuse = { 1,1,1,1 };
 	//mtl->value.phong.specular = { 1,1,1,1 };

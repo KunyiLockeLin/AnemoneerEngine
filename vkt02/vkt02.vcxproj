@@ -222,6 +222,7 @@
     <None Include="..\data\shaders\billboard.geom" />
     <None Include="..\data\shaders\compile.bat" />
     <None Include="..\data\shaders\cubemap.frag" />
+    <None Include="..\data\shaders\cubemapreflect.frag" />
     <None Include="..\data\shaders\grayscale.frag" />
     <None Include="..\data\shaders\header.comp" />
     <None Include="..\data\shaders\header.frag" />
@@ -246,6 +247,7 @@
     <None Include="..\data\shaders\texturem.frag" />
     <None Include="..\data\shaders\texturev.frag" />
     <None Include="..\data\shaders\toon.frag" />
+    <None Include="..\data\shaders\triangle.geom" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml" />

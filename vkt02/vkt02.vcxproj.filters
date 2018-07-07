@@ -262,6 +262,12 @@
     <None Include="..\data\shaders\basev.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\triangle.geom">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\cubemapreflect.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">
