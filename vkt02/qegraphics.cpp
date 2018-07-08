@@ -341,7 +341,7 @@ void QeGraphics::refreshRender() {
 		else if (i == eRender_color) {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color, sampleCount);
 			render->colorImage.type = eImage_render;
-			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr, sampleCount);
+			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 
 			render->depthStencilImage.type = eImage_depthStencil;
 		}
