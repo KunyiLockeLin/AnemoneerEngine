@@ -12,7 +12,7 @@
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
   - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines, billboards, particle system.
-  - Support draw mulit-render and outline(stencil buffer)
+  - Support draw mulit-render, outline(stencil buffer) and multisample anti-aliasing(MASS)
   - Support Log output, and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
