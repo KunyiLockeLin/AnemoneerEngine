@@ -313,16 +313,16 @@ VkSampleCountFlagBits QeVulkan::getMaxUsableSampleCount(){
 	return VK_SAMPLE_COUNT_1_BIT;
 }
 
-VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType, VkSampleCountFlagBits sampleCount) {
+VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType) {
 
 	std::vector<VkAttachmentDescription> attachments;
 
-	if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+	if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
 		attachments.resize(subpassNum + 1);
 
 		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[0].format = format;
-		attachments[0].samples = sampleCount;
+		attachments[0].samples = VP->sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -341,7 +341,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		}
 
 		attachments[1].format = findDepthStencilFormat();
-		attachments[1].samples = sampleCount;
+		attachments[1].samples = VP->sampleCount;
 		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -352,7 +352,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		if (subpassNum == 2) {
 			attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 			attachments[2].format = format;
-			attachments[2].samples = sampleCount;
+			attachments[2].samples = VP->sampleCount;
 			attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -366,7 +366,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 
 		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[0].format = format;
-		attachments[0].samples = sampleCount;
+		attachments[0].samples = VP->sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -398,7 +398,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 
 		attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[2].format = findDepthStencilFormat();
-		attachments[2].samples = sampleCount;
+		attachments[2].samples = VP->sampleCount;
 		attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -440,7 +440,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 	depthAttachmentRef.attachment = 1;
 	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+	if (VP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 		depthAttachmentRef.attachment = 2;
 
 		VkAttachmentReference resolveReference = {};
@@ -464,7 +464,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		VkAttachmentReference colorAttachmentRef1 = {};
 		colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
 			inputAttachmentRef.attachment = 0;
 			colorAttachmentRef1.attachment = 2;
 		}
@@ -1055,7 +1055,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
 			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
-			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType && (*it)->sampleCount == data->sampleCount
+			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType
 			/*&& (*it)->bStencilBuffer == data->bStencilBuffer*/) {
 			return (*it)->pipeline;
 		}
@@ -1138,7 +1138,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	VkCullModeFlagBits cullMode= VK_CULL_MODE_BACK_BIT;
 	bool bDepthTest=true;
 	uint32_t subpass=0;
-	
+
 	switch (data->objectType) {
 
 	case eObject_Scene:
@@ -1220,9 +1220,10 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.rasterizationSamples = data->sampleCount;
 
-	if (data->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+	multisampling.rasterizationSamples = VP->sampleCount;
+
+	if (multisampling.rasterizationSamples == VK_SAMPLE_COUNT_1_BIT) {
 		multisampling.sampleShadingEnable = VK_FALSE;
 		multisampling.minSampleShading = 0.0f;
 	}
@@ -1350,7 +1351,6 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	s->bAlpha = data->bAlpha;
 	//s->bStencilBuffer = data->bStencilBuffer;
 	s->objectType = data->objectType;
-	s->sampleCount = data->sampleCount;
 	s->minorType = data->minorType;
 	s->renderPass = data->renderPass;
 	s->pipeline = pipeline;

@@ -188,7 +188,6 @@ struct QeDataGraphicsPipeline {
 	VkPipeline pipeline;
 	QeAssetGraphicsShader* shader;
 	VkRenderPass		renderPass;
-	VkSampleCountFlagBits sampleCount;
 	bool bAlpha;
 	//bool bStencilBuffer;
 };
@@ -251,7 +250,7 @@ public:
 	int getSwapchainSize();
 	void createSwapchain(QeDataSwapchain* swapchain);
 	VkSampleCountFlagBits getMaxUsableSampleCount();
-	VkRenderPass createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType, VkSampleCountFlagBits sampleCount);
+	VkRenderPass createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType);
 	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int length, ... ); // VkImageView
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();

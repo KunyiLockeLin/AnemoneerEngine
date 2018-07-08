@@ -326,7 +326,7 @@ void QeGraphics::refreshRender() {
 		if (i == eRender_main) {
 
 			render->scissor.extent = swapchain.extent;
-			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, eRender_main, sampleCount);
+			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, eRender_main);
 
 			if (render->subpassNum > 1) {
 				render->colorImage.type = eImage_inputAttach;
@@ -339,7 +339,7 @@ void QeGraphics::refreshRender() {
 			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		else if (i == eRender_color) {
-			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color, sampleCount);
+			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color);
 			render->colorImage.type = eImage_render;
 			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 
@@ -428,7 +428,6 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 			render->graphicsPipeline.bAlpha = false;
 			render->graphicsPipeline.objectType = eObject_Scene;
 			render->graphicsPipeline.minorType = eGraphicsPipeLine_none;
-			render->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
 			AST->setGraphicsShader(render->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
 			render->graphicsPipeline.shader = &render->graphicsShader;
 
