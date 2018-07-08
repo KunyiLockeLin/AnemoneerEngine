@@ -54,9 +54,7 @@
   <startScene>28000</startScene>
   
   <scenes>
-    
     <e eid="28000" cameraOID="26000">
-      
       <models>
         <e oid="14002" eid="14007" show="1" speed="10" posX="0" posY="-3" posZ="0" lineWidth="0.1"/>
       </models>
@@ -74,7 +72,6 @@
       <cubemaps>
         <e oid="12000" eid="12000" show="1" scaleX="20" scaleY="20" scaleZ="20"/>
       </cubemaps>
-      <terrains/>
       <models>
         <e oid="14000" eid="14000" show="1" speed="50" posX="0" posY="5" posZ="-1" actionState ="1" actionSpeed="1" action="0" actionType="2" >
           <attachs>
@@ -83,7 +80,6 @@
         </e>
         <e oid="14002" eid="14006" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" culling="1000"/>    
       </models>
-      <points/>
     </e>
 
     <e eid="28002">

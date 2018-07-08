@@ -459,12 +459,19 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 	if (subpassNum == 2) {
 
 		VkAttachmentReference inputAttachmentRef = {};
-		inputAttachmentRef.attachment = 0;
 		inputAttachmentRef.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 		VkAttachmentReference colorAttachmentRef1 = {};
-		colorAttachmentRef1.attachment = 2;
 		colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+			inputAttachmentRef.attachment = 0;
+			colorAttachmentRef1.attachment = 2;
+		}
+		else {
+			inputAttachmentRef.attachment = 1;
+			colorAttachmentRef1.attachment = 4;
+		}
 
 		subpasses[1].flags = 0;
 		subpasses[1].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -1299,7 +1306,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 
 	VkPipelineDynamicStateCreateInfo dynamicState = {};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicState.dynamicStateCount = dynamicStates.size();
+	dynamicState.dynamicStateCount = uint32_t(dynamicStates.size());
 	dynamicState.pDynamicStates = dynamicStates.data();
 
 	VkPipelineViewportStateCreateInfo viewportState = {};
