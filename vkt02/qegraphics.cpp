@@ -326,7 +326,7 @@ void QeGraphics::refreshRender() {
 		if (i == eRender_main) {
 
 			render->scissor.extent = swapchain.extent;
-			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, eRender_main);
+			render->renderPass = VK->createRenderPass(swapchain.format, render->subpassNum, eRender_main, sampleCount);
 
 			if (render->subpassNum > 1) {
 				render->colorImage.type = eImage_inputAttach;
@@ -339,19 +339,24 @@ void QeGraphics::refreshRender() {
 			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		else if(i==eRender_shadow){
-			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_shadow);
-			render->depthStencilImage.type = eImage_shadow;
+			//render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_shadow);
+			//render->depthStencilImage.type = eImage_shadow;
 		}
 		else if (i == eRender_color) {
-			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color);
+			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color, sampleCount);
 			render->colorImage.type = eImage_render;
-			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr, sampleCount);
 
 			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		render->graphicsPipeline.renderPass = render->renderPass;
 		VK->createImage(render->depthStencilImage, 0, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
 		
+		if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+			VK->createImage(render->multiSampleColorImage, 0, render->scissor.extent, swapchain.format, nullptr, sampleCount);
+			VK->createImage(render->multiSampleDepthStencilImage, 0, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+		}
+
 		render->scissor.offset = { 0, 0 };
 		render->viewport.minDepth = 0.0f;
 		render->viewport.maxDepth = 1.0f;
@@ -368,9 +373,16 @@ void QeGraphics::refreshRender() {
 				if (render->subpassNum > 1)
 					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
 						3, render->colorImage.view, render->depthStencilImage.view, swapchain.images[j].view );
-				else
-					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-						2, swapchain.images[j].view, render->depthStencilImage.view );
+				else {
+					if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+						render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
+							2, swapchain.images[j].view, render->depthStencilImage.view);
+					}
+					else {
+						render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
+							4, render->multiSampleColorImage.view, swapchain.images[j].view, render->multiSampleDepthStencilImage.view, render->depthStencilImage.view);
+					}
+				}
 			}
 			else if(i== eRender_color) {
 				render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
@@ -522,13 +534,23 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 		// graphics shader
 		std::vector<VkClearValue> clearValues;
-		clearValues.resize(render->subpassNum + 1);
 
-		clearValues[0].color = { ACT->ambientColor.x+i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-		clearValues[1].depthStencil = { 1.0f, 0 };
+		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+			clearValues.resize(render->subpassNum + 1);
 
-		if (render->subpassNum > 1)
-			clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+			clearValues[0].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+			clearValues[1].depthStencil = { 1.0f, 0 };
+
+			if (render->subpassNum > 1)
+				clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		}
+		else {
+			clearValues.resize(3);
+			clearValues[0].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+			clearValues[1].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+			clearValues[2].depthStencil = { 1.0f, 0 };
+
+		}
 
 		for (size_t j = 0; j < size1; ++j) {
 			//VkCommandBufferBeginInfo beginInfo = {};

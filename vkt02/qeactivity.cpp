@@ -7,6 +7,9 @@ void QeActivity::init(QeAssetXML* _property) {
 	QeAssetXML * node;
 	AST->getXMLiValue(&eid, initProperty, 1, "eid");
 
+	VP->sampleCount = VK->getMaxUsableSampleCount();
+
+
 	node = AST->getXMLNode(_property, 1, "ambientColor");
 	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default","ambientColor");
 

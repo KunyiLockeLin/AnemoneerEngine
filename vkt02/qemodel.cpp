@@ -273,6 +273,7 @@ void QeModel::setProperty() {
 	bufferData.param.z = 0.0f;
 	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "lineWidth");
 	//graphicsPipeline.bStencilBuffer = bufferData.param.z ? true : false;
+	graphicsPipeline.sampleCount = VP->sampleCount;
 }
 
 void QeModel::updateCompute(float time) {

@@ -33,7 +33,7 @@ struct QeDataRender {
 	VkViewport viewport;
 	VkRect2D scissor;
 
-	QeVKImage colorImage, depthStencilImage;
+	QeVKImage colorImage, depthStencilImage, multiSampleColorImage, multiSampleDepthStencilImage;
 	std::vector<VkFramebuffer> frameBuffers;
 
 	std::vector<VkCommandBufferBeginInfo> commandBeginInfos;
@@ -49,6 +49,7 @@ struct QeDataRender {
 	QeDataGraphicsPipeline graphicsPipeline;
 
 	QeDataRender() :colorImage(eImage_inputAttach), depthStencilImage(eImage_depthStencil),
+		multiSampleColorImage(eImage_multiSampleColor), multiSampleDepthStencilImage(eImage_multiSampleDepthStencil),
 		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataRender();
 };
@@ -84,6 +85,7 @@ public:
 
 	VkSemaphore renderCompleteSemaphore = VK_NULL_HANDLE;
 	std::vector<VkFence> fences;
+	VkSampleCountFlagBits sampleCount;
 
 	void init(QeAssetXML* _property);
 	void addNewViewport(size_t renderIndex = 0);

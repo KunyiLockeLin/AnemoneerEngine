@@ -56,6 +56,12 @@
   <scenes>
     <e eid="28000" cameraOID="26000">
       <models>
+        <e oid="14002" eid="14007" show="1"/>
+      </models>
+    </e>
+    
+    <e eid="28004" cameraOID="26000">
+      <models>
         <e oid="14002" eid="14007" show="1" speed="10" posX="0" posY="-3" posZ="0" lineWidth="0.1"/>
       </models>
       <renders>

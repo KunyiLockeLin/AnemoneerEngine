@@ -197,6 +197,7 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.multiViewport = VK_TRUE;
 	deviceFeatures.geometryShader = VK_TRUE;
 	deviceFeatures.tessellationShader = VK_TRUE;
+	deviceFeatures.sampleRateShading = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -295,14 +296,31 @@ void QeVulkan::createSwapchain( QeDataSwapchain* swapchain ) {
 	}
 }
 
-VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType, int multi_sample_anti_aliasing) {
+VkSampleCountFlagBits QeVulkan::getMaxUsableSampleCount(){
+
+	VkSampleCountFlags counts;
+	AST->getXMLiValue( (int*)&counts, AST->getXMLNode(1, AST->CONFIG), 1, "msaa" );
+	VkSampleCountFlags counts2 = std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
+	
+	if (counts > counts2) counts = counts2;
+
+	if (counts >= VK_SAMPLE_COUNT_64_BIT)	return VK_SAMPLE_COUNT_64_BIT;
+	if (counts >= VK_SAMPLE_COUNT_32_BIT)	return VK_SAMPLE_COUNT_32_BIT;
+	if (counts >= VK_SAMPLE_COUNT_16_BIT)	return VK_SAMPLE_COUNT_16_BIT;
+	if (counts >= VK_SAMPLE_COUNT_8_BIT)	return VK_SAMPLE_COUNT_8_BIT;
+	if (counts >= VK_SAMPLE_COUNT_4_BIT)	return VK_SAMPLE_COUNT_4_BIT;
+	if (counts >= VK_SAMPLE_COUNT_2_BIT)	return VK_SAMPLE_COUNT_2_BIT;
+	return VK_SAMPLE_COUNT_1_BIT;
+}
+
+VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType, VkSampleCountFlagBits sampleCount) {
 
 	std::vector<VkAttachmentDescription> attachments;
 
 	if (renderType == eRender_shadow) {
 		attachments.resize(1);
 		attachments[0].format = (format== VK_FORMAT_UNDEFINED)?findDepthStencilFormat(): format;
-		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
+		attachments[0].samples = sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -311,90 +329,165 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[0].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
 	}
 	else {
-		attachments.resize(subpassNum + 1);
+		if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+			attachments.resize(subpassNum + 1);
 
-		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		attachments[0].format = format;
-		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
-		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			attachments[0].format = format;
+			attachments[0].samples = sampleCount;
+			attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-		if (subpassNum == 1) {
-			attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			if (renderType == eRender_main)
-				attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-			else
+			if (subpassNum == 1) {
+				attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				if (renderType == eRender_main)
+					attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+				else
+					attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			}
+			else {
+				attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 				attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			}
+
+			attachments[1].format = findDepthStencilFormat();
+			attachments[1].samples = sampleCount;
+			attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+			if (subpassNum == 2) {
+				attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+				attachments[2].format = format;
+				attachments[2].samples = sampleCount;
+				attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+				attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				attachments[2].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+				attachments[2].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+				attachments[2].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+			}
 		}
 		else {
-			attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		}
+			attachments.resize(4);
+			// Multisampled attachment that we render to
+			attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			attachments[0].format = format;
+			attachments[0].samples = sampleCount;
+			attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[0].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		attachments[1].format = findDepthStencilFormat();
-		attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
-		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+			// This is the frame buffer attachment to where the multisampled image
+			// will be resolved to and which will be presented to the swapchain
+			attachments[1].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			attachments[1].format = format;
+			attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
+			attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[1].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-		if (subpassNum == 2) {
+			// Multisampled depth attachment we render to
 			attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-			attachments[2].format = format;
-			attachments[2].samples = VK_SAMPLE_COUNT_1_BIT;
+			attachments[2].format = findDepthStencilFormat();
+			attachments[2].samples = sampleCount;
 			attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-			attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			attachments[2].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachments[2].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			attachments[2].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+			attachments[2].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+			// Depth resolve attachment
+			attachments[3].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			attachments[3].format = findDepthStencilFormat();
+			attachments[3].samples = VK_SAMPLE_COUNT_1_BIT;
+			attachments[3].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[3].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			attachments[3].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[3].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[3].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[3].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		}
 	}
 	std::vector<VkSubpassDescription> subpasses;
-	subpasses.resize(subpassNum);
 
-	VkAttachmentReference depthAttachmentRef = {};
-	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+		subpasses.resize(subpassNum);
 
-	subpasses[0].flags = 0;
-	subpasses[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpasses[0].pDepthStencilAttachment = &depthAttachmentRef;
+		VkAttachmentReference depthAttachmentRef = {};
+		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-	if (renderType == eRender_shadow) {
-		depthAttachmentRef.attachment = 0;
-	}
-	else {
-		depthAttachmentRef.attachment = 1;
+		subpasses[0].flags = 0;
+		subpasses[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpasses[0].pDepthStencilAttachment = &depthAttachmentRef;
 
-		VkAttachmentReference colorAttachmentRef = {};
-		colorAttachmentRef.attachment = 0;
-		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		if (renderType == eRender_shadow) {
+			depthAttachmentRef.attachment = 0;
+		}
+		else {
+			depthAttachmentRef.attachment = 1;
 
-		subpasses[0].colorAttachmentCount = 1;
-		subpasses[0].pColorAttachments = &colorAttachmentRef;
+			VkAttachmentReference colorAttachmentRef = {};
+			colorAttachmentRef.attachment = 0;
+			colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		if (subpassNum == 2) {
+			subpasses[0].colorAttachmentCount = 1;
+			subpasses[0].pColorAttachments = &colorAttachmentRef;
 
-			VkAttachmentReference inputAttachmentRef = {};
-			inputAttachmentRef.attachment = 0;
-			inputAttachmentRef.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			if (subpassNum == 2) {
 
-			VkAttachmentReference colorAttachmentRef1 = {};
-			colorAttachmentRef1.attachment = 2;
-			colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+				VkAttachmentReference inputAttachmentRef = {};
+				inputAttachmentRef.attachment = 0;
+				inputAttachmentRef.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-			subpasses[1].flags = 0;
-			subpasses[1].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-			subpasses[1].inputAttachmentCount = 1;
-			subpasses[1].pInputAttachments = &inputAttachmentRef;
-			subpasses[1].colorAttachmentCount = 1;
-			subpasses[1].pColorAttachments = &colorAttachmentRef1;
+				VkAttachmentReference colorAttachmentRef1 = {};
+				colorAttachmentRef1.attachment = 2;
+				colorAttachmentRef1.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+				subpasses[1].flags = 0;
+				subpasses[1].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+				subpasses[1].inputAttachmentCount = 1;
+				subpasses[1].pInputAttachments = &inputAttachmentRef;
+				subpasses[1].colorAttachmentCount = 1;
+				subpasses[1].pColorAttachments = &colorAttachmentRef1;
+			}
 		}
 	}
+	else {
+		VkAttachmentReference colorReference = {};
+		colorReference.attachment = 0;
+		colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		VkAttachmentReference depthReference = {};
+		depthReference.attachment = 2;
+		depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+		// Resolve attachment reference for the color attachment
+		VkAttachmentReference resolveReference = {};
+		resolveReference.attachment = 1;
+		resolveReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		subpasses.resize(1);
+		subpasses[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpasses[0].colorAttachmentCount = 1;
+		subpasses[0].pColorAttachments = &colorReference;
+		// Pass our resolve attachments to the sub pass
+		subpasses[0].pResolveAttachments = &resolveReference;
+		subpasses[0].pDepthStencilAttachment = &depthReference;
+	}
+
 	std::array<VkSubpassDependency, 2> dependencies;
 
 	if (renderType == eRender_shadow) {
@@ -988,7 +1081,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
 			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
-			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType 
+			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType && (*it)->sampleCount == data->sampleCount
 			/*&& (*it)->bStencilBuffer == data->bStencilBuffer*/) {
 			return (*it)->pipeline;
 		}
@@ -1153,9 +1246,16 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-	multisampling.sampleShadingEnable = VK_FALSE;
-	multisampling.minSampleShading = 0.0f;
+	multisampling.rasterizationSamples = data->sampleCount;
+
+	if (data->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+		multisampling.sampleShadingEnable = VK_FALSE;
+		multisampling.minSampleShading = 0.0f;
+	}
+	else {
+		multisampling.sampleShadingEnable = VK_TRUE;
+		multisampling.minSampleShading = 0.25f;
+	}
 	multisampling.pSampleMask = nullptr;
 	multisampling.alphaToCoverageEnable = VK_FALSE;// VK_TRUE;
 	multisampling.alphaToOneEnable = VK_FALSE;
@@ -1224,7 +1324,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	colorBlending.blendConstants[2] = 1.0f;
 	colorBlending.blendConstants[3] = 1.0f;
 
-	VkDynamicState dynamicStates[] = {
+	std::array<VkDynamicState,2> dynamicStates = {
 		VK_DYNAMIC_STATE_VIEWPORT,
 		VK_DYNAMIC_STATE_SCISSOR
 		//,VK_DYNAMIC_STATE_LINE_WIDTH
@@ -1232,8 +1332,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 
 	VkPipelineDynamicStateCreateInfo dynamicState = {};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicState.dynamicStateCount = 2;
-	dynamicState.pDynamicStates = dynamicStates;
+	dynamicState.dynamicStateCount = dynamicStates.size();
+	dynamicState.pDynamicStates = dynamicStates.data();
 
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -1276,6 +1376,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	s->bAlpha = data->bAlpha;
 	//s->bStencilBuffer = data->bStencilBuffer;
 	s->objectType = data->objectType;
+	s->sampleCount = data->sampleCount;
 	s->minorType = data->minorType;
 	s->renderPass = data->renderPass;
 	s->pipeline = pipeline;
@@ -1590,7 +1691,7 @@ void QeVulkan::setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data
 	}
 }
 
-void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data) {
+void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, VkSampleCountFlagBits sampleCount) {
 
 	if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
 
@@ -1612,6 +1713,18 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 		if(format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
+		break;
+
+	case eImage_multiSampleDepthStencil:
+		usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+		//properties = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
+		if (format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
+		break;
+
+	case eImage_multiSampleColor:
+		usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		//properties = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
 		break;
 
 	case eImage_inputAttach:
@@ -1667,7 +1780,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		imageInfo.tiling = tiling;
 		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;// VK_IMAGE_LAYOUT_PREINITIALIZED;
 		imageInfo.usage = usage;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.samples = sampleCount;
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		if (vkCreateImage(device, &imageInfo, nullptr, &image.image) != VK_SUCCESS) LOG("failed to create image!");
