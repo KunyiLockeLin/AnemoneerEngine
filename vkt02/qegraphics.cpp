@@ -422,7 +422,7 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 			render->graphicsPipeline.bAlpha = false;
 			render->graphicsPipeline.objectType = eObject_Scene;
 			render->graphicsPipeline.minorType = eGraphicsPipeLine_none;
-
+			render->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
 			AST->setGraphicsShader(render->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
 			render->graphicsPipeline.shader = &render->graphicsShader;
 
