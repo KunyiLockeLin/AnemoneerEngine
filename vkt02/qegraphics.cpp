@@ -438,8 +438,6 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 
 	render->frameBuffers.resize(size1);
 	render->commandBuffers.resize(size1);
-	render->commandBeginInfos.resize(size1);
-	render->renderPassInfos.resize(size1);
 
 	render->semaphore = VK->createSyncObjectSemaphore();
 	addNewViewport(size);
@@ -531,6 +529,13 @@ void QeGraphics::cleanupRender() {
 
 void QeGraphics::updateDrawCommandBuffers() {
 
+	VkCommandBufferBeginInfo beginInfo = {};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+	VkRenderPassBeginInfo renderPassInfo = {};
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+
 	int size = int(renders.size());
 	for (int i = 0; i<size ; ++i) {
 
@@ -558,13 +563,15 @@ void QeGraphics::updateDrawCommandBuffers() {
 			if (render->subpassNum > 1)
 				clearValues[3].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
 		}
+		
+		renderPassInfo.renderPass = render->renderPass;
+		renderPassInfo.renderArea = render->scissor;
+		renderPassInfo.clearValueCount = uint32_t(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
 
 		for (size_t j = 0; j < size1; ++j) {
-			//VkCommandBufferBeginInfo beginInfo = {};
-			render->commandBeginInfos[j].sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-			//render->commandBeginInfos[j].flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-			vkBeginCommandBuffer(render->commandBuffers[j], &render->commandBeginInfos[j]);
+		
+			vkBeginCommandBuffer(render->commandBuffers[j], &beginInfo);
 
 			// pushConstants
 			VK->updatePushConstnats(render->commandBuffers[j]);
@@ -572,15 +579,9 @@ void QeGraphics::updateDrawCommandBuffers() {
 			//compute shader
 			OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
 			
-			//VkRenderPassBeginInfo renderPassInfo = {};
-			render->renderPassInfos[j].sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			render->renderPassInfos[j].renderPass = render->renderPass;
-			render->renderPassInfos[j].renderArea = render->scissor;
-			render->renderPassInfos[j].clearValueCount = uint32_t(clearValues.size());
-			render->renderPassInfos[j].pClearValues = clearValues.data();
-			render->renderPassInfos[j].framebuffer = render->frameBuffers[j];
+			renderPassInfo.framebuffer = render->frameBuffers[j];
 
-			vkCmdBeginRenderPass(render->commandBuffers[j], &render->renderPassInfos[j], VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			size_t size2 = render->viewports.size();
 			for (size_t k = 0; k < size2; ++k) {

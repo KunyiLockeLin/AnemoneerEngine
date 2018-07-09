@@ -36,12 +36,10 @@ struct QeDataRender {
 	QeVKImage colorImage, depthStencilImage, multiSampleColorImage, multiSampleDepthStencilImage;
 	std::vector<VkFramebuffer> frameBuffers;
 
-	std::vector<VkCommandBufferBeginInfo> commandBeginInfos;
 	std::vector<VkCommandBuffer> commandBuffers;
 	VkSemaphore semaphore = VK_NULL_HANDLE;
 	
 	VkRenderPass renderPass;
-	std::vector<VkRenderPassBeginInfo> renderPassInfos;
 
 	int subpassNum;
 	QeAssetGraphicsShader graphicsShader;
