@@ -37,6 +37,8 @@
 # ToDoList:
   - study 
     - https://github.com/SaschaWillems/Vulkan 
+  - release memory
+  - check return
 ---
   - ui
   - bounding Box and sphere
