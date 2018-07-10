@@ -36,12 +36,14 @@
 
 # ToDoList:
   - study 
-    - https://github.com/SaschaWillems/Vulkan 
+    - https://github.com/SaschaWillems/Vulkan
+    - https://learnopengl.com/
+    - https://learnopengl-cn.github.io/
+  - HDR, PBR, Shadow,
+  - text render, UI, bounding box & sphere, ray 
   - release memory
   - check return
 ---
-  - ui
-  - bounding Box and sphere
   - collision
   - Terrain system
   - parallel programming for collision and physical
@@ -50,11 +52,9 @@
   - convert the whole assets into a single binary data
 ---
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
-  - HDR
   - frustum Culling
   - Dynamic Decals
   - specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
-  - shadow
   - mix animation
   - room
   - C-style
@@ -64,7 +64,6 @@
   - machine learning for performance
   
 # Bug
-  - x, y, z axis are not correct.
   - release mode crash
   
 # Reference:
