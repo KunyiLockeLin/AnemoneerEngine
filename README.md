@@ -10,7 +10,7 @@
   - scene 28002 - paritcle(compute shader)
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28002.gif)
     
-  - scene 28003 - post-processing, show noraml & mesh 
+  - scene 28003 - post-processing, show noraml & mesh, change scene
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28003.gif)
     
   - mutli-viewports                   
@@ -42,7 +42,7 @@
       - "showmesh" : switch between mesh mode and model mode.
       - "shownormal" : switch if drawing normal or not.
       - "resetcamera" : Initialize the camera.
-      - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has 28000, 28001, 28002, 28003.
+      - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # config.xml:
 
