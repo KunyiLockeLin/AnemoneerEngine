@@ -1,15 +1,24 @@
 # QueenEngine
   - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0
   
+  -scene 28000 - mulit-render, outline(stencil buffer)
     ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28000.gif)
+  
+  -scene 28000 - cubemap, skeletal animation, attach obj
     ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28001.gif)
+    
+  -scene 28001 - paritcle(compute shader)
     ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28002.gif)
+    
+  -scene 28002 - post-processing, show noraml & mesh 
     ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28003.gif)
+    
+  - mutli-viewports
     ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/viewport.gif)
     
 # Feature:
   - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
-  - Support mutli-viewports, post-processing(front-cull).
+  - Support mutli-viewports, post-processing.
   - Support light and camera control.
   - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
