@@ -42,7 +42,7 @@
       - "showmesh" : switch between mesh mode and model mode.
       - "shownormal" : switch if drawing normal or not.
       - "resetcamera" : Initialize the camera.
-      - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the same scene. In config.xml, it has 28000, 28001, 28002, 28003.
+      - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # config.xml:
 
