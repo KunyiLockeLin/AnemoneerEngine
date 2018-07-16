@@ -241,6 +241,8 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append("/");
 	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS"));
 	windowTitle.append(" render fps");
+	windowTitle.append(" - scene ");
+	windowTitle.append(std::to_string(ACT->eid));
 	return windowTitle;
 }
 
