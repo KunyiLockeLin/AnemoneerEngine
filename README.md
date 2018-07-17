@@ -45,6 +45,7 @@
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # config.xml:
+  - lots of setting.......
 
 # ToDoList:
   - study 
@@ -59,10 +60,10 @@
   - bounding box & sphere, ray, collision
   - Terrain system
   - parallel programming for collision and physical
-  - physical
   - select object
   - convert the whole assets into a single binary data
 ---
+  - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - frustum Culling
   - Dynamic Decals
