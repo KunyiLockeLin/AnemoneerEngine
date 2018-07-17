@@ -52,11 +52,11 @@
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
   - HDR, PBR, Shadow,
-  - text render, UI, bounding box & sphere, ray 
+  - text render, UI 
   - release memory
   - check return
 ---
-  - collision
+  - bounding box & sphere, ray, collision
   - Terrain system
   - parallel programming for collision and physical
   - physical
