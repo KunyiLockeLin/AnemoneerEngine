@@ -10,7 +10,7 @@
   - scene 28002 - paritcle(compute shader)
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28002.gif)
     
-  - scene 28003 - post-processing(gray level), show noraml & mesh, change scene
+  - scene 28003 - post-processing(grayscale), show noraml & mesh, change scene
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28003.gif)
     
   - mutli-viewports                   
