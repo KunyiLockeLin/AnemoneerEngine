@@ -10,7 +10,7 @@
   - scene 28002 - paritcle(compute shader)
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28002.gif)
     
-  - scene 28003 - post-processing, show noraml & mesh, change scene
+  - scene 28003 - post-processing(grayscale), show noraml & mesh, change scene
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28003.gif)
     
   - mutli-viewports                   
@@ -21,8 +21,8 @@
   - Support mutli-viewports, post-processing.
   - Support light and camera control.
   - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
-  - Support ~~Phong shading~~ and PBR(Physically-Based Rendering)
-  - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
+  - Support ~~Phong shading~~ and PBR(Physically-Based Rendering).     
+  - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines, billboards, particle system.
   - Support draw mulit-render, outline(stencil buffer) and multisample anti-aliasing(MASS)
   - Support Log output, and command.
@@ -45,6 +45,7 @@
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # config.xml:
+  - lots of setting.......
 
 # ToDoList:
   - study 
@@ -52,17 +53,17 @@
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
   - HDR, PBR, Shadow,
-  - text render, UI, bounding box & sphere, ray 
+  - text render, UI 
   - release memory
   - check return
 ---
-  - collision
+  - bounding box & sphere, ray, collision
   - Terrain system
   - parallel programming for collision and physical
-  - physical
   - select object
   - convert the whole assets into a single binary data
 ---
+  - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - frustum Culling
   - Dynamic Decals
