@@ -9,7 +9,7 @@
   <glfw>0</glfw>
   <glm>0</glm>
   <gli>0</gli>
-  <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
+  <envir renderFPS="30" computeFPS="30" width="960" height="540" />
   <webenvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   <msaa>1</msaa>
