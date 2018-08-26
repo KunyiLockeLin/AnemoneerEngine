@@ -290,7 +290,9 @@ void QeGraphics::drawFrame() {
 		else 
 			submitInfo.pCommandBuffers = &render->commandBuffers[0];
 
-		result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, fences[currentFrame]);
+		result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		//result = vkQueueSubmit(VK->graphicsQueue, 1, &submitInfo, fences[currentFrame]);
+
 		if (result != VK_SUCCESS)	LOG("failed to submit draw command buffer! " + result);
 	}
 

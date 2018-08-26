@@ -29,7 +29,7 @@ bool QeLog::isOutput()	{	return (mode == eModeOutput || mode == eModeConsoleOutp
 
 void QeLog::print(std::string& msg) {
 
-	if (mode == eModeNoDebug) return;
+	if (this == nullptr || mode == eModeNoDebug) return;
 
 	time_t rawtime;
 	struct tm timeinfo;
