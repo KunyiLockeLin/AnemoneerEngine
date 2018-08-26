@@ -56,6 +56,7 @@
   - text render, UI 
   - release memory
   - check return
+  - https://msdn.microsoft.com/en-us/library/windows/desktop/bb204633(v=vs.85).aspx
 ---
   - bounding box & sphere, ray, collision
   - Terrain system
