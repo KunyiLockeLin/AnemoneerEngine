@@ -198,6 +198,7 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.geometryShader = VK_TRUE;
 	deviceFeatures.tessellationShader = VK_TRUE;
 	deviceFeatures.sampleRateShading = VK_TRUE;
+	deviceFeatures.wideLines = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -568,7 +569,7 @@ VkPipelineLayout QeVulkan::createPipelineLayout() {
 		VkPushConstantRange push_constant_range = {};
 		push_constant_range.stageFlags = VK_SHADER_STAGE_ALL;
 		push_constant_range.offset = 0;
-		push_constant_range.offset = PUSH_CONSTANTS_SIZE * sizeof(float);
+		push_constant_range.size = PUSH_CONSTANTS_SIZE * sizeof(float);
 		pushConstants.resize(PUSH_CONSTANTS_SIZE);
 		pipelineLayoutInfo.pPushConstantRanges = &push_constant_range;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
