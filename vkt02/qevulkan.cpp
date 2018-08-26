@@ -1491,7 +1491,7 @@ VkShaderModule QeVulkan::createShaderModel(void* data, VkDeviceSize size) {
 	return shader;
 }
 
-void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
+/*void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -1569,7 +1569,7 @@ void QeVulkan::generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeigh
 		1, &barrier);
 
 	endSingleTimeCommands(commandBuffer);
-}
+}*/
 
 void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
 
@@ -1712,7 +1712,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		break;
 
 	case eImage_2D:
-		usage = VK_IMAGE_USAGE_SAMPLED_BIT; // VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT; // VK_BUFFER_USAGE_TRANSFER_SRC_BIT
 		bSampler = true;
 		break;
 

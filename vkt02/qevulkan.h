@@ -291,7 +291,7 @@ public:
 	VkPipeline createGraphicsPipeline(QeDataGraphicsPipeline* data);
 	VkPipeline createComputePipeline(VkShaderModule shader);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
-	void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
+	//void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 	
 	void createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
 	void setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
