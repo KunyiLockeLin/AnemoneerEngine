@@ -112,10 +112,13 @@ struct QeDataDescriptorSetModel {
 	//VkSampler	diffueMapSamplers = VK_NULL_HANDLE;
 	VkImageView baseColorMapImageView = VK_NULL_HANDLE;
 	VkSampler	baseColorMapSampler = VK_NULL_HANDLE;
+
 	VkImageView cubeMapImageView = VK_NULL_HANDLE;
 	VkSampler	cubeMapSampler = VK_NULL_HANDLE;
+
 	VkImageView normalMapImageView = VK_NULL_HANDLE;
 	VkSampler	normalMapSampler = VK_NULL_HANDLE;
+
 	VkImageView shadowMapImageView = VK_NULL_HANDLE;
 	VkSampler	shadowMapSampler = VK_NULL_HANDLE;
 

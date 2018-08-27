@@ -4,7 +4,7 @@
 
 
 layout( set = layoutSet_Model, binding = Model_image + 0) uniform sampler2D	baseColorMapSampler;
-layout( set = layoutSet_Model, binding = Model_image + 1) uniform samplerCube	cubeMapSampler;
+layout( set = layoutSet_Model, binding = Model_image + 1) uniform samplerCube cubeMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 2) uniform sampler2D	normalMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 3) uniform sampler2D	shadowMapSampler;
 

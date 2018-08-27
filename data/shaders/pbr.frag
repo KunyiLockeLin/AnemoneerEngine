@@ -104,20 +104,4 @@ void main() {
 	vec3 gamma = vec3(1.0/2.2);
 	//outColor = vec4(pow(color,gamma), baseColor.a);
 	outColor = vec4(pow(color,gamma), baseColor.a)*baseColor.a;
-
-	// cubemap
-	if(modelData.param.x == 0) return;
-
-	vec3 view_vector =  normalize(inPostion - environmentData.camera.pos.xyz);
-  
-	float angle = smoothstep( 0.3, 0.7, dot( normalize( -view_vector ), n ) );
-  
-	vec3 reflect_vector = reflect( view_vector, n );
-	vec4 reflect_color = texture( cubeMapSampler, reflect_vector );
-  
-	vec3 refrac_vector = refract( view_vector, n, 0.3 );
-	vec4 refract_color = texture( cubeMapSampler, refrac_vector );
-  
-	vec4 cubemapColor = mix( reflect_color, refract_color, angle );
-	outColor =  mix( outColor, cubemapColor, 0.7 );
 }
