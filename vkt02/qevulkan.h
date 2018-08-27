@@ -243,7 +243,8 @@ public:
 	VkDescriptorPool descriptorPool;
 	VkPipelineLayout pipelineLayout;
 	VkCommandPool commandPool;
-	
+	VkCommandBuffer tempCommandBuffer = VK_NULL_HANDLE;
+
 	void createInstance();
 	void setupDebugCallback();
 	void pickPhysicalDevice();
@@ -268,7 +269,7 @@ public:
 	//bool hasStencilComponent(VkFormat format);
 
 	VkCommandBuffer beginSingleTimeCommands();
-	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+	void endSingleTimeCommands(VkCommandBuffer commandBuffer );
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
@@ -296,8 +297,8 @@ public:
 	
 	void createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
 	void setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
-	void createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, VkSampleCountFlagBits sampleCount= VK_SAMPLE_COUNT_1_BIT);
-	void setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, uint8_t layer );
-	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, int layer = 0, uint32_t mipLevels = 1);
-	void copyBufferToImage(VkBuffer buffer, VkImage image, VkExtent2D& imageSize, int layer);
+	void createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize, VkFormat format, void* data, VkSampleCountFlagBits sampleCount= VK_SAMPLE_COUNT_1_BIT);
+	void setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize, VkFormat format, void* data);
+	void transitionImageLayout(VkCommandBuffer commandBuffer, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, int layer = 0, uint32_t mipLevels = 1);
+	void copyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer buffer, VkImage image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize);
 };

@@ -1133,7 +1133,11 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 	if(bCubeMap) image = new QeVKImage(eImage_cube);
 	else		 image = new QeVKImage(eImage_2D);
 	//image->sampler = VK->createTextureSampler();
+
 	std::vector<std::string> imageList;
+	VkExtent2D imageSize;
+	VkDeviceSize imageDataSize;
+	std::vector<unsigned char> imageDatas;
 
 	if (bCubeMap) {
 		/*
@@ -1150,14 +1154,13 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	int size = int(imageList.size());
 	int cIndex = int(ret - _filePath.c_str());
+	std::vector<unsigned char> data;
+	int width, height, bytes;
 
 	for (int i = 0;i<size; ++i) {
 		std::string path(_filePath);
 		path.insert(cIndex, imageList[i]);
 		std::vector<char> buffer = loadFile(path.c_str());
-
-		std::vector<unsigned char> data;
-		int width, height, bytes;
 
 		switch (type) {
 		case 0:
@@ -1172,14 +1175,19 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 		}
 		if (bytes != 4)	imageFillto32bits(&data, bytes);
 
-		uint32_t mipLevels = 1;// static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+		//uint32_t mipLevels = 1;// static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 
 		//VK->createImageData((void*)data.data(), format, data.size(), width, height, image->image, image->memory, i, bCubeMap);
-		VkExtent2D imageSize = { uint32_t(width), uint32_t(height) };
-		if(i == 0)	VK->createImage(*image, data.size(), imageSize, format, (void*)data.data());
-		else		VK->setMemoryImage(*image, data.size(), imageSize, format, (void*)data.data(), i);
+		
+		imageDatas.insert(imageDatas.end(), data.begin(), data.end());
+		//if(i == 0)	VK->createImage(*image, data.size(), imageSize, format, (void*)data.data());
+		//else		VK->setMemoryImage(*image, data.size(), imageSize, format, (void*)data.data(), i);
 	}
 	//image->view = VK->createImageView(image->image, format, VK_IMAGE_ASPECT_COLOR_BIT, bCubeMap, mipLevels);
+	imageSize = { uint32_t(width), uint32_t(height) };
+	imageDataSize = data.size();
+	
+	VK->createImage(*image, imageDataSize, size, imageSize, format, (void*)imageDatas.data());
 
 	astTextures[_filePath] = image;
 

@@ -334,7 +334,7 @@ void QeGraphics::refreshRender() {
 
 			if (render->subpassNum > 1) {
 				render->colorImage.type = eImage_inputAttach;
-				VK->createImage(render->colorImage, 0, render->scissor.extent, swapchain.format, nullptr);
+				VK->createImage(render->colorImage, 0, 1, render->scissor.extent, swapchain.format, nullptr);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->colorImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
@@ -345,21 +345,21 @@ void QeGraphics::refreshRender() {
 		else if (i == eRender_color) {
 			render->renderPass = VK->createRenderPass(VK_FORMAT_R8G8B8A8_UNORM, render->subpassNum, eRender_color);
 			render->colorImage.type = eImage_render;
-			VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 
 			render->depthStencilImage.type = eImage_depthStencil;
 		}
 		render->graphicsPipeline.renderPass = render->renderPass;
-		VK->createImage(render->depthStencilImage, 0, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
+		VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
 
 		if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 
 			if(i== eRender_main)
-				VK->createImage(render->multiSampleColorImage, 0, render->scissor.extent, swapchain.format, nullptr, sampleCount);
+				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, swapchain.format, nullptr, sampleCount);
 			else
-				VK->createImage(render->multiSampleColorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr, sampleCount);
+				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr, sampleCount);
 
-			VK->createImage(render->multiSampleDepthStencilImage, 0, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+			VK->createImage(render->multiSampleDepthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
 		}
 
 		render->scissor.offset = { 0, 0 };
