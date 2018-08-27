@@ -322,7 +322,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 	if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
 		attachments.resize(subpassNum + 1);
 
-		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[0].format = format;
 		attachments[0].samples = VP->sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -346,13 +346,13 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[1].samples = VP->sampleCount;
 		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 		if (subpassNum == 2) {
-			attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			//attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 			attachments[2].format = format;
 			attachments[2].samples = VP->sampleCount;
 			attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -366,7 +366,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 	else {
 		attachments.resize(subpassNum+3);
 
-		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[0].format = format;
 		attachments[0].samples = VP->sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -376,7 +376,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[0].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		attachments[1].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		//attachments[1].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[1].format = format;
 		attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -398,7 +398,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 			attachments[1].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		}
 
-		attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		//attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[2].format = findDepthStencilFormat();
 		attachments[2].samples = VP->sampleCount;
 		attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -408,7 +408,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[2].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[2].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-		attachments[3].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		//attachments[3].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[3].format = findDepthStencilFormat();
 		attachments[3].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[3].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -419,7 +419,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[3].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 		if (subpassNum == 2) {
-			attachments[4].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			//attachments[4].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 			attachments[4].format = format;
 			attachments[4].samples = VK_SAMPLE_COUNT_1_BIT;
 			attachments[4].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -1057,6 +1057,8 @@ void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
 	allocInfo.pSetLayouts = &descriptorSetLayouts[descriptorSet.type];
 
 	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet.set) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
+
+	descriptorSet.bRender = false;
 }
 
 void QeVulkan::createDescriptorPool() {
@@ -1466,11 +1468,13 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
 
 					VkDescriptorImageInfo imgInfo;
-					if(combineSamplerCount<4)
-						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-					else
+					if (combineSamplerCount < 4) {
+						if(descriptorSet.bRender)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+						else						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+					}
+					else {
 						imgInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-
+					}
 					imgInfo.imageView = *(VkImageView*)(pos);
 					imgInfo.sampler = *(VkSampler*)(pos + sizeof(VkSampler));
 					imgInfos.push_back(imgInfo);
@@ -1737,7 +1741,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		break;
 
 	case eImage_inputAttach:
-		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
+		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		break;
 
 	case eImage_swapchain:

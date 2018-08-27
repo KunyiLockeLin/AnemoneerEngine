@@ -76,12 +76,13 @@ enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Model = 0,
 	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
-	eDescriptorSetLayout_render = 3,
+	//eDescriptorSetLayout_render = 3,
 };
 
 struct QeDataDescriptorSet {
 	QeDescriptorSetLayoutType type;
 	VkDescriptorSet set= VK_NULL_HANDLE;
+	bool bRender = false;
 
 	QeDataDescriptorSet(QeDescriptorSetLayoutType _type) :type(_type) {}
 	~QeDataDescriptorSet();

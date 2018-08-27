@@ -13,6 +13,7 @@ void QeRender::init(QeAssetXML* _property, int _parentOID) {
 
 QeDataDescriptorSetModel QeRender::createDescriptorSetModel() {
 
+	descriptorSet.bRender = true;
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	QeDataRender* render = VP->getRender(eRender_color, cameraOID, renderSize);
