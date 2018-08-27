@@ -332,7 +332,7 @@ void QeGraphics::refreshRender() {
 
 			if (render->subpassNum > 1) {
 				render->colorImage.type = eImage_inputAttach;
-				VK->createImage(render->colorImage, 0, render->scissor.extent, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+				VK->createImage(render->colorImage, 0, render->scissor.extent, swapchain.format, nullptr);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->colorImage.view;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
@@ -547,7 +547,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 		// graphics shader
 		std::vector<VkClearValue> clearValues;
 
-		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+		if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
 			clearValues.resize(render->subpassNum + 1);
 
 			clearValues[0].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
