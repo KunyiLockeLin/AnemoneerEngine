@@ -1706,7 +1706,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		break;
 
 	case eImage_inputAttach:
-		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT; // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
+		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
 		break;
 
 	case eImage_swapchain:
@@ -1738,9 +1738,6 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		if (format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
 		bSampler = true;
 		break;
-	//case eImage_inputAttach:
-	//	usage = ;
-	//	break;
 	}
 
 	// image
