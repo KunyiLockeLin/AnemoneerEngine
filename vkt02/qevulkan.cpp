@@ -37,7 +37,7 @@ QeVKImage::~QeVKImage(){
 
 QeDataDescriptorSet::~QeDataDescriptorSet() {
 	if (set) {
-		vkFreeDescriptorSets(VK->device, VK->descriptorPool, 1, &set);
+		//vkFreeDescriptorSets(VK->device, VK->descriptorPool, 1, &set);
 		set = VK_NULL_HANDLE;
 	}
 }
@@ -1074,7 +1074,7 @@ void QeVulkan::createDescriptorPool() {
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+	//poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.maxSets = MAX_DESCRIPTOR_NUM;
