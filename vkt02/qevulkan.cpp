@@ -687,7 +687,7 @@ VkFormat QeVulkan::findDepthStencilFormat() {
 	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT || format == VK_FORMAT_D16_UNORM_S8_UINT;
 }*/
 
-void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
+void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, int layer, uint32_t mipLevels) {
 	
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -708,7 +708,7 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 
 	barrier.subresourceRange.baseMipLevel = 0;
 	barrier.subresourceRange.levelCount = mipLevels;//1;
-	barrier.subresourceRange.baseArrayLayer = 0;
+	barrier.subresourceRange.baseArrayLayer = layer;
 	barrier.subresourceRange.layerCount = 1;
 	VkPipelineStageFlags sourceStage;
 	VkPipelineStageFlags destinationStage;
@@ -725,17 +725,9 @@ void QeVulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
 		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 	}
-	else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED ) {
-		barrier.srcAccessMask = 0;
-		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-	}
 	else	LOG("unsupported layout transition!");
 
 	if ( newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-	}
-	else if ( newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
 		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 	}
@@ -1758,7 +1750,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		createFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 		arrayLayer = 6;
 		viewType = VK_IMAGE_VIEW_TYPE_CUBE;
-		usage =  VK_IMAGE_USAGE_SAMPLED_BIT;
+		usage =  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		bSampler = true;
 		break;
 
@@ -1823,7 +1815,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 		viewInfo.subresourceRange.baseMipLevel = 0;
 		viewInfo.subresourceRange.levelCount = mipLevels;// VK_REMAINING_MIP_LEVELS;
 		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;// VK_REMAINING_ARRAY_LAYERS;
+		viewInfo.subresourceRange.layerCount = arrayLayer;// VK_REMAINING_ARRAY_LAYERS;
 
 		if (vkCreateImageView(device, &viewInfo, nullptr, &image.view) != VK_SUCCESS) LOG("failed to create texture image view!");
 	}
@@ -1859,7 +1851,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& 
 }
 
 
-void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, uint8_t layer) {
+void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2D& imageSize, VkFormat format, void* data, uint8_t layer ) {
 
 	if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
 
@@ -1867,8 +1859,13 @@ void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, VkExtent2
 	QeVKBuffer staging(eBuffer);
 	createBuffer(staging, dataSize, data);
 
-	transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
-	//transitionImageLayout(image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	if (layer==0) {
+		transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, layer, mipLevels);
+		//transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+	}
+	else {
+		transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, layer, mipLevels);
+	}
 
 	copyBufferToImage(staging.buffer, image.image, imageSize, layer);
 	//generateMipmaps(image, width, height, mipLevels);
