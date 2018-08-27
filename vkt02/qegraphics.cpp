@@ -5,8 +5,11 @@ QeGraphics ::~QeGraphics() {
 	cleanupRender();
 
 	size_t size = fences.size();
-	for (size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++) {
+		vkWaitForFences(VK->device, 1, &fences[i], VK_TRUE, UINT64_MAX);
+		//vkResetFences(VK->device, 1, &fences[i]);
 		vkDestroyFence(VK->device, fences[i], nullptr);
+	}
 	fences.clear();
 
 	vkDestroySemaphore(VK->device, renderCompleteSemaphore, nullptr);
@@ -211,7 +214,6 @@ void QeGraphics::updateBuffer() {
 
 void QeGraphics::updateCompute(float time) {
 	if (bRecreateRender) {
-		vkDeviceWaitIdle(VK->device);
 
 		cleanupRender();
 
