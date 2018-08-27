@@ -238,9 +238,6 @@
     <None Include="..\data\shaders\header.tese">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\header.vert">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\texturem.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
@@ -266,6 +263,12 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="..\data\shaders\cubemapreflect.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\headerIn.vert">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\headerOut.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>

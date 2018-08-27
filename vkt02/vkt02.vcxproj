@@ -230,7 +230,8 @@
     <None Include="..\data\shaders\header.glsl" />
     <None Include="..\data\shaders\header.tesc" />
     <None Include="..\data\shaders\header.tese" />
-    <None Include="..\data\shaders\header.vert" />
+    <None Include="..\data\shaders\headerIn.vert" />
+    <None Include="..\data\shaders\headerOut.vert" />
     <None Include="..\data\shaders\line.geom" />
     <None Include="..\data\shaders\outline.geom" />
     <None Include="..\data\shaders\particle.comp" />

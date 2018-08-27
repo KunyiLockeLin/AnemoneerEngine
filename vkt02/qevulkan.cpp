@@ -1215,7 +1215,8 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f;
-	rasterizer.depthBiasClamp = 1.0f;
+	//rasterizer.depthBiasClamp = 1.0f;
+	rasterizer.depthBiasClamp = 0.0f;
 	rasterizer.depthBiasSlopeFactor = 0.0f;
 	rasterizer.lineWidth = 1.0f;
 
@@ -1301,8 +1302,9 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	colorBlending.blendConstants[3] = 1.0f;
 
 	std::array<VkDynamicState,2> dynamicStates = {
-		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_SCISSOR
+		VK_DYNAMIC_STATE_VIEWPORT
+		,VK_DYNAMIC_STATE_SCISSOR
+		//,VK_DYNAMIC_STATE_DEPTH_BIAS
 		//,VK_DYNAMIC_STATE_LINE_WIDTH
 	};
 
