@@ -50,6 +50,7 @@
 # ToDoList:
   - study 
     - https://github.com/SaschaWillems/Vulkan
+    - https://github.com/PacktPublishing/Vulkan-Cookbook
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
   - HDR, PBR, Shadow,
