@@ -347,7 +347,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[1].samples = VP->sampleCount;
 		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -404,7 +404,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[2].samples = VP->sampleCount;
 		attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[2].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[2].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[2].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[2].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -414,7 +414,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[3].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[3].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		attachments[3].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		attachments[3].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[3].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[3].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[3].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		attachments[3].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
