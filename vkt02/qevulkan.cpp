@@ -1224,6 +1224,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		break;
 	case eGraphicsPipeLine_stencilBuffer:
+		cullMode = VK_CULL_MODE_NONE;
 		break;
 	}
 
@@ -1292,28 +1293,25 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		depthStencil.front = depthStencil.back;
 		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
 
-		//if (data->bStencilBuffer) {
-			depthStencil.stencilTestEnable = VK_TRUE;
+		depthStencil.stencilTestEnable = VK_TRUE;
 
-			depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
-			depthStencil.back.failOp = VK_STENCIL_OP_REPLACE;
-			depthStencil.back.depthFailOp = VK_STENCIL_OP_REPLACE;
+		depthStencil.back.compareOp = VK_COMPARE_OP_ALWAYS;
+		depthStencil.back.failOp = VK_STENCIL_OP_REPLACE;
+		depthStencil.back.depthFailOp = VK_STENCIL_OP_REPLACE;
+		depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
+		depthStencil.back.compareMask = 0xff;
+		depthStencil.back.writeMask = 0xff;
+		depthStencil.back.reference = 1;
+		depthStencil.front = depthStencil.back;
+
+		if (data->minorType == eGraphicsPipeLine_stencilBuffer) {
+			depthStencil.depthTestEnable = VK_FALSE;
+			depthStencil.back.compareOp = VK_COMPARE_OP_NOT_EQUAL;
+			depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
+			depthStencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
 			depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
-			depthStencil.back.compareMask = 0xff;
-			depthStencil.back.writeMask = 0xff;
-			depthStencil.back.reference = 1;
 			depthStencil.front = depthStencil.back;
-
-			if (data->minorType == eGraphicsPipeLine_stencilBuffer) {
-				rasterizer.cullMode = VK_CULL_MODE_NONE;
-				depthStencil.depthTestEnable = VK_FALSE;
-				depthStencil.back.compareOp = VK_COMPARE_OP_NOT_EQUAL;
-				depthStencil.back.failOp = VK_STENCIL_OP_KEEP;
-				depthStencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
-				depthStencil.back.passOp = VK_STENCIL_OP_REPLACE;
-				depthStencil.front = depthStencil.back;
-			}
-		//}
+		}
 	}
 	else {
 		depthStencil.depthTestEnable = VK_FALSE;
@@ -1346,7 +1344,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	colorBlending.blendConstants[2] = 1.0f;
 	colorBlending.blendConstants[3] = 1.0f;
 
-	std::array<VkDynamicState,2> dynamicStates = {
+	std::array<VkDynamicState,3> dynamicStates = {
 		VK_DYNAMIC_STATE_VIEWPORT
 		,VK_DYNAMIC_STATE_SCISSOR
 		//,VK_DYNAMIC_STATE_DEPTH_BIAS
@@ -1884,21 +1882,8 @@ void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, int image
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
-	//if (layer==0) {
-		transitionImageLayout(commandBuffer, image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, imageCount/*, mipLevels*/);
-		//endSingleTimeCommands(commandBuffer);
-
-		//transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_PREINITIALIZED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
-	//}
-	/*else {
-		transitionImageLayout(image.image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, layer, mipLevels);
-	}*/
-	//commandBuffer = beginSingleTimeCommands();
+	transitionImageLayout(commandBuffer, image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, imageCount/*, mipLevels*/);
 	copyBufferToImage(commandBuffer, staging.buffer, image.image, dataSize, imageCount, imageSize/*, layer*/);
 	//generateMipmaps(image, width, height, mipLevels);
-	
-	//if (imageCount>0) {
-	//	transitionImageLayout(commandBuffer, image.image, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL/*, layer, mipLevels*/);
-	//}
 	endSingleTimeCommands(commandBuffer);
 }
