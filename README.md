@@ -63,6 +63,8 @@
   - parallel programming for collision and physical
   - select object
   - convert the whole assets into a single binary data
+  - ray tracing
+  - compute shader - clothes & water
 ---
   - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
