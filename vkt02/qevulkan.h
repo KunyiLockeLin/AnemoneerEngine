@@ -302,6 +302,6 @@ public:
 	void setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data);
 	void createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize, VkFormat format, void* data, VkSampleCountFlagBits sampleCount= VK_SAMPLE_COUNT_1_BIT);
 	void setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize, VkFormat format, void* data);
-	void transitionImageLayout(VkCommandBuffer commandBuffer, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, int layer = 0, uint32_t mipLevels = 1);
+	void transitionImageLayout(VkCommandBuffer commandBuffer, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, int imageCount, uint32_t mipLevels = 1);
 	void copyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer buffer, VkImage image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize);
 };
