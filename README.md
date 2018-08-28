@@ -1,5 +1,5 @@
 # QueenEngine
-  - enviroment: Visual Studio 2017, VulkanSDK 1.1.73.0
+  - enviroment: Visual Studio 2017, VulkanSDK 1.1.82.1
   
   - scene 28000 - mulit-render, outline(stencil buffer)
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28000.gif)
