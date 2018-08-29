@@ -1,5 +1,5 @@
 # QueenEngine
-  - enviroment: Visual Studio 2017, VulkanSDK 1.1.82.1
+  - enviroment: Visual Studio 2017, Vulkan API 1.1.82.1
   
   - scene 28000 - mulit-render, outline(stencil buffer)
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28000.gif)
@@ -50,6 +50,7 @@
 # ToDoList:
   - study 
     - https://github.com/SaschaWillems/Vulkan
+    - https://github.com/PacktPublishing/Vulkan-Cookbook
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
   - HDR, PBR, Shadow,
@@ -63,6 +64,8 @@
   - parallel programming for collision and physical
   - select object
   - convert the whole assets into a single binary data
+  - ray tracing
+  - compute shader - clothes & water
 ---
   - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
