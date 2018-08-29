@@ -25,7 +25,7 @@
   - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines, billboards, particle system.
   - Support draw mulit-render, outline(stencil buffer) and multisample anti-aliasing(MASS)
-  - Support Log output, and command.
+  - Support Log output, call stack trace and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
