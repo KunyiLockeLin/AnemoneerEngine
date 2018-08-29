@@ -51,13 +51,13 @@
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
   - HDR, PBR, Shadow, self-shahow   
-  - compute shader - phyical, clothes, water
+  - compute shader - clothes, water
   - ray tracing
 ---
   - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
-  - parallel programming for collision and physical
+  - parallel programming for collision
   - select object
   - convert the whole assets into a single binary data
   - release memory
