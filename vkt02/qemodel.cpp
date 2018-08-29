@@ -429,7 +429,6 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	std::vector<VkDescriptorSet> descriptorSets = getDescriptorSets(command->commonDescriptorSet);
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, uint32_t(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 
-
 	VkDeviceSize offsets[] = { 0 };
 
 	graphicsPipeline.renderPass = command->renderPass;

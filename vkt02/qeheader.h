@@ -3,6 +3,8 @@
 #define NOMINMAX
 
 #include <windows.h>
+#include <process.h>
+#include "dbghelp.h"
 #include <tchar.h> 
 #include <cstdlib> 
 #include <string> 

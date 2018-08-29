@@ -18,7 +18,8 @@ public:
 	QeDebugMode mode = eModeNoDebug;
 	std::string outputPath;
 	void init();
-	void print(std::string& msg);
+	std::string stack(int from, int to);
+	void print(std::string& msg, bool bShowStack=false, int stackLevel=5);
 	bool isDebug();
 	bool isConsole();
 	bool isOutput();

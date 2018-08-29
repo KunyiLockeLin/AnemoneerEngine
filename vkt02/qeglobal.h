@@ -65,5 +65,7 @@ public:
 #define OBJMGR	GLB.objMgr
 #define ENCODE	GLB.encode
 #define DEBUG	GLB.log
-#define LOG(msg) GLB.log->print( std::string("")+msg )
 #define CMD(msg) GLB.command->inputCommand( msg )
+
+#define LOG(msg)	GLB.log->print( std::string("")+msg )
+#define STACK(msg)	GLB.log->print( std::string("")+msg, true)
