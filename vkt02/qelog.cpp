@@ -1,6 +1,12 @@
 #include "qeheader.h"
 
 
+QeLog::~QeLog() {
+	if (ofile.is_open()) {
+		ofile.close();
+	}
+}
+
 void QeLog::init()
 {
 	mode = QeDebugMode(atoi(AST->getXMLValue(2, AST->CONFIG, "debug")));
@@ -14,10 +20,12 @@ void QeLog::init()
 		localtime_s(&timeinfo, &rawtime);
 
 		strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
-		outputPath = AST->getXMLValue(3, AST->CONFIG, "path", "log");
+		std::string outputPath = AST->getXMLValue(3, AST->CONFIG, "path", "log");
 		outputPath += "log";
 		outputPath += buffer;
 		outputPath += ".txt";
+
+		ofile.open(outputPath);
 	}
 }
 
@@ -75,7 +83,7 @@ void QeLog::print(std::string& msg, bool bShowStack, int stackLevel) {
 	time(&rawtime);
 	localtime_s(&timeinfo, &rawtime);
 
-	strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S: ", &timeinfo);
+	strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S ", &timeinfo);
 	std::string s = buffer;
 	s += msg;
 	
@@ -84,18 +92,10 @@ void QeLog::print(std::string& msg, bool bShowStack, int stackLevel) {
 	if (isConsole())		std::cout << s.c_str() << std::endl;
 	if (isOutput()) {
 
-		std::fstream ffile(outputPath);
-		if (ffile.is_open()) {
-			ffile.seekg(0, ffile.end);
-			ffile << s << std::endl;
-			ffile.close();
-		}
-		else {
-			std::ofstream ofile(outputPath);
-			if (ofile.is_open()) {
-				ofile << s << std::endl;
-				ofile.close();
-			}
-		}
+		//if (ofile.is_open()) {
+			//ofile.seekp(ofile.beg);
+			ofile << s << std::endl;
+			//ofile.flush();
+		//}
 	}
 }

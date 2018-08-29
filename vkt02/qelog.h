@@ -13,15 +13,15 @@ class QeLog
 {
 public:
 	QeLog(QeGlobalKey& _key) {}
-	~QeLog() {}
+	~QeLog();
 
 	QeDebugMode mode = eModeNoDebug;
-	std::string outputPath;
+	std::ofstream ofile;
+
 	void init();
 	std::string stack(int from, int to);
-	void print(std::string& msg, bool bShowStack=false, int stackLevel=5);
+	void print(std::string& msg, bool bShowStack=false, int stackLevel=4);
 	bool isDebug();
 	bool isConsole();
 	bool isOutput();
 };
-
