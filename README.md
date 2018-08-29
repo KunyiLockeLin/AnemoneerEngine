@@ -50,19 +50,18 @@
     - https://github.com/PacktPublishing/Vulkan-Cookbook
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
-  - HDR, PBR, Shadow,
-  - text render, UI 
-  - release memory
-  - check return
-  - https://msdn.microsoft.com/en-us/library/windows/desktop/bb204633(v=vs.85).aspx
+  - HDR, PBR, Shadow, self-shahow   
+  - compute shader - phyical, clothes, water
+  - ray tracing
 ---
+  - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
   - parallel programming for collision and physical
   - select object
   - convert the whole assets into a single binary data
-  - ray tracing
-  - compute shader - clothes & water
+  - release memory
+  - check return
 ---
   - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
