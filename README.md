@@ -50,6 +50,7 @@
     - https://github.com/PacktPublishing/Vulkan-Cookbook
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
+    - https://blog.selfshadow.com/
   - HDR, PBR, Shadow, self-shahow   
   - compute shader - clothes, water
   - ray tracing
