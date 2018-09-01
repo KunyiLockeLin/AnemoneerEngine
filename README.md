@@ -1,6 +1,4 @@
-# QueenEngine
-  - enviroment: Visual Studio 2017, Vulkan API 1.1.82.1
-  
+# QueenEngine  
   - scene 28000 - mulit-render, outline(stencil buffer)
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28000.gif)
   
@@ -17,12 +15,11 @@
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/viewport.gif)
     
 # Feature:
-  - Comptuer Graphics's power is by Vulkan API. The window and UI are from WinAPI.
   - Support mutli-viewports, post-processing.
   - Support light and camera control.
   - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering).     
-  - Support diffuse/baseColor map, cubemap & reflection & refraction, normal map.
+  - Support ~~diffuse map,~~ baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines, billboards, particle system.
   - Support draw mulit-render, outline(stencil buffer) and multisample anti-aliasing(MASS)
   - Support Log output, call stack trace and command.
@@ -34,7 +31,7 @@
   - Setting: data/config.xml
   - Input:
     - "esc" : Close the program.
-    - "+" : Add a new viewport. The maximum number of viewport is nine.
+    - "+" : Add a new viewport.
     - "-" : Remove the last viewport.
     - "1"~"9" : Choose a viewport to control its camera.
     - "Up","Down","Left","Right","W","A","S","D","Q","E","Z","C","X","MouseLeftMove","MouseRightMove" : Move the camera.
@@ -53,19 +50,19 @@
     - https://github.com/PacktPublishing/Vulkan-Cookbook
     - https://learnopengl.com/
     - https://learnopengl-cn.github.io/
-  - HDR, PBR, Shadow,
-  - text render, UI 
-  - release memory
-  - check return
-  - https://msdn.microsoft.com/en-us/library/windows/desktop/bb204633(v=vs.85).aspx
+    - https://blog.selfshadow.com/
+  - HDR, PBR, Shadow, self-shahow   
+  - compute shader - clothes, water
+  - ray tracing
 ---
+  - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
-  - parallel programming for collision and physical
+  - parallel programming for collision
   - select object
   - convert the whole assets into a single binary data
-  - ray tracing
-  - compute shader - clothes & water
+  - release memory
+  - check return
 ---
   - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
