@@ -21,3 +21,13 @@ layout(location = 6) in vec3 inLighttoVertex;
 layout(location = 7) in vec3 inUV3;
 
 layout(location = 0) out vec4 outColor;
+
+vec4 getColorFromHDRGammaAlpha( vec3 inColor, float alpha ){
+	// reinhard tone mapping
+    //inColor = inColor / (inColor + vec3(1.0));
+	// Exposure tone mapping
+    inColor = vec3(1.0) - exp(-inColor * environmentData.param.z);
+
+	vec3 gamma = vec3(1.0/environmentData.param.y);
+	return vec4(pow(inColor,gamma), alpha)*alpha;
+}

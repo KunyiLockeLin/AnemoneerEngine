@@ -9,12 +9,14 @@
 #extension GL_GOOGLE_include_directive : enable
 #include "header.frag"
 
+const float c_MinRoughness = 0.04;
+
 void main() {
 	vec4 baseColor1 = texture(baseColorMapSampler, inUV);
 	if( 0.01 > baseColor1.a )	discard;
 
-	float metallic = modelData.mtl.metallicRoughness.x;	
-    float perceptualRoughness = modelData.mtl.metallicRoughness.y;
+	float metallic = modelData.mtl.metallicRoughnessEmissive.x;	
+    float perceptualRoughness = modelData.mtl.metallicRoughnessEmissive.y;
 
 	// need metallicRoughness map
 	perceptualRoughness = clamp(perceptualRoughness, c_MinRoughness, 1.0);
@@ -101,9 +103,7 @@ void main() {
 	// need occlusion map
 	// need emissive map
 
-	vec3 gamma = vec3(1.0/environmentData.param.y);
-	//outColor = vec4(pow(color,gamma), baseColor.a);
-	outColor = vec4(pow(color,gamma), baseColor.a)*baseColor.a;
+	outColor = getColorFromHDRGammaAlpha(color, baseColor.a);
 
 	// cubemap
 	/*if(modelData.param.x == 0) return;

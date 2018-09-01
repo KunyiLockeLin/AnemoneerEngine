@@ -199,6 +199,7 @@ void QeGraphics::updateBuffer() {
 			viewport->environmentData.param.x = float(viewport->lights.size());
 
 			AST->getXMLfValue(&viewport->environmentData.param.y, AST->getXMLNode(1, AST->CONFIG), 1, "gamma");
+			AST->getXMLfValue(&viewport->environmentData.param.z, AST->getXMLNode(1, AST->CONFIG), 1, "exposure");
 
 			VK->setMemoryBuffer(viewport->environmentBuffer,
 				sizeof(viewport->environmentData), &viewport->environmentData);

@@ -1,6 +1,5 @@
 const int MAX_JOINT_NUM = 20;
 const float M_PI = 3.141592653589793;
-const float c_MinRoughness = 0.04;
 
 const int layoutSet_Model = 0;
 const int Model_uniform = 0;
@@ -48,8 +47,7 @@ layout( set = layoutSet_Common, binding = Common_storage + 0 ) buffer QeLight {
 
 struct QeDataMaterial {
 	vec4 baseColor;
-	vec4 metallicRoughness;
-	vec4 emissive;
+	vec4 metallicRoughnessEmissive;
 };
 
 layout( set = layoutSet_Model, binding = Model_uniform + 0) uniform QeDataModel {

@@ -14,6 +14,7 @@
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   <msaa>1</msaa>
   <gamma>2.2</gamma>
+  <exposure>1</exposure>
   
   <default cameraOID="26000">
     <ambientColor r="0" g="0.5" b="0.5"/>
@@ -109,7 +110,7 @@
     </e>
 
     <e eid="28003">
-      <postprocessing frag="grayscalef.spv" param1="1" param2="1"/>
+      <postprocessing frag="grayscalef.spv" param1="1"/>
       <models>
         <e oid="14002" eid="14007" show="1" speed="10" posX="0" posY="0" posZ="0"/>
       </models>
