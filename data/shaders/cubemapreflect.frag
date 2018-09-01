@@ -16,4 +16,6 @@ void main() {
   
 	vec4 cubemapColor = mix( reflect_color, refract_color, angle );
 	outColor =  mix( outColor, cubemapColor, 0.7 );
+
+	outColor = adjustColor(outColor.rgb, 1);
 }

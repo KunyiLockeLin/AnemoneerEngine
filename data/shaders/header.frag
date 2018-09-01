@@ -22,7 +22,8 @@ layout(location = 7) in vec3 inUV3;
 
 layout(location = 0) out vec4 outColor;
 
-vec4 getColorFromHDRGammaAlpha( vec3 inColor, float alpha ){
+// hdr, gamma, alpha
+vec4 adjustColor( vec3 inColor, float alpha ){
 	// reinhard tone mapping
     //inColor = inColor / (inColor + vec3(1.0));
 	// Exposure tone mapping

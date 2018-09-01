@@ -103,7 +103,7 @@ void main() {
 	// need occlusion map
 	// need emissive map
 
-	outColor = getColorFromHDRGammaAlpha(color, baseColor.a);
+	outColor = adjustColor(color, baseColor.a);
 
 	// cubemap
 	/*if(modelData.param.x == 0) return;

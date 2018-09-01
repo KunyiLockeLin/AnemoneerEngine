@@ -9,4 +9,5 @@ void main() {
 	if( 0.01 > texColor.a ) discard;
 
 	outColor = texColor*modelData.mtl.baseColor*texColor.a;
+	outColor = adjustColor(outColor.rgb, texColor.a);
 }

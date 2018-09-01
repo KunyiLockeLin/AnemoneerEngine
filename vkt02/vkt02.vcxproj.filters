@@ -271,6 +271,9 @@
     <None Include="..\data\shaders\headerOut.vert">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\bloom.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

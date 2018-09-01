@@ -5,4 +5,5 @@
 
 void main() {
 	outColor = texture(cubeMapSampler, inUV3);
+	outColor = adjustColor(outColor.rgb, 1);
 }

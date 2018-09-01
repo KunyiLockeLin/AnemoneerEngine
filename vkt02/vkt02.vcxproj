@@ -220,6 +220,7 @@
     <None Include="..\data\shaders\basem.frag" />
     <None Include="..\data\shaders\basev.frag" />
     <None Include="..\data\shaders\billboard.geom" />
+    <None Include="..\data\shaders\bloom.frag" />
     <None Include="..\data\shaders\compile.bat" />
     <None Include="..\data\shaders\cubemap.frag" />
     <None Include="..\data\shaders\cubemapreflect.frag" />

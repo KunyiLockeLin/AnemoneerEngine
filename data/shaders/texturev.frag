@@ -9,4 +9,5 @@ void main() {
 	if( 0.01 > texColor.a ) discard;
 
 	outColor = texColor*vec4(inColor, 1)*texColor.a;
+	outColor = adjustColor(outColor.rgb, texColor.a);
 }

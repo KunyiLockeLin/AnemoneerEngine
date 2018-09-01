@@ -43,4 +43,5 @@ void main() {
 
 	color = vec3(mix(color, vec3(dot(vec3(0.2126,0.7152,0.0722), color)), 0.5f));
 	outColor = vec4(color, texColor.a)*texColor.a;
+	outColor = adjustColor(outColor.rgb, texColor.a);
 }

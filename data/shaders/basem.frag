@@ -4,5 +4,6 @@
 
 
 void main() {
-	outColor = modelData.mtl.baseColor;
+	//outColor = modelData.mtl.baseColor;
+	outColor = adjustColor(modelData.mtl.baseColor.rgb, 1);
 }
