@@ -713,6 +713,7 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 	if (value == nullptr)	mtl.metallicRoughnessEmissive.y = 1.0f;
 	else					mtl.metallicRoughnessEmissive.y = float(atof(value));
 
+	mtl.metallicRoughnessEmissive.z = 1.0f;
 	pMaterial->value = mtl;
 
 	return model;

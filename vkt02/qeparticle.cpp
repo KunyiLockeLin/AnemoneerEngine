@@ -6,7 +6,8 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 
 	particleRule = AST->getParticle(eid);
 	mtlData = AST->getMaterialImage(particleRule->image);
-	
+	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+
 	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "default", "computeShader", "particle"));
 	AST->setGraphicsShader(graphicsShader, nullptr, "particle");
 

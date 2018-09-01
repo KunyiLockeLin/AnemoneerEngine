@@ -7,6 +7,8 @@ void QeCubemap::init(QeAssetXML* _property, int _parentOID) {
 
 	modelData = AST->getModel("cube", true);
 	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"), true);
+	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+
 	bufferData.material = mtlData->value;
 	AST->setGraphicsShader(graphicsShader, editProperty, "cubemap");
 }

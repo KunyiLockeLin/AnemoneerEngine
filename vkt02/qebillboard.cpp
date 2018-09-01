@@ -5,6 +5,8 @@ void QeBillboard::init(QeAssetXML* _property, int _parentOID) {
 
 	QePoint::init(_property, _parentOID);
 	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"));
+	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+
 	bufferData.material = mtlData->value;
 	AST->setGraphicsShader(graphicsShader, editProperty, "billboard");
 }

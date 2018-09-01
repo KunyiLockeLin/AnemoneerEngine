@@ -1088,6 +1088,8 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	//mtl->value.phong.specular = { 1,1,1,1 };
 	//mtl->value.phong.emissive = { 1,1,1,1 };
 	//mtl->value.phong.param = { 1,1,1,1 };
+	mtl->value.metallicRoughnessEmissive = { 1.f,1.f,1.f,1.f };
+
 	if (_filePath.length() == 0) {}
 	else if (bCubeMap)	mtl->image.pCubeMap = AST->getImage(_filename, bCubeMap);
 	else				mtl->image.pBaseColorMap = AST->getImage(_filename, bCubeMap);

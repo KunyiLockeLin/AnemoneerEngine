@@ -193,6 +193,8 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 		if(c)	mtlData = AST->getMaterialImage(c);
 		else	mtlData = AST->getMaterialImage("");
 	}
+	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+
 	bufferData.material = mtlData->value;
 	size *= modelData->scale;
 

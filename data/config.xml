@@ -9,12 +9,12 @@
   <glfw>0</glfw>
   <glm>0</glm>
   <gli>0</gli>
-  <envir renderFPS="30" computeFPS="30" width="960" height="540" />
+  <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
   <webenvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
   <msaa>1</msaa>
   <gamma>2.2</gamma>
-  <exposure>1</exposure>
+  <exposure>1.0</exposure>
   
   <default cameraOID="26000">
     <ambientColor r="0" g="0.5" b="0.5"/>
@@ -29,7 +29,7 @@
     <lights>
       <e oid="27000" type="0" posX="7" posY="0" posZ="3" centerX="0" centerY="0" centerZ="3" axisX="0" axisY="1" axisZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="1" b="1" intensity="300" coneAngle="90" speed="30">
         <attachs>
-          <e oid="11000" eid="11000" show="1" followPos="1" scaleX="1" scaleY="1" followColor="1"/>
+          <e oid="11000" eid="11000" show="1" followPos="1" scaleX="1" scaleY="1" followColor="1" emissive="10.0"/>
         </attachs>
       </e>
     </lights>
@@ -53,7 +53,7 @@
     </computeShader>
   </default>
   
-  <startScene>28000</startScene>
+  <startScene>28001</startScene>
   
   <scenes>
     <e eid="28000" cameraOID="26000">
