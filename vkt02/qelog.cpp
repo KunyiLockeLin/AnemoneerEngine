@@ -10,23 +10,6 @@ QeLog::~QeLog() {
 void QeLog::init()
 {
 	mode = QeDebugMode(atoi(AST->getXMLValue(2, AST->CONFIG, "debug")));
-
-	if (isOutput()) {
-		time_t rawtime;
-		struct tm timeinfo;
-		char buffer[128];
-
-		time(&rawtime);
-		localtime_s(&timeinfo, &rawtime);
-
-		strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
-		std::string outputPath = AST->getXMLValue(3, AST->CONFIG, "path", "log");
-		outputPath += "log";
-		outputPath += buffer;
-		outputPath += ".txt";
-
-		ofile.open(outputPath);
-	}
 }
 
 bool QeLog::isDebug()	{	return mode == eModeNoDebug ? false : true;	}
@@ -91,11 +74,25 @@ void QeLog::print(std::string& msg, bool bShowStack, int stackLevel) {
 
 	if (isConsole())		std::cout << s.c_str() << std::endl;
 	if (isOutput()) {
+		
+		if (!ofile.is_open()) {
+			time_t rawtime;
+			struct tm timeinfo;
+			char buffer[128];
 
-		//if (ofile.is_open()) {
-			//ofile.seekp(ofile.beg);
-			ofile << s << std::endl;
-			//ofile.flush();
-		//}
+			time(&rawtime);
+			localtime_s(&timeinfo, &rawtime);
+
+			strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
+			std::string outputPath = AST->getXMLValue(3, AST->CONFIG, "path", "log");
+			outputPath += "log";
+			outputPath += buffer;
+			outputPath += ".txt";
+
+			ofile.open(outputPath);
+		}
+		//ofile.seekp(ofile.beg);
+		ofile << s << std::endl;
+		//ofile.flush();
 	}
 }
