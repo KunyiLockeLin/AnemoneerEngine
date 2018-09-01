@@ -91,8 +91,7 @@ struct QeDataMaterial {
 		QeDataMaterialPBR pbr;
 	};*/
 	QeVector4f baseColor;
-	QeVector4f metallicRoughness;
-	QeVector4f emissive;
+	QeVector4f metallicRoughnessEmissive;
 	QeDataMaterial() {}
 };
 

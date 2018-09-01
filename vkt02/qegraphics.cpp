@@ -198,6 +198,8 @@ void QeGraphics::updateBuffer() {
 			viewport->environmentData.camera = viewport->camera->bufferData;
 			viewport->environmentData.param.x = float(viewport->lights.size());
 
+			AST->getXMLfValue(&viewport->environmentData.param.y, AST->getXMLNode(1, AST->CONFIG), 1, "gamma");
+
 			VK->setMemoryBuffer(viewport->environmentBuffer,
 				sizeof(viewport->environmentData), &viewport->environmentData);
 

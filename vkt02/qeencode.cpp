@@ -706,12 +706,12 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 		mtl.baseColor.w = 1.0f;
 	}
 	const char* value = AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "metallicFactor");
-	if (value == nullptr)	mtl.metallicRoughness.x = 1.0f;
-	else					mtl.metallicRoughness.x = float(atof(value));
+	if (value == nullptr)	mtl.metallicRoughnessEmissive.x = 1.0f;
+	else					mtl.metallicRoughnessEmissive.x = float(atof(value));
 
 	value = AST->getJSONValue(json, 3, "materials", "pbrMetallicRoughness", "roughnessFactor");
-	if (value == nullptr)	mtl.metallicRoughness.y = 1.0f;
-	else					mtl.metallicRoughness.y = float(atof(value));
+	if (value == nullptr)	mtl.metallicRoughnessEmissive.y = 1.0f;
+	else					mtl.metallicRoughnessEmissive.y = float(atof(value));
 
 	pMaterial->value = mtl;
 

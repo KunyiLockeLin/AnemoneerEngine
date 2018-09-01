@@ -30,7 +30,7 @@ struct QeDataCamera {
 layout( set = layoutSet_Common, binding = Common_uniform+ 0) uniform QeDataEnvironment {
 	vec4 ambientColor;
 	QeDataCamera camera;
-	vec4 param; // 0: light num
+	vec4 param; // 0: light num, 1: gamma, 2: exposure
 } environmentData;
 
 

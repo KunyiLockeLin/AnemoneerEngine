@@ -6,7 +6,7 @@
 struct QeDataEnvironment {
 	QeVector4f ambientColor;
 	QeDataCamera camera;
-	QeVector4f param; // 0: light num
+	QeVector4f param; // 0: light num, 1: gamma, 2: exposure
 };
 
 struct QeDataViewport {

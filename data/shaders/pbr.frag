@@ -101,7 +101,7 @@ void main() {
 	// need occlusion map
 	// need emissive map
 
-	vec3 gamma = vec3(1.0/2.2);
+	vec3 gamma = vec3(1.0/environmentData.param.y);
 	//outColor = vec4(pow(color,gamma), baseColor.a);
 	outColor = vec4(pow(color,gamma), baseColor.a)*baseColor.a;
 
