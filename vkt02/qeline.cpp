@@ -8,8 +8,10 @@ void QeLine::init(QeAssetXML* _property, int _parentOID) {
 	if(!strcmp(initProperty->key.c_str(), "e"))  modelData = AST->getModel("line");
 	else										 modelData = AST->getModel(initProperty->key.c_str());
 	
-	//mtlData = AST->getMaterialImage("");
-	//bufferData.material = mtlData->value;
+	mtlData = AST->getMaterialImage("");
+	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+
+	bufferData.material = mtlData->value;
 	AST->setGraphicsShader(graphicsShader, editProperty,"line");
 }
 

@@ -53,7 +53,7 @@
     </computeShader>
   </default>
   
-  <startScene>28001</startScene>
+  <startScene>28003</startScene>
   
   <scenes>
     <e eid="28000" cameraOID="26000">
@@ -110,7 +110,7 @@
     </e>
 
     <e eid="28003">
-      <postprocessing frag="grayscalef.spv" param1="1"/>
+      <postprocessing frag="bloomf.spv"/>
       <models>
         <e oid="14002" eid="14007" show="1" speed="10" posX="0" posY="0" posZ="0"/>
       </models>
