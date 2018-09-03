@@ -255,8 +255,8 @@ public:
 	int getSwapchainSize();
 	void createSwapchain(QeDataSwapchain* swapchain);
 	VkSampleCountFlagBits getMaxUsableSampleCount();
-	VkRenderPass createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType);
-	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int length, ... ); // VkImageView
+	VkRenderPass createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat>& formats);
+	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int VkImageViewLength, ... );
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
 	VkFence createSyncObjectFence();

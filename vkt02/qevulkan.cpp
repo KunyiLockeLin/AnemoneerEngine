@@ -316,7 +316,7 @@ VkSampleCountFlagBits QeVulkan::getMaxUsableSampleCount(){
 	return VK_SAMPLE_COUNT_1_BIT;
 }
 
-VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRenderType renderType) {
+VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat>& formats) {
 
 	std::vector<VkAttachmentDescription> attachments;
 
@@ -324,7 +324,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments.resize(subpassNum + 1);
 
 		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		attachments[0].format = format;
+		attachments[0].format = formats[0];
 		attachments[0].samples = VP->sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -354,7 +354,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 
 		if (subpassNum == 2) {
 			//attachments[2].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-			attachments[2].format = format;
+			attachments[2].format = formats[1];
 			attachments[2].samples = VP->sampleCount;
 			attachments[2].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			attachments[2].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -368,7 +368,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments.resize(subpassNum+3);
 
 		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		attachments[0].format = format;
+		attachments[0].format = formats[0];
 		attachments[0].samples = VP->sampleCount;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -378,7 +378,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 		attachments[0].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 		//attachments[1].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		attachments[1].format = format;
+		attachments[1].format = formats[1];
 		attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		//attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -421,7 +421,7 @@ VkRenderPass QeVulkan::createRenderPass(VkFormat format, int subpassNum, QeRende
 
 		if (subpassNum == 2) {
 			//attachments[4].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-			attachments[4].format = format;
+			attachments[4].format = formats[2];
 			attachments[4].samples = VK_SAMPLE_COUNT_1_BIT;
 			attachments[4].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			attachments[4].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -619,16 +619,14 @@ void QeVulkan::updatePushConstnats(VkCommandBuffer command_buffer) {
 		vkCmdPushConstants(command_buffer, pipelineLayout, VK_SHADER_STAGE_ALL, 0, uint32_t(size * sizeof(float)), pushConstants.data());
 }
 
-VkFramebuffer QeVulkan::createFramebuffer(VkRenderPass renderPass, VkExtent2D size, int length, ...) {
+VkFramebuffer QeVulkan::createFramebuffer(VkRenderPass renderPass, VkExtent2D size, int VkImageViewLength, ...) {
 	
 	std::vector<VkImageView> attachments;
-	attachments.resize(length);
+	attachments.resize(VkImageViewLength);
 
 	va_list keys;
-	va_start(keys, length);
-
-	for (int i = 0; i < length; ++i)	attachments[i] = va_arg(keys, const VkImageView);
-	
+	va_start(keys, VkImageViewLength);
+	for (int i = 0; i < VkImageViewLength; ++i)	attachments[i] = va_arg(keys, const VkImageView);
 	va_end(keys);
 
 	VkFramebufferCreateInfo framebufferInfo = {};

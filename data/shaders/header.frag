@@ -34,4 +34,6 @@ vec4 adjustColor( vec3 inColor, float alpha ){
 
 	vec3 gamma = vec3(1.0/environmentData.param.y);
 	return vec4(pow(inColor,gamma), alpha)*alpha;
+
+	//return vec4(10,10,10,1);
 }
