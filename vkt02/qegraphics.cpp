@@ -331,7 +331,7 @@ void QeGraphics::refreshRender() {
 		QeDataRender * render = renders[i];
 		std::vector<VkFormat> formats;
 
-		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;
+		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;// VK_FORMAT_R16G16B16A16_SFLOAT; // VK_FORMAT_R32G32B32A32_SFLOAT;
 
 		if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 
