@@ -9,7 +9,7 @@ void main() {
 	outColor = texture(inputAttachment, inUV);
 	//if( outColor.r>1 || outColor.g>1 || outColor.b>1 ) outColor = vec4(1,0,0,1);
 
-	const int horizontal= 2; // 0:horizontal, 1: vertical, 2: both
+	const int horizontal= 0; // 0:horizontal, 1: vertical, 2: both
 	const float blurScale = 0.003;
 	const float blurStrength = 1.0;
 	
