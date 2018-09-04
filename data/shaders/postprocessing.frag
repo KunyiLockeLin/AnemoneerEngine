@@ -4,5 +4,6 @@
 
 
 void main() {
-	outColor = subpassLoad(inputAttachment);
+	//outColor = subpassLoad(inputAttachment);
+	outColor = texture(inputAttachment, inUV);
 }

@@ -21,8 +21,6 @@ struct SwapChainSupportDetails {
 enum QeRenderType {
 	eRender_main = 0,
 	eRender_color = 1,
-	//eRender_shadow = 2,
-	eRender_ui = 3,
 };
 
 enum QeVKBufferType {
@@ -54,7 +52,6 @@ enum QeVKImageType {
 	eImage_2D = 3,
 	eImage_cube = 4,
 	eImage_render = 5,
-	eImage_shadow = 6,
 	eImage_multiSampleDepthStencil = 7,
 	eImage_multiSampleColor = 8,
 };
@@ -76,7 +73,6 @@ enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Model = 0,
 	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
-	//eDescriptorSetLayout_render = 3,
 };
 
 struct QeDataDescriptorSet {
@@ -119,9 +115,6 @@ struct QeDataDescriptorSetModel {
 	VkImageView normalMapImageView = VK_NULL_HANDLE;
 	VkSampler	normalMapSampler = VK_NULL_HANDLE;
 
-	VkImageView shadowMapImageView = VK_NULL_HANDLE;
-	VkSampler	shadowMapSampler = VK_NULL_HANDLE;
-
 	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
 	VkBufferView texelBufferView = VK_NULL_HANDLE;
 
@@ -129,16 +122,10 @@ struct QeDataDescriptorSetModel {
 	VkBuffer	computeShaderoutputBuffer = VK_NULL_HANDLE;
 };
 
-struct QeDataDescriptorSetRender {
-
-	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
-	VkImageView renderImageView = VK_NULL_HANDLE;
-	VkSampler	renderSampler = VK_NULL_HANDLE;
-};
-
 struct QeDataDescriptorSetPostprocessing {
-	// VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
+	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
 	VkImageView inputAttachImageView = VK_NULL_HANDLE;
+	VkSampler	inputAttachSampler = VK_NULL_HANDLE;
 };
 
 /* 10,000, - 32,767
@@ -233,12 +220,12 @@ public:
 	VkQueue computeQueue;
 
 	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas = {
-		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 4 },
+		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 3 },
 			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 }},
 
 			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
 
-			{ { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 0, 1 } }
+			{ { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/*VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT*/, 0, 1 } }
 	};
 
 	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;

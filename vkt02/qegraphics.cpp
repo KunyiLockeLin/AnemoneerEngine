@@ -349,6 +349,8 @@ void QeGraphics::refreshRender() {
 				VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->colorImage.view;
+				data.inputAttachSampler = render->colorImage.sampler;
+				//render->descriptorSet.bRender = true;
 				VK->updateDescriptorSet(&data, render->descriptorSet);
 				formats.push_back(format);
 			}

@@ -9,16 +9,16 @@
 #extension GL_GOOGLE_include_directive : enable
 #include "header.frag"
 
-const float c_MinRoughness = 0.04;
-
 void main() {
 	vec4 baseColor1 = texture(baseColorMapSampler, inUV);
 	if( 0.01 > baseColor1.a )	discard;
+
 
 	float metallic = modelData.mtl.metallicRoughnessEmissive.x;	
     float perceptualRoughness = modelData.mtl.metallicRoughnessEmissive.y;
 
 	// need metallicRoughness map
+	const float c_MinRoughness = 0.04;
 	perceptualRoughness = clamp(perceptualRoughness, c_MinRoughness, 1.0);
 	metallic = clamp(metallic, 0.0, 1.0);
 	float alphaRoughness = perceptualRoughness * perceptualRoughness;

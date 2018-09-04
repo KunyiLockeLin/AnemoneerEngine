@@ -1437,9 +1437,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 	descriptorWrite.dstSet = descriptorSet.set;
 	descriptorWrite.dstArrayElement = 0;
 	descriptorWrite.descriptorCount = 1;
-	
-	int combineSamplerCount = 0;
-	
+		
 	size_t size = descriptorSetLayoutDatas[descriptorSet.type].size();
 	for (size_t i = 0; i < size; ++i) {
 
@@ -1471,17 +1469,13 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 
 				break;
 			case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-				++combineSamplerCount;
+
 				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
 
 					VkDescriptorImageInfo imgInfo;
-					if (combineSamplerCount < 4) {
-						if(descriptorSet.bRender)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-						else						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-					}
-					else {
-						imgInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-					}
+					if(descriptorSet.bRender)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+					else						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
 					imgInfo.imageView = *(VkImageView*)(pos);
 					imgInfo.sampler = *(VkSampler*)(pos + sizeof(VkSampler));
 					imgInfos.push_back(imgInfo);
@@ -1748,7 +1742,8 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 		break;
 
 	case eImage_inputAttach:
-		usage = VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		bSampler = true;
 		break;
 
 	case eImage_swapchain:
@@ -1771,13 +1766,6 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 
 	case eImage_render:
 		usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-		bSampler = true;
-		break;
-
-	case eImage_shadow:
-		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-		if (format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
 		bSampler = true;
 		break;
 	}

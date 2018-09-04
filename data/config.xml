@@ -38,7 +38,6 @@
       <line vert="basev.spv" geom="lineg.spv"  frag="basevf.spv"/>
       <normal vert="basev.spv" geom="lineg.spv"  frag="basevf.spv"/>
       <render vert="pointv.spv" geom="billboardg.spv" frag="renderf.spv"/>
-      <shadow vert="pointv.spv" geom="billboardg.spv" frag="shadowf.spv"/>
       <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
       <particle vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>
       <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
