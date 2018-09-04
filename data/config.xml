@@ -52,7 +52,7 @@
     </computeShader>
   </default>
   
-  <startScene>28001</startScene>
+  <startScene>28000</startScene>
   
   <scenes>
     <e eid="28000" cameraOID="26000">

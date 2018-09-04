@@ -21,7 +21,7 @@ layout(location = 7) in vec3 inUV3;
 
 layout(location = 0) out vec4 outColor;
 
-// hdr, gamma, alpha
+// hdr, alpha
 vec4 adjustColor( vec3 inColor, float alpha ){
 
 	// reinhard tone mapping
@@ -31,8 +31,7 @@ vec4 adjustColor( vec3 inColor, float alpha ){
 
 	inColor *= modelData.mtl.metallicRoughnessEmissive.z;
 
-	vec3 gamma = vec3(1.0/environmentData.param.y);
-	return vec4(pow(inColor,gamma), alpha)*alpha;
+	return vec4(inColor, alpha)*alpha;
 
 	//return vec4(10,10,10,1);
 }
@@ -40,4 +39,13 @@ vec4 adjustColor( vec3 inColor, float alpha ){
 bool isBloom( vec3 inColor ){
 	// Bright parts for bloom
 	return ( dot(inColor.rgb, vec3(0.2126, 0.7152, 0.0722)) > 0.9);
+}
+
+// gamma
+vec4 adjustColor2( vec3 inColor ){
+
+	vec3 gamma = vec3(1.0/environmentData.param.y);
+	return vec4(pow(inColor,gamma), 1);
+
+	//return vec4(10,10,10,1);
 }
