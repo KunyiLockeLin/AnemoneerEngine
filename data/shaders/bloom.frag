@@ -9,9 +9,9 @@ void main() {
 	outColor = texture(inputAttachment, inUV);
 	//if( outColor.r>1 || outColor.g>1 || outColor.b>1 ) outColor = vec4(1,0,0,1);
 
-	const int horizontal= 0; // 0:horizontal, 1: vertical, 2: both
-	const float blurScale = 0.003;
-	const float blurStrength = 1.0;
+	const int horizontal= 2; // 0:horizontal, 1: vertical, 2: both
+	const float blurScale = 0.005;
+	const float blurStrength = 1.1;
 	
 	// Gaussian blur
 	/*
@@ -19,7 +19,7 @@ void main() {
 
 	vec2 tex_offset = 1.0 / textureSize(inputAttachment, 0)* blurScale; // gets size of single texel
 
-	if( outColor.r>1 || outColor.g>1 || outColor.b>1 ) {
+	if( isBloom(outColor) ) {
 		outColor += outColor * weight[0]; // current fragment's contribution
 	}
 
@@ -28,11 +28,11 @@ void main() {
 		for(int i = 1; i < 5; ++i)
 		{
 			vec4 color = texture(inputAttachment, inUV + vec2(tex_offset.x * i, 0.0));
-			if( color.r>1 || color.g>1 || color.b>1 ) {
+			if( isBloom(color.rgb) ) {
 				outColor += color * weight[i] * blurStrength;
 			}
 			color = texture(inputAttachment, inUV - vec2(tex_offset.x * i, 0.0));
-			if( color.r>1 || color.g>1 || color.b>1 ) {
+			if( isBloom(color.rgb) ) {
 				outColor += color * weight[i] * blurStrength;
 			}
 		}
@@ -43,11 +43,11 @@ void main() {
 		for(int i = 1; i < 5; ++i)
 		{  
 			vec4 color = texture(inputAttachment, inUV + vec2(0.0, tex_offset.y * i));
-			if( color.r>1 || color.g>1 || color.b>1 ) {
+			if( isBloom(color.rgb) ) {
 				outColor += color * weight[i] * blurStrength;
 			}
 			color = texture(inputAttachment, inUV - vec2(0.0, tex_offset.y * i));
-			if( color.r>1 || color.g>1 || color.b>1 ) {
+			if( isBloom(color.rgb) ) {
 				outColor += color * weight[i] * blurStrength;
 			}  
 		}
@@ -96,7 +96,7 @@ void main() {
 		{
 			vec2 dv = vec2(i * blurScale, 0.0) * ar;
 			vec4 color = texture(inputAttachment, P + dv);
-			if( color.r>1 || color.g>1 || color.b>1 ) {
+			if( isBloom(color.rgb) ) {
 				outColor += (color * weights[i] * blurStrength);
 			}
 		}
@@ -109,7 +109,7 @@ void main() {
 		{
 			vec2 dv = vec2(0.0, i * blurScale) * ar;
 			vec4 color = texture(inputAttachment, P + dv);
-			if( color.r>1 || color.g>1 || color.b>1 ) {
+			if( isBloom(color.rgb) ) {
 				outColor += (color * weights[i] * blurStrength);
 			}
 		}
