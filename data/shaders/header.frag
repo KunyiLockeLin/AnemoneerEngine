@@ -31,6 +31,13 @@ vec4 adjustColor( vec3 inColor, float alpha ){
 
 	inColor *= modelData.mtl.metallicRoughnessEmissive.z;
 
+	// Bright parts for bloom
+	/*
+	float l = dot(inColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	float threshold = 0.75;
+	inColor.rgb = (l > threshold) ? inColor.rgb : vec3(0.0);
+	*/
+
 	vec3 gamma = vec3(1.0/environmentData.param.y);
 	return vec4(pow(inColor,gamma), alpha)*alpha;
 
