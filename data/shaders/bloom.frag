@@ -9,6 +9,7 @@ void main() {
 	outColor = texture(inputAttachment, inUV);
 	//if( outColor.r>1 || outColor.g>1 || outColor.b>1 ) outColor = vec4(1,0,0,1);
 
+	bool horizontal=false;
 	// Gaussian blur  
 	/*
 	float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
@@ -19,7 +20,6 @@ void main() {
 		outColor += outColor * weight[0]; // current fragment's contribution
 	}
 
-	bool horizontal=true;
 	if(horizontal)
 	{
 		for(int i = 1; i < 5; ++i)
@@ -87,7 +87,6 @@ void main() {
 		ar = ts.y / ts.x;
 	}
 
-	bool horizontal=false;
 	if(horizontal)
 	{
 		vec2 P = inUV.xy - vec2((weights.length() >> 1) * ar * blurScale, 0);
