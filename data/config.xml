@@ -52,7 +52,7 @@
     </computeShader>
   </default>
   
-  <startScene>28000</startScene>
+  <startScene>28003</startScene>
   
   <scenes>
     <e eid="28000" cameraOID="26000">
@@ -109,7 +109,6 @@
     </e>
 
     <e eid="28003">
-      <postprocessing frag="grayscalef.spv"/>
     </e>
   </scenes>
   

@@ -603,7 +603,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 			for (size_t k = 0; k < size2; ++k) {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
-				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
+				vkCmdSetLineWidth(render->commandBuffers[j], 1.0f);
 
 				QeDataDrawCommand command;
 				command.camera = render->viewports[k]->camera;
