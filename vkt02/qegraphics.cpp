@@ -445,6 +445,8 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 				data->graphicsPipeline.bAlpha = false;
 				data->graphicsPipeline.objectType = eObject_Scene;
 				data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
+				data->graphicsPipeline.subpass = i + 1;
+
 				AST->setGraphicsShader(data->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
 				data->graphicsPipeline.shader = &data->graphicsShader;
 				VK->createDescriptorSet(data->descriptorSet);

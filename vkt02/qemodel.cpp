@@ -214,6 +214,7 @@ void QeModel::init(QeAssetXML* _property, int _parentOID) {
 void QeModel::setProperty() {
 	QePoint::setProperty();
 
+	graphicsPipeline.subpass = 0;
 	graphicsPipeline.objectType = objectType;
 
 	face = 0.0f;

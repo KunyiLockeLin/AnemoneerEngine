@@ -1009,7 +1009,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
 			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
-			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType
+			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType && (*it)->subpass == data->subpass
 			/*&& (*it)->bStencilBuffer == data->bStencilBuffer*/) {
 			return (*it)->pipeline;
 		}
@@ -1091,7 +1091,6 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	VkPolygonMode polygonMode = bShowMesh ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
 	VkCullModeFlagBits cullMode= VK_CULL_MODE_BACK_BIT;
 	bool bDepthTest=true;
-	uint32_t subpass=0;
 
 	switch (data->objectType) {
 
@@ -1100,7 +1099,6 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		bVertex = false;
 		polygonMode = VK_POLYGON_MODE_FILL;
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-		subpass = 1;
 		break;
 	case eObject_Line:
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
@@ -1283,7 +1281,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
 	pipelineInfo.renderPass = data->renderPass;
-	pipelineInfo.subpass = subpass;
+	pipelineInfo.subpass = data->subpass;
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 	if (data->shader->tesc && data->shader->tese) {
@@ -1307,7 +1305,9 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	s->objectType = data->objectType;
 	s->minorType = data->minorType;
 	s->renderPass = data->renderPass;
+	s->subpass = data->subpass;
 	s->pipeline = pipeline;
+
 	graphicsPipelines.push_back(s);
 
 	return pipeline;
