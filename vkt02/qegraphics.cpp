@@ -369,7 +369,9 @@ void QeGraphics::refreshRender() {
 
 				for (size_t j = 0; j < size1; ++j) {
 					data.buffer = render->subpass[j]->buffer.buffer;
-					render->subpass[j]->descriptorSet.bRender = true;
+					//render->subpass[j]->descriptorSet.bRender = true;
+					//if(j > 0) render->subpass[j]->descriptorSet.bRender = true;
+
 					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
 					views.push_back(render->colorImage.view);
 					formats.push_back(format);
