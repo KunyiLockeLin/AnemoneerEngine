@@ -590,9 +590,9 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			// pushConstants
 			VK->updatePushConstnats(render->commandBuffers[j]);
-			vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
 
 			//compute shader
+			vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
 			OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
 			
 			renderPassInfo.framebuffer = render->frameBuffers[j];
