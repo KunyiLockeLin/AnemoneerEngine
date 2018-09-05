@@ -1,0 +1,20 @@
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04316f4b8 (Type = 6) | VkPipeline 0x8d uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04316f4b8 (Type = 6) | VkPipeline 0x8f uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04316f4b8 (Type = 6) | VkPipeline 0x91 uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977bf28 (Type = 6) | VkPipeline 0x8d uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977bf28 (Type = 6) | VkPipeline 0x8f uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977bf28 (Type = 6) | VkPipeline 0x91 uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977ccc8 (Type = 6) | VkPipeline 0x8d uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977ccc8 (Type = 6) | VkPipeline 0x8f uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977ccc8 (Type = 6) | VkPipeline 0x91 uses set #0 but that set is not bound.
+180905124739 validation layer:  [ VUID-vkBeginCommandBuffer-commandBuffer-00049 ] Object: 0x1d04316f4b8 (Type = 6) | Calling vkBeginCommandBuffer() on active command buffer 1d04316f4b8 before it has completed. You must check command buffer fence before this call. The spec valid usage text states 'commandBuffer must not be in the recording or pending state.' (https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-vkBeginCommandBuffer-commandBuffer-00049)
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04316f4b8 (Type = 6) | VkPipeline 0x8d uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04316f4b8 (Type = 6) | VkPipeline 0x8f uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04316f4b8 (Type = 6) | VkPipeline 0x91 uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977bf28 (Type = 6) | VkPipeline 0x8d uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977bf28 (Type = 6) | VkPipeline 0x8f uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977bf28 (Type = 6) | VkPipeline 0x91 uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977ccc8 (Type = 6) | VkPipeline 0x8d uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977ccc8 (Type = 6) | VkPipeline 0x8f uses set #0 but that set is not bound.
+180905124739 validation layer:  [ UNASSIGNED-CoreValidation-DrawState-DescriptorSetNotBound ] Object: 0x1d04977ccc8 (Type = 6) | VkPipeline 0x91 uses set #0 but that set is not bound.
+180905124739 failed to submit draw command buffer! -4

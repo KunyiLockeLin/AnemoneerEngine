@@ -12,7 +12,8 @@ const int Common_uniform = 0;
 const int Common_storage = 10;
 
 const int layoutSet_Postprocessing = 2;
-const int Postprocessing_attach = 0;
+const int Postprocessing_buffer = 0;
+const int Postprocessing_image = 10;
 
 
 layout( push_constant ) uniform TimeState {
@@ -56,8 +57,3 @@ layout( set = layoutSet_Model, binding = Model_uniform + 0) uniform QeDataModel 
 	vec4 param; // 0: billboardType / bCubemap, 1: particleFollow(2:follow 1:unfollow 0:none), 2: outline width
 	QeDataMaterial mtl;
 } modelData;
-
-
-/*layout( set = layoutSet_Model, binding = Model_uniform + 1) uniform QeDataModelViewport {
-	mat4 normal;
-} modelViewport;*/

@@ -330,30 +330,52 @@ void QeGraphics::refreshRender() {
 
 		QeDataRender * render = renders[i];
 		std::vector<VkFormat> formats;
+		std::vector<VkImageView> views;
 
-		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;// VK_FORMAT_R16G16B16A16_SFLOAT; // VK_FORMAT_R32G32B32A32_SFLOAT;
+		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;// VK_FORMAT_R16G16B16A16_SFLOAT VK_FORMAT_R32G32B32A32_SFLOAT;
+
+		if (i == eRender_main)
+			render->scissor.extent = swapchain.extent;
 
 		if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 
 			VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
-			VK->createImage(render->multiSampleDepthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
 			formats.push_back(format);
+			views.push_back(render->multiSampleColorImage.view);
+
+			render->depthStencilImage.type = eImage_multiSampleDepthStencil;
+			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+			formats.push_back(VK->findDepthStencilFormat());
+			views.push_back(render->depthStencilImage.view);
 		}
+		else {
+			render->depthStencilImage.type = eImage_depthStencil;
+			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
+			formats.push_back(VK->findDepthStencilFormat());
+			views.push_back(render->depthStencilImage.view);
+		}
+
+		size_t size1 = render->subpass.size();
 
 		if (i == eRender_main) {
 
-			render->scissor.extent = swapchain.extent;
-
-			if (render->subpassNum > 1) {
+			if (size1 > 0) {
 				render->colorImage.type = eImage_inputAttach;
 				VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->colorImage.view;
 				data.inputAttachSampler = render->colorImage.sampler;
 				//render->descriptorSet.bRender = true;
-				VK->updateDescriptorSet(&data, render->descriptorSet);
-				formats.push_back(format);
+
+				for (size_t j = 0; j < size1; ++j) {
+					data.buffer = render->subpass[j]->buffer.buffer;
+					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
+					views.push_back(render->colorImage.view);
+					formats.push_back(format);
+				}
 			}
+			views.push_back(swapchain.images[0].view);
 			formats.push_back(swapchain.format);
 		}
 		else if (i == eRender_color) {
@@ -361,13 +383,14 @@ void QeGraphics::refreshRender() {
 			render->colorImage.type = eImage_render;
 			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 			formats.push_back(format);
+			views.push_back(render->colorImage.view);
 		}
 
-		render->depthStencilImage.type = eImage_depthStencil;
-		VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
+		render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
 
-		render->renderPass = VK->createRenderPass(QeRenderType(i), render->subpassNum, formats);
-		render->graphicsPipeline.renderPass = render->renderPass;
+		for (size_t j = 0; j < size1; ++j) {
+			render->subpass[j]->graphicsPipeline.renderPass = render->renderPass;
+		}
 
 		render->scissor.offset = { 0, 0 };
 		render->viewport.minDepth = 0.0f;
@@ -377,38 +400,12 @@ void QeGraphics::refreshRender() {
 		render->viewport.height = float(render->scissor.extent.height);
 		render->viewport.width = float(render->scissor.extent.width);
 
-		size_t size1 = render->frameBuffers.size();
-		for (size_t j = 0; j < size1; ++j) {
-
+		size_t size2 = render->frameBuffers.size();
+		for (size_t j = 0; j < size2; ++j) {
 			if (i == eRender_main) {
-				if (render->subpassNum > 1) {
-					if(sampleCount == VK_SAMPLE_COUNT_1_BIT)
-						render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
-							3, render->colorImage.view, render->depthStencilImage.view, swapchain.images[j].view);
-					else
-						render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
-							5, render->multiSampleColorImage.view, render->colorImage.view, render->multiSampleDepthStencilImage.view, 
-								render->depthStencilImage.view, swapchain.images[j].view);
-				}
-				else {
-					if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
-						render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
-							2, swapchain.images[j].view, render->depthStencilImage.view);
-					else
-						render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
-							4, render->multiSampleColorImage.view, swapchain.images[j].view, 
-							render->multiSampleDepthStencilImage.view, render->depthStencilImage.view);
-				}
+				views[views.size()-1] = swapchain.images[j].view;
 			}
-			else if(i== eRender_color) {
-				if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
-					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, 
-						2, render->colorImage.view, render->depthStencilImage.view );
-				else
-					render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent,
-						4, render->multiSampleColorImage.view, render->colorImage.view, 
-						render->multiSampleDepthStencilImage.view, render->depthStencilImage.view);
-			}
+			render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, views);
 			render->commandBuffers[j] = VK->createCommandBuffer();
 		}
 	}
@@ -426,7 +423,6 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 	}
 
 	render->cameraOID = cameraOID;
-	render->subpassNum = 1;
 	render->scissor.extent = renderSize;
 
 	size_t size1 = 1;
@@ -434,15 +430,30 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 
 		QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
 		if (node) {
-			render->subpassNum = 2;
+			int count = 1;
+			int type = 0; // 1: bloom
+			if (strcmp(AST->getXMLValue(node, 1, "frag"), "bloomf.spv")==0) {
+				++count;
+				type = 1;
+			}
 
-			render->graphicsPipeline.bAlpha = false;
-			render->graphicsPipeline.objectType = eObject_Scene;
-			render->graphicsPipeline.minorType = eGraphicsPipeLine_none;
-			AST->setGraphicsShader(render->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
-			render->graphicsPipeline.shader = &render->graphicsShader;
+			for (int i = 0;i<count; ++i) {
+				QeDataSubpass* data = new QeDataSubpass();
 
-			VK->createDescriptorSet(render->descriptorSet);
+				data->graphicsPipeline.bAlpha = false;
+				data->graphicsPipeline.objectType = eObject_Scene;
+				data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
+				AST->setGraphicsShader(data->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
+				data->graphicsPipeline.shader = &data->graphicsShader;
+				VK->createDescriptorSet(data->descriptorSet);
+
+				if (type==1) {
+					data->bufferData.param.x = float(i);
+				}
+
+				VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
+				render->subpass.push_back(data);
+			}
 		}
 		size1 = VK->getSwapchainSize();
 	}
@@ -556,25 +567,18 @@ void QeGraphics::updateDrawCommandBuffers() {
 		// graphics shader
 		std::vector<VkClearValue> clearValues;
 
-		if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
-			clearValues.resize(render->subpassNum + 1);
+		if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
+			clearValues.resize(render->subpass.size() + 2);
+		else
+			clearValues.resize(render->subpass.size() + 3);
 
-			clearValues[0].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-			clearValues[1].depthStencil = { 1.0f, 0 };
+		clearValues[0].depthStencil = { 1.0f, 0 };
 
-			if (render->subpassNum > 1)
-				clearValues[2].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		size_t size2 = clearValues.size();
+		for (size_t k = 1; k < size2; ++k) {
+			clearValues[k].color = { ACT->ambientColor.x+i, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
 		}
-		else {
-			clearValues.resize(render->subpassNum + 2);
-			clearValues[0].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-			clearValues[1].color = { ACT->ambientColor.x + i , ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-			clearValues[2].depthStencil = { 1.0f, 0 };
 
-			if (render->subpassNum > 1)
-				clearValues[3].color = { ACT->ambientColor.x, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
-		}
-		
 		renderPassInfo.renderPass = render->renderPass;
 		renderPassInfo.renderArea = render->scissor;
 		renderPassInfo.clearValueCount = uint32_t(clearValues.size());
@@ -612,16 +616,18 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 				OBJMGR->updateDrawCommandBuffer(&command);
 			}
-
-			if (render->subpassNum > 1) {
+			
+			size2 = render->subpass.size();
+			for (size_t k = 0; k < size2; ++k) {
 				vkCmdNextSubpass(render->commandBuffers[j], VK_SUBPASS_CONTENTS_INLINE);
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->descriptorSet.set, 0, nullptr);
+				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
 
-				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->graphicsPipeline) );
+				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[k]->graphicsPipeline) );
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 			}
+
 			vkCmdEndRenderPass(render->commandBuffers[j]);
 			if (vkEndCommandBuffer(render->commandBuffers[j]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 		}

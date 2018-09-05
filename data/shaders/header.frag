@@ -7,8 +7,14 @@ layout( set = layoutSet_Model, binding = Model_image + 0) uniform sampler2D	base
 layout( set = layoutSet_Model, binding = Model_image + 1) uniform samplerCube cubeMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 2) uniform sampler2D	normalMapSampler;
 
+
+layout( set = layoutSet_Postprocessing, binding = Postprocessing_buffer + 0) uniform QeDataSubpass {
+	vec4 param; // 0: bloomHorizontal
+} subpassData;
+
 //layout (input_attachment_index=0, set=layoutSet_Postprocessing, binding= Postprocessing_attach + 0) uniform subpassInput inputAttachment;
-layout ( set=layoutSet_Postprocessing, binding= Postprocessing_attach + 0) uniform sampler2D inputAttachment;
+layout ( set=layoutSet_Postprocessing, binding= Postprocessing_image + 0) uniform sampler2D inputAttachment;
+
 
 layout(location = 0) in vec3 inColor;
 layout(location = 1) in vec2 inUV;

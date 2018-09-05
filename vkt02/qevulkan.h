@@ -123,6 +123,10 @@ struct QeDataDescriptorSetModel {
 };
 
 struct QeDataDescriptorSetPostprocessing {
+
+	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+	VkBuffer	buffer = VK_NULL_HANDLE;
+
 	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
 	VkImageView inputAttachImageView = VK_NULL_HANDLE;
 	VkSampler	inputAttachSampler = VK_NULL_HANDLE;
@@ -223,9 +227,9 @@ public:
 		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 3 },
 			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 }},
 
-			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 },{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
+			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
 
-			{ { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/*VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT*/, 0, 1 } }
+			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/*VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT*/, 10, 1 } }
 	};
 
 	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
@@ -243,7 +247,7 @@ public:
 	void createSwapchain(QeDataSwapchain* swapchain);
 	VkSampleCountFlagBits getMaxUsableSampleCount();
 	VkRenderPass createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat>& formats);
-	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, int VkImageViewLength, ... );
+	VkFramebuffer createFramebuffer( VkRenderPass renderPass, VkExtent2D size, std::vector<VkImageView>& views );
 	VkCommandBuffer createCommandBuffer();
 	VkSemaphore createSyncObjectSemaphore();
 	VkFence createSyncObjectFence();

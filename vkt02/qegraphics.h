@@ -26,6 +26,22 @@ struct QeDataViewport {
 	~QeDataViewport();
 };
 
+struct QeBufferSubpass {
+
+	QeVector4f param; // 0: bloomHorizontal
+};
+
+struct QeDataSubpass {
+	QeBufferSubpass bufferData;
+	QeVKBuffer buffer;
+	QeAssetGraphicsShader graphicsShader;
+	QeDataDescriptorSet descriptorSet;
+	QeDataGraphicsPipeline graphicsPipeline;
+
+	QeDataSubpass() : buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Postprocessing) {}
+	~QeDataSubpass() {}
+};
+
 struct QeDataRender {
 
 	std::vector<QeDataViewport*> viewports;
@@ -33,22 +49,17 @@ struct QeDataRender {
 	VkViewport viewport;
 	VkRect2D scissor;
 
-	QeVKImage colorImage, depthStencilImage, multiSampleColorImage, multiSampleDepthStencilImage;
+	QeVKImage colorImage, depthStencilImage, multiSampleColorImage;// , multiSampleDepthStencilImage;
 	std::vector<VkFramebuffer> frameBuffers;
 
 	std::vector<VkCommandBuffer> commandBuffers;
 	VkSemaphore semaphore = VK_NULL_HANDLE;
 	
 	VkRenderPass renderPass;
-
-	int subpassNum;
-	QeAssetGraphicsShader graphicsShader;
-	QeDataDescriptorSet descriptorSet;
-	QeDataGraphicsPipeline graphicsPipeline;
+	std::vector<QeDataSubpass*> subpass;
 
 	QeDataRender() :colorImage(eImage_inputAttach), depthStencilImage(eImage_depthStencil),
-		multiSampleColorImage(eImage_multiSampleColor), multiSampleDepthStencilImage(eImage_multiSampleDepthStencil),
-		descriptorSet(eDescriptorSetLayout_Postprocessing) {}
+		multiSampleColorImage(eImage_multiSampleColor)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
 	~QeDataRender();
 };
 
