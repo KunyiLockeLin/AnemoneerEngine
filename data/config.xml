@@ -69,6 +69,7 @@
     </e>
     
     <e eid ="28001">
+      <postprocessing frag="bloomf.spv"/>
       <ambientColor r="0.0" g="0.5" b="0.5"/>
       <cubemaps>
         <e oid="12000" eid="12000" show="1" scaleX="20" scaleY="20" scaleZ="20"/>

@@ -366,10 +366,10 @@ void QeGraphics::refreshRender() {
 				QeDataDescriptorSetPostprocessing data;
 				data.inputAttachImageView = render->colorImage.view;
 				data.inputAttachSampler = render->colorImage.sampler;
-				//render->descriptorSet.bRender = true;
 
 				for (size_t j = 0; j < size1; ++j) {
 					data.buffer = render->subpass[j]->buffer.buffer;
+					render->subpass[j]->descriptorSet.bRender = true;
 					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
 					views.push_back(render->colorImage.view);
 					formats.push_back(format);
@@ -598,12 +598,12 @@ void QeGraphics::updateDrawCommandBuffers() {
 			renderPassInfo.framebuffer = render->frameBuffers[j];
 
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+			vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
 
 			size_t size2 = render->viewports.size();
 			for (size_t k = 0; k < size2; ++k) {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
-				vkCmdSetLineWidth(render->commandBuffers[j], 1.0f);
 
 				QeDataDrawCommand command;
 				command.camera = render->viewports[k]->camera;

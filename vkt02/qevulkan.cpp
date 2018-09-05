@@ -335,6 +335,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 		attachments.resize(subpassNum + 3);
 
 		// msaa
+		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[index].format = formats[index];
 		attachments[index].samples = VP->sampleCount;
 		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -352,6 +353,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 	}
 
 	// depth
+	attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 	attachments[index].format = formats[index];
 	attachments[index].samples = VK_SAMPLE_COUNT_1_BIT;
 	attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -375,6 +377,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 
 	for (int i = 0;i<=subpassNum;++i ) {
 
+		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[index].format = formats[index];
 		attachments[index].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -1253,7 +1256,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		VK_DYNAMIC_STATE_VIEWPORT
 		,VK_DYNAMIC_STATE_SCISSOR
 		//,VK_DYNAMIC_STATE_DEPTH_BIAS
-		//,VK_DYNAMIC_STATE_LINE_WIDTH
+		,VK_DYNAMIC_STATE_LINE_WIDTH
 	};
 
 	VkPipelineDynamicStateCreateInfo dynamicState = {};
