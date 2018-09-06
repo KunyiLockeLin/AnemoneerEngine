@@ -40,6 +40,18 @@ QeDataRender::~QeDataRender() {
 		vkDestroySemaphore(VK->device, semaphore, nullptr);
 		semaphore = VK_NULL_HANDLE;
 	}
+
+	size = viewports.size();
+	for (size_t i = 0; i < size; i++) {
+		delete viewports[i];
+	}
+	viewports.clear();
+
+	size = subpass.size();
+	for (size_t i = 0; i < size; i++) {
+		delete subpass[i];
+	}
+	subpass.clear();
 }
 
 
