@@ -365,22 +365,33 @@ void QeGraphics::refreshRender() {
 
 		if (i == eRender_main) {
 
-			for (size_t j = 0; j < size1; ++j) {
-				render->subpass[j]->colorImage.type = eImage_inputAttach;
+			if (size1>0) {
+				render->colorImage.type = eImage_inputAttach;
+				VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+				if(size1>1) 
+					VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
 
-				VK->createImage(render->subpass[j]->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+				for (size_t j = 0; j < size1; ++j) {
+					
+					QeDataDescriptorSetPostprocessing data;
+					data.buffer = render->subpass[j]->buffer.buffer;
 
-				QeDataDescriptorSetPostprocessing data;
-				data.inputAttachImageView = render->subpass[j]->colorImage.view;
-				data.inputAttachSampler = render->subpass[j]->colorImage.sampler;
-				data.buffer = render->subpass[j]->buffer.buffer;
-				//render->subpass[j]->descriptorSet.bRender = true;
+					if (j%2==0) {
+						data.inputAttachImageView = render->colorImage.view;
+						data.inputAttachSampler = render->colorImage.sampler;
+						views.push_back(render->colorImage.view);
+					}
+					else{
+						data.inputAttachImageView = render->colorImage2.view;
+						data.inputAttachSampler = render->colorImage2.sampler;
+						views.push_back(render->colorImage2.view);
+					}
+					//render->subpass[j]->descriptorSet.bRender = true;
 
-				VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
-				views.push_back(render->subpass[j]->colorImage.view);
-				formats.push_back(format);
+					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
+					formats.push_back(format);
+				}
 			}
-			
 			views.push_back(swapchain.images[0].view);
 			formats.push_back(swapchain.format);
 		}
@@ -436,20 +447,21 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 
 		QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
 		if (node) {
+
+			QeVector4f param1;
+			AST->getXMLfValue(&param1.x, node, 1, "p0");
+			AST->getXMLfValue(&param1.y, node, 1, "p1");
+			AST->getXMLfValue(&param1.z, node, 1, "p2");
+			AST->getXMLfValue(&param1.w, node, 1, "p3");
+
 			int count = 1;
 			int type = 0; // 1: bloom
-			 
-			if (strcmp(AST->getXMLValue(node, 1, "frag"), "bloomf.spv")==0) {
 
-				++count;
+			if (strcmp(AST->getXMLValue(node, 1, "frag"), "bloomf.spv") == 0) {
+
+				if (param1.x > 1.f) count = int(param1.x);
 				type = 1;
 			}
-
-			QeVector4f param2;
-			AST->getXMLfValue(&param2.x, node, 1, "p1");
-			AST->getXMLfValue(&param2.y, node, 1, "p2");
-			AST->getXMLfValue(&param2.z, node, 1, "p3");
-			AST->getXMLfValue(&param2.w, node, 1, "p4");
 
 			for (int i = 0;i<count; ++i) {
 				QeDataSubpass* data = new QeDataSubpass();
@@ -463,10 +475,11 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 				data->graphicsPipeline.shader = &data->graphicsShader;
 				VK->createDescriptorSet(data->descriptorSet);
 				
-				data->bufferData.param2 = param2;
+				data->bufferData.param1 = param1;
 				
 				if (type==1) {
-					data->bufferData.param1.x = float(i);
+					if (param1.x < 2)	data->bufferData.param1.x = param1.x;
+					else				data->bufferData.param1.x = float(i);
 				}
 
 				VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);

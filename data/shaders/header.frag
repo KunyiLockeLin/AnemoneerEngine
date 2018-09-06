@@ -9,8 +9,7 @@ layout( set = layoutSet_Model, binding = Model_image + 2) uniform sampler2D	norm
 
 
 layout( set = layoutSet_Postprocessing, binding = Postprocessing_buffer + 0) uniform QeDataSubpass {
-	vec4 param1; // 0: blurHorizontal
-	vec4 param2; // 0: blurScale, 1: blurStrength
+	vec4 param1; // 0: blurHorizontal, 1: blurScale, 2: blurStrength
 } subpassData;
 
 //layout (input_attachment_index=0, set=layoutSet_Postprocessing, binding= Postprocessing_attach + 0) uniform subpassInput inputAttachment;

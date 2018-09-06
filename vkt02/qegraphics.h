@@ -28,8 +28,7 @@ struct QeDataViewport {
 
 struct QeBufferSubpass {
 
-	QeVector4f param1; // 0: blurHorizontal
-	QeVector4f param2; // 0: blurScale, 1: blurStrength
+	QeVector4f param1; // 0: blurHorizontal, 1: blurScale, 2: blurStrength
 };
 
 struct QeDataSubpass {
@@ -38,9 +37,8 @@ struct QeDataSubpass {
 	QeAssetGraphicsShader graphicsShader;
 	QeDataDescriptorSet descriptorSet;
 	QeDataGraphicsPipeline graphicsPipeline;
-	QeVKImage colorImage;
 
-	QeDataSubpass() : colorImage(eImage_inputAttach), buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Postprocessing) {}
+	QeDataSubpass() : buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataSubpass() {}
 };
 
@@ -51,7 +49,7 @@ struct QeDataRender {
 	VkViewport viewport;
 	VkRect2D scissor;
 
-	QeVKImage colorImage, depthStencilImage, multiSampleColorImage;// , multiSampleDepthStencilImage;
+	QeVKImage colorImage, colorImage2, depthStencilImage, multiSampleColorImage;// , multiSampleDepthStencilImage;
 	std::vector<VkFramebuffer> frameBuffers;
 
 	std::vector<VkCommandBuffer> commandBuffers;
@@ -60,7 +58,7 @@ struct QeDataRender {
 	VkRenderPass renderPass;
 	std::vector<QeDataSubpass*> subpass;
 
-	QeDataRender() :colorImage(eImage_inputAttach), depthStencilImage(eImage_depthStencil),
+	QeDataRender() :colorImage(eImage_inputAttach), colorImage2(eImage_inputAttach), depthStencilImage(eImage_depthStencil),
 		multiSampleColorImage(eImage_multiSampleColor)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
 	~QeDataRender();
 };

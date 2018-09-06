@@ -10,8 +10,8 @@ void main() {
 	//if( outColor.r>1 || outColor.g>1 || outColor.b>1 ) outColor = vec4(1,0,0,1);
 
 	float horizontal= subpassData.param1.x;
-	float blurScale = subpassData.param2.x; // 0.003
-	float blurStrength = subpassData.param2.y; // 1.0
+	float blurScale = subpassData.param1.y; // 0.003
+	float blurStrength = subpassData.param1.z; // 1.0
 	
 	// Gaussian blur
 	/*
