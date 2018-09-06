@@ -28,7 +28,8 @@ struct QeDataViewport {
 
 struct QeBufferSubpass {
 
-	QeVector4f param; // 0: bloomHorizontal
+	QeVector4f param1; // 0: blurHorizontal
+	QeVector4f param2; // 0: blurScale, 1: blurStrength
 };
 
 struct QeDataSubpass {

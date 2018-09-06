@@ -9,9 +9,9 @@ void main() {
 	outColor = texture(inputAttachment, inUV);
 	//if( outColor.r>1 || outColor.g>1 || outColor.b>1 ) outColor = vec4(1,0,0,1);
 
-	//const bool horizontal= false;
-	const float blurScale = 0.003;
-	const float blurStrength = 1.0;
+	float horizontal= subpassData.param1.x;
+	float blurScale = subpassData.param2.x; // 0.003
+	float blurStrength = subpassData.param2.y; // 1.0
 	
 	// Gaussian blur
 	/*
@@ -23,7 +23,7 @@ void main() {
 		outColor += outColor * weight[0]; // current fragment's contribution
 	}
 
-	if(subpassData.param.x==0)
+	if(horizontal==0)
 	{
 		for(int i = 1; i < 5; ++i)
 		{
@@ -88,7 +88,7 @@ void main() {
 		ar = ts.y / ts.x;
 	}
 
-	if(subpassData.param.x==0)
+	if(horizontal==0)
 	{
 		vec2 P = inUV.xy - vec2((weights.length() >> 1) * ar * blurScale, 0);
 		for (int i = 0; i < weights.length(); i++)

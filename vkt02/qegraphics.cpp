@@ -212,6 +212,12 @@ void QeGraphics::updateBuffer() {
 			}
 			VK->setMemoryBuffer(viewport->lightsBuffer, sizeof(data[0])*size2, data.data());
 		}
+
+		size1 = render->subpass.size();
+
+		for (size_t j = 0; j < size1; ++j) {
+			VK->setMemoryBuffer(render->subpass[j]->buffer, sizeof(render->subpass[j]->bufferData), &render->subpass[j]->bufferData);
+		}
 	}
 }
 
@@ -361,13 +367,12 @@ void QeGraphics::refreshRender() {
 
 			if (size1 > 0) {
 				render->colorImage.type = eImage_inputAttach;
-				VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
-
-				QeDataDescriptorSetPostprocessing data;
-				data.inputAttachImageView = render->colorImage.view;
-				data.inputAttachSampler = render->colorImage.sampler;
-
 				for (size_t j = 0; j < size1; ++j) {
+					VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+
+					QeDataDescriptorSetPostprocessing data;
+					data.inputAttachImageView = render->colorImage.view;
+					data.inputAttachSampler = render->colorImage.sampler;
 					data.buffer = render->subpass[j]->buffer.buffer;
 					//render->subpass[j]->descriptorSet.bRender = true;
 
@@ -433,13 +438,18 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 		if (node) {
 			int count = 1;
 			int type = 0; // 1: bloom
+			 
 			if (strcmp(AST->getXMLValue(node, 1, "frag"), "bloomf.spv")==0) {
 
-				if (strcmp(AST->getXMLValue(node, 1, "type"), "1") == 0) {
-					++count;
-				}
+				++count;
 				type = 1;
 			}
+
+			QeVector4f param2;
+			AST->getXMLfValue(&param2.x, node, 1, "p1");
+			AST->getXMLfValue(&param2.y, node, 1, "p2");
+			AST->getXMLfValue(&param2.z, node, 1, "p3");
+			AST->getXMLfValue(&param2.w, node, 1, "p4");
 
 			for (int i = 0;i<count; ++i) {
 				QeDataSubpass* data = new QeDataSubpass();
@@ -452,9 +462,11 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 				AST->setGraphicsShader(data->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
 				data->graphicsPipeline.shader = &data->graphicsShader;
 				VK->createDescriptorSet(data->descriptorSet);
-
+				
+				data->bufferData.param2 = param2;
+				
 				if (type==1) {
-					data->bufferData.param.x = float(i);
+					data->bufferData.param1.x = float(i);
 				}
 
 				VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
