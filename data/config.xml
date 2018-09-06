@@ -111,6 +111,9 @@
 
     <e eid="28003">
       <postprocessing frag="bloomf.spv" type="0"/>
+      <models>
+        <e oid="14002" eid="14007" show="1" speed="10" posX="0" posY="0" posZ="0"/>
+      </models>
     </e>
   </scenes>
   
