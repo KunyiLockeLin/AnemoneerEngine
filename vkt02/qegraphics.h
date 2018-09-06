@@ -38,8 +38,9 @@ struct QeDataSubpass {
 	QeAssetGraphicsShader graphicsShader;
 	QeDataDescriptorSet descriptorSet;
 	QeDataGraphicsPipeline graphicsPipeline;
+	QeVKImage colorImage;
 
-	QeDataSubpass() : buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Postprocessing) {}
+	QeDataSubpass() : colorImage(eImage_inputAttach), buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Postprocessing) {}
 	~QeDataSubpass() {}
 };
 

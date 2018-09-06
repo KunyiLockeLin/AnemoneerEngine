@@ -365,22 +365,22 @@ void QeGraphics::refreshRender() {
 
 		if (i == eRender_main) {
 
-			if (size1 > 0) {
-				render->colorImage.type = eImage_inputAttach;
-				for (size_t j = 0; j < size1; ++j) {
-					VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+			for (size_t j = 0; j < size1; ++j) {
+				render->subpass[j]->colorImage.type = eImage_inputAttach;
 
-					QeDataDescriptorSetPostprocessing data;
-					data.inputAttachImageView = render->colorImage.view;
-					data.inputAttachSampler = render->colorImage.sampler;
-					data.buffer = render->subpass[j]->buffer.buffer;
-					//render->subpass[j]->descriptorSet.bRender = true;
+				VK->createImage(render->subpass[j]->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
-					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
-					views.push_back(render->colorImage.view);
-					formats.push_back(format);
-				}
+				QeDataDescriptorSetPostprocessing data;
+				data.inputAttachImageView = render->subpass[j]->colorImage.view;
+				data.inputAttachSampler = render->subpass[j]->colorImage.sampler;
+				data.buffer = render->subpass[j]->buffer.buffer;
+				//render->subpass[j]->descriptorSet.bRender = true;
+
+				VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
+				views.push_back(render->subpass[j]->colorImage.view);
+				formats.push_back(format);
 			}
+			
 			views.push_back(swapchain.images[0].view);
 			formats.push_back(swapchain.format);
 		}
