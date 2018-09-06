@@ -110,6 +110,7 @@
     </e>
 
     <e eid="28003">
+      <postprocessing frag="bloomf.spv" type="0"/>
     </e>
   </scenes>
   

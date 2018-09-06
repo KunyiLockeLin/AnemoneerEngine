@@ -370,7 +370,6 @@ void QeGraphics::refreshRender() {
 				for (size_t j = 0; j < size1; ++j) {
 					data.buffer = render->subpass[j]->buffer.buffer;
 					//render->subpass[j]->descriptorSet.bRender = true;
-					//if(j > 0) render->subpass[j]->descriptorSet.bRender = true;
 
 					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
 					views.push_back(render->colorImage.view);
@@ -435,7 +434,10 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 			int count = 1;
 			int type = 0; // 1: bloom
 			if (strcmp(AST->getXMLValue(node, 1, "frag"), "bloomf.spv")==0) {
-				++count;
+
+				if (strcmp(AST->getXMLValue(node, 1, "type"), "1") == 0) {
+					++count;
+				}
 				type = 1;
 			}
 

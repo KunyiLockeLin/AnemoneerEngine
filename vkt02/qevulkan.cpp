@@ -408,18 +408,19 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 			dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 		}
 		else {
+			subpasses[i].pDepthStencilAttachment = nullptr;
+
 			inputAttachmentRef[i-1].layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			inputAttachmentRef[i-1].attachment = index-1;
 			subpasses[i].inputAttachmentCount = 1;
 			subpasses[i].pInputAttachments = &inputAttachmentRef[i-1];
-			subpasses[i].pDepthStencilAttachment = nullptr;
 
 			dependencies[i].srcSubpass = i-1;
 			dependencies[i].dstSubpass = i;
 			dependencies[i].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			dependencies[i].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-			dependencies[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-			dependencies[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			dependencies[i].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			dependencies[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+			dependencies[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 			dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 		}
 
@@ -429,6 +430,8 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 			if (renderType == eRender_main) {
 				attachments[index].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 			}
+			//dependencies[i].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+			//dependencies[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 		}
 		++index;
 	}
