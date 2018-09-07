@@ -370,7 +370,7 @@ void QeGraphics::refreshRender() {
 
 			QeDataDescriptorSetPostprocessing data;
 			data.buffer = render->subpass[0]->buffer.buffer;
-			render->subpass[0]->descriptorSet.bRender = true;
+			//render->subpass[0]->descriptorSet.bRender = true;
 			data.inputAttachImageView = renders[eRender_main]->colorImage.view;
 			data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
 
@@ -452,7 +452,7 @@ void QeGraphics::refreshRender() {
 		size_t size2 = render->frameBuffers.size();
 		for (size_t j = 0; j < size2; ++j) {
 			if (i == eRender_KHR) {
-				views[views.size()-1] = swapchain.images[j].view;
+				views[0] = swapchain.images[j].view;
 			}
 			render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, views);
 			render->commandBuffers[j] = VK->createCommandBuffer();
