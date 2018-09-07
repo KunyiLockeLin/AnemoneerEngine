@@ -331,7 +331,6 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 		dependencies.resize(2);
 		attachments.resize(1);
 
-		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[0].format = formats[0];
 		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -458,16 +457,14 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 				dependencies[i].srcSubpass = i - 1;
 				dependencies[i].dstSubpass = i;
 				dependencies[i].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-				dependencies[i].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-				dependencies[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-				dependencies[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+				dependencies[i].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+				dependencies[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+				dependencies[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 				dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 			}
 
 			if (i == subpassNum) {
 				attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-				//dependencies[i].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-				//dependencies[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 			}
 			++index;
 		}
