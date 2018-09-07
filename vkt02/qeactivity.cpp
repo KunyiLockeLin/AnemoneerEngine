@@ -96,10 +96,10 @@ void QeActivity::eventInput(QeInputData & inputData) {
 			VP->setTargetCamera(inputData.inputKey - VK_NUMPAD1);
 			break;
 		case VK_ADD:
-			VP->addNewViewport();
+			VP->addNewViewport(eRender_main);
 			break;
 		case VK_SUBTRACT:
-			VP->popViewport();
+			VP->popViewport(eRender_main);
 			break;
 		default:
 			break;

@@ -321,129 +321,166 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 	std::vector<VkAttachmentDescription> attachments;
 	std::vector<VkSubpassDescription> subpasses;
 	std::vector<VkSubpassDependency> dependencies;
+	std::vector<VkAttachmentReference> inputAttachmentRef;
+	std::vector<VkAttachmentReference> colorAttachmentRef;
+	VkAttachmentReference depthAttachmentRef = {};
+	VkAttachmentReference resolveReference = {};
 
-	subpasses.resize(subpassNum + 1);
-	dependencies.resize(subpassNum + 2);
+	if (renderType == eRender_KHR) {
+		subpasses.resize(1);
+		dependencies.resize(2);
+		attachments.resize(1);
 
-	int index = 0;
+		attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		attachments[0].format = formats[0];
+		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
+		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-	//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-	if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
-		attachments.resize(subpassNum + 2);
+		colorAttachmentRef.resize(1);
+		colorAttachmentRef[0].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentRef[0].attachment = 0;
+
+		subpasses[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpasses[0].colorAttachmentCount = 1;
+		subpasses[0].pColorAttachments = &colorAttachmentRef[0];
+
+		dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependencies[0].dstSubpass = 0;
+		dependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+		dependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		dependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		dependencies[0].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+
+		dependencies[1].srcSubpass = 0;
+		dependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
+		dependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+		dependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		dependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 	}
 	else {
-		attachments.resize(subpassNum + 3);
+		int index = 0;
 
-		// msaa
-		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		attachments[index].format = formats[index];
-		attachments[index].samples = VP->sampleCount;
-		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attachments[index].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		subpasses.resize(subpassNum + 1);
+		dependencies.resize(subpassNum + 2);
 
-		VkAttachmentReference resolveReference = {};
-		resolveReference.attachment = index;
-		resolveReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		subpasses[index].pResolveAttachments = &resolveReference;
-		++index;
-	}
+		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+			attachments.resize(subpassNum + 2);
+		}
+		else {
+			attachments.resize(subpassNum + 3);
 
-	// depth
-	attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-	attachments[index].format = formats[index];
-	attachments[index].samples = VK_SAMPLE_COUNT_1_BIT;
-	attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	attachments[index].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	
-	VkAttachmentReference depthAttachmentRef = {};
-	depthAttachmentRef.attachment = index;
-	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	++index;
+			// msaa
+			attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			attachments[index].format = formats[index];
+			attachments[index].samples = VP->sampleCount;
+			attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[index].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-	std::vector<VkAttachmentReference> inputAttachmentRef;
-	if (subpassNum > 0) {
-		inputAttachmentRef.resize(subpassNum);
-	}
-	std::vector<VkAttachmentReference> colorAttachmentRef;
-	colorAttachmentRef.resize(subpassNum+1);
+			resolveReference.attachment = index;
+			resolveReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			subpasses[index].pResolveAttachments = &resolveReference;
+			++index;
+		}
 
-	for (int i = 0;i<=subpassNum;++i ) {
-
+		// depth
 		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[index].format = formats[index];
 		attachments[index].samples = VK_SAMPLE_COUNT_1_BIT;
 		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attachments[index].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		attachments[index].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-		colorAttachmentRef[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		colorAttachmentRef[i].attachment = index;
-
-		subpasses[i].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpasses[i].colorAttachmentCount = 1;
-		subpasses[i].pColorAttachments = &colorAttachmentRef[i];
-
-		if (i == 0) {
-			attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-
-			subpasses[i].pDepthStencilAttachment = &depthAttachmentRef;
-
-			dependencies[i].srcSubpass = VK_SUBPASS_EXTERNAL;
-			dependencies[i].dstSubpass = i;
-			dependencies[i].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-			dependencies[i].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			dependencies[i].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-			dependencies[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-			dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-		}
-		else {
-			subpasses[i].pDepthStencilAttachment = nullptr;
-
-			inputAttachmentRef[i-1].layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-			inputAttachmentRef[i-1].attachment = index-1;
-			subpasses[i].inputAttachmentCount = 1;
-			subpasses[i].pInputAttachments = &inputAttachmentRef[i-1];
-
-			dependencies[i].srcSubpass = i-1;
-			dependencies[i].dstSubpass = i;
-			dependencies[i].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			dependencies[i].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			dependencies[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-			dependencies[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-			dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-		}
-
-		if (i== subpassNum) {
-			attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-
-			if (renderType == eRender_main) {
-				attachments[index].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-			}
-			//dependencies[i].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-			//dependencies[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-		}
+		depthAttachmentRef.attachment = index;
+		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		++index;
-	}
 
-	index = subpassNum + 1;
-	dependencies[index].srcSubpass = subpassNum;
-	dependencies[index].dstSubpass = VK_SUBPASS_EXTERNAL;
-	dependencies[index].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependencies[index].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-	dependencies[index].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-	dependencies[index].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-	dependencies[index].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+		if (subpassNum > 0) {
+			inputAttachmentRef.resize(subpassNum);
+		}
+		colorAttachmentRef.resize(subpassNum + 1);
+
+		for (int i = 0; i <= subpassNum; ++i) {
+
+			attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+			attachments[index].format = formats[index];
+			attachments[index].samples = VK_SAMPLE_COUNT_1_BIT;
+			attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			attachments[index].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+			colorAttachmentRef[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			colorAttachmentRef[i].attachment = index;
+
+			subpasses[i].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+			subpasses[i].colorAttachmentCount = 1;
+			subpasses[i].pColorAttachments = &colorAttachmentRef[i];
+
+			if (i == 0) {
+				attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+
+				subpasses[i].pDepthStencilAttachment = &depthAttachmentRef;
+
+				dependencies[i].srcSubpass = VK_SUBPASS_EXTERNAL;
+				dependencies[i].dstSubpass = i;
+				dependencies[i].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+				dependencies[i].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+				dependencies[i].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+				dependencies[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+				dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+			}
+			else {
+				subpasses[i].pDepthStencilAttachment = nullptr;
+
+				inputAttachmentRef[i - 1].layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				inputAttachmentRef[i - 1].attachment = index - 1;
+				subpasses[i].inputAttachmentCount = 1;
+				subpasses[i].pInputAttachments = &inputAttachmentRef[i - 1];
+
+				dependencies[i].srcSubpass = i - 1;
+				dependencies[i].dstSubpass = i;
+				dependencies[i].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+				dependencies[i].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+				dependencies[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+				dependencies[i].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+				dependencies[i].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+			}
+
+			if (i == subpassNum) {
+				attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				//dependencies[i].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+				//dependencies[i].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			}
+			++index;
+		}
+	
+		index = subpassNum + 1;
+		dependencies[index].srcSubpass = subpassNum;
+		dependencies[index].dstSubpass = VK_SUBPASS_EXTERNAL;
+		dependencies[index].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependencies[index].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+		dependencies[index].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		dependencies[index].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		dependencies[index].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+	}
 
 	VkRenderPassCreateInfo renderPassInfo = {};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;

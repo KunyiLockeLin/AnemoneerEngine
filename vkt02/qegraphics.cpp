@@ -61,6 +61,7 @@ void QeGraphics::init(QeAssetXML* _property) {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
+	createRender(eRender_KHR, 0, { 0,0 });
 	createRender(eRender_main, 0, {0,0});
 }
 
@@ -123,8 +124,11 @@ void QeGraphics::updateViewport() {
 			viewport->scissor.extent.height = int(viewport->viewport.height);
 			viewport->scissor.offset.x = int(viewport->viewport.x);
 			viewport->scissor.offset.y = int(viewport->viewport.y);
-			viewport->camera->faspect = viewport->viewport.width / viewport->viewport.height;
-			viewport->camera->bUpdate = true;
+
+			if (viewport->camera) {
+				viewport->camera->faspect = viewport->viewport.width / viewport->viewport.height;
+				viewport->camera->bUpdate = true;
+			}
 		}
 	}
 }
@@ -147,6 +151,9 @@ void QeGraphics::addNewViewport(size_t renderIndex) {
 	QeDataViewport* vp = new QeDataViewport();
 	//viewports.resize(size+1);
 	renders[renderIndex]->viewports.push_back(vp);
+	bRecreateRender = true;
+
+	if (renderIndex == eRender_KHR) return;
 
 	QeDataDescriptorSetCommon data;
 	
@@ -179,26 +186,24 @@ void QeGraphics::addNewViewport(size_t renderIndex) {
 
 	VK->createDescriptorSet(vp->commonDescriptorSet);
 	VK->updateDescriptorSet(&data, vp->commonDescriptorSet);
-
-	bRecreateRender = true;
 }
 
 void QeGraphics::setTargetCamera( int index ) {
 	
-	if (index < renders[0]->viewports.size() && index != currentTargetViewport ) {
+	if (index < renders[eRender_main]->viewports.size() && index != currentTargetViewport ) {
 		currentTargetViewport = index;
 		getTargetCamera()->updateAxis();
 	}
 }
 
 QeCamera* QeGraphics::getTargetCamera() {
-	return renders[0]->viewports[currentTargetViewport]->camera;
+	return renders[eRender_main]->viewports[currentTargetViewport]->camera;
 }
 
 void QeGraphics::updateBuffer() {
 
 	size_t size = renders.size();
-	for (size_t i = 0; i < size; ++i) {
+	for (size_t i = 1; i < size; ++i) {
 		
 		QeDataRender * render = renders[i];
 		size_t size1 = render->viewports.size();
@@ -308,7 +313,7 @@ void QeGraphics::drawFrame() {
 		else
 			submitInfo.pWaitSemaphores = &renders[i+1]->semaphore;
 
-		if (i == eRender_main)
+		if (i == eRender_KHR)
 			submitInfo.pCommandBuffers = &render->commandBuffers[imageIndex];
 		else 
 			submitInfo.pCommandBuffers = &render->commandBuffers[0];
@@ -338,13 +343,14 @@ void QeGraphics::drawFrame() {
 }
 
 void QeGraphics::refreshRender() {
-	size_t size = renders.size();
+	int size = (int)renders.size();
 	if (!size) {
+		createRender(eRender_KHR, 0, { 0,0 });
 		createRender(eRender_main, 0, { 0,0 });
-		size = 1;
+		size = 2;
 	}
 
-	for (size_t i = 0; i < size; ++i) {
+	for (int i = size-1; i > -1; --i) {
 
 		QeDataRender * render = renders[i];
 		std::vector<VkFormat> formats;
@@ -352,67 +358,81 @@ void QeGraphics::refreshRender() {
 
 		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;// VK_FORMAT_R16G16B16A16_SFLOAT VK_FORMAT_R32G32B32A32_SFLOAT;
 
-		if (i == eRender_main)
+		if (i == eRender_main || i == eRender_KHR)
 			render->scissor.extent = swapchain.extent;
-
-		if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
-
-			VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
-			formats.push_back(format);
-			views.push_back(render->multiSampleColorImage.view);
-
-			render->depthStencilImage.type = eImage_multiSampleDepthStencil;
-			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
-			formats.push_back(VK->findDepthStencilFormat());
-			views.push_back(render->depthStencilImage.view);
-		}
-		else {
-			render->depthStencilImage.type = eImage_depthStencil;
-			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
-			formats.push_back(VK->findDepthStencilFormat());
-			views.push_back(render->depthStencilImage.view);
-		}
 
 		size_t size1 = render->subpass.size();
 
-		if (i == eRender_main) {
+		if (i == eRender_KHR) {
 
-			if (size1>0) {
-				render->colorImage.type = eImage_inputAttach;
-				VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
-				if(size1>1) 
-					VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
+			views.push_back(swapchain.images[0].view);
+			formats.push_back(swapchain.format);
 
-				for (size_t j = 0; j < size1; ++j) {
-					
+			QeDataDescriptorSetPostprocessing data;
+			data.buffer = render->subpass[0]->buffer.buffer;
+			render->subpass[0]->descriptorSet.bRender = true;
+			data.inputAttachImageView = renders[eRender_main]->colorImage.view;
+			data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
+
+			VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
+		}
+		else if (i == eRender_color || i== eRender_main) {
+
+			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+
+				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
+				formats.push_back(format);
+				views.push_back(render->multiSampleColorImage.view);
+
+				render->depthStencilImage.type = eImage_multiSampleDepthStencil;
+				VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+				formats.push_back(VK->findDepthStencilFormat());
+				views.push_back(render->depthStencilImage.view);
+			}
+			else {
+				render->depthStencilImage.type = eImage_depthStencil;
+				VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
+				formats.push_back(VK->findDepthStencilFormat());
+				views.push_back(render->depthStencilImage.view);
+			}
+
+			render->colorImage.type = eImage_inputAttach;
+			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+
+			if (size1 == 0) {
+				views.push_back(render->colorImage.view);
+				formats.push_back(format);
+			}
+			else{
+				VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
+
+				int k = size1 % 2;
+
+				for (size_t j = 0; j < size1; ++j, ++k) {
+
 					QeDataDescriptorSetPostprocessing data;
 					data.buffer = render->subpass[j]->buffer.buffer;
 
-					if (j%2==0) {
-						data.inputAttachImageView = render->colorImage.view;
-						data.inputAttachSampler = render->colorImage.sampler;
-						views.push_back(render->colorImage.view);
+					QeVKImage *image = nullptr;
+					if (k % 2 == 0 ) {
+						image = &render->colorImage;
 					}
-					else{
-						data.inputAttachImageView = render->colorImage2.view;
-						data.inputAttachSampler = render->colorImage2.sampler;
-						views.push_back(render->colorImage2.view);
+					else {
+						image = &render->colorImage2;
 					}
 					//render->subpass[j]->descriptorSet.bRender = true;
+					data.inputAttachImageView = image->view;
+					data.inputAttachSampler = image->sampler;
 
 					VK->updateDescriptorSet(&data, render->subpass[j]->descriptorSet);
+					
+					views.push_back(image->view);
 					formats.push_back(format);
 				}
-			}
-			views.push_back(swapchain.images[0].view);
-			formats.push_back(swapchain.format);
-		}
-		else if (i == eRender_color) {
 
-			render->colorImage.type = eImage_render;
-			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
-			formats.push_back(format);
-			views.push_back(render->colorImage.view);
+				views.push_back(render->colorImage.view);
+				formats.push_back(format);
+			}
 		}
 
 		render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
@@ -431,7 +451,7 @@ void QeGraphics::refreshRender() {
 
 		size_t size2 = render->frameBuffers.size();
 		for (size_t j = 0; j < size2; ++j) {
-			if (i == eRender_main) {
+			if (i == eRender_KHR) {
 				views[views.size()-1] = swapchain.images[j].view;
 			}
 			render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, views);
@@ -446,11 +466,12 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 	QeDataRender * render = new QeDataRender();
 	renders.push_back(render);
 
-	if (cameraOID == 0) {
-		AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");
-		if(cameraOID==0)	AST->getXMLiValue(&cameraOID, AST->getXMLNode(2, AST->CONFIG, "default"), 1, "cameraOID");
+	if (size != eRender_KHR) {
+		if (cameraOID == 0) {
+			AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");
+			if (cameraOID == 0)	AST->getXMLiValue(&cameraOID, AST->getXMLNode(2, AST->CONFIG, "default"), 1, "cameraOID");
+		}
 	}
-
 	render->cameraOID = cameraOID;
 	render->scissor.extent = renderSize;
 
@@ -498,7 +519,21 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 				render->subpass.push_back(data);
 			}
 		}
+	}
+	else if(size == eRender_KHR){
 		size1 = VK->getSwapchainSize();
+		QeDataSubpass* data = new QeDataSubpass();
+
+		data->graphicsPipeline.bAlpha = false;
+		data->graphicsPipeline.objectType = eObject_Scene;
+		data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
+		data->graphicsPipeline.subpass = 0;
+
+		AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
+		data->graphicsPipeline.shader = &data->graphicsShader;
+		VK->createDescriptorSet(data->descriptorSet);
+		VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
+		render->subpass.push_back(data);
 	}
 
 	render->frameBuffers.resize(size1);
@@ -610,18 +645,24 @@ void QeGraphics::updateDrawCommandBuffers() {
 		// graphics shader
 		std::vector<VkClearValue> clearValues;
 
-		if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
-			clearValues.resize(render->subpass.size() + 2);
-		else
-			clearValues.resize(render->subpass.size() + 3);
-
-		clearValues[0].depthStencil = { 1.0f, 0 };
-
-		size_t size2 = clearValues.size();
-		for (size_t k = 1; k < size2; ++k) {
-			clearValues[k].color = { ACT->ambientColor.x+i, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+		if ( i==eRender_KHR ) {
+			clearValues.resize(2);
+			clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			clearValues[1].color = { 0.0f, 0.0f, 0.0f, 1.0f };
 		}
+		else {
+			if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
+				clearValues.resize(render->subpass.size() + 2);
+			else
+				clearValues.resize(render->subpass.size() + 3);
 
+			clearValues[0].depthStencil = { 1.0f, 0 };
+
+			size_t size2 = clearValues.size();
+			for (size_t k = 1; k < size2; ++k) {
+				clearValues[k].color = { ACT->ambientColor.x + i-1, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+			}
+		}
 		renderPassInfo.renderPass = render->renderPass;
 		renderPassInfo.renderArea = render->scissor;
 		renderPassInfo.clearValueCount = uint32_t(clearValues.size());
@@ -631,46 +672,57 @@ void QeGraphics::updateDrawCommandBuffers() {
 		
 			vkBeginCommandBuffer(render->commandBuffers[j], &beginInfo);
 
-			// pushConstants
-			VK->updatePushConstnats(render->commandBuffers[j]);
-
-			//compute shader
-			vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
-			OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
-			
 			renderPassInfo.framebuffer = render->frameBuffers[j];
-
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-			vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
 
-			size_t size2 = render->viewports.size();
-			for (size_t k = 0; k < size2; ++k) {
-				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
-				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
-
-				QeDataDrawCommand command;
-				command.camera = render->viewports[k]->camera;
-				command.commandBuffer = render->commandBuffers[j];
-				command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
-				command.renderPass = render->renderPass;
-				command.type = QeRenderType(i);
-
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
-
-				OBJMGR->updateDrawCommandBuffer(&command);
-			}
-			
-			size2 = render->subpass.size();
-			for (size_t k = 0; k < size2; ++k) {
-				vkCmdNextSubpass(render->commandBuffers[j], VK_SUBPASS_CONTENTS_INLINE);
+			if (i==	eRender_KHR) {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
-
-				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[k]->graphicsPipeline) );
+				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
+				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 			}
+			else {
+				// pushConstants
+				VK->updatePushConstnats(render->commandBuffers[j]);
 
+				//compute shader
+				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
+				OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
+
+
+				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
+
+				size_t size2 = render->viewports.size();
+				for (size_t k = 0; k < size2; ++k) {
+					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
+					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
+
+					if (i != eRender_KHR) {
+						QeDataDrawCommand command;
+						command.camera = render->viewports[k]->camera;
+						command.commandBuffer = render->commandBuffers[j];
+						command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+						command.renderPass = render->renderPass;
+						command.type = QeRenderType(i);
+
+						vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
+
+						OBJMGR->updateDrawCommandBuffer(&command);
+					}
+				}
+
+				size2 = render->subpass.size();
+				for (size_t k = 0; k < size2; ++k) {
+					vkCmdNextSubpass(render->commandBuffers[j], VK_SUBPASS_CONTENTS_INLINE);
+					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
+					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
+
+					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[k]->graphicsPipeline));
+					vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
+				}
+			}
 			vkCmdEndRenderPass(render->commandBuffers[j]);
 			if (vkEndCommandBuffer(render->commandBuffers[j]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 		}

@@ -19,8 +19,10 @@ struct SwapChainSupportDetails {
 };
 
 enum QeRenderType {
-	eRender_main = 0,
-	eRender_color = 1,
+	eRender_KHR = 0,
+	eRender_main = 1,
+	eRender_color = 2,
+	eRender_MAX = 3
 };
 
 enum QeVKBufferType {

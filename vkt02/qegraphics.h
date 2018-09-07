@@ -12,7 +12,7 @@ struct QeDataEnvironment {
 struct QeDataViewport {
 	VkViewport viewport;
 	VkRect2D scissor;
-	QeCamera* camera;
+	QeCamera* camera = nullptr;
 	std::vector<QeLight*> lights;
 
 	QeDataDescriptorSet commonDescriptorSet;
@@ -97,8 +97,8 @@ public:
 	VkSampleCountFlagBits sampleCount;
 
 	void init(QeAssetXML* _property);
-	void addNewViewport(size_t renderIndex = 0);
-	void popViewport(size_t renderIndex = 0);
+	void addNewViewport(size_t renderIndex);
+	void popViewport(size_t renderIndex);
 	void updateViewport();
 	void updateBuffer();
 	void updateRender(float time);
