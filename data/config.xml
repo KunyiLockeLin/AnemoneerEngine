@@ -12,7 +12,7 @@
   <envir renderFPS="30" computeFPS="30" width="1152" height="648" />
   <webenvir FPS="15" width="640" height="360" />
   <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-  <msaa>1</msaa>
+  <msaa>10</msaa>
   <gamma>2.2</gamma>
   <exposure>1.0</exposure>
   

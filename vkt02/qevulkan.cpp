@@ -435,6 +435,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 			if (i == 0) {
 				
 				if (VP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+					attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 					colorAttachmentRef[i].attachment = 1;
 				}
 
