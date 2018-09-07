@@ -216,6 +216,7 @@ void QeModel::setProperty() {
 
 	graphicsPipeline.subpass = 0;
 	graphicsPipeline.objectType = objectType;
+	graphicsPipeline.sampleCount = VP->sampleCount;
 
 	face = 0.0f;
 	up = 0.0f;

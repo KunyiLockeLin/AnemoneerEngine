@@ -37,8 +37,9 @@ vec4 adjustColor( vec3 inColor, float alpha ){
 
 	inColor *= modelData.mtl.metallicRoughnessEmissive.z;
 
-	return vec4(inColor, alpha)*alpha;
-
+	vec3 gamma = vec3(1.0/environmentData.param.y);
+	return vec4(pow(inColor,gamma), alpha)*alpha;
+	//return vec4(inColor, alpha)*alpha;
 	//return vec4(10,10,10,1);
 }
 

@@ -371,12 +371,26 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 		dependencies.resize(subpassNum + 2);
 
 		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT) {
-			attachments.resize(subpassNum + 2);
-		}
-		else {
-			attachments.resize(subpassNum + 3);
+		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT)
+				attachments.resize(subpassNum + 2);
+		else	attachments.resize(subpassNum + 3);
 
+		// depth
+		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+		attachments[index].format = formats[index];
+		attachments[index].samples = VP->sampleCount;
+		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		attachments[index].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+		depthAttachmentRef.attachment = index;
+		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		++index;
+
+		if (VP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 			// msaa
 			attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 			attachments[index].format = formats[index];
@@ -388,26 +402,11 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 			attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			attachments[index].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-			resolveReference.attachment = index;
+			resolveReference.attachment = index + 1;
 			resolveReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-			subpasses[index].pResolveAttachments = &resolveReference;
+			subpasses[0].pResolveAttachments = &resolveReference;
 			++index;
 		}
-
-		// depth
-		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		attachments[index].format = formats[index];
-		attachments[index].samples = VK_SAMPLE_COUNT_1_BIT;
-		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attachments[index].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-		depthAttachmentRef.attachment = index;
-		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		++index;
 
 		if (subpassNum > 0) {
 			inputAttachmentRef.resize(subpassNum);
@@ -434,6 +433,11 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 			subpasses[i].pColorAttachments = &colorAttachmentRef[i];
 
 			if (i == 0) {
+				
+				if (VP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+					colorAttachmentRef[i].attachment = 1;
+				}
+
 				attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 
 				subpasses[i].pDepthStencilAttachment = &depthAttachmentRef;
@@ -1047,6 +1051,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
 			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
 			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType && (*it)->subpass == data->subpass
+			&& (*it)->sampleCount == data->sampleCount
 			/*&& (*it)->bStencilBuffer == data->bStencilBuffer*/) {
 			return (*it)->pipeline;
 		}
@@ -1212,7 +1217,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 
-	multisampling.rasterizationSamples = VP->sampleCount;
+	multisampling.rasterizationSamples = data->sampleCount;
 
 	if (multisampling.rasterizationSamples == VK_SAMPLE_COUNT_1_BIT) {
 		multisampling.sampleShadingEnable = VK_FALSE;
@@ -1343,6 +1348,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	s->minorType = data->minorType;
 	s->renderPass = data->renderPass;
 	s->subpass = data->subpass;
+	s->sampleCount = data->sampleCount;
 	s->pipeline = pipeline;
 
 	graphicsPipelines.push_back(s);

@@ -185,6 +185,8 @@ struct QeDataGraphicsPipeline {
 	VkPipeline pipeline;
 	QeAssetGraphicsShader* shader;
 	VkRenderPass		renderPass;
+	VkSampleCountFlagBits sampleCount;
+
 	bool bAlpha;
 	int subpass=0;
 	//bool bStencilBuffer;

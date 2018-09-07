@@ -113,5 +113,5 @@ void main() {
 		}
 	}
 
-	outColor = adjustColor2(outColor.rgb);
+	//outColor = adjustColor2(outColor.rgb);
 }

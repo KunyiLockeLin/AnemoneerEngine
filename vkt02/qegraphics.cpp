@@ -375,19 +375,19 @@ void QeGraphics::refreshRender() {
 			data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
 
 			VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
+			render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
 		}
 		else if (i == eRender_color || i== eRender_main) {
 
 			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
-
-				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
-				formats.push_back(format);
-				views.push_back(render->multiSampleColorImage.view);
-
 				render->depthStencilImage.type = eImage_multiSampleDepthStencil;
 				VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
 				formats.push_back(VK->findDepthStencilFormat());
 				views.push_back(render->depthStencilImage.view);
+
+				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
+				formats.push_back(format);
+				views.push_back(render->multiSampleColorImage.view);
 			}
 			else {
 				render->depthStencilImage.type = eImage_depthStencil;
@@ -409,6 +409,8 @@ void QeGraphics::refreshRender() {
 				int k = size1 % 2;
 
 				for (size_t j = 0; j < size1; ++j, ++k) {
+
+					render->subpass[j]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
 
 					QeDataDescriptorSetPostprocessing data;
 					data.buffer = render->subpass[j]->buffer.buffer;
