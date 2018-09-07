@@ -646,9 +646,8 @@ void QeGraphics::updateDrawCommandBuffers() {
 		std::vector<VkClearValue> clearValues;
 
 		if ( i==eRender_KHR ) {
-			clearValues.resize(2);
+			clearValues.resize(1);
 			clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
-			clearValues[1].color = { 0.0f, 0.0f, 0.0f, 1.0f };
 		}
 		else {
 			if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
@@ -673,6 +672,15 @@ void QeGraphics::updateDrawCommandBuffers() {
 			vkBeginCommandBuffer(render->commandBuffers[j], &beginInfo);
 
 			renderPassInfo.framebuffer = render->frameBuffers[j];
+
+			if (i != eRender_KHR) {
+				// pushConstants
+				VK->updatePushConstnats(render->commandBuffers[j]);
+
+				//compute shader
+				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
+				OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
+			}
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			if (i==	eRender_KHR) {
@@ -682,15 +690,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 			}
-			else {
-				// pushConstants
-				VK->updatePushConstnats(render->commandBuffers[j]);
-
-				//compute shader
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
-				OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
-
-
+			else {				
 				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
 
 				size_t size2 = render->viewports.size();
@@ -698,18 +698,16 @@ void QeGraphics::updateDrawCommandBuffers() {
 					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
 					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
 
-					if (i != eRender_KHR) {
-						QeDataDrawCommand command;
-						command.camera = render->viewports[k]->camera;
-						command.commandBuffer = render->commandBuffers[j];
-						command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
-						command.renderPass = render->renderPass;
-						command.type = QeRenderType(i);
+					QeDataDrawCommand command;
+					command.camera = render->viewports[k]->camera;
+					command.commandBuffer = render->commandBuffers[j];
+					command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+					command.renderPass = render->renderPass;
+					command.type = QeRenderType(i);
 
-						vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
 
-						OBJMGR->updateDrawCommandBuffer(&command);
-					}
+					OBJMGR->updateDrawCommandBuffer(&command);
 				}
 
 				size2 = render->subpass.size();
