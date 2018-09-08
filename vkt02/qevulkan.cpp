@@ -1428,7 +1428,10 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
 
 					VkDescriptorImageInfo imgInfo;
-					if(descriptorSet.bRender)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+					if (descriptorSet.bRender) {
+							if( VP->sampleCount == VK_SAMPLE_COUNT_1_BIT)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+							else											imgInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					}
 					else						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 					imgInfo.imageView = *(VkImageView*)(pos);
