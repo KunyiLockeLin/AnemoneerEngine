@@ -379,24 +379,17 @@ void QeGraphics::refreshRender() {
 		}
 		else if (i == eRender_color || i== eRender_main) {
 
+			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+			formats.push_back(VK->findDepthStencilFormat());
+			views.push_back(render->depthStencilImage.view);
+
 			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
-				render->depthStencilImage.type = eImage_multiSampleDepthStencil;
-				VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
-				formats.push_back(VK->findDepthStencilFormat());
-				views.push_back(render->depthStencilImage.view);
 
 				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
 				formats.push_back(format);
 				views.push_back(render->multiSampleColorImage.view);
 			}
-			else {
-				render->depthStencilImage.type = eImage_depthStencil;
-				VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr);
-				formats.push_back(VK->findDepthStencilFormat());
-				views.push_back(render->depthStencilImage.view);
-			}
 
-			render->colorImage.type = eImage_inputAttach;
 			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
 			if (size1 == 0) {

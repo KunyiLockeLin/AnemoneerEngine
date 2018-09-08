@@ -52,13 +52,12 @@
     </computeShader>
   </default>
   
-  <startScene>28003</startScene>
+  <startScene>28000</startScene>
   
   <scenes>
     <e eid="28000" cameraOID="26000">
-      <models>
-        <e oid="14002" eid="14007" show="1" speed="10" posX="0" posY="-3" posZ="0" lineWidth="0.1"/>
-      </models>
+      <postprocessing frag="bloomf.spv" p0 ="2" p1="0.003" p2="1.0"/>
+
       <renders>
         <e oid="15000" show="1" posX="0" posY="1" posZ="4" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100" width="800" height="450"/>
       </renders>

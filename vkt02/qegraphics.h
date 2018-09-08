@@ -58,8 +58,8 @@ struct QeDataRender {
 	VkRenderPass renderPass;
 	std::vector<QeDataSubpass*> subpass;
 
-	QeDataRender() :colorImage(eImage_inputAttach), colorImage2(eImage_inputAttach), depthStencilImage(eImage_depthStencil),
-		multiSampleColorImage(eImage_multiSampleColor)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
+	QeDataRender() :colorImage(eImage_render), colorImage2(eImage_render), depthStencilImage(eImage_depthStencil),
+		multiSampleColorImage(eImage_inputAttach)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
 	~QeDataRender();
 };
 

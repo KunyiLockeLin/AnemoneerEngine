@@ -399,6 +399,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 			attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			attachments[index].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+
 			attachments[index].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			attachments[index].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
@@ -1678,24 +1679,17 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 	
 	switch ( image.type ) {
 	case eImage_depthStencil:
-		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT; // VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT
 		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 		if(format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
 		break;
 
-	case eImage_multiSampleDepthStencil:
-		usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-		aspectFlags = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-		//properties = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
-		if (format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
-		break;
-
-	case eImage_multiSampleColor:
-		usage = VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		//properties = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
-		break;
-
 	case eImage_inputAttach:
+		usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT
+		//properties = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
+		break;
+
+	case eImage_render:
 		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		bSampler = true;
 		break;
@@ -1715,11 +1709,6 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 		arrayLayers = 6;
 		viewType = VK_IMAGE_VIEW_TYPE_CUBE;
 		usage =  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-		bSampler = true;
-		break;
-
-	case eImage_render:
-		usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		bSampler = true;
 		break;
 	}

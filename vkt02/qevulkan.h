@@ -54,13 +54,11 @@ enum QeVKImageType {
 	eImage_2D = 3,
 	eImage_cube = 4,
 	eImage_render = 5,
-	eImage_multiSampleDepthStencil = 7,
-	eImage_multiSampleColor = 8,
 };
 
 struct QeVKImage {
 
-	QeVKImageType type;
+	const QeVKImageType type;
 	VkImage image = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	VkImageView view = VK_NULL_HANDLE;
