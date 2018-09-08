@@ -1662,8 +1662,6 @@ void QeVulkan::setMemoryBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data
 
 void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize, VkFormat format, void* data, VkSampleCountFlagBits sampleCount) {
 
-	//if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
-
 	uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
 	VkImageTiling tiling= VK_IMAGE_TILING_OPTIMAL;
 	VkImageUsageFlags usage;
@@ -1791,28 +1789,23 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 		if (vkCreateSampler(VK->device, &samplerInfo, nullptr, &image.sampler) != VK_SUCCESS) LOG("failed to create texture sampler!");
 	}
 
-	// data
-	if (data)	setMemoryImage(image, dataSize, imageCount, imageSize, format, data);
 	if (image.type == eImage_depthStencil) {
 		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 		transitionImageLayout(commandBuffer, image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, imageCount);
 		endSingleTimeCommands(commandBuffer);
 	}
-}
+	else if(data){
+		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+		transitionImageLayout(commandBuffer, image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, imageCount/*, mipLevels*/);
 
+		if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
 
-void QeVulkan::setMemoryImage(QeVKImage& image, VkDeviceSize dataSize, int imageCount, VkExtent2D& imageSize, VkFormat format, void* data ) {
+		//uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
+		QeVKBuffer staging(eBuffer);
+		createBuffer(staging, dataSize*imageCount, data);
 
-	if (dataSize == 0) dataSize = imageSize.width*imageSize.height * 4;
-
-	//uint32_t mipLevels = 1; //static_cast<uint32_t>(std::floor(std::log2(std::max(width, height)))) + 1;
-	QeVKBuffer staging(eBuffer);
-	createBuffer(staging, dataSize*imageCount, data);
-
-	VkCommandBuffer commandBuffer = beginSingleTimeCommands();
-
-	transitionImageLayout(commandBuffer, image.image, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, imageCount/*, mipLevels*/);
-	copyBufferToImage(commandBuffer, staging.buffer, image.image, dataSize, imageCount, imageSize/*, layer*/);
-	//generateMipmaps(image, width, height, mipLevels);
-	endSingleTimeCommands(commandBuffer);
+		copyBufferToImage(commandBuffer, staging.buffer, image.image, dataSize, imageCount, imageSize/*, layer*/);
+		//generateMipmaps(image, width, height, mipLevels);
+		endSingleTimeCommands(commandBuffer);
+	}
 }
