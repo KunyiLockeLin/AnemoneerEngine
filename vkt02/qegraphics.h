@@ -59,7 +59,7 @@ struct QeDataRender {
 	std::vector<QeDataSubpass*> subpass;
 
 	QeDataRender() :colorImage(eImage_render), colorImage2(eImage_render), depthStencilImage(eImage_depthStencil),
-		multiSampleColorImage(eImage_inputAttach)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
+		multiSampleColorImage(eImage_attach)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
 	~QeDataRender();
 };
 

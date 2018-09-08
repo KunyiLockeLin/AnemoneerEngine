@@ -1684,7 +1684,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 		if(format == VK_FORMAT_UNDEFINED) format = findDepthStencilFormat();
 		break;
 
-	case eImage_inputAttach:
+	case eImage_attach:
 		usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT
 		//properties = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
 		break;
