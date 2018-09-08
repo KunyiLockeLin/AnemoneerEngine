@@ -52,25 +52,25 @@
     - https://learnopengl-cn.github.io/
     - https://blog.selfshadow.com/
   - PBR, Shadow, self-shahow   
-  - compute shader - clothes, water
-  - ray tracing
 ---
   - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
   - parallel programming for collision
   - select object
+  - physical system
+  - compute shader - clothes, water
   - convert the whole assets into a single binary data
   - release memory
   - check return
 ---
-  - physical
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - frustum Culling
   - Dynamic Decals
   - specular map, image based lighting map, metallicRoughness map, occlusion map, emissive map.
   - mix animation
   - room
+  - ray tracing
   - C-style
   - L-system, Swarm grammar
   - combine browser
