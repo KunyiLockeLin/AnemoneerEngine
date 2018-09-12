@@ -115,6 +115,19 @@
     </e>
   </scenes>
   
+  <materials>
+    <e eid="15000" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="1" roughness ="0" emissive ="1" />
+    <e eid="15001" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0.5" roughness ="0" emissive ="1" />
+    <e eid="15002" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0" roughness ="0" emissive ="1" />
+    <e eid="15003" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="1" roughness ="0.5" emissive ="1" />
+    <e eid="15004" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0.5" roughness ="0.5" emissive ="1" />
+    <e eid="15005" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0" roughness ="0.5" emissive ="1" />
+    <e eid="15006" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="1" roughness ="1" emissive ="1" />
+    <e eid="15007" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0.5" roughness ="1" emissive ="1" />
+    <e eid="15008" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0" roughness ="1" emissive ="1" />
+    <e eid="15009" baseColorR ="0" baseColorG ="0" baseColorB ="0" metallic ="0" roughness ="0" emissive ="10" />
+  </materials>
+  
   <models>
     <e eid="14000" obj="animation.gltf" alpha="0"/>
     <e eid="14001" obj="sphere.gltf" alpha="0"/>

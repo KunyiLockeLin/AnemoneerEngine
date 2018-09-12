@@ -1,13 +1,91 @@
-//	http://github.khronos.org/glTF-WebGL-PBR/
-//	https://github.com/KhronosGroup/glTF-WebGL-PBR/blob/master/shaders/pbr-frag.glsl
-//	http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
-//	http://blog.selfshadow.com/publications/s2012-shading-course/burley/s2012_pbs_disney_brdf_notes_v3.pdf
-//	https://github.com/KhronosGroup/glTF-WebGL-PBR/#environment-maps
-//	https://www.cs.virginia.edu/~jdl/bib/appearance/analytic%20models/schlick94b.pdf
-
 #version 450
 #extension GL_GOOGLE_include_directive : enable
 #include "header.frag"
+/*
+// Normal Distribution function --------------------------------------
+float D_GGX(float dotNH, float roughness)
+{
+	float alpha = roughness * roughness;
+	float alpha2 = alpha * alpha;
+	float denom = dotNH * dotNH * (alpha2 - 1.0) + 1.0;
+	return (alpha2)/(M_PI * denom*denom); 
+}
+
+// Geometric Shadowing function --------------------------------------
+float G_SchlicksmithGGX(float dotNL, float dotNV, float roughness)
+{
+	float r = (roughness + 1.0);
+	float k = (r*r) / 8.0;
+	float GL = dotNL / (dotNL * (1.0 - k) + k);
+	float GV = dotNV / (dotNV * (1.0 - k) + k);
+	return GL * GV;
+}
+
+// Fresnel function ----------------------------------------------------
+vec3 F_Schlick(float cosTheta, float metallic)
+{
+	vec3 F0 = mix(vec3(0.04), modelData.mtl.baseColor.rgb, metallic); // * material.specular
+	vec3 F = F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0); 
+	return F;    
+}
+
+// Specular BRDF composition --------------------------------------------
+vec3 BRDF(vec3 L, vec3 V, vec3 N, float metallic, float roughness)
+{
+	// Precalculate vectors and dot products	
+	vec3 H = normalize (V + L);
+	float dotNV = clamp(dot(N, V), 0.0, 1.0);
+	float dotNL = clamp(dot(N, L), 0.0, 1.0);
+	float dotLH = clamp(dot(L, H), 0.0, 1.0);
+	float dotNH = clamp(dot(N, H), 0.0, 1.0);
+
+	// Light color fixed
+	vec3 lightColor = vec3(1.0);
+
+	vec3 color = vec3(0.0);
+
+	if (dotNL > 0.0)
+	{
+		float rroughness = max(0.05, roughness);
+		// D = Normal distribution (Distribution of the microfacets)
+		float D = D_GGX(dotNH, roughness); 
+		// G = Geometric shadowing term (Microfacets shadowing)
+		float G = G_SchlicksmithGGX(dotNL, dotNV, roughness);
+		// F = Fresnel factor (Reflectance depending on angle of incidence)
+		vec3 F = F_Schlick(dotNV, metallic);
+
+		vec3 spec = D * F * G / (4.0 * dotNL * dotNV);
+
+		color += spec * dotNL * lightColor;
+	}
+
+	return color;
+}
+
+void main()
+{		  
+	vec3 N = normalize(inNormal);
+	vec3 V = normalize(environmentData.camera.pos.xyz - inPostion.xyz);
+
+	float roughness = modelData.mtl.metallicRoughnessEmissive.y;
+
+	// Add striped pattern to roughness based on vertex position
+	roughness = max(roughness, step(fract(inPostion.y * 2.02), 0.5));
+
+	// Specular contribution
+	vec3 Lo = vec3(0.0);
+	for (int i = 0; i < environmentData.param.x; i++) {
+		vec3 L = normalize(lights[i].pos.xyz - inPostion.xyz);
+		Lo += BRDF(L, V, N, modelData.mtl.metallicRoughnessEmissive.x, roughness);
+	};
+
+	// Combine with ambient
+	vec3 color = modelData.mtl.baseColor.rgb * 0.02;
+	color += Lo;
+
+	outColor = adjustColor(color, modelData.mtl.baseColor.a);
+}
+*/
 
 void main() {
 	vec4 baseColor1 = texture(baseColorMapSampler, inUV);
@@ -119,5 +197,5 @@ void main() {
 	vec4 refract_color = texture( cubeMapSampler, refrac_vector );
   
 	vec4 cubemapColor = mix( reflect_color, refract_color, angle );
-	outColor =  mix( outColor, cubemapColor, 0.7 );*/
+	outColor =  mix( outColor, cubemapColor, 0.7 ); */
 }
