@@ -37,13 +37,13 @@ void QeLight::setProperty() {
 }
 
 
-void QeLight::updateCompute(float time) {
+void QeLight::update1() {
 
 	if (speed) {
 
 		QeMatrix4x4f mat;
 		mat *= MATH->translate(center);
-		mat *= MATH->rotate(time * speed, up);
+		mat *= MATH->rotate(QE->deltaTime * speed, up);
 		QeVector4f vec4 = QeVector4f({ pos - center }, 1.0f);
 		pos = mat * vec4;
 
@@ -51,5 +51,3 @@ void QeLight::updateCompute(float time) {
 		bUpdate = false;
 	}
 }
-
-void QeLight::updateRender(float time) {}

@@ -24,6 +24,6 @@ public:
 	virtual void setProperty();
 	virtual void reset();
 	virtual QeMatrix4x4f getAttachMatrix(const char* attachSkeletonName);
-	virtual void updateCompute(float time) {}
-	virtual void updateRender(float time) {}
+	virtual void update1() {}
+	virtual void update2() {}
 };

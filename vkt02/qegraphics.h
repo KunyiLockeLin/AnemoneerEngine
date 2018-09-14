@@ -101,8 +101,8 @@ public:
 	void popViewport(size_t renderIndex);
 	void updateViewport();
 	void updateBuffer();
-	void updateRender(float time);
-	void updateCompute(float time);
+	void update1();
+	void update2();
 	void setTargetCamera(int index);
 	QeCamera* getTargetCamera();
 	QeDataRender * getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);

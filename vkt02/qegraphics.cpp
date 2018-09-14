@@ -157,8 +157,8 @@ void QeGraphics::addNewViewport(size_t renderIndex) {
 
 	QeDataDescriptorSetCommon data;
 	
-	if (ACT->light) {
-		vp->lights.push_back(ACT->light);
+	if (SCENE->light) {
+		vp->lights.push_back(SCENE->light);
 		VK->createBuffer(vp->lightsBuffer, sizeof(vp->lights[0]->bufferData), nullptr);
 		data.lightsBuffer = vp->lightsBuffer.buffer;
 	}
@@ -211,7 +211,7 @@ void QeGraphics::updateBuffer() {
 		for (size_t j = 0; j < size1; ++j) {
 
 			QeDataViewport * viewport = render->viewports[j];
-			viewport->environmentData.ambientColor = ACT->ambientColor;
+			viewport->environmentData.ambientColor = SCENE->ambientColor;
 			viewport->environmentData.camera = viewport->camera->bufferData;
 			viewport->environmentData.param.x = float(viewport->lights.size());
 
@@ -238,7 +238,7 @@ void QeGraphics::updateBuffer() {
 	}
 }
 
-void QeGraphics::updateCompute(float time) {
+void QeGraphics::update1() {
 	if (bRecreateRender) {
 
 		cleanupRender();
@@ -260,11 +260,11 @@ void QeGraphics::updateCompute(float time) {
 		OBJMGR->recreatePipeline();		
 		bRecreateRender = false;
 	}
-	VK->pushConstants[0] = time;
+	VK->pushConstants[0] = QE->deltaTime;
 	bUpdateDrawCommandBuffers = true;
 }
 
-void QeGraphics::updateRender(float time) {
+void QeGraphics::update2() {
 
 	if (bRecreateRender) return;
 	updateBuffer();
@@ -654,7 +654,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			size_t size2 = clearValues.size();
 			for (size_t k = 1; k < size2; ++k) {
-				clearValues[k].color = { ACT->ambientColor.x + i-1, ACT->ambientColor.y, ACT->ambientColor.z, 1.0f };
+				clearValues[k].color = { SCENE->ambientColor.x + i-1, SCENE->ambientColor.y, SCENE->ambientColor.z, 1.0f };
 			}
 		}
 		renderPassInfo.renderPass = render->renderPass;

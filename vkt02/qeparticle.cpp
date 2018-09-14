@@ -136,7 +136,7 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	vkCmdDraw(command->commandBuffer, currentParticlesSize, 1, 0, 0);
 }
 
-void QeParticle::updateCompute(float time) {
+void QeParticle::update1() {
 
 	if (!totalParticlesSize) return;
 	

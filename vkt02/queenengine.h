@@ -21,14 +21,12 @@ public:
 	void run();
 
 	int sceneEID;
-	QeActivity* activity = nullptr;
+	QeScene* scene = nullptr;
 	bool bClosed = false;
 	bool bRestart = false;
-	int currentRenderFPS = 0;
-	int currentComputeFPS = 0;
-	QeTimer renderFPSTimer;
-	QeTimer computeFPSTimer;
+	float deltaTime;
+	int currentFPS = 0;
+	QeTimer FPSTimer;
 
 	void mainLoop();
 };
-

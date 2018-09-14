@@ -162,8 +162,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="qeactivity.cpp" />
+    <ClCompile Include="qescene.cpp" />
     <ClCompile Include="qeasset.cpp" />
+    <ClCompile Include="qecomponent.cpp" />
+    <ClCompile Include="qeobject.cpp" />
     <ClCompile Include="qepoint.cpp" />
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecamera.cpp" />
@@ -187,8 +189,10 @@
     <ClCompile Include="qewindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="qeactivity.h" />
+    <ClInclude Include="qescene.h" />
     <ClInclude Include="qeasset.h" />
+    <ClInclude Include="qecomponent.h" />
+    <ClInclude Include="qeobject.h" />
     <ClInclude Include="qepoint.h" />
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecamera.h" />

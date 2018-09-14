@@ -88,8 +88,7 @@ public:
 	void setShow(bool b);
 	void updateBuffer();
 	virtual bool isShowByCulling(QeCamera* camera);
-	//virtual void updateRender(float time) {}
-	virtual void updateCompute(float time);
+	virtual void update1();
 
 	void setPosFaceUpSize(QeVector3f& _pos, float _face, float _up, QeVector3f& _size);
 	void move(QeVector3f& _pos);

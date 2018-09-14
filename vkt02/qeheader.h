@@ -87,6 +87,8 @@ struct QeSkeleton;
 struct QeInputData;
 struct QeDataSwapchain;
 struct QeDataDrawCommand;
+class QeObject;
+class QeComponent;
 class QePoint;
 class QeEncode;
 class QeMath;
@@ -106,7 +108,7 @@ class QeViewport;
 class QueenEngine;
 class QeObjectMangerKey;
 class QeObjectManger;
-class QeActivity;
+class QeScene;
 class QeVulkan;
 class QeLog;
 class QeCommand;
@@ -119,6 +121,8 @@ class QeLine;
 #include "qevulkan.h"
 #include "qeobjectmanger.h"
 #include "qeasset.h"
+#include "qeobject.h"
+#include "qecomponent.h"
 #include "qepoint.h"
 #include "qemodel.h"
 #include "qerender.h"
@@ -132,7 +136,7 @@ class QeLine;
 #include "qegraphics.h"
 #include "queenengine.h"
 #include "qeglobal.h"
-#include "qeactivity.h"
+#include "qescene.h"
 #include "qelog.h"
 #include "qecommand.h"
 

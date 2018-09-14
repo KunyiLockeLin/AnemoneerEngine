@@ -21,9 +21,9 @@ QeDataDescriptorSetModel QeLine::createDescriptorSetModel() {
 	return descriptorSetData;
 }
 
-void QeLine::updateCompute(float time) {
+void QeLine::update1() {
 	updateBuffer();
 }
 
-void QeLine::updateRender(float time) {
+void QeLine::update2() {
 }

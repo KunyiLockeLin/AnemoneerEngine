@@ -145,39 +145,39 @@ void QeObjectManger::sortAlphaModels(QeCamera * camera) {
 	}
 }
 
-void QeObjectManger::updateRender(float _time) {
+void QeObjectManger::update1() {
 	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
-		it->second->updateRender(_time);
+		it->second->update1();
 		++it;
 	}
 	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
 	while (it1 != mgrModels.end()) {
-		it1->second->updateRender(_time);
+		it1->second->update1();
 		++it1;
 	}
 	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
 	while (it2 != mgrAlphaModels.end()) {
-		(*it2)->updateRender(_time);
+		(*it2)->update1();
 		++it2;
 	}
 }
 
-void QeObjectManger::updateCompute(float _time) {
+void QeObjectManger::update2() {
 
 	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
 	while (it != mgrObjs.end()) {
-		it->second->updateCompute(_time);
+		it->second->update2();
 		++it;
 	}
 	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
 	while (it1 != mgrModels.end()) {
-		it1->second->updateCompute(_time);
+		it1->second->update2();
 		++it1;
 	}
 	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
 	while (it2 != mgrAlphaModels.end()) {
-		(*it2)->updateCompute(_time);
+		(*it2)->update2();
 		++it2;
 	}
 }

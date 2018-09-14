@@ -1,7 +1,7 @@
 #include "qeheader.h"
 
 
-void QeActivity::init(QeAssetXML* _property) {
+void QeScene::init(QeAssetXML* _property) {
 	initProperty = _property;
 
 	QeAssetXML * node;
@@ -76,7 +76,7 @@ void QeActivity::init(QeAssetXML* _property) {
 	if (node)	axis = (QeLine*)OBJMGR->getObject(0, node);
 }
 
-void QeActivity::eventInput(QeInputData & inputData) {
+void QeScene::eventInput(QeInputData & inputData) {
 	
 	// viewport
 	switch (inputData.inputType) {
@@ -174,6 +174,3 @@ void QeActivity::eventInput(QeInputData & inputData) {
 		break;
 	}
 }
-
-void QeActivity::updateCompute(float time) {}
-void QeActivity::updateRender(float time) {}

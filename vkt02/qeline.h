@@ -10,7 +10,7 @@ public:
 
 	virtual void init(QeAssetXML* _property, int _parentOID);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
-	virtual void updateCompute(float time);
-	virtual void updateRender(float time);
+	virtual void update1();
+	virtual void update2();
 };
 

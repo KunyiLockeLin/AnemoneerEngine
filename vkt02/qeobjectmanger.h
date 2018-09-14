@@ -28,8 +28,8 @@ public:
 
 	void sortAlphaModels(QeCamera* camera);
 
-	void updateCompute(float _time);
-	void updateRender(float _time);
+	void update1();
+	void update2();
 
 	void cleanupPipeline();
 	void recreatePipeline();

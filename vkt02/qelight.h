@@ -27,7 +27,6 @@ public:
 	bool bUpdate;
 
 	virtual void setProperty();
-	virtual void updateCompute(float time);
-	virtual void updateRender(float time);
+	virtual void update1();
 };
 

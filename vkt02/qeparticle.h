@@ -25,5 +25,5 @@ public:
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
-	virtual void updateCompute(float time);
+	virtual void update1();
 };

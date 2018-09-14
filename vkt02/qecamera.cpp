@@ -169,7 +169,7 @@ void QeCamera::setMatrix() {
 }
 
 
-void QeCamera::updateCompute(float time) {
+void QeCamera::update1() {
 
 	if (bUpdate) {
 		updateAxis();
@@ -179,5 +179,5 @@ void QeCamera::updateCompute(float time) {
 }
 
 void QeCamera::updateAxis() {
-	if(ACT && ACT->axis)	ACT->axis->pos = center;
+	if(SCENE && SCENE->axis)	SCENE->axis->pos = center;
 }

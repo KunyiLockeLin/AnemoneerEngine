@@ -48,7 +48,6 @@ public:
 	void setMousePos(QeVector2i mousePos);
 	void zoomInOut(QeVector2i mousePos);
 	void move(QeVector3f _dir, bool bMoveCenter = true);
-	//virtual void updateRender(float time) {}
-	virtual void updateCompute(float time);
+	virtual void update1();
 	void updateAxis();
 };

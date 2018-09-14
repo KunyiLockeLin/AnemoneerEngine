@@ -66,7 +66,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			SetFocus(commandBox);
 			break;
 		default:
-			ACT->eventInput(inputData);
+			SCENE->eventInput(inputData);
 			break;
 		}
 
@@ -232,21 +232,17 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append(" - ");
 	windowTitle.append(device);
 	windowTitle.append(" - ");
-	windowTitle.append(std::to_string(QE->currentComputeFPS));
+	windowTitle.append(std::to_string(QE->currentFPS));
 	windowTitle.append("/");
-	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "computeFPS"));
-	windowTitle.append(" compute fps");
+	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "FPS"));
+	windowTitle.append(" fps");
 	windowTitle.append(" - ");
-	windowTitle.append(std::to_string(QE->currentRenderFPS));
-	windowTitle.append("/");
-	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS"));
-	windowTitle.append(" render fps");
 	windowTitle.append(" - scene ");
-	windowTitle.append(std::to_string(ACT->eid));
+	windowTitle.append(std::to_string(SCENE->eid));
 	return windowTitle;
 }
 
-void QeWindow::updateCompute(float time) {
+void QeWindow::update1() {
 
 	std::string windowTitle = getWindowTitle();
 	std::wstring ws = chartowchar(windowTitle);
@@ -260,7 +256,7 @@ void QeWindow::updateCompute(float time) {
 	consoleInput();
 }
 
-void QeWindow::updateRender(float time) {}
+void QeWindow::update2() {}
 
 void QeWindow::consoleInput() {
 	if (!DEBUG->isConsole())	return;

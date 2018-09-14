@@ -2,11 +2,11 @@
 
 #include "qeheader.h"
 
-class QeActivity {
+class QeScene {
 
 public:
-	QeActivity(QeQueenEngineKey& _key) {}
-	//~QeActivity() {}
+	QeScene(QeQueenEngineKey& _key) {}
+	//~QeQeScene() {}
 
 	int eid;
 	QeVector4f	ambientColor;
@@ -18,7 +18,7 @@ public:
 
 	void init(QeAssetXML * _property);
 	void eventInput(QeInputData & inputData);
-	void updateCompute(float time);
-	void updateRender(float time);
+	void update1() {}
+	void update2() {}
 };
 

@@ -51,9 +51,6 @@
     <ClCompile Include="qevulkan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qeactivity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qebillboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,6 +82,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qerender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qeobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qecomponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qescene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,9 +128,6 @@
     <ClInclude Include="qevulkan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qeactivity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="qebillboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -156,6 +159,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qerender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qeobject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qecomponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qescene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

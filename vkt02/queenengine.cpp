@@ -19,12 +19,11 @@ void QueenEngine::run() {
 	if(sceneEID ==0)	AST->getXMLiValue(&sceneEID, node, 1, "startScene");
 	
 	node = AST->getXMLEditNode(eObject_Scene, sceneEID);
-	if (activity) delete activity;
+	if (scene) delete scene;
 
-	activity = new QeActivity(key);
-	activity->init(node);
-	renderFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "renderFPS")));
-	computeFPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "computeFPS")));
+	scene = new QeScene(key);
+	scene->init(node);
+	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "FPS")));
 
 	mainLoop();
 }
@@ -33,26 +32,22 @@ void QueenEngine::mainLoop() {
 	while (!bClosed && !bRestart) {
 
 		int passMilliSecond;
-		if (computeFPSTimer.checkTimer(passMilliSecond)) {
+		if (FPSTimer.checkTimer(passMilliSecond)) {
 
-			currentComputeFPS = 1000 / passMilliSecond;
-			float time = float(passMilliSecond) / 1000;
-			VK->updateCompute(time);
-			VP->updateCompute(time);
-			WIN->updateCompute(time);
-			ACT->updateCompute(time);
-			OBJMGR->updateCompute(time);
-		}
+			currentFPS = 1000 / passMilliSecond;
+			deltaTime = float(passMilliSecond) / 1000;
 
-		if (renderFPSTimer.checkTimer(passMilliSecond)) {
+			VK->update1();
+			VP->update1();
+			WIN->update1();
+			SCENE->update1();
+			OBJMGR->update1();
 
-			currentRenderFPS = 1000 / passMilliSecond;
-			float time = float(passMilliSecond) / 1000;
-			WIN->updateRender(time);
-			ACT->updateRender(time);
-			OBJMGR->updateRender(time);
-			VP->updateRender(time);
-			VK->updateRender(time);
+			WIN->update2();
+			SCENE->update2();
+			OBJMGR->update2();
+			VP->update2();
+			VK->update2();
 		}
 	}
 	vkDeviceWaitIdle(VK->device);

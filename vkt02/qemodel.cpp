@@ -279,9 +279,9 @@ void QeModel::setProperty() {
 	//graphicsPipeline.bStencilBuffer = bufferData.param.z ? true : false;
 }
 
-void QeModel::updateCompute(float time) {
-	if (speed)	rotateFace(time*speed);
-	updateAction(time);
+void QeModel::update1() {
+	if (speed)	rotateFace(QE->deltaTime*speed);
+	updateAction(QE->deltaTime);
 	updateBuffer();
 }
 

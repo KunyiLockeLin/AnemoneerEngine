@@ -209,8 +209,8 @@ public:
 	std::vector<float> pushConstants;
 
 	void init();
-	void updateRender(float time);
-	void updateCompute(float time);
+	void update1() {}
+	void update2() {}
 
 	VkDevice device;
 	VkInstance instance;
