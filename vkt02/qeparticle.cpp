@@ -1,12 +1,13 @@
 #include "qeheader.h"
 
-void QeParticle::init(QeAssetXML* _property, int _parentOID) {
-	
-	QePoint::init(_property,  _parentOID);
+void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
-	particleRule = AST->getParticle(eid);
-	mtlData = AST->getMaterialImage(particleRule->image);
-	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+	QeComponent::initialize(_property, _owner);
+
+	particleRule = ENCODE->decodeParticle(initProperty);
+	materialData = AST->getMaterialImage(particleRule->image);
+
+	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
 	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "default", "computeShader", "particle"));
 	AST->setGraphicsShader(graphicsShader, nullptr, "particle");
@@ -21,17 +22,26 @@ void QeParticle::init(QeAssetXML* _property, int _parentOID) {
 
 	// ahlpa
 	graphicsPipeline.bAlpha = particleRule->bAlpha;
+	if (graphicsPipeline.bAlpha)	GRAP->alphaModels.push_back(this);
+	else							GRAP->models.push_back(this);
 
 	// size
 	size.x = MATH->fRandom(particleRule->size.x, particleRule->size_range.x);
 	size.y = MATH->fRandom(particleRule->size.y, particleRule->size_range.y);
 	size.z = 1;
 
-	bufferData.material = mtlData->value;
-	bufferData.param.x = bFollowPos;
+	AST->getXMLiValue(&bornTargetTranformOID, initProperty, 1, "bornTargetTranformOID");
+
+	bufferData.material = materialData->value;
+	bufferData.param.x = (float)bornTargetTranformOID;
 
 	VK->createBuffer(vertexBuffer, sizeof(QeVertex) * totalParticlesSize, nullptr);
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
+}
+
+void QeParticle::clear() {
+	delete particleRule;
+	QeModel::clear();
 }
 
 QeVertex QeParticle::createParticleData() {
@@ -103,8 +113,8 @@ QeVertex QeParticle::createParticleData() {
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageView = mtlData->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSampler = mtlData->image.pBaseColorMap->sampler;
+	descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
 	descriptorSetData.texelBufferView = vertexBuffer.view;
 	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
 	return descriptorSetData;
@@ -121,11 +131,14 @@ void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCa
 
 void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
-	if (!bShow || !isShowByCulling(command->camera)) return;
+	if (!isShowByCulling(command->camera)) return;
 	if (!currentParticlesSize) return;
 
 	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet.set, 0, nullptr);
 
+	graphicsPipeline.subpass = 0;
+	graphicsPipeline.componentType = componentType;
+	graphicsPipeline.sampleCount = GRAP->sampleCount;
 	graphicsPipeline.renderPass = command->renderPass;
 	graphicsPipeline.minorType = eGraphicsPipeLine_none;
 	graphicsPipeline.shader = &graphicsShader;
@@ -166,10 +179,12 @@ void QeParticle::update1() {
 			b = true;
 			for (int i = currentParticlesSize; i<size; ++i) {
 				QeVertex particle = createParticleData();
-				if (!bFollowPos) {
-					particle.pos.x += parentModel._30;
-					particle.pos.y += parentModel._31;
-					particle.pos.z += parentModel._32;
+
+				if (bornTargetTranformOID) {
+					QeTransform* target = (QeTransform*)OBJMGR->findComponent(eComponent_transform, bornTargetTranformOID);
+					particle.pos.x += target->worldPosition().x;
+					particle.pos.y += target->worldPosition().y;
+					particle.pos.z += target->worldPosition().z;
 				}
 				particles.push_back(particle);
 			}
@@ -182,7 +197,14 @@ void QeParticle::update1() {
 		VK->setMemoryBuffer(vertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
 		//memset(bDeaths.data(), 0, sizeof(bDeaths[0])*bDeaths.size());
 		//VK->setMemoryBuffer(outBuffer, sizeof(bDeaths[0])*bDeaths.size(), bDeaths.data());
-		VP->bUpdateDrawCommandBuffers = true;
+		GRAP->bUpdateDrawCommandBuffers = true;
 	}
-	updateBuffer();
+
+	QeVector3f scale = owner->transform->worldScale();
+	scale.x *= size.x;
+	scale.y *= size.y;
+
+	bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale);
+
+	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }

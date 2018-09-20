@@ -3,7 +3,7 @@
 #include "qeheader.h"
 
 
-namespace  QeString {
+namespace  QeLib {
 
 	std::string toString(const int &i);
 	std::string operator+(std::string const &a, const int &b);
@@ -16,6 +16,21 @@ namespace  QeString {
 	std::string operator+=(std::string const &a, const float &b);
 	std::string operator+=(std::string const &a, const double &b);
 	std::string operator+=(std::string const &a, const char *b);
+
+	template <class T>
+	int findElementFromVector(std::vector<T> & vec, T element) {
+		std::vector<T>::iterator it = std::find(vec.begin(), vec.end(), element);
+		if (it == vec.end()) return INDEX_NONE;
+		return int(it - vec.begin());
+	}
+
+	template <class T>
+	bool eraseElementFromVector(std::vector<T> & vec, T element) {
+		int index = findElementFromVector(vec, element);
+		if (index == INDEX_NONE) return false;
+		vec.erase(vec.begin() + index);
+		return true;
+	}
 };
 
 
@@ -32,8 +47,8 @@ class QeGlobal
 private:
 	QeGlobal();
 	QeGlobalKey	key;
-	void init();
-	void cleanup();
+	void initialize();
+	void clear();
 public:
 	~QeGlobal();
 
@@ -45,6 +60,7 @@ public:
 	QueenEngine*		engine = nullptr;
 	QeVulkan*			vulkan = nullptr;
 	QeWindow*			window = nullptr;
+	QeScene*			scene = nullptr;
 	QeGraphics*			graphics = nullptr;
 	QeMath*				math = nullptr;
 	QeAsset*			asset = nullptr;
@@ -58,8 +74,8 @@ public:
 #define QE		GLB.engine
 #define VK		GLB.vulkan
 #define WIN		GLB.window
-#define VP		GLB.graphics
-#define SCENE	QE->scene
+#define GRAP	GLB.graphics
+#define SCENE	GLB.scene
 #define MATH	GLB.math
 #define AST		GLB.asset
 #define OBJMGR	GLB.objMgr

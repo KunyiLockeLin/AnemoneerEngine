@@ -1,7 +1,30 @@
 #include "qeheader.h"
 
 
-void QeLight::setProperty() {
+void QeLight::initialize(QeAssetXML* _property, QeObject* _owner) {
+	QeComponent::initialize(_property, _owner);
+
+	AST->getXMLfValue(&bufferData.color.x, initProperty, 1, "colorR");
+	AST->getXMLfValue(&bufferData.color.y, initProperty, 1, "colorG");
+	AST->getXMLfValue(&bufferData.color.z, initProperty, 1, "colorB");
+	AST->getXMLfValue(&bufferData.param.x, initProperty, 1, "lightType");
+	AST->getXMLfValue(&bufferData.param.y, initProperty, 1, "intensity");
+	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "coneAngle");
+	GRAP->addLight(this);
+}
+
+void QeLight::clear() {
+	GRAP->removeLight(this);
+}
+
+void QeLight::update1() {
+	if( owner && owner->transform ) {
+		bufferData.pos = owner->transform->worldPosition();
+		bufferData.dir = owner->transform->worldFaceVector();
+	}
+}
+
+/*void QeLight::setProperty() {
 	QePoint::setProperty();
 
 	bufferData.pos = pos;
@@ -50,4 +73,4 @@ void QeLight::update1() {
 		bufferData.pos = pos;
 		bUpdate = false;
 	}
-}
+}*/

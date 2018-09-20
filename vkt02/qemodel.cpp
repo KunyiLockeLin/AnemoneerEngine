@@ -1,7 +1,151 @@
 #include "qeheader.h"
 
 
+
+void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
+	QeComponent::initialize(_property, _owner);
+
+	AST->getXMLbValue(&graphicsPipeline.bAlpha, initProperty, 1, "alpha");
+	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "lineWidth");
+
+	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
+
+	AST->setGraphicsShader(graphicsShader, initProperty, "model");
+
+	const char* c = AST->getXMLValue(initProperty, 1, "obj");
+	modelData = AST->getModel(c);
+	materialData = modelData->pMaterial;
+	if(materialData) bufferData.material = materialData->value;
+
+	AST->setGraphicsShader(graphicsShader, initProperty, "model");
+	AST->setGraphicsShader(normalShader, nullptr, "normal");
+	AST->setGraphicsShader(outlineShader, nullptr, "outline");
+
+	if (graphicsPipeline.bAlpha)	GRAP->alphaModels.push_back(this);
+	else							GRAP->models.push_back(this);
+}
+
+void QeModel::clear() {
+	if (graphicsPipeline.bAlpha)	eraseElementFromVector<QeModel*>(GRAP->alphaModels, this);
+	else							eraseElementFromVector<QeModel*>(GRAP->models, this);
+}
+
+void QeModel::update1() {
+
+	bool bRotate = true;
+	if (componentType == eComponent_billboard || componentType == eComponent_partical) bRotate = false;
+
+	bufferData.model = owner->transform->worldTransformMatrix(bRotate);
+	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
+}
+void QeModel::update2() {}
+
+
 void QeModel::updateShaderData() {
+
+	if (!descriptorSet.set) {
+		VK->createDescriptorSet(descriptorSet);
+		VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+	}
+}
+
+QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
+	QeDataDescriptorSetModel descriptorSetData;
+	descriptorSetData.modelBuffer = modelBuffer.buffer;
+
+	if (materialData->image.pBaseColorMap) {
+		descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
+		descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
+	}
+	if (materialData->image.pNormalMap) {
+		descriptorSetData.normalMapImageView = materialData->image.pNormalMap->view;
+		descriptorSetData.normalMapSampler = materialData->image.pNormalMap->sampler;
+	}
+	bufferData.param.x = 0;
+	return descriptorSetData;
+}
+
+void QeModel::createPipeline() {
+	if (computeShader) computePipeline = VK->createComputePipeline(computeShader);
+}
+
+bool QeModel::isShowByCulling(QeCamera* camera) {
+
+	bool _bCullingShow = true;
+	QeVector3f vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
+	float dis = MATH->length(vec);
+
+	if (dis > camera->cullingDistance) return false;
+
+	if (componentType != eComponent_cubemap && _bCullingShow) {
+		float angle = MATH->getAnglefromVectors(camera->face(), vec);
+		if (angle > 100 || angle < -100) return false;
+	}
+
+	return true;
+}
+
+
+void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
+
+	if (!isShowByCulling(command->camera)) return;
+
+	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet.set, 0, nullptr);
+
+	VkDeviceSize offsets[] = { 0 };
+
+	graphicsPipeline.subpass = 0;
+	graphicsPipeline.componentType = componentType;
+	graphicsPipeline.sampleCount = GRAP->sampleCount;
+	graphicsPipeline.renderPass = command->renderPass;
+	graphicsPipeline.minorType = eGraphicsPipeLine_none;
+	graphicsPipeline.shader = &graphicsShader;
+
+	vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
+
+	switch (componentType) {
+	case eComponent_model:
+	case eComponent_cubemap:
+		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdBindIndexBuffer(command->commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+		break;
+
+	case eComponent_render:
+	case eComponent_billboard:
+		vkCmdDraw(command->commandBuffer, 1, 1, 0, 0);
+		break;
+
+	case eComponent_line:
+	case eComponent_axis:
+	case eComponent_grid:
+		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
+		vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
+		break;
+
+		//case eObject_Particle:
+		//	break;
+	}
+
+	if (bufferData.param.z  && outlineShader.vert) {
+
+		graphicsPipeline.minorType = eGraphicsPipeLine_stencilBuffer;
+		graphicsPipeline.shader = &outlineShader;
+
+		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
+		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
+	}
+
+	if (VK->bShowNormal && normalShader.vert) {
+
+		graphicsPipeline.minorType = eGraphicsPipeLine_normal;
+		graphicsPipeline.shader = &normalShader;
+
+		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
+		vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
+	}
+}
+/*void QeModel::updateShaderData() {
 
 	if (!descriptorSet.set) {
 		VK->createDescriptorSet(descriptorSet);
@@ -26,7 +170,7 @@ void QeModel::updateShaderData() {
 		delete shaderData[i - 1];
 		shaderData.pop_back();
 	}
-	*/
+	
 }
 
 
@@ -59,7 +203,7 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 			descriptorSetData.cubeMapSampler = cube->mtlData->image.pCubeMap->sampler;
 			bufferData.param.x = 1;
 		}
-	}*/
+	}
 	return descriptorSetData;
 }
 
@@ -134,7 +278,7 @@ void QeModel::setMatModel() {
 	}
 	float dis = 1.0f;
 	if (bFixSize) {
-		dis = MATH->length(VP->getTargetCamera()->pos - pos);
+		dis = MATH->length(GRAP->getTargetCamera()->pos - pos);
 		dis = dis < 0.1f ? 0.01f : dis/10;
 	}
 	mat *= MATH->scale(size*dis);
@@ -216,7 +360,7 @@ void QeModel::setProperty() {
 
 	graphicsPipeline.subpass = 0;
 	graphicsPipeline.objectType = objectType;
-	graphicsPipeline.sampleCount = VP->sampleCount;
+	graphicsPipeline.sampleCount = GRAP->sampleCount;
 
 	face = 0.0f;
 	up = 0.0f;
@@ -308,7 +452,7 @@ bool QeModel::isShowByCulling(QeCamera* camera) {
 void QeModel::setShow(bool b) {
 	if (b != bShow) {
 		bShow = b;
-		VP->bUpdateDrawCommandBuffers = true;
+		GRAP->bUpdateDrawCommandBuffers = true;
 	}
 }
 
@@ -327,7 +471,7 @@ void QeModel::updateBuffer() {
 		MATH->inverse(mat, mat);
 		shaderData[i]->data.normal = MATH->transpose(mat);
 		VK->setMemoryBuffer(shaderData[i]->buffer, sizeof(shaderData[i]->data), &shaderData[i]->data);
-	}*/
+	}
 }
 
 bool QeModel::setAction(unsigned int actionID, QeActionType type) {
@@ -472,4 +616,4 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 		vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
 		vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
 	}
-}
+}*/

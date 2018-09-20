@@ -1,7 +1,7 @@
 #include "qeheader.h"
 
 
-namespace  QeString {
+namespace  QeLib {
 	std::string toString(const int & i) {
 		std::ostringstream oss;
 		oss << i;
@@ -59,11 +59,12 @@ namespace  QeString {
 	}
 };
 
-QeGlobal::QeGlobal() { init(); }
+QeGlobal::QeGlobal() { initialize(); }
 
-void QeGlobal::init() {
+void QeGlobal::initialize() {
 	if (engine == nullptr)		engine = new QueenEngine(key);
 	if (window == nullptr)		window = new QeWindow(key);
+	if (scene == nullptr)		scene = new QeScene(key);
 	if (graphics == nullptr)	graphics = new QeGraphics(key);
 	if (math == nullptr)		math = new QeMath(key);
 	if (asset == nullptr)		asset = new QeAsset(key);
@@ -76,7 +77,7 @@ void QeGlobal::init() {
 
 QeGlobal::~QeGlobal() {
 	
-	cleanup();
+	clear();
 	if (vulkan != nullptr) {
 		delete vulkan;
 		vulkan = nullptr;
@@ -91,7 +92,7 @@ QeGlobal::~QeGlobal() {
 	}
 }
 
-void QeGlobal::cleanup() {
+void QeGlobal::clear() {
 
 	if (math != nullptr) {
 		delete math;
@@ -125,4 +126,4 @@ void QeGlobal::cleanup() {
 
 QeGlobal& QeGlobal::getInstance() { static QeGlobal _s; return _s; }
 
-void QeGlobal::restart() { cleanup(); init(); WIN->resize(); }
+void QeGlobal::restart() { clear(); initialize(); WIN->resize(); }

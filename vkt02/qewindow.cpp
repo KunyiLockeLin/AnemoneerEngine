@@ -51,7 +51,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		QE->bClosed = true;
 		break;
 	case WM_EXITSIZEMOVE:
-		VP->bRecreateRender = true;
+		GRAP->bRecreateRender = true;
 		break;
 
 	default:
@@ -65,12 +65,14 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			ShowWindow(commandBox, SW_SHOW);
 			SetFocus(commandBox);
 			break;
-		default:
-			SCENE->eventInput(inputData);
-			break;
 		}
-
 		break;
+	}
+
+	std::vector<QeInputControl*>::iterator it = inputControls.begin();
+	while (it != inputControls.end()) {
+		(*it)->updateInput();
+		++it;
 	}
 }
 
@@ -87,8 +89,8 @@ void QeWindow::resize() {
 	RECT windowRect;
 	windowRect.left = 0;
 	windowRect.top = 0;
-	windowRect.right = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "width"));
-	windowRect.bottom = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "height"));
+	windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting" ,"envir", "width"));
+	windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "height"));
 
 	DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
@@ -102,10 +104,10 @@ void QeWindow::resize() {
 	windowRect.top = y;
 
 	SetWindowPos(window, 0, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOZORDER);
-	VP->bRecreateRender = true;
+	GRAP->bRecreateRender = true;
 }
 
-void QeWindow::init() {
+void QeWindow::initialize() {
 
 	if (bInit) return;
 	bInit = true;
@@ -115,7 +117,7 @@ void QeWindow::init() {
 	windowInstance = GetModuleHandle(nullptr);
 
 	WNDCLASSEX wndClass;
-	std::wstring title = chartowchar(AST->getXMLValue(2, AST->CONFIG, "applicationName"));
+	std::wstring title = chartowchar(AST->getXMLValue(3, AST->CONFIG, "setting", "applicationName"));
 
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -218,23 +220,24 @@ void QeWindow::init() {
 std::string QeWindow::getWindowTitle(){
 	std::string device(VK->deviceProperties.deviceName);
 	std::string windowTitle;
-	windowTitle = AST->getXMLValue(2, AST->CONFIG, "applicationName");
+	QeAssetXML * node = AST->getXMLNode(2, AST->CONFIG, "setting");
+	windowTitle = AST->getXMLValue( node ,1, "applicationName");
 	windowTitle.append(" ");
-	windowTitle.append(AST->getXMLValue(2, AST->CONFIG, "applicationVersion"));
+	windowTitle.append(AST->getXMLValue(node, 1, "applicationVersion"));
 	windowTitle.append(" - ");
-	windowTitle.append(AST->getXMLValue(2, AST->CONFIG, "engineName"));
+	windowTitle.append(AST->getXMLValue(node, 1, "engineName"));
 	windowTitle.append(" ");
-	windowTitle.append(AST->getXMLValue(2, AST->CONFIG, "engineVersion"));
+	windowTitle.append(AST->getXMLValue(node, 1, "engineVersion"));
 	windowTitle.append(" - ");
 	windowTitle.append("VulkanAPI");
 	windowTitle.append(" ");
-	windowTitle.append(AST->getXMLValue(2, AST->CONFIG, "VulkanAPIVersion"));
+	windowTitle.append(AST->getXMLValue(node, 1, "VulkanAPIVersion"));
 	windowTitle.append(" - ");
 	windowTitle.append(device);
 	windowTitle.append(" - ");
 	windowTitle.append(std::to_string(QE->currentFPS));
 	windowTitle.append("/");
-	windowTitle.append(AST->getXMLValue(3, AST->CONFIG, "envir", "FPS"));
+	windowTitle.append(AST->getXMLValue(node, 2, "envir", "FPS"));
 	windowTitle.append(" fps");
 	windowTitle.append(" - ");
 	windowTitle.append(" - scene ");

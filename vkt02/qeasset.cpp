@@ -633,52 +633,27 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 	return source;
 }
 
-const char* QeAsset::getEditType(QeObjectType type) {
-	
-	const char* out=nullptr;
-	switch (type) {
-	case eObject_Point:
-		out = "points";
-		break;
-	case eObject_Camera:
-		out = "cameras";
-		break;
-	case eObject_Light:
-		out = "lights";
-		break;
-	case eObject_Line:
-		out = "lines";
-		break;
-	case eObject_Billboard:
-		out = "billboards";
-		break;
-	case eObject_Cubemap:
-		out = "cubemaps";
-		break;
-	case eObject_Particle:
-		out = "particles";
-		break;
-	case eObject_Model:
-		out = "models";
-		break;
-	case eObject_Scene:
-		out = "scenes";
-		break;
-	case eObject_Render:
-		out = "models";
-	}
-	return out;
-}
+QeAssetXML* QeAsset::getXMLEditNode(const char* type, int eid, int type2) {
 
-
-QeAssetXML* QeAsset::getXMLEditNode(QeObjectType type, int eid) {
-	
-	const char* cType = getEditType(type);
-
-	if (!cType || strlen(cType) == 0) return nullptr;
-	QeAssetXML* node = getXMLNode( 2, CONFIG, cType);
+	if (!type || strlen(type) == 0) return nullptr;
+	QeAssetXML* node = getXMLNode( 2, CONFIG, type);
 
 	if (node != nullptr && node->nexts.size() > 0) {
+
+		if (type2!=0) {
+			bool b = false;
+			for (int index = 0; index < node->nexts.size(); ++index) {
+				int _type = 0;
+				AST->getXMLiValue(&_type, node->nexts[index], 1, "type");
+				if (_type == type2) {
+					b = true;
+					node = node->nexts[index];
+					break;
+				}
+			}
+			if (!b) return nullptr;
+		}
+
 		for (int index = 0; index < node->nexts.size(); ++index) {
 			int _eid=0;
 			AST->getXMLiValue(&_eid, node->nexts[index], 1, "eid");
@@ -739,7 +714,7 @@ bool QeAsset::getXMLfValue(float* output, QeAssetXML* source, int length, ...) {
 	return ret;
 }
 
-QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
+QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap, float* param ) {
 
 	std::string _filePath = combinePath(_filename, eAssetModel);
 	std::map<std::string, QeAssetModel*>::iterator it = astModels.find(_filePath);
@@ -750,7 +725,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 
 	if (strcmp("cube", _filename)==0)	type = eModelData_cube;
 	else if (strcmp("axis", _filename) == 0)	type = eModelData_axis;
-	else if (strcmp("grids", _filename) == 0)	type = eModelData_grids;
+	else if (strcmp("grid", _filename) == 0)	type = eModelData_grid;
 	else if (strcmp("line", _filename) == 0 )	type = eModelData_line;
 	else if (strcmp("plane", _filename) == 0)	type = eModelData_plane;
 
@@ -979,19 +954,20 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->vertices.push_back(vertex);
 		break;
 
-	case eModelData_grids:
+	case eModelData_grid:
 
 		model = new QeAssetModel();
 		model->scale = { 1 , 1 , 1 };
-		vertex.color = { 0.5f, 0.5f, 0.5f,1.0f };
+		vertex.color = { param[0], param[1], param[2],1.f };
 
-		for (index = -SCENE->gridsNum; index <= SCENE->gridsNum; ++index) {
-			vertex.pos = { index, -SCENE->gridsNum, 0,1 };
-			vertex.normal = { 0, SCENE->gridsNum *2, 0, 1 };
+		for (index = (int)-param[3]; index <= (int)param[3]; ++index) {
+			vertex.pos = { index, (int)-param[4], 0,1 };
+			vertex.normal = { 0, (int)param[4] * 2, 0, 1 };
 			model->vertices.push_back(vertex);
-
-			vertex.pos = { -SCENE->gridsNum, index, 0,1 };
-			vertex.normal = { SCENE->gridsNum *2, 0, 0, 1 };
+		}
+		for (index = (int)-param[4]; index <= (int)param[4]; ++index) {
+			vertex.pos = { (int)-param[3], index, 0,1 };
+			vertex.normal = { (int)param[3] *2, 0, 0, 1 };
 			model->vertices.push_back(vertex);
 		}
 		break;
@@ -1002,7 +978,7 @@ QeAssetModel* QeAsset::getModel(const char* _filename, bool bCubeMap) {
 		model->scale = { 1, 1, 1 };
 		vertex.normal = { 1, 0, 0,1 };
 		vertex.uv = { 0, 0,1,1 };
-		vertex.color = { 1, 1, 1,1 };
+		vertex.color = { param[0], param[1], param[2],1.f };
 		vertex.pos = { 0, 0, 0,1 };
 		model->vertices.push_back(vertex);
 		break;
@@ -1082,7 +1058,7 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	if (it != astMaterials.end())	return it->second;
 
 	QeAssetMaterial* mtl = new QeAssetMaterial();
-	mtl->value.baseColor = {0,0,0,1};
+	mtl->value.baseColor = {1,1,1,1};
 	//mtl->value.phong.ambient = { 1,1,1,1 };
 	//mtl->value.phong.diffuse = { 1,1,1,1 };
 	//mtl->value.phong.specular = { 1,1,1,1 };
@@ -1231,7 +1207,7 @@ QeAssetParticleRule* QeAsset::getParticle(int _eid) {
 	std::map<int, QeAssetParticleRule*>::iterator it = astParticles.find(_eid);
 	if (it != astParticles.end())	return it->second;
 
-	QeAssetXML* node = getXMLEditNode(eObject_Particle, _eid);
+	QeAssetXML* node = getXMLEditNode("component", _eid, eComponent_partical);
 	QeAssetParticleRule* particle = ENCODE->decodeParticle(node);
 	astParticles[_eid] = particle;
 	return particle;
@@ -1245,19 +1221,19 @@ std::string QeAsset::combinePath(const char* _filename, QeAssetType dataType) {
 	switch (dataType) {
 	
 	case eAssetModel:
-		rtn = getXMLValue(3, CONFIG, "path", "model");
+		rtn = getXMLValue(4, CONFIG, "setting" ,"path", "model");
 		break;
 	case eAssetMaterial:
-		rtn = getXMLValue(3, CONFIG, "path", "material");
+		rtn = getXMLValue(4, CONFIG, "setting", "path", "material");
 		break;
 	case eAssetBin:
-		rtn = getXMLValue(3, CONFIG, "path", "bin");
+		rtn = getXMLValue(4, CONFIG, "setting", "path", "bin");
 		break;
 	case eAssetShader:
-		rtn = getXMLValue(3, CONFIG, "path", "sharder");
+		rtn = getXMLValue(4, CONFIG, "setting", "path", "sharder");
 		break;
 	case eAssetTexture:
-		rtn = getXMLValue(3, CONFIG, "path", "texture");
+		rtn = getXMLValue(4, CONFIG, "setting", "path", "texture");
 		break;
 	}
 	return rtn.append(_filename);

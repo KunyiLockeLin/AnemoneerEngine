@@ -6,8 +6,8 @@ class QeParticle : public QeModel
 {
 public:
 
-	QeParticle(QeObjectMangerKey& _key, QeObjectType _type = eObject_Particle) :QeModel(_key, _type), 
-				vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return){}
+	QeParticle(QeObjectMangerKey& _key) :QeModel(_key), vertexBuffer(eBuffer_vertex_texel), 
+		outBuffer(eBuffer_storage_compute_shader_return){}
 	//~QeParticle() {}
 
 	//QeAssetShader shader;
@@ -19,9 +19,12 @@ public:
 	QeVKBuffer vertexBuffer;
 	QeVKBuffer outBuffer;
 	QeTimer periodTimer;
-	
+	QeVector3f size;
+	int bornTargetTranformOID;
+
 	QeVertex createParticleData();
-	virtual void init(QeAssetXML* _property, int _parentOID);
+	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
+	virtual void clear();
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);

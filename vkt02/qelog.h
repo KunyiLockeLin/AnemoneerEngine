@@ -18,7 +18,7 @@ public:
 	QeDebugMode mode = eModeNoDebug;
 	std::ofstream ofile;
 
-	void init();
+	void initialize();
 	std::string stack(int from, int to);
 	void print(std::string& msg, bool bShowStack=false, int stackLevel=4);
 	bool isDebug();

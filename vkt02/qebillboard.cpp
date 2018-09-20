@@ -1,20 +1,28 @@
 #include "qeheader.h"
 
 
-void QeBillboard::init(QeAssetXML* _property, int _parentOID) {
+void QeBillboard::initialize(QeAssetXML* _property, QeObject* _owner) {
 
-	QePoint::init(_property, _parentOID);
-	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"));
-	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+	QeComponent::initialize(_property, _owner);
+	const char * image = AST->getXMLValue(initProperty, 1, "image");
+	materialData = AST->getMaterialImage(image);
+	materialData->value.baseColor = { 1,1,1,1 };
+	AST->getXMLfValue(&materialData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
 
-	bufferData.material = mtlData->value;
-	AST->setGraphicsShader(graphicsShader, editProperty, "billboard");
+	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
+	bufferData.material = materialData->value;
+	AST->setGraphicsShader(graphicsShader, nullptr, "billboard");
+
+	AST->getXMLbValue(&graphicsPipeline.bAlpha, initProperty, 1, "alpha");
+
+	if (graphicsPipeline.bAlpha)	GRAP->alphaModels.push_back(this);
+	else							GRAP->models.push_back(this);
 }
 
 QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.baseColorMapImageView = mtlData->image.pBaseColorMap->view;
-	descriptorSetData.baseColorMapSampler = mtlData->image.pBaseColorMap->sampler;
+	descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
+	descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
 	return descriptorSetData;
 }

@@ -35,15 +35,45 @@ struct QeDataModelShader {
 };
 */
 
-class QeModel:public QePoint
+class QeModel:public QeComponent
 {
 public:
 
-	QeModel(QeObjectMangerKey& _key, QeObjectType _type = eObject_Model):QePoint(_key, _type), 
-		modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
+	QeModel(QeObjectMangerKey& _key) :QeComponent(_key), modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
 	//~QeModel(){}
 
-	QeActionState	actionState;
+	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
+	virtual void clear();
+	virtual void update1();
+	virtual void update2();
+
+	// QeMaterial, QeAnimation
+	QeAssetModel* modelData = nullptr;
+	QeAssetMaterial* materialData = nullptr;
+	QeAssetGraphicsShader graphicsShader;
+	QeAssetGraphicsShader normalShader;
+	QeAssetGraphicsShader outlineShader;
+	QeDataGraphicsPipeline graphicsPipeline;
+
+	VkShaderModule computeShader = VK_NULL_HANDLE;
+
+	QeDataDescriptorSet descriptorSet;
+
+	VkPipeline computePipeline = VK_NULL_HANDLE;
+
+	QeDataModel bufferData;
+	QeVKBuffer modelBuffer;
+
+	virtual QeDataDescriptorSetModel createDescriptorSetModel();
+	virtual void createPipeline();
+	virtual bool isShowByCulling(QeCamera* camera);
+
+	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);
+	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {}
+	void updateShaderData();
+
+
+	/*QeActionState	actionState;
 	QeActionType	actionType;
 	QeMatrix4x4f	joints[MAX_JOINT_NUM];
 	int				currentActionID;
@@ -51,11 +81,11 @@ public:
 	float			currentActionTime;
 	float			actionSpeed;
 
+	bool bShow;
 	QeVector3f size;
 	float face;
 	float up;
 	int speed;
-	bool bShow;
 	int cullingDistance;
 	//int cubemapOID;
 	QeVKImage* cubemapImage;
@@ -82,8 +112,8 @@ public:
 
 	VkPipeline computePipeline = VK_NULL_HANDLE;
 
-	virtual void init(QeAssetXML* _property, int _parentOID);
-	virtual void setProperty();
+	//virtual void init(QeAssetXML* _property, int _parentOID);
+	//virtual void setProperty();
 	
 	void setShow(bool b);
 	void updateBuffer();
@@ -113,4 +143,5 @@ public:
 	virtual QeMatrix4x4f getAttachMatrix( const char* attachSkeletonName);
 	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);
 	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {}
+	*/
 };

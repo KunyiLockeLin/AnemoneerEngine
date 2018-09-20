@@ -7,23 +7,20 @@ void QueenEngine::run() {
 	bRestart = false;
 
 	QeAssetXML* node = AST->getXML(AST->CONFIG);
+	node = AST->getXMLNode(node, 1, "setting");
 
-	//GLB.libGLFW = atoi(AST->getXMLValue(node, 1, "glfw"));
-	//GLB.libGLM = atoi(AST->getXMLValue(node, 1, "glm"));
-	//GLB.libGLI = atoi(AST->getXMLValue(node, 1, "gli"));
-	
-	DEBUG->init();
-	WIN->init();
-	VK->init();
+	DEBUG->initialize();
+
+	WIN->initialize();
+	VK->initialize();
+	GRAP->initialize();
 
 	if(sceneEID ==0)	AST->getXMLiValue(&sceneEID, node, 1, "startScene");
-	
-	node = AST->getXMLEditNode(eObject_Scene, sceneEID);
-	if (scene) delete scene;
+	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "envir", "FPS")));
 
-	scene = new QeScene(key);
-	scene->init(node);
-	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "FPS")));
+	node = AST->getXMLEditNode("scenes", sceneEID);
+	SCENE->clear();
+	SCENE->initialize(node);
 
 	mainLoop();
 }
@@ -38,15 +35,15 @@ void QueenEngine::mainLoop() {
 			deltaTime = float(passMilliSecond) / 1000;
 
 			VK->update1();
-			VP->update1();
+			GRAP->update1();
 			WIN->update1();
 			SCENE->update1();
-			OBJMGR->update1();
+			//OBJMGR->update1();
 
 			WIN->update2();
 			SCENE->update2();
-			OBJMGR->update2();
-			VP->update2();
+			//OBJMGR->update2();
+			GRAP->update2();
 			VK->update2();
 		}
 	}

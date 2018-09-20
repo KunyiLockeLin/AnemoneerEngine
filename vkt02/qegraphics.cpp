@@ -55,14 +55,15 @@ QeDataRender::~QeDataRender() {
 }
 
 
-void QeGraphics::init(QeAssetXML* _property) {
-
-	initProperty = _property;
+void QeGraphics::initialize() {
 
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
+	renders.resize(eRender_MAX);
+
 	createRender(eRender_KHR, 0, { 0,0 });
-	createRender(eRender_main, 0, {0,0});
+
+	//createRender(eRender_main, 0, {0,0});
 }
 
 void QeGraphics::updateViewport() {
@@ -72,12 +73,14 @@ void QeGraphics::updateViewport() {
 	for (size_t i = 0; i<size ;++i) {
 
 		QeDataRender * render = renders[i];
+		if (!render) continue;
+
 		int width = int(render->viewport.width);
 		int height = int(render->viewport.height);
 		size_t size1 = render->viewports.size();
 
 		if (size1 == 0) {
-			addNewViewport(i);
+			addNewViewport(QeRenderType(i));
 			++size1;
 		}
 
@@ -133,53 +136,45 @@ void QeGraphics::updateViewport() {
 	}
 }
 
-void QeGraphics::popViewport(size_t renderIndex) {
+void QeGraphics::addLight(QeLight* light) {
+	bUpdateLight = true;
+	lights.push_back(light);
+}
 
-	size_t size = renders[renderIndex]->viewports.size();
+void QeGraphics::removeLight(QeLight* light) {
+	bUpdateLight = true;
+	eraseElementFromVector(lights, light);
+}
+
+void QeGraphics::popViewport(QeRenderType type) {
+
+	if (!renders[type]) return;
+
+	size_t size = renders[type]->viewports.size();
 	if (size == 1) return;
 
-	delete renders[renderIndex]->viewports[size - 1];
-	renders[renderIndex]->viewports.pop_back();
+	delete renders[type]->viewports[size - 1];
+	renders[type]->viewports.pop_back();
 
 	setTargetCamera(0);
 	bRecreateRender = true;
 }
 
-void QeGraphics::addNewViewport(size_t renderIndex) {
+void QeGraphics::addNewViewport(QeRenderType type) {
 
-	size_t size = renders[renderIndex]->viewports.size();
+	if (!renders[type]) return;
+
+	size_t size = renders[type]->viewports.size();
 	QeDataViewport* vp = new QeDataViewport();
 	//viewports.resize(size+1);
-	renders[renderIndex]->viewports.push_back(vp);
+	renders[type]->viewports.push_back(vp);
 	bRecreateRender = true;
 
-	if (renderIndex == eRender_KHR) return;
+	if (type == eRender_KHR) return;
 
 	QeDataDescriptorSetCommon data;
-	
-	if (SCENE->light) {
-		vp->lights.push_back(SCENE->light);
-		VK->createBuffer(vp->lightsBuffer, sizeof(vp->lights[0]->bufferData), nullptr);
-		data.lightsBuffer = vp->lightsBuffer.buffer;
-	}
 
-	QeAssetXML* node = AST->getXMLNode(initProperty, 1, "cameras");
-	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "cameras");
-	
-	size = node->nexts.size();
-
-	int oid = 0;
-	for (int index = 0; index < size; ++index) {
-
-		AST->getXMLiValue(&oid, node->nexts[index], 1, "oid");
-
-		if (oid == renders[renderIndex]->cameraOID) {
-			node = node->nexts[index];
-			break;
-		}
-	}
-
-	vp->camera = (QeCamera*)OBJMGR->getObject(oid+int(renders[renderIndex]->viewports.size()-1), node);
+	vp->camera = (QeCamera*)OBJMGR->findComponent(eComponent_camera, renders[type]->cameraOID);
 
 	VK->createBuffer(vp->environmentBuffer, sizeof(vp->environmentData), nullptr);
 	data.environmentBuffer = vp->environmentBuffer.buffer;
@@ -192,7 +187,7 @@ void QeGraphics::setTargetCamera( int index ) {
 	
 	if (index < renders[eRender_main]->viewports.size() && index != currentTargetViewport ) {
 		currentTargetViewport = index;
-		getTargetCamera()->updateAxis();
+		//getTargetCamera()->updateAxis();
 	}
 }
 
@@ -202,32 +197,53 @@ QeCamera* QeGraphics::getTargetCamera() {
 
 void QeGraphics::updateBuffer() {
 
+	if (bUpdateLight) {
+		lightsBuffer.~QeVKBuffer();
+		
+		if( lights.size()>0) {
+			VK->createBuffer(lightsBuffer, sizeof(QeDataLight) * lights.size(), nullptr);
+		}
+	}
+
+	if (lightsBuffer.buffer) {
+		std::vector<QeDataLight> lightsData;
+		std::vector<QeLight*>::iterator it = lights.begin();
+		while (it != lights.end()) {
+			lightsData.push_back((*it)->bufferData);
+			++it;
+		}
+		VK->setMemoryBuffer(lightsBuffer, sizeof(QeDataLight) * lights.size(), lightsData.data());
+	}
+
 	size_t size = renders.size();
 	for (size_t i = 1; i < size; ++i) {
 		
 		QeDataRender * render = renders[i];
+		if (!render) continue;
+
 		size_t size1 = render->viewports.size();
 
 		for (size_t j = 0; j < size1; ++j) {
 
 			QeDataViewport * viewport = render->viewports[j];
-			viewport->environmentData.ambientColor = SCENE->ambientColor;
+			viewport->environmentData.ambientColor = clearColors[i];
 			viewport->environmentData.camera = viewport->camera->bufferData;
-			viewport->environmentData.param.x = float(viewport->lights.size());
+			viewport->environmentData.param.x = float(lights.size());
 
-			AST->getXMLfValue(&viewport->environmentData.param.y, AST->getXMLNode(1, AST->CONFIG), 1, "gamma");
-			AST->getXMLfValue(&viewport->environmentData.param.z, AST->getXMLNode(1, AST->CONFIG), 1, "exposure");
+			QeAssetXML* node = AST->getXMLNode(2, AST->CONFIG, "setting");
+			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "gamma");
+			AST->getXMLfValue(&viewport->environmentData.param.z, node, 1, "exposure");
 
 			VK->setMemoryBuffer(viewport->environmentBuffer,
 				sizeof(viewport->environmentData), &viewport->environmentData);
 
-			size_t size2 = viewport->lights.size();
-			std::vector<QeDataLight> data;
-			data.resize(size2);
-			for (size_t k = 0; k < size2; ++k) {
-					data[k] = viewport->lights[k]->bufferData;
+			if (bUpdateLight) {
+
+				QeDataDescriptorSetCommon data;
+				data.environmentBuffer = viewport->environmentBuffer.buffer;
+				data.lightsBuffer = lightsBuffer.buffer;
+				VK->updateDescriptorSet(&data, viewport->commonDescriptorSet);
 			}
-			VK->setMemoryBuffer(viewport->lightsBuffer, sizeof(data[0])*size2, data.data());
 		}
 
 		size1 = render->subpass.size();
@@ -236,12 +252,30 @@ void QeGraphics::updateBuffer() {
 			VK->setMemoryBuffer(render->subpass[j]->buffer, sizeof(render->subpass[j]->bufferData), &render->subpass[j]->bufferData);
 		}
 	}
+
+	bUpdateLight = false;
 }
 
 void QeGraphics::update1() {
 	if (bRecreateRender) {
 
 		cleanupRender();
+
+		sampleCount = VK->getMaxUsableSampleCount();
+
+		QeAssetXML* node = AST->getXMLNode(2, AST->CONFIG, "setting");
+		node = AST->getXMLNode(node, 1, "clearColor");
+		clearColors.clear();
+		if (node && node->nexts.size()>0) {
+
+			for (int i = 0; i< node->nexts.size(); ++i) {
+				QeVector3f color;
+				AST->getXMLfValue(&color.x, node->nexts[i], 1, "r");
+				AST->getXMLfValue(&color.y, node->nexts[i], 1, "g");
+				AST->getXMLfValue(&color.z, node->nexts[i], 1, "b");
+				clearColors.push_back(color);
+			}
+		}
 
 		if(!renderCompleteSemaphore) renderCompleteSemaphore = VK->createSyncObjectSemaphore();
 		if (!swapchain.khr)			VK->createSwapchain(&swapchain);
@@ -257,7 +291,7 @@ void QeGraphics::update1() {
 		refreshRender();
 		updateViewport();
 
-		OBJMGR->recreatePipeline();		
+		recreatePipeline();		
 		bRecreateRender = false;
 	}
 	VK->pushConstants[0] = QE->deltaTime;
@@ -299,6 +333,7 @@ void QeGraphics::drawFrame() {
 	for (int i = size; i>-1 ;--i ) {
 
 		QeDataRender * render = renders[i];
+		if (!render) continue;
 
 		VkSubmitInfo submitInfo = {};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -308,7 +343,7 @@ void QeGraphics::drawFrame() {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = &render->semaphore;
 
-		if(i==size)
+		if(i==size || !renders[i + 1])
 			submitInfo.pWaitSemaphores = &renderCompleteSemaphore;
 		else
 			submitInfo.pWaitSemaphores = &renders[i+1]->semaphore;
@@ -344,15 +379,12 @@ void QeGraphics::drawFrame() {
 
 void QeGraphics::refreshRender() {
 	int size = (int)renders.size();
-	if (!size) {
-		createRender(eRender_KHR, 0, { 0,0 });
-		createRender(eRender_main, 0, { 0,0 });
-		size = 2;
-	}
 
 	for (int i = size-1; i > -1; --i) {
 
 		QeDataRender * render = renders[i];
+		if (!render) continue;
+
 		std::vector<VkFormat> formats;
 		std::vector<VkImageView> views;
 
@@ -457,23 +489,16 @@ void QeGraphics::refreshRender() {
 
 QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExtent2D renderSize) {
 
-	size_t size = renders.size();
 	QeDataRender * render = new QeDataRender();
-	renders.push_back(render);
+	renders[type] = render;
 
-	if (size != eRender_KHR) {
-		if (cameraOID == 0) {
-			AST->getXMLiValue(&cameraOID, initProperty, 1, "cameraOID");
-			if (cameraOID == 0)	AST->getXMLiValue(&cameraOID, AST->getXMLNode(2, AST->CONFIG, "default"), 1, "cameraOID");
-		}
-	}
 	render->cameraOID = cameraOID;
 	render->scissor.extent = renderSize;
 
 	size_t size1 = 1;
-	if (size == eRender_main) {
+	if (type == eRender_main) {
 
-		QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
+		/*QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
 		if (node) {
 
 			QeVector4f param1;
@@ -513,14 +538,14 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 				VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
 				render->subpass.push_back(data);
 			}
-		}
+		}*/
 	}
-	else if(size == eRender_KHR){
+	else if(type == eRender_KHR){
 		size1 = VK->getSwapchainSize();
 		QeDataSubpass* data = new QeDataSubpass();
 
 		data->graphicsPipeline.bAlpha = false;
-		data->graphicsPipeline.objectType = eObject_Scene;
+		data->graphicsPipeline.componentType = eComponent_postprocessing;
 		data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
 		data->graphicsPipeline.subpass = 0;
 
@@ -535,7 +560,7 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 	render->commandBuffers.resize(size1);
 
 	render->semaphore = VK->createSyncObjectSemaphore();
-	addNewViewport(size);
+	addNewViewport(type);
 	return render;
 }
 
@@ -544,7 +569,10 @@ QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID, VkExtent2
 	size_t size = renders.size();
 
 	for (size_t i = 1; i<size; ++i) {
-		if (renders[i]->viewports[0]->camera->oid == cameraOID) return renders[i];
+		QeDataRender * render = renders[i];
+		if (!render) continue;
+
+		if (render->viewports[0]->camera->oid == cameraOID) return render;
 	}
 	return createRender(type, cameraOID, renderSize);
 }
@@ -598,7 +626,7 @@ void QeGraphics::cleanupRender() {
 	}
 	VK->graphicsPipelines.clear();
 
-	if (OBJMGR)	OBJMGR->cleanupPipeline();
+	cleanupPipeline();
 }
 
 /*void QeViewport::updateComputeCommandBuffers() {
@@ -632,9 +660,11 @@ void QeGraphics::updateDrawCommandBuffers() {
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 
 	int size = int(renders.size());
-	for (int i = 0; i<size ; ++i) {
+	for (int i = size-1; i>-1 ; --i) {
 
 		QeDataRender * render = renders[i];
+		if (!render || !render->renderPass) continue;
+
 		size_t size1 = render->commandBuffers.size();
 
 		// graphics shader
@@ -642,7 +672,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 		if ( i==eRender_KHR ) {
 			clearValues.resize(1);
-			clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			clearValues[0].color = { clearColors[i].x, clearColors[i].y, clearColors[i].z, 1.0f };
 		}
 		else {
 			if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
@@ -654,7 +684,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			size_t size2 = clearValues.size();
 			for (size_t k = 1; k < size2; ++k) {
-				clearValues[k].color = { SCENE->ambientColor.x + i-1, SCENE->ambientColor.y, SCENE->ambientColor.z, 1.0f };
+				clearValues[k].color = { clearColors[i].x, clearColors[i].y, clearColors[i].z, 1.0f };
 			}
 		}
 		renderPassInfo.renderPass = render->renderPass;
@@ -674,7 +704,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 				//compute shader
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
-				OBJMGR->updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
+				updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
 			}
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -686,7 +716,9 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 			}
 			else {				
-				vkCmdSetLineWidth(render->commandBuffers[j], 2.0f);
+				float lineWidth = 1.f;
+				AST->getXMLfValue(&lineWidth, AST->getXMLNode(2, AST->CONFIG, "setting"), 1, "lineWidth");
+				vkCmdSetLineWidth(render->commandBuffers[j], lineWidth);
 
 				size_t size2 = render->viewports.size();
 				for (size_t k = 0; k < size2; ++k) {
@@ -701,8 +733,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 					command.type = QeRenderType(i);
 
 					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
-
-					OBJMGR->updateDrawCommandBuffer(&command);
+					updateDrawCommandBuffer(&command);
 				}
 
 				size2 = render->subpass.size();
@@ -719,5 +750,77 @@ void QeGraphics::updateDrawCommandBuffers() {
 			vkCmdEndRenderPass(render->commandBuffers[j]);
 			if (vkEndCommandBuffer(render->commandBuffers[j]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 		}
+	}
+}
+
+
+void QeGraphics::sortAlphaModels(QeCamera * camera) {
+	
+	if (!camera) return;
+
+	size_t size = alphaModels.size();
+
+	for (size_t i = 0; i<size ;++i) {
+		for (size_t j = i + 1; j < size; ++j) {
+			float dis1 = MATH->length(camera->owner->transform->worldPosition() - alphaModels[i]->owner->transform->worldPosition());
+			float dis2 = MATH->length(camera->owner->transform->worldPosition() - alphaModels[j]->owner->transform->worldPosition());
+
+		if (dis1 < dis2) std::swap(alphaModels[i], alphaModels[j]);
+		}
+	}
+}
+
+void QeGraphics::cleanupPipeline() {
+
+	//VK->cleanupPipeline();
+}
+
+void QeGraphics::recreatePipeline() {
+	
+	std::vector<QeModel*>::iterator it = models.begin();
+	while (it != models.end()) {
+		(*it)->updateShaderData();
+		(*it)->createPipeline();
+		++it;
+	}
+
+	it = alphaModels.begin();
+	while (it != alphaModels.end()) {
+		(*it)->updateShaderData();
+		(*it)->createPipeline();
+		++it;
+	}
+	bUpdateDrawCommandBuffers = true;
+}
+
+
+void QeGraphics::updateDrawCommandBuffer(QeDataDrawCommand* command) {
+
+	std::vector<QeModel*>::iterator it = models.begin();
+	while (it != models.end()) {
+		(*it)->updateDrawCommandBuffer(command);
+		++it;
+	}
+
+	sortAlphaModels(command->camera);
+	it = alphaModels.begin();
+	while (it != alphaModels.end()) {
+		(*it)->updateDrawCommandBuffer(command);
+		++it;
+	}
+}
+
+void QeGraphics::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
+
+	std::vector<QeModel*>::iterator it = models.begin();
+	while (it != models.end()) {
+		(*it)->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
+		++it;
+	}
+
+	it = alphaModels.begin();
+	while (it != alphaModels.end()) {
+		(*it)->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
+		++it;
 	}
 }

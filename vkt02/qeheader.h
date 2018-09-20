@@ -50,6 +50,7 @@
 #define KEY_Z 0x5A
 
 //	VkPhysicalDeviceLimits::maxViewports  VK->deviceProperties.limits.maxViewports;
+const char INDEX_NONE = -1;
 const int MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
 const int MAX_DESCRIPTOR_UNIFORM_NUM = UINT8_MAX;
@@ -61,6 +62,8 @@ const int MAX_DESCRIPTOR_NUM = UINT8_MAX;
 const int MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
 
+enum QeComponentType;
+enum QeRenderType;
 struct QeVKBuffer;
 struct QeVKImageBuffer;
 struct QeVector2i;
@@ -74,8 +77,7 @@ struct QeAssetModel;
 struct QeAssetMaterial;
 struct QeAssetParticleRule;
 struct QeDataMaterial;
-struct QeDataMaterialPhong;
-struct QeDataMaterialPBR;
+struct QeDataDescriptorSet;
 struct QeAssetImage;
 struct QeAssetGraphicsShader;
 struct QeUniformBufferObject;
@@ -89,7 +91,8 @@ struct QeDataSwapchain;
 struct QeDataDrawCommand;
 class QeObject;
 class QeComponent;
-class QePoint;
+class QeTransform;
+class QeInputControl;
 class QeEncode;
 class QeMath;
 class QeAsset;
@@ -114,6 +117,9 @@ class QeLog;
 class QeCommand;
 class QeTimer;
 class QeLine;
+class QeAxis;
+class QeGrid;
+
 
 #include "qeencode.h"
 #include "qemath.h"
@@ -123,7 +129,8 @@ class QeLine;
 #include "qeasset.h"
 #include "qeobject.h"
 #include "qecomponent.h"
-#include "qepoint.h"
+#include "qetransform.h"
+#include "qeinputcontrol.h"
 #include "qemodel.h"
 #include "qerender.h"
 #include "qebillboard.h"
@@ -131,6 +138,8 @@ class QeLine;
 #include "qecubemap.h"
 #include "qeparticle.h"
 #include "qelight.h"
+#include "qeaxis.h"
+#include "qegrid.h"
 #include "qewindow.h"
 #include "qecamera.h"
 #include "qegraphics.h"
@@ -140,4 +149,4 @@ class QeLine;
 #include "qelog.h"
 #include "qecommand.h"
 
-using namespace QeString;
+using namespace QeLib;

@@ -2,234 +2,256 @@
 
 
 QeObjectManger::~QeObjectManger() {
-	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
-	while (it != mgrObjs.end()) {
-		if ((it->second) != nullptr) delete (it->second);
+
+	std::map< QeComponentType, std::vector<QeComponent*>>::iterator it = components.begin();
+	std::vector<QeComponent*>::iterator it1;
+
+	while (it != components.end()) {
+		it1 = it->second.begin();
+		while (it1 != it->second.end()) {
+			(*it1)->clear();
+			delete *it1;
+			++it1;
+		}
+		it->second.clear();
 		++it;
 	}
-	mgrObjs.clear();
-	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
-	while (it1 != mgrModels.end()) {
-		if ((it1->second) != nullptr) delete (it1->second);
+	components.clear();
+
+	it = unActiveComponents.begin();
+	while (it != unActiveComponents.end()) {
+		it1 = it->second.begin();
+		while (it1 != it->second.end()) {
+			(*it1)->clear();
+			delete *it1;
+			++it1;
+		}
+		it->second.clear();
+		++it;
+	}
+	unActiveComponents.clear();
+
+	std::vector<QeObject*>::iterator it2 = objects.begin();
+	while (it2 != objects.end()) {
+		(*it2)->clear();
+		delete *it2;
+		++it2;
+	}
+	objects.clear();
+
+	it2 = unActiveObjects.begin();
+	while (it2 != unActiveObjects.end()) {
+		(*it2)->clear();
+		delete *it2;
 		++it1;
 	}
-	mgrModels.clear();
-	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
-	while (it2 != mgrAlphaModels.end()) {
-		if (*it2 != nullptr) delete *it2;
-		++it2;
-	}
-	mgrAlphaModels.clear();
+	unActiveObjects.clear();
 }
 
-QePoint* QeObjectManger::getObject(int _oid, QeAssetXML* _property, int _parentOID) {
+void QeObjectManger::clear() {
 
-	if (!_oid && !_property)	return nullptr;
-	else if (!_oid)				AST->getXMLiValue(&_oid, _property, 1, "oid");
+	std::map< QeComponentType, std::vector<QeComponent*>>::iterator it = components.begin();
+	std::map< QeComponentType, std::vector<QeComponent*>>::iterator it11;
 
-	std::map<int, QePoint*>::iterator it = mgrObjs.find(_oid);
-	if (it != mgrObjs.end())	return it->second;
+	std::vector<QeComponent*>::iterator it1;
 
-	std::map<int, QeModel*>::iterator it1 = mgrModels.find(_oid);
-	if (it1 != mgrModels.end())	return it1->second;
+	while (it != components.end()) {
 
-	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
-	if (it2 != mgrAlphaModels.end()) {
-		if ((*it2)->oid == _oid)	return *it2;
-		++it2;
-	}
+		if (it->second.size() ) {
+			it11 = unActiveComponents.find(it->first);
 
-	if (!_property) return nullptr;
-
-	bool bAlpha = false;
-	bool bCheckAlpha = false;
-	bool bRedner = false;
-	int type = _oid / 1000;
-
-	switch (type) {
-	case eObject_Point:
-	case eObject_Camera:
-	case eObject_Light:
-		break;
-
-	case eObject_Line:
-	case eObject_Cubemap:
-		bRedner = true;
-		break;
-
-	case eObject_Billboard:
-		bRedner = true;
-		bCheckAlpha = true;
-		break;
-	case eObject_Particle:
-		bRedner = true;
-		break;
-	case eObject_Model:
-		bRedner = true;
-		bCheckAlpha = true;
-		break;
-	case eObject_Render:
-		bRedner = true;
-		break;
-
-	default:
-		return nullptr;
-	}
-
-	int _eid = 0;
-	if (bRedner && bCheckAlpha && AST->getXMLiValue(&_eid, _property, 1, "eid")) {
-
-		QeAssetXML* node = AST->getXMLEditNode(QeObjectType(type), _eid);
-
-		if (node)	AST->getXMLbValue(&bAlpha, node, 1, "alpha");
-		else		return nullptr;
-	}
-
-	QePoint* newObject = nullptr;
-
-	switch (type) {
-	case eObject_Point:
-		newObject = new QePoint(key);
-		break;
-	case eObject_Camera:
-		newObject = new QeCamera(key);
-		break;
-	case eObject_Light:
-		newObject = new QeLight(key);
-		break;
-	case eObject_Line:
-		newObject = new QeLine(key);
-		break;
-	case eObject_Billboard:
-		newObject = new QeBillboard(key);
-		break;
-	case eObject_Cubemap:
-		newObject = new QeCubemap(key);
-		break;
-	case eObject_Particle:
-		newObject = new QeParticle(key);
-		break;
-	case eObject_Model:
-		newObject = new QeModel(key);
-		break;
-	case eObject_Render:
-		newObject = new QeRender(key);
-		break;
-	}
-
-	if (!newObject) return newObject;
-
-	if (!bRedner) mgrObjs[_oid] = newObject;
-	else if (bAlpha) mgrAlphaModels.push_back((QeModel*)newObject);
-	else			 mgrModels[_oid] = (QeModel*)newObject;
-
-	newObject->init(_property, _parentOID);
-	return newObject;
-}
-
-void QeObjectManger::sortAlphaModels(QeCamera * camera) {
-
-	if (!camera) return;
-	
-	size_t size = mgrAlphaModels.size();
-	
-	for (size_t i = 0; i<size ;++i) {
-		for (size_t j = i + 1; j < size; ++j) {
-			float dis1 = MATH->length( camera->pos - mgrAlphaModels[i]->pos);
-			float dis2 = MATH->length(camera->pos - mgrAlphaModels[j]->pos);
-
-			if (dis1 < dis2) {
-				std::swap(mgrAlphaModels[i], mgrAlphaModels[j]);
+			if (it11 == unActiveComponents.end()) {
+				unActiveComponents.insert(std::pair<QeComponentType, std::vector<QeComponent*>>(it->first, {}));
+				it11 = unActiveComponents.find(it->first);
 			}
+
+			it1 = it->second.begin();
+
+			while (it1 != it->second.end()) {
+				(*it1)->clear();
+				it11->second.push_back(*it1);
+				++it1;
+			}
+			it->second.clear();
+		}
+		++it;
+	}
+
+	std::vector<QeObject*>::iterator it2 = objects.begin();
+	while (it2 != objects.end()) {
+		(*it2)->clear();
+		unActiveObjects.push_back(*it2);
+		++it2;
+	}
+	objects.clear();
+}
+
+QeObject* QeObjectManger::spwanObject(QeAssetXML* _property, QeObject* _parent) {
+
+	QeObject* _object = nullptr;
+
+	size_t size = unActiveObjects.size();
+	if (size > 0) {
+		_object = unActiveObjects[size-1];
+		unActiveObjects.pop_back();
+	}
+	else {
+		_object = new QeObject(key);
+	}
+	objects.push_back(_object);
+
+	_object->initialize(_property, _parent);
+	return _object;
+}
+
+QeComponent* QeObjectManger::spwanComponent(QeAssetXML* _property, QeObject* _owner) {
+
+	QeComponent* _component = nullptr;
+
+	QeComponentType _type;
+	AST->getXMLiValue((int*)&_type, _property, 1, "type");
+
+	std::map< QeComponentType, std::vector<QeComponent*>>::iterator it = unActiveComponents.find(_type);
+	if (it!= unActiveComponents.end() && it->second.size()>0) {
+		size_t size = it->second.size();
+		_component = it->second[size-1];
+		it->second.pop_back();
+	}
+	else {
+		switch (_type) {
+		case eComponent_transform:
+			_component = new QeTransform(key);
+			break;
+		case eComponent_camera:
+			_component = new QeCamera(key);
+			break;
+		case eComponent_postprocessing:
+			//_component = new QePostprocessing();
+			break;
+		case eComponent_light:
+			_component = new QeLight(key);
+			break;
+		case eComponent_line:
+			_component = new QeLine(key);
+			break;
+		case eComponent_axis:
+			_component = new QeAxis(key);
+			break;
+		case eComponent_grid:
+			_component = new QeGrid(key);
+			break;
+		case eComponent_model:
+			_component = new QeModel(key);
+			break;
+		case eComponent_animation:
+			//_component = new QeAnimation();
+			break;
+		case eComponent_billboard:
+			_component = new QeBillboard(key);
+			break;
+		case eComponent_cubemap:
+			_component = new QeCubemap(key);
+			break;
+		case eComponent_partical:
+			_component = new QeParticle(key);
+			break;
+		case eComponent_material:
+			//_component = new QeMaterial();
+			break;
+		case eComponent_inputControl:
+			_component = new QeInputControl(key);
+			break;
+		case eComponent_render:
+			_component = new QeRender(key);
+			break;
 		}
 	}
+	it = components.find(_type);
+	if (it != components.end()) {
+		it->second.push_back(_component);
+	}
+	else {
+		components.insert(
+			std::pair<QeComponentType, std::vector<QeComponent*>>(_type, { _component }));
+	}
+	_component->initialize(_property, _owner);
+
+	return _component;
 }
 
-void QeObjectManger::update1() {
-	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
-	while (it != mgrObjs.end()) {
-		it->second->update1();
-		++it;
-	}
-	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
-	while (it1 != mgrModels.end()) {
-		it1->second->update1();
-		++it1;
-	}
-	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
-	while (it2 != mgrAlphaModels.end()) {
-		(*it2)->update1();
-		++it2;
-	}
-}
-
-void QeObjectManger::update2() {
-
-	std::map<int, QePoint*>::iterator it = mgrObjs.begin();
-	while (it != mgrObjs.end()) {
-		it->second->update2();
-		++it;
-	}
-	std::map<int, QeModel*>::iterator it1 = mgrModels.begin();
-	while (it1 != mgrModels.end()) {
-		it1->second->update2();
-		++it1;
-	}
-	std::vector<QeModel*>::iterator it2 = mgrAlphaModels.begin();
-	while (it2 != mgrAlphaModels.end()) {
-		(*it2)->update2();
-		++it2;
-	}
-}
-
-void QeObjectManger::cleanupPipeline() {
-
-	//VK->cleanupPipeline();
-}
-
-void QeObjectManger::recreatePipeline() {
-
-	std::map<int, QeModel*>::iterator it = mgrModels.begin();
-	while (it != mgrModels.end()) {
-		it->second->updateShaderData();
-		it->second->createPipeline();
-		++it;
-	}
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->updateShaderData();
-		(*it1)->createPipeline();
-		++it1;
-	}
-	VP->bUpdateDrawCommandBuffers = true;
-}
-
-
-void QeObjectManger::updateDrawCommandBuffer(QeDataDrawCommand* command) {
+QeObject* QeObjectManger::findObject(int _oid) {
 	
-	std::map<int, QeModel*>::iterator it = mgrModels.begin();
-	while (it != mgrModels.end()) {
-		it->second->updateDrawCommandBuffer(command);
+	std::vector<QeObject*>::iterator it = objects.begin();
+	while (it != objects.end()) {
+		if ((*it)->oid == _oid) {
+			return (*it);
+		}
 		++it;
 	}
-	sortAlphaModels(command->camera);
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->updateDrawCommandBuffer(command);
-		++it1;
-	}
+	return nullptr;
 }
 
-void QeObjectManger::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
-
-	std::map<int, QeModel*>::iterator it = mgrModels.begin();
-	while (it != mgrModels.end()) {
-		it->second->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
+QeObject* QeObjectManger::findObject(std::string _name) {
+	
+	std::vector<QeObject*>::iterator it = objects.begin();
+	while (it != objects.end()) {
+		if ((*it)->name.compare(_name) == 0) {
+			return (*it);
+		}
 		++it;
 	}
-	std::vector<QeModel*>::iterator it1 = mgrAlphaModels.begin();
-	while (it1 != mgrAlphaModels.end()) {
-		(*it1)->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
-		++it1;
+	return nullptr;
+}
+
+QeComponent* QeObjectManger::findComponent(QeComponentType type, int _oid) {
+
+	std::map< QeComponentType, std::vector<QeComponent*>>::iterator it = components.find(type);
+
+	if (it != components.end()) {
+		std::vector<QeComponent*>::iterator it1 = it->second.begin();
+		while (it1 != it->second.end()) {
+			if ((*it1)->oid == _oid) {
+				return (*it1);
+			}
+			++it1;
+		}
+		++it;
 	}
+	return nullptr;
+}
+
+bool QeObjectManger::removeObject(QeObject* _object) {
+	
+	int index = findElementFromVector(objects, _object);
+
+	if (index == INDEX_NONE) return false;
+
+	_object->clear();
+	objects.erase(objects.begin()+ index);
+	unActiveObjects.push_back(_object);
+
+	return true;
+}
+
+bool QeObjectManger::removeComponent(QeComponent* _component) {
+	
+	std::map< QeComponentType, std::vector<QeComponent*>>::iterator it = components.find(_component->componentType);
+	if (it != components.end()) {
+
+		int index = findElementFromVector(it->second, _component);
+
+		if (index == INDEX_NONE) return false;
+		_component->clear();
+		it->second.erase(it->second.begin()+index);
+				
+		it = unActiveComponents.find(_component->componentType);
+		if (it != unActiveComponents.end()) {
+			it->second.push_back(_component);
+		}
+		else {
+			unActiveComponents.insert(std::pair<QeComponentType, std::vector<QeComponent*>>(_component->componentType, { _component }));
+		}
+		return true;
+	}
+	return false;
 }

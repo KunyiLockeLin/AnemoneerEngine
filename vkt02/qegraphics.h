@@ -2,6 +2,12 @@
 
 #include "qeheader.h"
 
+enum QeRenderType {
+	eRender_KHR = 0,
+	eRender_main = 1,
+	eRender_color = 2,
+	eRender_MAX = 3
+};
 
 struct QeDataEnvironment {
 	QeVector4f ambientColor;
@@ -13,14 +19,13 @@ struct QeDataViewport {
 	VkViewport viewport;
 	VkRect2D scissor;
 	QeCamera* camera = nullptr;
-	std::vector<QeLight*> lights;
+	//std::vector<QeLight*> lights;
 
 	QeDataDescriptorSet commonDescriptorSet;
 	QeDataEnvironment environmentData;
 	QeVKBuffer environmentBuffer;
-	QeVKBuffer lightsBuffer;
 
-	QeDataViewport():environmentBuffer(eBuffer_uniform), lightsBuffer(eBuffer_storage),
+	QeDataViewport():environmentBuffer(eBuffer_uniform),
 		commonDescriptorSet(eDescriptorSetLayout_Common) {}
 
 	~QeDataViewport();
@@ -55,7 +60,7 @@ struct QeDataRender {
 	std::vector<VkCommandBuffer> commandBuffers;
 	VkSemaphore semaphore = VK_NULL_HANDLE;
 	
-	VkRenderPass renderPass;
+	VkRenderPass renderPass = VK_NULL_HANDLE;
 	std::vector<QeDataSubpass*> subpass;
 
 	QeDataRender() :colorImage(eImage_render), colorImage2(eImage_render), depthStencilImage(eImage_depthStencil),
@@ -82,25 +87,34 @@ class QeGraphics
 {
 public:
 
-	QeGraphics(QeGlobalKey& _key) {}
+	QeGraphics(QeGlobalKey& _key): lightsBuffer(eBuffer_storage) {}
 	~QeGraphics();
 
-	QeAssetXML* initProperty;
-
-	std::vector<QeDataRender*> renders; // 0:main render
+	std::vector<QeDataRender*> renders;
+	//std::vector<QeLight*> lights;
+	std::vector<QeVector3f> clearColors;
 	QeDataSwapchain swapchain;
 
 	int currentTargetViewport = 0;
 
 	VkSemaphore renderCompleteSemaphore = VK_NULL_HANDLE;
 	std::vector<VkFence> fences;
-	VkSampleCountFlagBits sampleCount;
+	VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT;
 
-	void init(QeAssetXML* _property);
-	void addNewViewport(size_t renderIndex);
-	void popViewport(size_t renderIndex);
+	std::vector<QeModel*> models;
+	std::vector<QeModel*> alphaModels
+		;
+	std::vector<QeLight*> lights;
+	QeVKBuffer lightsBuffer;
+	bool bUpdateLight= false;
+
+	void initialize();
+	void addNewViewport(QeRenderType type);
+	void popViewport(QeRenderType type);
 	void updateViewport();
 	void updateBuffer();
+	void addLight(QeLight* light);
+	void removeLight(QeLight* light);
 	void update1();
 	void update2();
 	void setTargetCamera(int index);
@@ -121,4 +135,12 @@ public:
 	void drawFrame();
 	void updateDrawCommandBuffers();
 	//void updateComputeCommandBuffers();
+
+	void sortAlphaModels(QeCamera * camera);
+
+	void cleanupPipeline();
+	void recreatePipeline();
+
+	void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
+	void updateDrawCommandBuffer(QeDataDrawCommand* command);
 };

@@ -1,22 +1,24 @@
 #include "qeheader.h"
 
 
-void QeCubemap::init(QeAssetXML* _property, int _parentOID) {
-
-	QePoint::init(_property,  _parentOID);
+void QeCubemap::initialize(QeAssetXML* _property, QeObject* _owner) {
+	QeComponent::initialize(_property, _owner);
 
 	modelData = AST->getModel("cube", true);
-	mtlData = AST->getMaterialImage(AST->getXMLValue(editProperty, 1, "image"), true);
-	AST->getXMLfValue(&mtlData->value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
+	const char * image = AST->getXMLValue(initProperty, 1, "image");
+	materialData = AST->getMaterialImage(image, true);
 
-	bufferData.material = mtlData->value;
-	AST->setGraphicsShader(graphicsShader, editProperty, "cubemap");
+	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
+	bufferData.material = materialData->value;
+	AST->setGraphicsShader(graphicsShader, nullptr, "cubemap");
+	graphicsPipeline.bAlpha = false;
+	GRAP->models.push_back(this);
 }
 
 QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	descriptorSetData.cubeMapImageView = mtlData->image.pCubeMap->view;
-	descriptorSetData.cubeMapSampler = mtlData->image.pCubeMap->sampler;
+	descriptorSetData.cubeMapImageView = materialData->image.pCubeMap->view;
+	descriptorSetData.cubeMapSampler = materialData->image.pCubeMap->sampler;
 	return descriptorSetData;
 }

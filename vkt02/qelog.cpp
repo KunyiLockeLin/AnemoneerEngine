@@ -7,9 +7,9 @@ QeLog::~QeLog() {
 	}
 }
 
-void QeLog::init()
+void QeLog::initialize()
 {
-	mode = QeDebugMode(atoi(AST->getXMLValue(2, AST->CONFIG, "debug")));
+	mode = QeDebugMode(atoi(AST->getXMLValue(3, AST->CONFIG, "setting","debug")));
 }
 
 bool QeLog::isDebug()	{	return mode == eModeNoDebug ? false : true;	}
@@ -84,7 +84,7 @@ void QeLog::print(std::string& msg, bool bShowStack, int stackLevel) {
 			localtime_s(&timeinfo, &rawtime);
 
 			strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
-			std::string outputPath = AST->getXMLValue(3, AST->CONFIG, "path", "log");
+			std::string outputPath = AST->getXMLValue(4, AST->CONFIG, "setting", "path", "log");
 			outputPath += "log";
 			outputPath += buffer;
 			outputPath += ".txt";

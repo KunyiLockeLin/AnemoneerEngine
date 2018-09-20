@@ -15,25 +15,24 @@ class QeObjectManger {
 private:
 	QeObjectMangerKey key;
 
-	std::map<int, QePoint*> mgrObjs;
-	std::map<int, QeModel*> mgrModels;
-	std::vector<QeModel*> mgrAlphaModels;
+	std::vector<QeObject*> objects;
+	std::vector<QeObject*> unActiveObjects;
+
+	std::map< QeComponentType, std::vector<QeComponent*>> components;
+	std::map< QeComponentType, std::vector<QeComponent*>> unActiveComponents;
 
 public:
 
 	QeObjectManger(QeGlobalKey& _key) {}
 	~QeObjectManger();	
 
-	QePoint* getObject(int _oid, QeAssetXML* _property=nullptr, int _parentOID=0);
+	QeObject* spwanObject( QeAssetXML* _property, QeObject* _parent = nullptr);
+	QeComponent* spwanComponent(QeAssetXML* _property, QeObject* _owner = nullptr);
+	QeObject* findObject(int _oid);
+	QeObject* findObject(std::string name);
+	QeComponent* findComponent(QeComponentType type, int _oid);
+	bool removeObject(QeObject* _object);
+	bool removeComponent(QeComponent* component);
 
-	void sortAlphaModels(QeCamera* camera);
-
-	void update1();
-	void update2();
-
-	void cleanupPipeline();
-	void recreatePipeline();
-
-	void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
-	void updateDrawCommandBuffer(QeDataDrawCommand* command );
+	void clear();
 };

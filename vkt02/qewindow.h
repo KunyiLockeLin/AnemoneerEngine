@@ -20,12 +20,13 @@ public:
 	HWND commandBox;
 	WNDPROC DefEditProc;
 	QeInputData inputData;
+	std::vector<QeInputControl*> inputControls;
 
 	void getWindowSize(int& width, int& height);
 	void update1();
 	void update2();
 	bool bInit = false;
-	void init();
+	void initialize();
 	void resize();
 	std::string getWindowTitle();
 

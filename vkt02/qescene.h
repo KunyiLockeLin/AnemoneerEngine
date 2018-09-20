@@ -5,20 +5,18 @@
 class QeScene {
 
 public:
-	QeScene(QeQueenEngineKey& _key) {}
-	//~QeQeScene() {}
+	QeScene(QeGlobalKey& _key) {}
+	~QeScene() {}
+
 
 	int eid;
-	QeVector4f	ambientColor;
 	QeAssetXML* initProperty = nullptr;
-	QeLight * light = nullptr;
-	QeLine * axis = nullptr;
-	QeLine * grids = nullptr;
-	int gridsNum;
+	std::vector<QeObject*> objects;
 
-	void init(QeAssetXML * _property);
-	void eventInput(QeInputData & inputData);
-	void update1() {}
-	void update2() {}
+
+	void initialize(QeAssetXML * _property);
+	void clear();
+	void update1();
+	void update2();
 };
 

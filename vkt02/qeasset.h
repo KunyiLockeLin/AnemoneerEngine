@@ -7,7 +7,7 @@ enum QeModelDataType {
 
 	eModelData_cube =0,
 	eModelData_axis =1,
-	eModelData_grids =2,
+	eModelData_grid =2,
 	eModelData_line =3,
 	eModelData_plane =4,
 	eModelData_gltf = 5,
@@ -208,8 +208,6 @@ public:
 	bool getJSONiValue(int* output, QeAssetJSON* source, int length, ...);
 	bool getJSONfValue(float* output, QeAssetJSON* source, int length, ...);
 
-	const char* getEditType(QeObjectType type);
-
 	QeAssetXML* getXML(const char* _filePath);
 	const char* getXMLValue(int length, ...);
 	const char* getXMLValue(QeAssetXML* source, int length, ...);
@@ -217,12 +215,12 @@ public:
 	QeAssetXML* getXMLNode(int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
-	QeAssetXML* getXMLEditNode(QeObjectType type, int eid);
+	QeAssetXML* getXMLEditNode(const char* type, int eid, int type2 = 0);
 	bool getXMLbValue(bool* output, QeAssetXML* source, int length, ...);
 	bool getXMLiValue(int* output, QeAssetXML* source, int length, ...);
 	bool getXMLfValue(float* output, QeAssetXML* source, int length, ...);
 
-	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false);
+	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false, float* param = nullptr );
 	//QeAssetMaterial* getMaterial(const char* _filename);
 	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
 	QeVKImage* getImage(const char* _filename, bool bCubeMap=false);

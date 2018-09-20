@@ -68,7 +68,7 @@ QeDataDescriptorSet::~QeDataDescriptorSet() {
 	instance = VK_NULL_HANDLE;
 }
 
-void QeVulkan::init() {
+void QeVulkan::initialize() {
 
 	if (bInit) return;
 	bInit = true;
@@ -103,16 +103,17 @@ void QeVulkan::createInstance() {
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pNext = nullptr;
-	appInfo.pApplicationName = AST->getXMLValue(2, AST->CONFIG, "applicationName");
+	QeAssetXML * node = AST->getXMLNode(2, AST->CONFIG, "setting");
+	appInfo.pApplicationName = AST->getXMLValue(node, 1, "applicationName");
 
-	std::vector<std::string> vs = ENCODE->split(AST->getXMLValue(2, AST->CONFIG, "applicationVersion"), ".");
+	std::vector<std::string> vs = ENCODE->split(AST->getXMLValue(node, 1, "applicationVersion"), ".");
 	appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 	
-	appInfo.pEngineName = AST->getXMLValue(2, AST->CONFIG, "engineName");
-	vs = ENCODE->split(AST->getXMLValue(2, AST->CONFIG, "engineVersion"), ".");
+	appInfo.pEngineName = AST->getXMLValue(node, 1, "engineName");
+	vs = ENCODE->split(AST->getXMLValue(node, 1, "engineVersion"), ".");
 	appInfo.engineVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-	vs = ENCODE->split(AST->getXMLValue(2, AST->CONFIG, "VulkanAPIVersion"), ".");
+	vs = ENCODE->split(AST->getXMLValue(node, 1, "VulkanAPIVersion"), ".");
 	appInfo.apiVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
 	VkInstanceCreateInfo createInfo = {};
@@ -299,7 +300,7 @@ void QeVulkan::createSwapchain( QeDataSwapchain* swapchain ) {
 VkSampleCountFlagBits QeVulkan::getMaxUsableSampleCount(){
 
 	VkSampleCountFlags counts;
-	AST->getXMLiValue( (int*)&counts, AST->getXMLNode(1, AST->CONFIG), 1, "msaa" );
+	AST->getXMLiValue( (int*)&counts, AST->getXMLNode(2, AST->CONFIG, "setting"), 1, "msaa" );
 	VkSampleCountFlags counts2 = std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
 	
 	if (counts > counts2) counts = counts2;
@@ -368,14 +369,14 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 		dependencies.resize(subpassNum + 2);
 
 		//attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-		if (VP->sampleCount == VK_SAMPLE_COUNT_1_BIT)
+		if (GRAP->sampleCount == VK_SAMPLE_COUNT_1_BIT)
 				attachments.resize(subpassNum + 2);
 		else	attachments.resize(subpassNum + 3);
 
 		// depth
 		attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 		attachments[index].format = formats[index];
-		attachments[index].samples = VP->sampleCount;
+		attachments[index].samples = GRAP->sampleCount;
 		attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -387,11 +388,11 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 		++index;
 
-		if (VP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+		if (GRAP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 			// msaa
 			attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 			attachments[index].format = formats[index];
-			attachments[index].samples = VP->sampleCount;
+			attachments[index].samples = GRAP->sampleCount;
 			attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -432,7 +433,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 
 			if (i == 0) {
 				
-				if (VP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+				if (GRAP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 					attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 					colorAttachmentRef[i].attachment = 1;
 				}
@@ -1049,7 +1050,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	while ( it != graphicsPipelines.end()) {
 		if ((*it)->shader->vert == data->shader->vert && (*it)->shader->tesc == data->shader->tesc && (*it)->shader->tese == data->shader->tese &&
 			(*it)->shader->geom == data->shader->geom && (*it)->shader->frag == data->shader->frag && (*it)->renderPass == data->renderPass &&
-			(*it)->bAlpha == data->bAlpha && (*it)->objectType == data->objectType && (*it)->minorType == data->minorType && (*it)->subpass == data->subpass
+			(*it)->bAlpha == data->bAlpha && (*it)->componentType == data->componentType && (*it)->minorType == data->minorType && (*it)->subpass == data->subpass
 			&& (*it)->sampleCount == data->sampleCount
 			/*&& (*it)->bStencilBuffer == data->bStencilBuffer*/) {
 			return (*it)->pipeline;
@@ -1062,7 +1063,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		int minorType;
 	} specializationData;
 
-	specializationData.objectType = data->objectType;
+	specializationData.objectType = data->componentType;
 	specializationData.minorType = data->minorType;
 
 	std::array<VkSpecializationMapEntry, 2> specializationMapEntries;
@@ -1133,32 +1134,34 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	VkCullModeFlagBits cullMode= VK_CULL_MODE_BACK_BIT;
 	bool bDepthTest=true;
 
-	switch (data->objectType) {
+	switch (data->componentType) {
 
-	case eObject_Scene:
+	case eComponent_postprocessing:
 		bDepthTest = false;
 		bVertex = false;
 		polygonMode = VK_POLYGON_MODE_FILL;
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		break;
-	case eObject_Line:
+	case eComponent_line:
+	case eComponent_axis:
+	case eComponent_grid:
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		break;
-	case eObject_Billboard:
+	case eComponent_billboard:
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		bVertex = false;
 		break;
-	case eObject_Cubemap:
+	case eComponent_cubemap:
 		topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		cullMode = VK_CULL_MODE_FRONT_BIT;
 		break;
-	case eObject_Particle:
+	case eComponent_partical:
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		break;
-	case eObject_Model:
+	case eComponent_model:
 		topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		break;
-	case eObject_Render:
+	case eComponent_render:
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		bVertex = false;
 		break;
@@ -1343,7 +1346,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	s->shader = data->shader;
 	s->bAlpha = data->bAlpha;
 	//s->bStencilBuffer = data->bStencilBuffer;
-	s->objectType = data->objectType;
+	s->componentType = data->componentType;
 	s->minorType = data->minorType;
 	s->renderPass = data->renderPass;
 	s->subpass = data->subpass;
@@ -1426,7 +1429,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 
 					VkDescriptorImageInfo imgInfo;
 					if (descriptorSet.bRender) {
-							if( VP->sampleCount == VK_SAMPLE_COUNT_1_BIT)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+							if( GRAP->sampleCount == VK_SAMPLE_COUNT_1_BIT)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 							else											imgInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 					}
 					else						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

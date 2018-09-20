@@ -6,16 +6,21 @@
 class QeObject
 {
 public:
-	QeObject() {}
+	QeObject(QeObjectMangerKey& _key) {}
 	~QeObject() {}
 
-	int oid, eid, parentOID;
+	int oid, eid;
+	QeObject* parent = nullptr;
+	QeAssetXML* initProperty;
 	std::string name;
+	QeTransform* transform;
 
 	std::vector<QeComponent*> components;
+	std::vector<QeObject*> children;
 
-	void init(QeAssetXML* _property, int _parentOID);
-	void update1();
-	void update2();
+	virtual void initialize(QeAssetXML* _property, QeObject* _parent);
+	virtual void clear();
+
+	virtual void update1();
+	virtual void update2();
 };
-

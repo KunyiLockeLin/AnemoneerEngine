@@ -4,9 +4,9 @@
 class QeCubemap : public QeModel {
 
 public:
-	QeCubemap(QeObjectMangerKey& _key, QeObjectType _type = eObject_Cubemap) :QeModel(_key, _type) {}
+	QeCubemap(QeObjectMangerKey& _key) :QeModel(_key) {}
 	//~QeCubemap() {}
 
-	virtual void init(QeAssetXML* _property, int _parentOID);
+	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

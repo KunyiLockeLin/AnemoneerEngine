@@ -5,12 +5,16 @@
 class QeLine : public QeModel
 {
 public:
+	QeLine(QeObjectMangerKey& _key) :QeModel(_key) {}
 
-	QeLine(QeObjectMangerKey& _key, QeObjectType _type = eObject_Line ):QeModel(_key, _type) {}
+	int targetTransformOID;
+	QeVector3f color;
 
-	virtual void init(QeAssetXML* _property, int _parentOID);
-	virtual QeDataDescriptorSetModel createDescriptorSetModel();
+	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
+	//virtual void clear() {}
 	virtual void update1();
-	virtual void update2();
+	//virtual void update2() {}
+
+	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };
 

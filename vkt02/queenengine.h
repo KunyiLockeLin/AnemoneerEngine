@@ -21,7 +21,6 @@ public:
 	void run();
 
 	int sceneEID;
-	QeScene* scene = nullptr;
 	bool bClosed = false;
 	bool bRestart = false;
 	float deltaTime;

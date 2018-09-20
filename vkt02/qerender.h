@@ -4,10 +4,14 @@
 class QeRender : public QeModel
 {
 public:
-	QeRender(QeObjectMangerKey& _key, QeObjectType _type = eObject_Render) :QeModel(_key, _type) {}
-	//~QeRender(){}
+	QeRender(QeObjectMangerKey& _key) :QeModel(_key) {}
+	//~QeCubemap() {}
 
-	virtual void init(QeAssetXML* _property, int _parentOID);
+	VkExtent2D renderSize;
+	int targetCameraOID;
+
+	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
+	virtual void update1();
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };
 

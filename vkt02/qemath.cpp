@@ -62,6 +62,38 @@ QeVector3f QeMath::cross(QeVector3f& _vec1, QeVector3f& _vec2) {
 QeVector3f QeMath::normalize(QeVector3f& _vec) { return _vec / length(_vec); }
 QeVector4f QeMath::normalize(QeVector4f& _vec) { return _vec / length(_vec); }
 
+QeVector3f QeMath::eulerAnglesToVector(QeVector3f& _eulerAngles) {
+	QeVector3f _radians = _eulerAngles * DEGREES_TO_RADIANS;
+
+	/* roll, pitch, yaw? yaw, roll, pitch?  not roll,
+	x = cos(yaw)*cos(pitch)
+	y = sin(yaw)*cos(pitch)
+	z = sin(pitch)
+	*/
+	QeVector3f ret;
+	ret.x = cos(_eulerAngles.z)*cos(_eulerAngles.y);
+	ret.y = sin(_eulerAngles.z)*cos(_eulerAngles.y);
+	ret.z = cos(_eulerAngles.y);
+	return normalize(ret);
+}
+
+QeVector3f QeMath::vectorToEulerAngles(QeVector3f& _vector) {
+
+	QeVector3f _radians;
+	QeVector3f _vec = normalize(_vector);
+
+	_radians.z = atan(_vec.y/_vec.x);
+	_radians.x = 0;
+	_radians.y = -asin(_vec.z);
+
+	_radians = _radians*RADIANS_TO_DEGREES;
+
+	if (_vec.x < 0 && _vec.y>0)		_radians.z += 180;
+	else if (_vec.x < 0 && _vec.y<0)_radians.z -= 180;
+
+	return _radians;
+}
+
 float QeMath::length(QeVector2f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 float QeMath::length(QeVector3f& _vec) { return fastSqrt(dot(_vec, _vec)); }
 float QeMath::length(QeVector4f& _vec) { return fastSqrt(dot(_vec, _vec)); }
@@ -132,6 +164,56 @@ QeMatrix4x4f QeMath::translate(QeVector3f& _pos) {
 	_rtn._30 = _pos.x;
 	_rtn._31 = _pos.y;
 	_rtn._32 = _pos.z;
+	return _rtn;
+}
+
+QeVector3f QeMath::move(QeVector3f& _position, QeVector3f& _addMove, QeVector3f& _face, QeVector3f& _up ){
+
+	QeVector3f _move;
+
+	// forward
+	if (_addMove.z) {
+		_move = _face * _addMove.z;
+	}
+	else {
+		QeVector3f _surface = MATH->normalize(MATH->cross(_face, _up));
+		//left
+		if (_addMove.x) {
+			_move = _surface * _addMove.x;
+		}
+		//up
+		if (_addMove.y) {
+			QeVector3f _up1 = MATH->cross(_surface, _face);
+			_move = _up1 * _addMove.y;
+		}
+	}
+	return (_position + _move);
+}
+
+
+QeMatrix4x4f QeMath::rotate(QeVector3f _angles) {
+	QeMatrix4x4f _rtn;
+	QeVector3f _radians = _angles * DEGREES_TO_RADIANS;
+	QeVector3f _coss, _sins;
+	_coss.x = cos(_radians.x); 
+	_coss.y = cos(_radians.y);
+	_coss.z = cos(_radians.z);
+	_sins.x = sin(_radians.x);
+	_sins.y = sin(_radians.y);
+	_sins.z = sin(_radians.z);
+
+	_rtn._00 = _coss.y*_coss.z;
+	_rtn._01 = _coss.y*_sins.z;
+	_rtn._02 = -_sins.y;
+
+	_rtn._10 = _sins.x*_sins.y*_coss.z - _coss.x*_sins.z;
+	_rtn._11 = _sins.x*_sins.y*_sins.z + _coss.x*_coss.z;
+	_rtn._12 = _coss.y*_sins.x;
+
+	_rtn._20 = _coss.x*_sins.y*_coss.z + _sins.x*_sins.z;
+	_rtn._21 = _coss.x*_sins.y*_sins.z - _sins.x*_coss.z;
+	_rtn._22 = _coss.y*_coss.x;
+
 	return _rtn;
 }
 
@@ -231,6 +313,11 @@ QeVector2f& QeVector2f::operator-=(const QeVector2f& other) {
 QeVector2f& QeVector2f::operator/=(const float& other) {
 	x /= other;
 	y /= other;
+	return *this;
+}
+QeVector2f& QeVector2f::operator*=(const float& other) {
+	x *= other;
+	y *= other;
 	return *this;
 }
 QeVector2f QeVector2f::operator/(const float& other) {
@@ -333,6 +420,12 @@ QeVector3f& QeVector3f::operator*=(const QeVector3f& other) {
 	x *= other.x;
 	y *= other.y;
 	z *= other.z;
+	return *this;
+}
+QeVector3f& QeVector3f::operator/=(const QeVector3f& other) {
+	x /= other.x;
+	y /= other.y;
+	z /= other.z;
 	return *this;
 }
 QeVector3f& QeVector3f::operator-=(const float& other) {
@@ -773,7 +866,7 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 	return acos(d)*RADIANS_TO_DEGREES;
 }
 
-void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
+/*void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
 	
 	if (!inV.z) outPolarAngle = 90;
 	else if(!inV.x && !inV.y) outPolarAngle = 0;
@@ -787,7 +880,7 @@ void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & 
 	else if (inV.y < 0)	outAzimuthalAngle = 360 + outAzimuthalAngle;
 
 	if (inV.z < 0)		outPolarAngle = 180 + outPolarAngle;
-}
+}*/
 
 void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle) {
 
@@ -837,3 +930,21 @@ void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAn
 
 	MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
 }*/
+
+
+QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f & _translate, QeVector3f & _rotate, QeVector3f & _scale, bool bRotate, bool bFixSize) {
+
+	QeMatrix4x4f mat;
+
+	mat *= translate(_translate);
+	if(bRotate) mat *= rotate(_rotate);
+	mat *= scale(_scale);
+	
+	float dis = 1.0f;
+	if (bFixSize) {
+		dis = MATH->length(GRAP->getTargetCamera()->owner->transform->worldPosition() - _translate);
+		dis = dis < 0.1f ? 0.01f : dis / 10;
+	}
+	mat *= MATH->scale(_scale*dis);
+	return mat;
+}

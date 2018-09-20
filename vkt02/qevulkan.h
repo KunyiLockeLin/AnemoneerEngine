@@ -18,13 +18,6 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
-enum QeRenderType {
-	eRender_KHR = 0,
-	eRender_main = 1,
-	eRender_color = 2,
-	eRender_MAX = 3
-};
-
 enum QeVKBufferType {
 	eBuffer = 0,
 	eBuffer_vertex = 1,
@@ -132,45 +125,6 @@ struct QeDataDescriptorSetPostprocessing {
 	VkSampler	inputAttachSampler = VK_NULL_HANDLE;
 };
 
-/* 10,000, - 32,767
-eid: 10,000 - 30,000
-line:		10,000 - 10,999
-billboard:	11,000 - 11,999
-cubemap:	12,000 - 12,999
-particle:	13,000 - 13,999
-model:		14,000 - 14,999
-material:	15,000 - 16,999
-
-scene:		28,000 - 28,999
-
-oid:  10,000 - 32,767
-line:		10,000 - 10,999
-billboard:	11,000 - 11,999
-cubemap:	12,000 - 12,999
-particle:	13,000 - 13,999
-model:		14,000 - 14,999
-
-point:		25,000 - 25,999
-camera:		26,000 - 26,999
-light:		27,000 - 27,999
-
-*/
-
-enum QeObjectType {
-
-	eObject_Point = 25,
-	eObject_Camera = 26,
-	eObject_Light = 27,
-	eObject_Scene = 28,
-
-	eObject_Line = 10,
-	eObject_Billboard = 11,
-	eObject_Cubemap = 12,
-	eObject_Particle = 13,
-	eObject_Model = 14,
-	eObject_Render = 15,
-};
-
 enum QeGraphicsPipelineOtherType {
 	eGraphicsPipeLine_none = 0,
 	eGraphicsPipeLine_normal = 1,
@@ -178,7 +132,7 @@ enum QeGraphicsPipelineOtherType {
 };
 
 struct QeDataGraphicsPipeline {
-	QeObjectType objectType;
+	QeComponentType componentType;
 	QeGraphicsPipelineOtherType minorType;
 	VkPipeline pipeline;
 	QeAssetGraphicsShader* shader;
@@ -208,7 +162,7 @@ public:
 
 	std::vector<float> pushConstants;
 
-	void init();
+	void initialize();
 	void update1() {}
 	void update2() {}
 

@@ -16,16 +16,16 @@ void QeCommand::inputCommand(std::string& command) {
 		if (res.size() > 1)	QE->sceneEID = atoi(res[1].c_str());
 	}
 	else if (res[0].compare("resetcamera") == 0) {
-		VP->getTargetCamera()->reset();
+		GRAP->getTargetCamera()->reset();
 		//if(res.size() >1)	VP->getTargetCamera()->type = QeCameraType(atoi(res[1].c_str()));
 	}
 	else if (res[0].compare("showmesh") == 0) {
 		VK->bShowMesh = !VK->bShowMesh;
-		VP->bRecreateRender = true;
+		GRAP->bRecreateRender = true;
 	}
 	else if (res[0].compare("shownormal") == 0) {
 		VK->bShowNormal = !VK->bShowNormal;
-		VP->bRecreateRender = true;
+		GRAP->bRecreateRender = true;
 	}
 }
 

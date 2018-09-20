@@ -14,19 +14,18 @@ struct QeDataLight {
 	QeVector4f param; // 1: type, 2: intensity, 3: coneAngle
 };
 
-class QeLight:public QePoint
+class QeLight:public QeComponent
 {
 public:
-	QeLight(QeObjectMangerKey& _key, QeObjectType _type = eObject_Light) :QePoint(_key, _type) {}
+	QeLight(QeObjectMangerKey& _key):QeComponent(_key) {}
 	//~QeLight() {}
 
-	float speed;
-	QeVector3f center;
-	QeVector3f up;
 	QeDataLight bufferData;
 	bool bUpdate;
 
-	virtual void setProperty();
+	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
+	virtual void clear();
 	virtual void update1();
+	virtual void update2() {}
 };
 
