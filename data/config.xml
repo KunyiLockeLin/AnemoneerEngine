@@ -143,6 +143,13 @@
         </components>
         <children/>
       </e>
+      <e oid ="14" eid="1" name="animation">
+        <components>
+          <e oid ="140" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+          <e oid ="141" eid="1" type ="7" obj="animation.gltf" alpha="0" normal="0" lineWidth="0" actionState ="1" actionSpeed="1" actionID="0" actionType="2"/>
+        </components>
+        <children/>
+      </e>
     </e>
   </scenes>
   
@@ -165,9 +172,9 @@
     </e>
     <e type ="5" name="Line" targetTransformOID="0" colorR="0" colorG="0" colorB="0">
     </e>
-    <e type ="6" name="Model" obj="box.gltf" alpha="0" normal="0" lineWidth="0">
+    <e type ="6" name="Model" obj="" alpha="0" normal="0" lineWidth="0">
     </e>
-    <e type ="7" name="Animation">
+    <e type ="7" name="Animation" obj="" alpha="0" normal="0" lineWidth="0" actionState ="0" actionSpeed="0" action="0" actionType="0">
     </e>
     <e type ="8" name="Billboard">
     </e>

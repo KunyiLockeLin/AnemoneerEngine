@@ -144,7 +144,7 @@ QeComponent* QeObjectManger::spwanComponent(QeAssetXML* _property, QeObject* _ow
 			_component = new QeModel(key);
 			break;
 		case eComponent_animation:
-			//_component = new QeAnimation();
+			_component = new QeAnimation(key);
 			break;
 		case eComponent_billboard:
 			_component = new QeBillboard(key);

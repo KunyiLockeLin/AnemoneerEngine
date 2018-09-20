@@ -10,17 +10,6 @@ struct QeDataModel {
 	QeDataMaterial	material;
 };
 
-enum QeActionType {
-	eActionTypeOnce,
-	eActionTypeReplay,
-	eActionTypeNext,
-};
-
-enum QeActionState {
-	eActionStateStop,
-	eActionStatePlay,
-	eActionStatePause,
-};
 
 /*struct QeDataModelViewport {
 	QeMatrix4x4f normal;

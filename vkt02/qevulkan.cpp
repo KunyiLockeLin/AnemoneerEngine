@@ -1159,6 +1159,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 		topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 		break;
 	case eComponent_model:
+	case eComponent_animation:
 		topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		break;
 	case eComponent_render:

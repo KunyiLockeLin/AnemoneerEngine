@@ -10,8 +10,6 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-	AST->setGraphicsShader(graphicsShader, initProperty, "model");
-
 	const char* c = AST->getXMLValue(initProperty, 1, "obj");
 	modelData = AST->getModel(c);
 	materialData = modelData->pMaterial;
@@ -106,6 +104,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	switch (componentType) {
 	case eComponent_model:
 	case eComponent_cubemap:
+	case eComponent_animation:
 		vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
 		vkCmdBindIndexBuffer(command->commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
 		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);

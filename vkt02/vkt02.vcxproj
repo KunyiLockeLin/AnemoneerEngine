@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="qeanimation.cpp" />
     <ClCompile Include="qeaxis.cpp" />
     <ClCompile Include="qebillboard.cpp" />
     <ClCompile Include="qecubemap.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="qewindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="qeanimation.h" />
     <ClInclude Include="qeaxis.h" />
     <ClInclude Include="qebillboard.h" />
     <ClInclude Include="qecubemap.h" />

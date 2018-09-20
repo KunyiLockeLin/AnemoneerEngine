@@ -135,6 +135,7 @@ class QeGrid;
 #include "qerender.h"
 #include "qebillboard.h"
 #include "qeline.h"
+#include "qeanimation.h"
 #include "qecubemap.h"
 #include "qeparticle.h"
 #include "qelight.h"

@@ -102,6 +102,9 @@
     <ClCompile Include="qeparticle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qeanimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -186,6 +189,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeparticle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qeanimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
