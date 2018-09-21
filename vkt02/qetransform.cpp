@@ -41,7 +41,7 @@ QeVector3f QeTransform::worldPosition() {
 	if (targetAnimationOID) {
 		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent( eComponent_animation, targetAnimationOID);
 		if (animation) {
-			return localPosition + animation->getBoneTranslate(targetBoneName);
+			//return localPosition + animation->getBoneTranslate(targetBoneName);
 		}
 	}
 
@@ -60,7 +60,7 @@ QeVector3f QeTransform::worldScale() {
 	if (targetAnimationOID) {
 		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
 		if (animation) {
-			return localScale * animation->getBoneScale(targetBoneName);
+			//return localScale * animation->getBoneScale(targetBoneName);
 		}
 	}
 
@@ -79,7 +79,7 @@ QeVector3f QeTransform::worldFaceEular() {
 	if (targetAnimationOID) {
 		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
 		if (animation) {
-			return localFaceEular + animation->getBoneRotateEuler(targetBoneName);
+			//return localFaceEular + animation->getBoneRotateEuler(targetBoneName);
 		}
 	}
 
@@ -165,6 +165,13 @@ void QeTransform::revolute(QeVector2f& _addRevolute, QeVector3f& _centerPosition
 }
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize ) {
+
+	if (targetAnimationOID) {
+		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
+		if (animation) {
+			return animation->getBoneTransfrom(targetBoneName) * MATH->getTransformMatrix(localPosition, localFaceEular, localScale, bRotate, bFixSize);
+		}
+	}
 
 	return MATH->getTransformMatrix(worldPosition(), worldFaceEular(), worldScale(), bRotate, bFixSize);
 }

@@ -80,7 +80,7 @@
       </e>
       <e oid ="5" eid="1" name="box">
         <components>
-          <e oid ="50" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="5" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" targetAnimationOID="141" targetBoneName="Armature_Bone_001"/>
+          <e oid ="50" eid="1" type ="1" localPositionX="2" localPositionY="2" localPositionZ="-1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="10" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" targetAnimationOID="141" targetBoneName="Armature_Bone_002"/>
           <e oid ="51" eid="1" type ="6" obj="box.gltf" alpha="0" normal="0" lineWidth="0"/>
         </components>
         <children/>
