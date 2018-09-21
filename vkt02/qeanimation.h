@@ -22,7 +22,10 @@ public:
 
 	QeActionState	actionState;
 	QeActionType	actionType;
-	QeMatrix4x4f	joints[MAX_JOINT_NUM];
+	QeMatrix4x4f	jointTransforms[MAX_JOINT_NUM];
+	QeVector3f		jointTranslates[MAX_JOINT_NUM];
+	QeVector4f		jointRotateVectors[MAX_JOINT_NUM];
+	QeVector3f		jointScales[MAX_JOINT_NUM];
 	int				currentActionID;
 	int				currentActionFrame;
 	float			currentActionTime;
@@ -37,5 +40,9 @@ public:
 	void actionStop();
 	void updateAction();
 	void setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &parentTransform);
+	QeMatrix4x4f getBoneTransfrom(const char* boneName);
+	QeVector3f getBoneTranslate(const char* boneName);
+	QeVector3f getBoneRotateEuler(const char* boneName);
+	QeVector3f getBoneScale(const char* boneName);
 };
 

@@ -11,6 +11,8 @@ public:
 	QeVector3f localPosition, localScale, localFaceEular; 
 	QeVector3f rotateSpeed;
 	QeVector2f revoluteSpeed;
+	int targetAnimationOID;
+	const char * targetBoneName = nullptr;
 
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
 	virtual void update1();

@@ -191,7 +191,7 @@ QeVector3f QeMath::move(QeVector3f& _position, QeVector3f& _addMove, QeVector3f&
 }
 
 
-QeMatrix4x4f QeMath::rotate(QeVector3f _angles) {
+QeMatrix4x4f QeMath::rotate(QeVector3f & _angles) {
 	QeMatrix4x4f _rtn;
 	QeVector3f _radians = _angles * DEGREES_TO_RADIANS;
 	QeVector3f _coss, _sins;
@@ -217,7 +217,7 @@ QeMatrix4x4f QeMath::rotate(QeVector3f _angles) {
 	return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotate(float _angle, QeVector3f _axis) {
+QeMatrix4x4f QeMath::rotate(float _angle, QeVector3f & _axis) {
 
 	QeMatrix4x4f _rtn;
 	float _radian = _angle*DEGREES_TO_RADIANS;
@@ -389,6 +389,7 @@ QeVector3i QeVector3i::operator*(const int& other) {
 QeVector3f::QeVector3f() :x(0.0f), y(0.0f), z(0.0f) {}
 QeVector3f::QeVector3f(float _x, float _y, float _z) :x(_x), y(_y), z(_z) {}
 QeVector3f::QeVector3f(int _x, int _y, int _z) : x(float(_x)), y(float(_y)), z(float(_z)) {}
+QeVector3f::QeVector3f(const QeVector4f& other) : x(other.x), y(other.y), z(other.z) {}
 
 bool QeVector3f::operator==(const QeVector3f& other) const {
 	return x == other.x && y == other.y && z == other.z;
@@ -464,6 +465,13 @@ QeVector3f QeVector3f::operator-(const QeVector3f& other) {
 	_new.x = x - other.x;
 	_new.y = y - other.y;
 	_new.z = z - other.z;
+	return _new;
+}
+QeVector3f QeVector3f::operator*(const QeVector3f& other) {
+	QeVector3f _new;
+	_new.x = x * other.x;
+	_new.y = y * other.y;
+	_new.z = z * other.z;
 	return _new;
 }
 QeVector3f QeVector3f::operator+(const float& other) {
@@ -849,11 +857,11 @@ QeVector3f QeMath::interpolatePos(QeVector3f& start, QeVector3f& end, float prog
 	return ret;
 }
 
-QeMatrix4x4f QeMath::transform(QeVector3f& tanslation, QeVector4f& rotation, QeVector3f& scale) {
+QeMatrix4x4f QeMath::transform(QeVector3f& tanslation, QeVector4f& rotationVector, QeVector3f& scale) {
 	
 	QeMatrix4x4f ret;
 	ret *= MATH->translate(tanslation);
-	ret *= MATH->rotate(rotation);
+	ret *= MATH->rotate(rotationVector);
 	ret *= MATH->scale(scale);
 	return ret;
 }
@@ -932,12 +940,12 @@ void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAn
 }*/
 
 
-QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f & _translate, QeVector3f & _rotate, QeVector3f & _scale, bool bRotate, bool bFixSize) {
+QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f & _translate, QeVector3f & _rotateEuler, QeVector3f & _scale, bool bRotate, bool bFixSize) {
 
 	QeMatrix4x4f mat;
 
 	mat *= translate(_translate);
-	if(bRotate) mat *= rotate(_rotate);
+	if(bRotate) mat *= rotate(_rotateEuler);
 	mat *= scale(_scale);
 	
 	float dis = 1.0f;

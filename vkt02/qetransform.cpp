@@ -19,6 +19,9 @@ void QeTransform::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLfValue(&rotateSpeed.z, initProperty, 1, "rotateSpeedZ");
 	AST->getXMLfValue(&revoluteSpeed.x, initProperty, 1, "revoluteSpeedX");
 	AST->getXMLfValue(&revoluteSpeed.y, initProperty, 1, "revoluteSpeedY");
+	targetAnimationOID = 0;
+	AST->getXMLiValue(&targetAnimationOID, initProperty, 1, "targetAnimationOID");
+	targetBoneName = AST->getXMLValue(initProperty, 1, "targetBoneName");
 }
 
 void QeTransform::update1() {
@@ -35,6 +38,13 @@ void QeTransform::update1() {
 
 QeVector3f QeTransform::worldPosition() {
 	
+	if (targetAnimationOID) {
+		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent( eComponent_animation, targetAnimationOID);
+		if (animation) {
+			return localPosition + animation->getBoneTranslate(targetBoneName);
+		}
+	}
+
 	QeVector3f _ret = localPosition;
 	QeObject * _parent = owner->parent;
 	
@@ -47,6 +57,13 @@ QeVector3f QeTransform::worldPosition() {
 
 QeVector3f QeTransform::worldScale() {
 
+	if (targetAnimationOID) {
+		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
+		if (animation) {
+			return localScale * animation->getBoneScale(targetBoneName);
+		}
+	}
+
 	QeVector3f _ret = localScale;
 	QeObject * _parent = owner->parent;
 
@@ -58,6 +75,13 @@ QeVector3f QeTransform::worldScale() {
 }
 
 QeVector3f QeTransform::worldFaceEular() {
+
+	if (targetAnimationOID) {
+		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
+		if (animation) {
+			return localFaceEular + animation->getBoneRotateEuler(targetBoneName);
+		}
+	}
 
 	QeVector3f _ret = localFaceEular;
 	QeObject * _parent = owner->parent;

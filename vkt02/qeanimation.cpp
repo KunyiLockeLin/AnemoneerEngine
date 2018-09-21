@@ -52,21 +52,22 @@ void QeAnimation::updateAction() {
 
 	float progessive = MATH->clamp((currentActionTime - previousActionFrameTime) / (nextActionFrameTime - previousActionFrameTime), 0.f, 1.f);
 
-	QeVector3f previousTranslation, nextTranslation, currentTranslation, currentScale;
-	QeVector4f previousRotation, nextRotation, currentRotation;
-	currentScale = { 1,1,1 };
+	QeVector3f previousTranslation, nextTranslation;
+	QeVector4f previousRotation, nextRotation;
 
 	size_t size = modelData->jointsAnimation.size();
 
 	for (size_t i = 0; i<size; ++i) {
 		previousTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame];
 		nextTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame + 1];
-		currentTranslation = MATH->interpolatePos(previousTranslation, nextTranslation, progessive);
+		jointTranslates[i] = MATH->interpolatePos(previousTranslation, nextTranslation, progessive);
 
 		previousRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame];
 		nextRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame + 1];
-		currentRotation = MATH->interpolateDir(previousRotation, nextRotation, progessive);
-		joints[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
+		jointRotateVectors[i] = MATH->interpolateDir(previousRotation, nextRotation, progessive);
+		jointScales[i] = {1,1,1};
+
+		jointTransforms[i] = MATH->transform(jointTranslates[i], jointRotateVectors[i], jointScales[i]);
 	}
 
 	QeMatrix4x4f mat;
@@ -97,14 +98,73 @@ void QeAnimation::setChildrenJointTransform(QeDataJoint& joint, QeMatrix4x4f &pa
 	for (size_t i = 0; i<size; ++i) {
 		if (modelData->jointsAnimation[i].id == joint.id) {
 
-			joints[i] = parentTransform * joints[i];
+			jointTransforms[i] = parentTransform * jointTransforms[i];
 
 			size_t size1 = modelData->jointsAnimation[i].children.size();
 			for (size_t j = 0; j<size1; ++j)
-				setChildrenJointTransform(*modelData->jointsAnimation[i].children[j], joints[i]);
+				setChildrenJointTransform(*modelData->jointsAnimation[i].children[j], jointTransforms[i]);
 
-			bufferData.joints[i] = joints[i] * modelData->jointsAnimation[i].inverseBindMatrix;
+			bufferData.joints[i] = jointTransforms[i] * modelData->jointsAnimation[i].inverseBindMatrix;
 			break;
 		}
 	}
+}
+
+QeMatrix4x4f QeAnimation::getBoneTransfrom(const char* boneName) {
+
+	if (!boneName || !strlen(boneName))	return bufferData.model;
+
+	size_t size = modelData->jointsAnimation.size();
+	if (!size) return bufferData.model;
+
+	for (size_t i = 0; i<size; ++i) {
+		if (!strcmp(boneName, modelData->jointsAnimation[i].name))
+			return bufferData.model*jointTransforms[i];
+	}
+	return bufferData.model;
+}
+
+
+
+QeVector3f QeAnimation::getBoneTranslate(const char* boneName) {
+
+	if (!boneName || !strlen(boneName))	return owner->transform->worldPosition();
+
+	size_t size = modelData->jointsAnimation.size();
+	if (!size) return owner->transform->worldPosition();
+
+	for (size_t i = 0; i<size; ++i) {
+		if (!strcmp(boneName, modelData->jointsAnimation[i].name))
+			return owner->transform->worldPosition()+jointTranslates[i];
+	}
+	return owner->transform->worldPosition();
+}
+
+QeVector3f QeAnimation::getBoneRotateEuler(const char* boneName) {
+
+	if (!boneName || !strlen(boneName))	return owner->transform->worldFaceEular();
+
+	size_t size = modelData->jointsAnimation.size();
+	if (!size) return owner->transform->worldFaceEular();
+
+	for (size_t i = 0; i<size; ++i) {
+		if (!strcmp(boneName, modelData->jointsAnimation[i].name)) {
+			QeVector3f vec = jointRotateVectors[i];
+			return owner->transform->worldFaceEular() + MATH->vectorToEulerAngles(vec);
+		}
+	}
+	return owner->transform->worldFaceEular();
+}
+
+QeVector3f QeAnimation::getBoneScale(const char* boneName) {
+	if (!boneName || !strlen(boneName))	return owner->transform->worldScale();
+
+	size_t size = modelData->jointsAnimation.size();
+	if (!size) return owner->transform->worldScale();
+
+	for (size_t i = 0; i<size; ++i) {
+		if (!strcmp(boneName, modelData->jointsAnimation[i].name))
+			return owner->transform->worldScale()*jointScales[i];
+	}
+	return owner->transform->worldScale();
 }

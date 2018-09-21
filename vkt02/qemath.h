@@ -47,6 +47,7 @@ struct QeVector3f {
 	QeVector3f();
 	QeVector3f(float _x, float _y, float _z);
 	QeVector3f(int _x, int _y, int _z);
+	QeVector3f(const QeVector4f& other);
 
 	bool operator==(const QeVector3f& other)const;
 	bool operator!=(const QeVector3f& other)const;
@@ -62,6 +63,7 @@ struct QeVector3f {
 	QeVector3f& operator*=(const float& other);
 	QeVector3f operator+(const QeVector3f& other);
 	QeVector3f operator-(const QeVector3f& other);
+	QeVector3f operator*(const QeVector3f& other);
 	QeVector3f operator+(const float& other);
 	QeVector3f operator/(const float& other);
 	QeVector3f operator*(const float& other);
@@ -133,15 +135,16 @@ public:
 	QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
 	QeMatrix4x4f translate(QeVector3f& _pos);
 	QeVector3f move(QeVector3f& _position, QeVector3f& _addMove, QeVector3f& _face, QeVector3f& _up);
-	QeMatrix4x4f rotate(QeVector3f _eulerAngles); // roll, pitch, yaw
-	QeMatrix4x4f rotate(float _angle, QeVector3f _axis);
+	QeMatrix4x4f rotate(QeVector3f & _eulerAngles); // roll, pitch, yaw
+	QeMatrix4x4f rotate(float _angle, QeVector3f & _axis);
 	QeMatrix4x4f rotateX(float _angle);
 	QeMatrix4x4f rotateY(float _angle);
 	QeMatrix4x4f rotateZ(float _angle);
 	QeMatrix4x4f rotate(QeVector4f& vector);
 	//QeVector4f rotate(QeMatrix4x4f matrix);
 	QeMatrix4x4f scale(QeVector3f& _size);
-	QeMatrix4x4f transform(QeVector3f& tanslation, QeVector4f& rotation, QeVector3f& scale);
+	QeMatrix4x4f transform(QeVector3f& tanslation, QeVector4f& rotationVector, QeVector3f& scale);
+	QeMatrix4x4f getTransformMatrix(QeVector3f & _translate, QeVector3f & _rotateEuler, QeVector3f & _scale, bool bRotate = true, bool bFixSize = false);
 	QeVector3f normalize(QeVector3f& _vec);
 	QeVector4f normalize(QeVector4f& _vec);
 	QeVector3f eulerAnglesToVector(QeVector3f& _eulerAngles);
@@ -164,6 +167,4 @@ public:
 	//void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
 	void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
-	QeMatrix4x4f getTransformMatrix(QeVector3f & _translate, QeVector3f & _rotate, QeVector3f & _scale, bool bRotate=true, bool bFixSize=false);
-
 };
