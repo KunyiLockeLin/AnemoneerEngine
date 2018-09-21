@@ -88,6 +88,7 @@
       <e oid ="6" eid="1" name="grid">
         <components>
           <e oid ="60" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+          <e oid ="61" eid="1" type ="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5"/>
         </components>
         <children/>
       </e>

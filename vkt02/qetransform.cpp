@@ -41,7 +41,8 @@ QeVector3f QeTransform::worldPosition() {
 	if (targetAnimationOID) {
 		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent( eComponent_animation, targetAnimationOID);
 		if (animation) {
-			//return localPosition + animation->getBoneTranslate(targetBoneName);
+			QeVector4f vec = { localPosition, 1 };
+			return animation->getBoneTransfrom(targetBoneName)* vec;
 		}
 	}
 
@@ -57,12 +58,12 @@ QeVector3f QeTransform::worldPosition() {
 
 QeVector3f QeTransform::worldScale() {
 
-	if (targetAnimationOID) {
+	/*if (targetAnimationOID) {
 		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
 		if (animation) {
-			//return localScale * animation->getBoneScale(targetBoneName);
+			return localScale * animation->getBoneScale(targetBoneName);
 		}
-	}
+	}*/
 
 	QeVector3f _ret = localScale;
 	QeObject * _parent = owner->parent;
@@ -76,12 +77,12 @@ QeVector3f QeTransform::worldScale() {
 
 QeVector3f QeTransform::worldFaceEular() {
 
-	if (targetAnimationOID) {
+	/*if (targetAnimationOID) {
 		QeAnimation* animation = (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
 		if (animation) {
-			//return localFaceEular + animation->getBoneRotateEuler(targetBoneName);
+			return localFaceEular + animation->getBoneRotateEuler(targetBoneName);
 		}
-	}
+	}*/
 
 	QeVector3f _ret = localFaceEular;
 	QeObject * _parent = owner->parent;

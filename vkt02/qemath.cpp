@@ -857,12 +857,12 @@ QeVector3f QeMath::interpolatePos(QeVector3f& start, QeVector3f& end, float prog
 	return ret;
 }
 
-QeMatrix4x4f QeMath::transform(QeVector3f& tanslation, QeVector4f& rotationVector, QeVector3f& scale) {
+QeMatrix4x4f QeMath::transform(QeVector3f& _tanslation, QeVector4f& _rotationVector, QeVector3f& _scale) {
 	
 	QeMatrix4x4f ret;
-	ret *= MATH->translate(tanslation);
-	ret *= MATH->rotate(rotationVector);
-	ret *= MATH->scale(scale);
+	ret *= translate(_tanslation);
+	ret *= rotate(_rotationVector);
+	ret *= scale(_scale);
 	return ret;
 }
 
@@ -893,7 +893,7 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle) {
 
 	QeVector3f vec = pos - center;
-	float len = MATH->length(vec);
+	float len = length(vec);
 
 	while (polarAngle > 360) polarAngle -= 360;
 	while (polarAngle < -360) polarAngle += 360;
@@ -901,8 +901,8 @@ void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAn
 	while (azimuthalAngle > 360) azimuthalAngle -= 360;
 	while (azimuthalAngle < -360) azimuthalAngle += 360;
 
-	float polarAngle2 = polarAngle * MATH->DEGREES_TO_RADIANS;
-	float azimuthalAngle2 = azimuthalAngle * MATH->DEGREES_TO_RADIANS;
+	float polarAngle2 = polarAngle * DEGREES_TO_RADIANS;
+	float azimuthalAngle2 = azimuthalAngle * DEGREES_TO_RADIANS;
 
 	vec.z = len * cos(polarAngle2);
 	float sinP = len * sin(polarAngle2);
@@ -950,9 +950,9 @@ QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f & _translate, QeVector3f & _r
 	
 	float dis = 1.0f;
 	if (bFixSize) {
-		dis = MATH->length(GRAP->getTargetCamera()->owner->transform->worldPosition() - _translate);
+		dis = length(GRAP->getTargetCamera()->owner->transform->worldPosition() - _translate);
 		dis = dis < 0.1f ? 0.01f : dis / 10;
 	}
-	mat *= MATH->scale(_scale*dis);
+	mat *= scale(_scale*dis);
 	return mat;
 }

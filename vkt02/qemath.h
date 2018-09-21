@@ -143,7 +143,7 @@ public:
 	QeMatrix4x4f rotate(QeVector4f& vector);
 	//QeVector4f rotate(QeMatrix4x4f matrix);
 	QeMatrix4x4f scale(QeVector3f& _size);
-	QeMatrix4x4f transform(QeVector3f& tanslation, QeVector4f& rotationVector, QeVector3f& scale);
+	QeMatrix4x4f transform(QeVector3f& _tanslation, QeVector4f& _rotationVector, QeVector3f& _scale);
 	QeMatrix4x4f getTransformMatrix(QeVector3f & _translate, QeVector3f & _rotateEuler, QeVector3f & _scale, bool bRotate = true, bool bFixSize = false);
 	QeVector3f normalize(QeVector3f& _vec);
 	QeVector4f normalize(QeVector4f& _vec);

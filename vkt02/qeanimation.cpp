@@ -52,26 +52,26 @@ void QeAnimation::updateAction() {
 
 	float progessive = MATH->clamp((currentActionTime - previousActionFrameTime) / (nextActionFrameTime - previousActionFrameTime), 0.f, 1.f);
 
-	QeVector3f previousTranslation, nextTranslation;
-	QeVector4f previousRotation, nextRotation;
+	QeVector3f previousTranslation, nextTranslation, currentTranslation;
+	QeVector4f previousRotation, nextRotation, currentRotation;
+	QeVector3f currentScale = { 1,1,1 };
 
 	size_t size = modelData->jointsAnimation.size();
 
 	for (size_t i = 0; i<size; ++i) {
 		previousTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame];
 		nextTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame + 1];
-		jointTranslates[i] = MATH->interpolatePos(previousTranslation, nextTranslation, progessive);
+		currentTranslation = MATH->interpolatePos(previousTranslation, nextTranslation, progessive);
 
 		previousRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame];
 		nextRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame + 1];
-		jointRotateVectors[i] = MATH->interpolateDir(previousRotation, nextRotation, progessive);
-		jointScales[i] = {1,1,1};
+		currentRotation = MATH->interpolateDir(previousRotation, nextRotation, progessive);
 
-		jointTransforms[i] = MATH->transform(jointTranslates[i], jointRotateVectors[i], jointScales[i]);
+		jointTransforms[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
 	}
 
-	QeMatrix4x4f mat;
-	setChildrenJointTransform(*modelData->rootJoint, mat);
+	QeMatrix4x4f transform;
+	setChildrenJointTransform(*modelData->rootJoint, transform);
 
 	currentActionTime += QE->deltaTime * actionSpeed;
 	if (currentActionTime > nextActionFrameTime) {
@@ -120,51 +120,7 @@ QeMatrix4x4f QeAnimation::getBoneTransfrom(const char* boneName) {
 	for (size_t i = 0; i<size; ++i) {
 		if (!strcmp(boneName, modelData->jointsAnimation[i].name))
 			return bufferData.model*jointTransforms[i];
+			//return bufferData.model*bufferData.joints[i];
 	}
 	return bufferData.model;
-}
-
-
-
-QeVector3f QeAnimation::getBoneTranslate(const char* boneName) {
-
-	if (!boneName || !strlen(boneName))	return owner->transform->worldPosition();
-
-	size_t size = modelData->jointsAnimation.size();
-	if (!size) return owner->transform->worldPosition();
-
-	for (size_t i = 0; i<size; ++i) {
-		if (!strcmp(boneName, modelData->jointsAnimation[i].name))
-			return owner->transform->worldPosition()+jointTranslates[i];
-	}
-	return owner->transform->worldPosition();
-}
-
-QeVector3f QeAnimation::getBoneRotateEuler(const char* boneName) {
-
-	if (!boneName || !strlen(boneName))	return owner->transform->worldFaceEular();
-
-	size_t size = modelData->jointsAnimation.size();
-	if (!size) return owner->transform->worldFaceEular();
-
-	for (size_t i = 0; i<size; ++i) {
-		if (!strcmp(boneName, modelData->jointsAnimation[i].name)) {
-			QeVector3f vec = jointRotateVectors[i];
-			return owner->transform->worldFaceEular() + MATH->vectorToEulerAngles(vec);
-		}
-	}
-	return owner->transform->worldFaceEular();
-}
-
-QeVector3f QeAnimation::getBoneScale(const char* boneName) {
-	if (!boneName || !strlen(boneName))	return owner->transform->worldScale();
-
-	size_t size = modelData->jointsAnimation.size();
-	if (!size) return owner->transform->worldScale();
-
-	for (size_t i = 0; i<size; ++i) {
-		if (!strcmp(boneName, modelData->jointsAnimation[i].name))
-			return owner->transform->worldScale()*jointScales[i];
-	}
-	return owner->transform->worldScale();
 }
