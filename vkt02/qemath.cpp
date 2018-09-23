@@ -874,6 +874,47 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 	return acos(d)*RADIANS_TO_DEGREES;
 }
 
+QeVector3f QeMath::revolute(QeVector3f& _position, QeVector2f& _addRevolute, QeVector3f& _centerPosition) {
+
+	QeVector3f ret = _position;
+	QeVector3f up = { 0.f,0.f,1.f };
+
+	if (_addRevolute.x) {
+
+		QeVector3f vec = { ret - _centerPosition };
+
+		QeMatrix4x4f mat;
+		mat *= MATH->translate(_centerPosition);
+
+		QeVector3f up2 = MATH->normalize(MATH->cross(up, vec));
+		if ((vec.x == 0 && vec.y<0) || (vec.x < 0 && vec.y == 0) || (vec.x <0 && vec.y < 0) 
+			|| (vec.x <0 && vec.y > 0)) up2 *= -1;
+
+		mat *= MATH->rotate(_addRevolute.x, up2);
+
+		QeVector4f vec4 = QeVector4f(vec, 1.0f);
+		vec4 = mat * vec4;
+		vec = vec4;
+		ret = vec;
+	}
+
+	if (_addRevolute.y) {
+
+		QeVector3f vec = { ret - _centerPosition };
+
+		QeMatrix4x4f mat;
+		mat *= MATH->translate(_centerPosition);
+
+		mat *= MATH->rotate(_addRevolute.y, up);
+
+		QeVector4f vec4 = QeVector4f(vec, 1.0f);
+		vec4 = mat * vec4;
+		vec = vec4;
+		ret = vec;
+	}
+	return ret;
+}
+
 /*void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
 	
 	if (!inV.z) outPolarAngle = 90;
@@ -890,7 +931,7 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 	if (inV.z < 0)		outPolarAngle = 180 + outPolarAngle;
 }*/
 
-void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle) {
+/*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle) {
 
 	QeVector3f vec = pos - center;
 	float len = length(vec);
@@ -910,7 +951,7 @@ void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAn
 	vec.y = sinP * sin(azimuthalAngle2);
 
 	pos = center + vec;
-}
+}*/
 
 /*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop ) {
 	QeVector3f vec = MATH->normalize(pos - center);

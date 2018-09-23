@@ -164,7 +164,8 @@ public:
 	QeVector4f interpolateDir(QeVector4f& a, QeVector4f& b, float blend);
 	QeVector3f interpolatePos(QeVector3f& start, QeVector3f& end, float progression);
 	float getAnglefromVectors(QeVector3f& v1, QeVector3f& v2 );
+	QeVector3f revolute(QeVector3f& _position, QeVector2f& _addRevolute, QeVector3f& _centerPosition);
 	//void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
-	void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
+	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
 };

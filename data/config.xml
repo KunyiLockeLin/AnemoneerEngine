@@ -18,7 +18,7 @@
       <e r="0" g="0.5" b="0.5"/>
       <e r="1" g="0.5" b="0.5"/>
     </clearColor>
-    <startScene>1</startScene>
+    <startScene>2</startScene>
   </setting>
 
   <default>
@@ -41,6 +41,52 @@
   </default>
   
   <scenes>
+    <e eid="2">
+      <e oid ="1" eid="1" name="MainCamera">
+        <components>
+          <e oid ="10" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+          <e oid ="11" eid="1" type ="13"/>
+        </components>
+        <children>
+          <e oid ="3" eid="1" name="camera">
+            <components>
+              <e oid ="30" eid="1" type ="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+              <e oid ="31" eid="1" type ="2" main="1" lookAtTransformOID="10" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" clearColorR="0" clearColorG="0.5" clearColorB="0.5"/>
+            </components>
+            <children/>
+          </e>
+        </children>
+      </e>
+      <e oid ="2" eid="1" name="setting">
+        <components>
+          <e oid ="20" eid="1" type ="12"/>
+        </components>
+        <children/>
+      </e>
+      <e oid ="6" eid="1" name="grid">
+        <components>
+          <e oid ="60" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+          <e oid ="61" eid="1" type ="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5"/>
+        </components>
+        <children/>
+      </e>
+      <e oid ="7" eid="1" name="light1">
+        <components>
+          <e oid ="70" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+        </components>
+        <children>
+          <e oid ="8" eid="1" name="light1">
+            <components>
+              <e oid ="80" eid="1" type ="1" localPositionX="3" localPositionY="-3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="2" revoluteSpeedY="0"/>
+              <e oid ="81" eid="1" type ="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90"/>
+              <e oid ="82" eid="1" type ="8" alpha="1" image="light.png" emissive="10"/>
+            </components>
+            <children/>
+          </e>
+        </children>
+      </e>
+    </e>
+    
     <e eid="1">
       <e oid ="1" eid="1" name="MainCamera">
         <components>

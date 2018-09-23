@@ -145,24 +145,7 @@ void QeTransform::move(QeVector3f& _addMove, QeVector3f& _face, QeVector3f& _up)
 }
 
 void QeTransform::revolute(QeVector2f& _addRevolute, QeVector3f& _centerPosition) {
-
-	QeVector3f vec = { worldPosition() - _centerPosition };
-	QeVector3f up = { 0.f,0.f,1.f };
-
-	QeMatrix4x4f mat;
-	mat *= MATH->translate(_centerPosition);
-
-	if (_addRevolute.x) {
-		QeVector3f up2 = MATH->normalize(MATH->cross(up, vec));
-		mat *= MATH->rotate(_addRevolute.x, up2);
-	}
-
-	if(_addRevolute.y)	mat *= MATH->rotate(_addRevolute.y, up);
-
-	QeVector4f vec4 = QeVector4f(vec, 1.0f);
-	vec4 = mat * vec4;
-	vec = vec4;
-	setWorldPosition(vec);
+	setWorldPosition( MATH->revolute(worldPosition(), _addRevolute, _centerPosition) );
 }
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize ) {

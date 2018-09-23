@@ -21,12 +21,6 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	}
 
 	bUpdate = true;
-
-	/*
-	node = AST->getXMLNode(_property, 1, "axis");
-	if (!node)	node = AST->getXMLNode(3, AST->CONFIG, "default", "axis");
-	if (node)	axis = (QeLine*)OBJMGR->getObject(0, node);
-	*/
 }
 
 void QeCamera::rotateTarget(QeVector2f _addRotate) {
