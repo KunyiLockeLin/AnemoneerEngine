@@ -57,12 +57,14 @@
           </e>
         </children>
       </e>
+      
       <e oid ="2" eid="1" name="setting">
         <components>
           <e oid ="20" eid="1" type ="12"/>
         </components>
         <children/>
       </e>
+      
       <e oid ="6" eid="1" name="grid">
         <components>
           <e oid ="60" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
@@ -70,6 +72,7 @@
         </components>
         <children/>
       </e>
+      
       <e oid ="7" eid="1" name="light1">
         <components>
           <e oid ="70" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
@@ -77,13 +80,29 @@
         <children>
           <e oid ="8" eid="1" name="light1">
             <components>
-              <e oid ="80" eid="1" type ="1" localPositionX="3" localPositionY="-3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="2" revoluteSpeedY="0"/>
+              <e oid ="80" eid="1" type ="1" localPositionX="3" localPositionY="-3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="2"/>
               <e oid ="81" eid="1" type ="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90"/>
               <e oid ="82" eid="1" type ="8" alpha="1" image="light.png" emissive="10"/>
             </components>
             <children/>
           </e>
         </children>
+      </e>
+      
+      <e oid ="13" eid="1" name="particle">
+        <components>
+          <e oid ="130" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+          <e oid ="131" eid="1" type ="10" image="light.png" alpha ="1" reborn="1" bornTargetTranformOID="80">
+            <count once ="5" period="10" total = "100" range="0"/>
+            <life second="1" range="5"/>
+            <init_pos length="1" length_range="0" width="1" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
+            <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.5" z_range="1"/>
+            <force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5"/>
+            <size x="0.5" x_range="0" y="0.5" y_range="0" />
+            <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1"/>
+          </e>
+        </components>
+        <children/>
       </e>
     </e>
     

@@ -879,39 +879,29 @@ QeVector3f QeMath::revolute(QeVector3f& _position, QeVector2f& _addRevolute, QeV
 	QeVector3f ret = _position;
 	QeVector3f up = { 0.f,0.f,1.f };
 
+	QeVector3f vec = { ret - _centerPosition };
+
+	QeMatrix4x4f mat;
+	mat *= MATH->translate(_centerPosition);
+
 	if (_addRevolute.x) {
-
-		QeVector3f vec = { ret - _centerPosition };
-
-		QeMatrix4x4f mat;
-		mat *= MATH->translate(_centerPosition);
-
-		QeVector3f up2 = MATH->normalize(MATH->cross(up, vec));
+		QeVector3f _surface = MATH->normalize(MATH->cross(up, vec));
 		if ((vec.x == 0 && vec.y<0) || (vec.x < 0 && vec.y == 0) || (vec.x <0 && vec.y < 0) 
-			|| (vec.x <0 && vec.y > 0)) up2 *= -1;
+			|| (vec.x <0 && vec.y > 0)) _surface *= -1;
 
-		mat *= MATH->rotate(_addRevolute.x, up2);
-
-		QeVector4f vec4 = QeVector4f(vec, 1.0f);
-		vec4 = mat * vec4;
-		vec = vec4;
-		ret = vec;
+		mat *= MATH->rotate(_addRevolute.x, _surface);
 	}
 
 	if (_addRevolute.y) {
-
-		QeVector3f vec = { ret - _centerPosition };
-
-		QeMatrix4x4f mat;
-		mat *= MATH->translate(_centerPosition);
-
+		//QeVector3f _up1 = MATH->cross(_surface, vec);
 		mat *= MATH->rotate(_addRevolute.y, up);
-
-		QeVector4f vec4 = QeVector4f(vec, 1.0f);
-		vec4 = mat * vec4;
-		vec = vec4;
-		ret = vec;
 	}
+
+	QeVector4f vec4 = QeVector4f(vec, 1.0f);
+	vec4 = mat * vec4;
+	vec = vec4;
+	ret = vec;
+
 	return ret;
 }
 
