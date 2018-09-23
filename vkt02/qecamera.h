@@ -36,7 +36,7 @@ public:
 	virtual void update1();
 
 	virtual void reset();
-	void rotateTarget(QeVector2f _addRotate);
+	void rotateTarget(QeVector3f _addRotate);
 	void rotateTargetByMouse(QeVector2i mousePos);
 	void setMousePos(QeVector2i mousePos);
 	void zoomInOut(QeVector2i mousePos);

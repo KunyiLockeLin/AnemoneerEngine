@@ -23,28 +23,28 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	bUpdate = true;
 }
 
-void QeCamera::rotateTarget(QeVector2f _addRotate) {
+void QeCamera::rotateTarget(QeVector3f _addRotate) {
 
 	QeVector3f lookAtV = lookAt();
 	QeVector3f pos = owner->transform->worldPosition();
 	QeVector3f vec = { pos - lookAtV };
 
 	QeVector3f euler = MATH->vectorToEulerAngles(vec);
-	if ((euler.y < -85 && _addRotate.x < 0) || (euler.y > 85 && _addRotate.x > 0)) return;
+	if ((euler.y < -85 && _addRotate.y < 0) || (euler.y > 85 && _addRotate.y > 0)) return;
 	_addRotate *= speed;
 
 	if (_addRotate.x) {
-		float f = euler.y + _addRotate.x;
-		if (f < -85)		_addRotate.x = -89-euler.y;
-		else if (f > 85)	_addRotate.x = 89-euler.y;
+		float f = euler.y + _addRotate.y;
+		if (f < -85)		_addRotate.y = -89-euler.y;
+		else if (f > 85)	_addRotate.y = 89-euler.y;
 	}
-	owner->transform->revolute(_addRotate, lookAtV);
+	owner->transform->revolute(_addRotate, lookAtV, false, false, true);
 	bUpdate = true;
 }
 
 void QeCamera::rotateTargetByMouse(QeVector2i mousePos){
 
-	rotateTarget({ float(mousePos.y - lastMousePos.y), float(mousePos.x - lastMousePos.x) });
+	rotateTarget({0.f, float(mousePos.y - lastMousePos.y), float(mousePos.x - lastMousePos.x) });
 	lastMousePos = mousePos;
 }
 

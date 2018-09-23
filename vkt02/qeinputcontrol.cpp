@@ -38,16 +38,16 @@ void QeInputControl::updateInput() {
 
 // camera
 		case VK_UP:
-			GRAP->getTargetCamera()->rotateTarget({ -10.f, 0.f });
+			GRAP->getTargetCamera()->rotateTarget({ 0.f, -10.f, 0.f });
 			break;
 		case VK_DOWN:
-			GRAP->getTargetCamera()->rotateTarget({ 10.f, 0.f });
+			GRAP->getTargetCamera()->rotateTarget({ 0.f, 10.f, 0.f });
 			break;
 		case VK_RIGHT:
-			GRAP->getTargetCamera()->rotateTarget({ 0.f, 10.f });
+			GRAP->getTargetCamera()->rotateTarget({ 0.f, 0.f, 10.f });
 			break;
 		case VK_LEFT:
-			GRAP->getTargetCamera()->rotateTarget({ 0.f, -10.f });
+			GRAP->getTargetCamera()->rotateTarget({ 0.f, 0.f, -10.f });
 			break;
 
 		case KEY_E:

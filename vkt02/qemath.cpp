@@ -874,27 +874,63 @@ float QeMath::getAnglefromVectors(QeVector3f& v1, QeVector3f& v2) {
 	return acos(d)*RADIANS_TO_DEGREES;
 }
 
-QeVector3f QeMath::revolute(QeVector3f& _position, QeVector2f& _addRevolute, QeVector3f& _centerPosition) {
+QeVector3f QeMath::revolute(QeVector3f& _position, QeVector3f& _addRevolute, QeVector3f& _centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
 
 	QeVector3f ret = _position;
-	QeVector3f up = { 0.f,0.f,1.f };
 
 	QeVector3f vec = { ret - _centerPosition };
+	QeVector3f vecN = normalize(vec);
 
 	QeMatrix4x4f mat;
-	mat *= MATH->translate(_centerPosition);
+	mat *= translate(_centerPosition);
 
 	if (_addRevolute.x) {
-		QeVector3f _surface = MATH->normalize(MATH->cross(up, vec));
-		if ((vec.x == 0 && vec.y<0) || (vec.x < 0 && vec.y == 0) || (vec.x <0 && vec.y < 0) 
-			|| (vec.x <0 && vec.y > 0)) _surface *= -1;
 
-		mat *= MATH->rotate(_addRevolute.x, _surface);
+		if (bFixX) {
+			QeVector3f _axis = { 1.f,0.f,0.f };
+			mat *= rotate(_addRevolute.x, _axis);
+		}
+		else{
+			QeVector3f _axis = { 0.f,1.f,0.f };
+			QeVector3f _surface = normalize(cross(_axis, vecN));
+			if (vecN.x < 0) _surface *= -1;
+
+			mat *= rotate(_addRevolute.x, _surface);
+		}
 	}
 
 	if (_addRevolute.y) {
-		//QeVector3f _up1 = MATH->cross(_surface, vec);
-		mat *= MATH->rotate(_addRevolute.y, up);
+
+		if (bFixY) {
+			QeVector3f _axis = { 0.f, 1.f,0.f };
+			mat *= rotate(_addRevolute.y, _axis);
+		}
+		else {
+			QeVector3f _axis = { 0.f,0.f,1.f };
+			QeVector3f _surface = normalize(cross(_axis, vecN));
+			if (vecN.y < 0) _surface *= -1;;
+
+			mat *= rotate(_addRevolute.y, _surface);
+		}
+	}
+
+	if (_addRevolute.z) {
+
+		if (bFixZ) {
+			QeVector3f _axis = { 0.f,0.f,1.f };
+			mat *= rotate(_addRevolute.z, _axis);
+		}
+		else {
+			QeVector3f _axis = { 1.f,0.f,0.f };
+			QeVector3f _surface = normalize(cross(_axis, vecN));
+			//LOG("revolute zzz vecN " + vecN.x + "  " + vecN.y + "  " + vecN.z + "  _surface " + +_surface.x + "  " + _surface.y + "  " + _surface.z);
+
+			if (vecN.z < 0) _surface *= -1;
+			//if ((vecN.x == 0 && vecN.y < 0) || (vecN.x < 0 && vecN.y == 0) || (vecN.x < 0 && vecN.y < 0)
+			//	|| (vecN.x < 0 && vecN.y > 0)) _surface *= -1;
+
+			mat *= rotate(_addRevolute.z, _surface);
+		}
 	}
 
 	QeVector4f vec4 = QeVector4f(vec, 1.0f);

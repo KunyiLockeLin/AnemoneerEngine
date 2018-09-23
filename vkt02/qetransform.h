@@ -9,8 +9,7 @@ public:
 
 	// Face is Euler angles(pitch-roll-yaw)  roll, pitch, yaw.
 	QeVector3f localPosition, localScale, localFaceEular; 
-	QeVector3f rotateSpeed;
-	QeVector2f revoluteSpeed;
+	QeVector3f rotateSpeed, revoluteSpeed;
 	int targetAnimationOID;
 	const char * targetBoneName = nullptr;
 
@@ -29,7 +28,7 @@ public:
 	void setWorldFaceByVector(QeVector3f& _worldFaceVector);
 
 	void move(QeVector3f& _addMove, QeVector3f& _face, QeVector3f& _up);
-	void revolute(QeVector2f& _addRevolute, QeVector3f& _centerPosition);
+	void revolute(QeVector3f& _addRevolute, QeVector3f& _centerPosition, bool bFixX = false, bool bFixY = false, bool bFixZ = false);
 
 	QeMatrix4x4f worldTransformMatrix(bool bRotate = true, bool bFixSize=false);
 };

@@ -18,7 +18,7 @@
       <e r="0" g="0.5" b="0.5"/>
       <e r="1" g="0.5" b="0.5"/>
     </clearColor>
-    <startScene>2</startScene>
+    <startScene>1</startScene>
   </setting>
 
   <default>
@@ -80,7 +80,7 @@
         <children>
           <e oid ="8" eid="1" name="light1">
             <components>
-              <e oid ="80" eid="1" type ="1" localPositionX="3" localPositionY="-3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="2"/>
+              <e oid ="80" eid="1" type ="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="3"/>
               <e oid ="81" eid="1" type ="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90"/>
               <e oid ="82" eid="1" type ="8" alpha="1" image="light.png" emissive="10"/>
             </components>
@@ -95,7 +95,7 @@
           <e oid ="131" eid="1" type ="10" image="light.png" alpha ="1" reborn="1" bornTargetTranformOID="80">
             <count once ="5" period="10" total = "100" range="0"/>
             <life second="1" range="5"/>
-            <init_pos length="1" length_range="0" width="1" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
+            <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
             <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.5" z_range="1"/>
             <force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5"/>
             <size x="0.5" x_range="0" y="0.5" y_range="0" />
@@ -136,7 +136,7 @@
         <children>
           <e oid ="14" eid="1" name="animation">
             <components>
-              <e oid ="140" eid="1" type ="1" localPositionX="5" localPositionY="0" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="1"/>
+              <e oid ="140" eid="1" type ="1" localPositionX="5" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="1" revoluteSpeedY="0"/>
               <e oid ="141" eid="1" type ="7" obj="animation.gltf" alpha="0" normal="0" lineWidth="0" actionState ="1" actionSpeed="1" actionID="0" actionType="2"/>
             </components>
             <children/>
@@ -164,7 +164,7 @@
         <children>
           <e oid ="8" eid="1" name="light1">
             <components>
-              <e oid ="80" eid="1" type ="1" localPositionX="0" localPositionY="6" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="-1"/>
+              <e oid ="80" eid="1" type ="1" localPositionX="3" localPositionY="6" localPositionZ="4" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2"/>
               <e oid ="81" eid="1" type ="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90"/>
               <e oid ="82" eid="1" type ="8" alpha="1" image="light.png" emissive="10"/>
             </components>
@@ -205,8 +205,8 @@
           <e oid ="130" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
           <e oid ="131" eid="1" type ="10" image="light.png" alpha ="1" reborn="1" bornTargetTranformOID="80">
             <count once ="5" period="10" total = "100" range="0"/>
-            <life second="1" range="5"/>
-            <init_pos length="1" length_range="0" width="1" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
+            <life second="2" range="5"/>
+            <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0"/>
             <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.5" z_range="1"/>
             <force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5"/>
             <size x="0.5" x_range="0" y="0.5" y_range="0" />

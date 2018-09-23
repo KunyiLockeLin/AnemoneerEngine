@@ -19,6 +19,7 @@ void QeTransform::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLfValue(&rotateSpeed.z, initProperty, 1, "rotateSpeedZ");
 	AST->getXMLfValue(&revoluteSpeed.x, initProperty, 1, "revoluteSpeedX");
 	AST->getXMLfValue(&revoluteSpeed.y, initProperty, 1, "revoluteSpeedY");
+	AST->getXMLfValue(&revoluteSpeed.z, initProperty, 1, "revoluteSpeedZ");
 	targetAnimationOID = 0;
 	AST->getXMLiValue(&targetAnimationOID, initProperty, 1, "targetAnimationOID");
 	targetBoneName = AST->getXMLValue(initProperty, 1, "targetBoneName");
@@ -30,7 +31,7 @@ void QeTransform::update1() {
 	}
 
 	if ( (owner && owner->parent && owner->parent->transform) &&
-		(revoluteSpeed.x != 0.f || revoluteSpeed.y != 0.f )) {
+		(revoluteSpeed.x != 0.f || revoluteSpeed.y != 0.f || revoluteSpeed.z != 0.f )) {
 		revolute(revoluteSpeed, owner->parent->transform->worldPosition());
 	}
 }
@@ -144,8 +145,8 @@ void QeTransform::move(QeVector3f& _addMove, QeVector3f& _face, QeVector3f& _up)
 	localPosition = MATH->move(localPosition, _addMove, _face, _up);
 }
 
-void QeTransform::revolute(QeVector2f& _addRevolute, QeVector3f& _centerPosition) {
-	setWorldPosition( MATH->revolute(worldPosition(), _addRevolute, _centerPosition) );
+void QeTransform::revolute(QeVector3f& _addRevolute, QeVector3f& _centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
+	setWorldPosition( MATH->revolute(worldPosition(), _addRevolute, _centerPosition, bFixX, bFixY, bFixZ) );
 }
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize ) {
