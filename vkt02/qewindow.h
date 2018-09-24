@@ -18,8 +18,10 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog;
 	WNDPROC DefEditProc;
+	std::vector<QeAssetXML*> treeViewListXMLNode;
 
-	int currentTab;
+	int currentTabIndex;
+	QeAssetXML * currentTreeViewNode;
 	QeInputData inputData;
 	std::vector<QeInputControl*> inputControls;
 
@@ -31,10 +33,11 @@ public:
 	void openMainWindow();
 	void openEditWindow();
 	void updateTab();
+	void updateListView();
 	void resize(HWND & window);
 	std::string getWindowTitle();
 	void Log(std::string _log);
-	void addToTreeView(QeAssetXML * node, int level, HTREEITEM parent);
+	void addToTreeView(QeAssetXML * node, HTREEITEM parent);
 
 	std::wstring chartowchar(std::string s);
 	std::string wchartochar(std::wstring s);

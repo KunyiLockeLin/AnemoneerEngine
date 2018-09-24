@@ -45,11 +45,14 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 		switch (uMsg) {
 		case WM_NOTIFY:
-			if (((LPNMHDR)lParam)->code == TCN_SELCHANGE) {
-				currentTab = TabCtrl_GetCurSel(tabControlCategory);
+			switch (((LPNMHDR)lParam)->code) {
+			case TCN_SELCHANGE:
 				updateTab();
-			}				
-			break;
+				break;
+			case TVN_SELCHANGED:
+				updateListView();
+				break;
+			}
 		}
 	}
 
@@ -278,7 +281,7 @@ void QeWindow::openEditWindow() {
 
 	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
 
-	currentTab = 0;
+	currentTabIndex = 0;
 
 	TCITEM tie;
 	tie.mask = TCIF_TEXT;
@@ -295,8 +298,20 @@ void QeWindow::openEditWindow() {
 	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		10, 40, width/2-200, height-55, tabControlCategory, NULL, windowInstance, NULL);
 
-	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10+ width/2- 180, 40, width/2, height-55, tabControlCategory, NULL, windowInstance, NULL);
+	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS,
+		10+ width/2- 180, 40, width/2+50, height-55, tabControlCategory, NULL, windowInstance, NULL);
+
+	LVCOLUMN lvc;
+	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+	lvc.cx = 150;
+	lvc.iSubItem = 0;
+	lvc.pszText = _T("Property");
+	ListView_InsertColumn(listViewDetail, 0, &lvc);
+
+	lvc.cx = 410;
+	lvc.iSubItem = 1;
+	lvc.pszText = _T("Value");
+	ListView_InsertColumn(listViewDetail, 1, &lvc);
 
 	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		10, 40, width-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
@@ -310,10 +325,48 @@ void QeWindow::Log( std::string _log ) {
 	SendMessage(listBoxLog, LB_ADDSTRING, 0, (LPARAM)ws.c_str());
 }
 
+void QeWindow::updateListView() {
+	HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewList);
+	if (!hSelectedItem) return;
+	
+	TCHAR buffer[128];
+
+	TVITEM item;
+	item.hItem = hSelectedItem;
+	item.mask = TVIF_TEXT;
+	item.cchTextMax = 128;
+	item.pszText = buffer;
+
+	if (!TreeView_GetItem(treeViewList, &item)) return;
+	
+	currentTreeViewNode = (QeAssetXML*)item.lParam;
+	ListView_DeleteAllItems(listViewDetail);
+
+	for (int i = 0; i< currentTreeViewNode->eKeys.size() ; ++i) {
+		LVITEM lvi;
+		lvi.mask = LVIF_TEXT;
+		lvi.iItem = i;
+		lvi.iSubItem = 0;
+		lvi.cchTextMax = 150;
+		std::wstring ws = chartowchar(currentTreeViewNode->eKeys[i]);
+		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
+		ListView_InsertItem(listViewDetail, &lvi);
+
+		lvi.iItem = i;
+		lvi.iSubItem = 1;
+		lvi.cchTextMax = 410;
+		ws = chartowchar(currentTreeViewNode->eVaules[i]);
+		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
+		ListView_SetItem(listViewDetail, &lvi);
+	}
+}
+
 void QeWindow::updateTab() {
 
+	currentTabIndex = TabCtrl_GetCurSel(tabControlCategory);
+
 	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
-	if (currentTab == node->nexts.size() ) {
+	if (currentTabIndex == node->nexts.size() ) {
 		ShowWindow(listBoxLog, SW_SHOW);
 		ShowWindow(treeViewList, SW_HIDE);
 		ShowWindow(listViewDetail, SW_HIDE);
@@ -325,15 +378,18 @@ void QeWindow::updateTab() {
 		ShowWindow(listViewDetail, SW_SHOW);
 		ListView_DeleteAllItems(listViewDetail);
 
-		node = node->nexts[currentTab];
+		node = node->nexts[currentTabIndex];
+		treeViewListXMLNode.clear();
 
 		for (int i = 0; i< node->nexts.size() ; ++i) {
-			addToTreeView(node->nexts[i], 0, TVI_FIRST);
+			addToTreeView(node->nexts[i], TVI_FIRST);
 		}
 	}
 }
 
-void QeWindow::addToTreeView(QeAssetXML * node, int level, HTREEITEM parent ) {
+void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
+
+	treeViewListXMLNode.push_back(node);
 
 	TVITEM tvi;
 	TVINSERTSTRUCT tvins;
@@ -347,9 +403,7 @@ void QeWindow::addToTreeView(QeAssetXML * node, int level, HTREEITEM parent ) {
 
 	tvi.pszText = const_cast<LPWSTR>(ws.c_str());
 	tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
-
-
-	tvi.lParam = (LPARAM)level;
+	tvi.lParam = (LPARAM)node;
 	tvins.item = tvi;
 
 	tvins.hInsertAfter = parent;
@@ -357,11 +411,10 @@ void QeWindow::addToTreeView(QeAssetXML * node, int level, HTREEITEM parent ) {
 	if (parent == TVI_FIRST)	tvins.hParent = TVI_ROOT;
 	else						tvins.hParent = parent;
 
-	HTREEITEM hPrev = (HTREEITEM)SendMessage(treeViewList, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+	HTREEITEM item = (HTREEITEM)SendMessage(treeViewList, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
 
-	++level;
 	for (int i = 0; i< node->nexts.size(); ++i) {
-		addToTreeView(node->nexts[i], level, hPrev);
+		addToTreeView(node->nexts[i], item);
 	}
 }
 
