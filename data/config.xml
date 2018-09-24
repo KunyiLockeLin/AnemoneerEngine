@@ -1,42 +1,28 @@
 <confing>
   <setting>
-    <applicationName>Demo</applicationName>
-    <applicationVersion>0.1.0</applicationVersion>
-    <engineName>QueenEngine</engineName>
-    <engineVersion>0.1.0</engineVersion>
-    <VulkanAPIVersion>1.1.82</VulkanAPIVersion>
-    <debug>2</debug>
-    <render>0</render>
-    <envir FPS="30" width="1152" height="648"  editWidth="1024" editHeight="768"  />
+    <application applicationName ="Demo" applicationVersion="0.1.0" engineName="QueenEngine" engineVersion="0.1.0" VulkanAPIVersion="1.1.82"/>
+    <environment debug="2" FPS="30" width="1152" height="648" editWidth="1024" editHeight="768"/>
     <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
-    <msaa>1</msaa>
-    <gamma>2.2</gamma>
-    <exposure>1.0</exposure>
-    <lineWidth>2</lineWidth>
-    <clearColor>
-      <e r="0" g="0" b="0"/>
-      <e r="0" g="0.5" b="0.5"/>
-      <e r="1" g="0.5" b="0.5"/>
-    </clearColor>
-    <startScene>2</startScene>
+    <render msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR ="0" clearColorG="0.5" clearColorB="0.5"/>
+    <startScene eid="2"/>
   </setting>
 
   <shader>
-    <graphics>
-      <line vert="basev.spv" geom="lineg.spv"  frag="basevf.spv"/>
-      <normal vert="basev.spv" geom="lineg.spv"  frag="basevf.spv"/>
-      <render vert="pointv.spv" geom="billboardg.spv" frag="renderf.spv"/>
-      <billboard vert="pointv.spv" geom="billboardg.spv" frag="texturemf.spv"/>
-      <particle vert="basev.spv" geom="billboardg.spv" frag="texturevf.spv"/>
-      <cubemap vert="basev.spv" geom="baseg.spv" frag="cubemapf.spv"/>
-      <action vert="skeletonv.spv" geom="pbrg.spv" frag="pbrf.spv"/>
-      <model vert="basev.spv" geom="pbrg.spv" frag="pbrf.spv"/>
-      <outline vert="basev.spv" geom="outlineg.spv" frag="basemf.spv"/>
-      <postprocessing  vert="pointv.spv" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
+    <graphics vert="" tesc ="" tese="" geom=""  frag="">
+      <line vert="basev.spv" tesc ="" tese="" geom="lineg.spv"  frag="basevf.spv"/>
+      <normal vert="basev.spv" tesc ="" tese="" geom="lineg.spv"  frag="basevf.spv"/>
+      <render vert="pointv.spv" tesc ="" tese="" geom="billboardg.spv" frag="renderf.spv"/>
+      <billboard vert="pointv.spv" tesc ="" tese="" geom="billboardg.spv" frag="texturemf.spv"/>
+      <particle vert="basev.spv" tesc ="" tese="" geom="billboardg.spv" frag="texturevf.spv"/>
+      <cubemap vert="basev.spv" tesc ="" tese="" geom="baseg.spv" frag="cubemapf.spv"/>
+      <action vert="skeletonv.spv" tesc ="" tese="" geom="pbrg.spv" frag="pbrf.spv"/>
+      <model vert="basev.spv" tesc ="" tese="" geom="pbrg.spv" frag="pbrf.spv"/>
+      <outline vert="basev.spv" tesc ="" tese="" geom="outlineg.spv" frag="basemf.spv"/>
+      <postprocessing  vert="pointv.spv" tesc ="" tese="" geom="postprocessingg.spv" frag="postprocessingf.spv"/>
     </graphics>
 
-    <compute>
-      <particle>particlec.spv</particle>
+    <compute comp="">
+      <particle comp="particlec.spv"/>
     </compute>
   </shader>
   

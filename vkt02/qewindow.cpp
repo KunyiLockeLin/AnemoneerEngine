@@ -105,12 +105,12 @@ void QeWindow::resize(HWND & window) {
 	windowRect.top = 0;
 
 	if (window == mainWindow) {
-		windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "width"));
-		windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "height"));
+		windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "width"));
+		windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "height"));
 	}
 	else if (window == editWindow) {
-		windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "editWidth"));
-		windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "editHeight"));
+		windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editWidth"));
+		windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editHeight"));
 	}
 	DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
@@ -130,7 +130,7 @@ void QeWindow::resize(HWND & window) {
 
 void QeWindow::openMainWindow() {
 	WNDCLASSEX wndClass;
-	std::wstring title = chartowchar(AST->getXMLValue(3, AST->CONFIG, "setting", "applicationName"));
+	std::wstring title = L"MainWindow";
 
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -381,7 +381,7 @@ void QeWindow::initialize() {
 std::string QeWindow::getWindowTitle(){
 	std::string device(VK->deviceProperties.deviceName);
 	std::string windowTitle;
-	QeAssetXML * node = AST->getXMLNode(2, AST->CONFIG, "setting");
+	QeAssetXML * node = AST->getXMLNode(3, AST->CONFIG, "setting", "application");
 	windowTitle = AST->getXMLValue( node ,1, "applicationName");
 	windowTitle.append(" ");
 	windowTitle.append(AST->getXMLValue(node, 1, "applicationVersion"));
@@ -398,10 +398,10 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append(" - ");
 	windowTitle.append(std::to_string(QE->currentFPS));
 	windowTitle.append("/");
-	windowTitle.append(AST->getXMLValue(node, 2, "envir", "FPS"));
+	windowTitle.append(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "FPS"));
 	windowTitle.append(" fps");
 	windowTitle.append(" - ");
-	windowTitle.append(" - scene ");
+	windowTitle.append(" - scene eid ");
 	windowTitle.append(std::to_string(SCENE->eid));
 	return windowTitle;
 }

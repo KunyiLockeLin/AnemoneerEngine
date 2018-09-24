@@ -9,7 +9,7 @@ QeLog::~QeLog() {
 
 void QeLog::initialize()
 {
-	mode = QeDebugMode(atoi(AST->getXMLValue(3, AST->CONFIG, "setting","debug")));
+	mode = QeDebugMode(atoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "debug")));
 }
 
 bool QeLog::isDebug()	{	return mode == eModeNoDebug ? false : true;	}

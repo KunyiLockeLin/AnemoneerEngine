@@ -91,8 +91,7 @@ public:
 	~QeGraphics();
 
 	std::vector<QeDataRender*> renders;
-	//std::vector<QeLight*> lights;
-	std::vector<QeVector3f> clearColors;
+	QeVector3f clearColor;
 	QeDataSwapchain swapchain;
 
 	int currentTargetViewport = 0;
@@ -102,8 +101,7 @@ public:
 	VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT;
 
 	std::vector<QeModel*> models;
-	std::vector<QeModel*> alphaModels
-		;
+	std::vector<QeModel*> alphaModels;
 	std::vector<QeLight*> lights;
 	QeVKBuffer lightsBuffer;
 	bool bUpdateLight= false;

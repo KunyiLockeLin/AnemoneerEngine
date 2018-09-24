@@ -1261,23 +1261,23 @@ void QeAsset::setGraphicsShader(QeAssetGraphicsShader& shader, QeAssetXML* shade
 		QeAssetXML * node = getXMLNode(4, CONFIG, "shader", "graphics", defaultShaderType);
 		if (shader.vert == nullptr) {
 			c = getXMLValue(node, 1, "vert");
-			if (c != nullptr) shader.vert = getShader(c);
+			if (c != nullptr && strlen(c)) shader.vert = getShader(c);
 		}
 		if (shader.tesc == nullptr) {
 			c = getXMLValue(node, 1, "tesc");
-			if (c != nullptr) shader.tesc = getShader(c);
+			if (c != nullptr&& strlen(c)) shader.tesc = getShader(c);
 		}
 		if (shader.tese == nullptr) {
 			c = getXMLValue(node, 1, "tese");
-			if (c != nullptr) shader.tese = getShader(c);
+			if (c != nullptr&& strlen(c)) shader.tese = getShader(c);
 		}
 		if (shader.geom == nullptr) {
 			c = getXMLValue(node, 1, "geom");
-			if (c != nullptr) shader.geom = getShader(c);
+			if (c != nullptr&& strlen(c)) shader.geom = getShader(c);
 		}
 		if (shader.frag == nullptr) {
 			c = getXMLValue(node, 1, "frag");
-			if (c != nullptr) shader.frag = getShader(c);
+			if (c != nullptr&& strlen(c)) shader.frag = getShader(c);
 		}
 	}
 }

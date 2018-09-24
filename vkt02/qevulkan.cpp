@@ -103,7 +103,7 @@ void QeVulkan::createInstance() {
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pNext = nullptr;
-	QeAssetXML * node = AST->getXMLNode(2, AST->CONFIG, "setting");
+	QeAssetXML * node = AST->getXMLNode(3, AST->CONFIG, "setting", "application");
 	appInfo.pApplicationName = AST->getXMLValue(node, 1, "applicationName");
 
 	std::vector<std::string> vs = ENCODE->split(AST->getXMLValue(node, 1, "applicationVersion"), ".");
@@ -300,7 +300,7 @@ void QeVulkan::createSwapchain( QeDataSwapchain* swapchain ) {
 VkSampleCountFlagBits QeVulkan::getMaxUsableSampleCount(){
 
 	VkSampleCountFlags counts;
-	AST->getXMLiValue( (int*)&counts, AST->getXMLNode(2, AST->CONFIG, "setting"), 1, "msaa" );
+	AST->getXMLiValue( (int*)&counts, AST->getXMLNode(3, AST->CONFIG, "setting", "render"), 1, "msaa" );
 	VkSampleCountFlags counts2 = std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
 	
 	if (counts > counts2) counts = counts2;

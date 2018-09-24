@@ -15,8 +15,8 @@ void QueenEngine::run() {
 	VK->initialize();
 	GRAP->initialize();
 
-	if(sceneEID ==0)	AST->getXMLiValue(&sceneEID, node, 1, "startScene");
-	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "envir", "FPS")));
+	if(sceneEID ==0)	AST->getXMLiValue(&sceneEID, node, 2, "startScene", "eid");
+	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "environment", "FPS")));
 
 	node = AST->getXMLEditNode("scenes", sceneEID);
 	SCENE->clear();

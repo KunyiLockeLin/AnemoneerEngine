@@ -226,11 +226,11 @@ void QeGraphics::updateBuffer() {
 		for (size_t j = 0; j < size1; ++j) {
 
 			QeDataViewport * viewport = render->viewports[j];
-			viewport->environmentData.ambientColor = clearColors[i];
+			viewport->environmentData.ambientColor = clearColor;
 			viewport->environmentData.camera = viewport->camera->bufferData;
 			viewport->environmentData.param.x = float(lights.size());
 
-			QeAssetXML* node = AST->getXMLNode(2, AST->CONFIG, "setting");
+			QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
 			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "gamma");
 			AST->getXMLfValue(&viewport->environmentData.param.z, node, 1, "exposure");
 
@@ -263,19 +263,10 @@ void QeGraphics::update1() {
 
 		sampleCount = VK->getMaxUsableSampleCount();
 
-		QeAssetXML* node = AST->getXMLNode(2, AST->CONFIG, "setting");
-		node = AST->getXMLNode(node, 1, "clearColor");
-		clearColors.clear();
-		if (node && node->nexts.size()>0) {
-
-			for (int i = 0; i< node->nexts.size(); ++i) {
-				QeVector3f color;
-				AST->getXMLfValue(&color.x, node->nexts[i], 1, "r");
-				AST->getXMLfValue(&color.y, node->nexts[i], 1, "g");
-				AST->getXMLfValue(&color.z, node->nexts[i], 1, "b");
-				clearColors.push_back(color);
-			}
-		}
+		QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
+		AST->getXMLfValue(&clearColor.x, node, 1, "clearColorR");
+		AST->getXMLfValue(&clearColor.y, node, 1, "clearColorG");
+		AST->getXMLfValue(&clearColor.z, node, 1, "clearColorB");
 
 		if(!renderCompleteSemaphore) renderCompleteSemaphore = VK->createSyncObjectSemaphore();
 		if (!swapchain.khr)			VK->createSwapchain(&swapchain);
@@ -672,7 +663,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 		if ( i==eRender_KHR ) {
 			clearValues.resize(1);
-			clearValues[0].color = { clearColors[i].x, clearColors[i].y, clearColors[i].z, 1.0f };
+			clearValues[0].color = { clearColor.x, clearColor.y, clearColor.z, 1.0f };
 		}
 		else {
 			if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
@@ -684,7 +675,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			size_t size2 = clearValues.size();
 			for (size_t k = 1; k < size2; ++k) {
-				clearValues[k].color = { clearColors[i].x, clearColors[i].y, clearColors[i].z, 1.0f };
+				clearValues[k].color = { clearColor.x, clearColor.y, clearColor.z, 1.0f };
 			}
 		}
 		renderPassInfo.renderPass = render->renderPass;
