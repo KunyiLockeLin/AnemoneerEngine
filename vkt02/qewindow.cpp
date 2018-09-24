@@ -360,30 +360,30 @@ void QeWindow::updateListView() {
 	lvi.mask = LVIF_TEXT;
 	lvi.iItem = 0;
 	lvi.iSubItem = 0;
-	lvi.cchTextMax = 200;
 	lvi.pszText = L"name";
 	ListView_InsertItem(listViewDetail, &lvi);
-
-	LVITEM lvi2;
-	lvi2.mask = LVIF_TEXT;
-	lvi2.iItem = 0;
-	lvi2.iSubItem = 1;
-	lvi2.cchTextMax = 400;
-	std::wstring ws = chartowchar(currentTreeViewNode->key);
-	lvi2.pszText = const_cast<LPWSTR>(ws.c_str());
-	ListView_SetItem(listViewDetail, &lvi2);
+	std::wstring ws;
 
 	for (int i = 0; i< currentTreeViewNode->eKeys.size() ; ++i) {
 		
 		lvi.iItem = i+1;
-		std::wstring ws1 = chartowchar(currentTreeViewNode->eKeys[i]);
-		lvi.pszText = const_cast<LPWSTR>(ws1.c_str());
+		ws = chartowchar(currentTreeViewNode->eKeys[i]);
+		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 		ListView_InsertItem(listViewDetail, &lvi);
+	}
 
-		lvi2.iItem = i + 1;
-		std::wstring ws2 = chartowchar(currentTreeViewNode->eVaules[i]);
-		lvi2.pszText = const_cast<LPWSTR>(ws2.c_str());
-		ListView_SetItem(listViewDetail, &lvi2);
+	lvi.iItem = 0;
+	lvi.iSubItem = 1;
+	ws = chartowchar(currentTreeViewNode->key);
+	lvi.pszText = const_cast<LPWSTR>(ws.c_str());
+	ListView_SetItem(listViewDetail, &lvi);
+
+	for (int i = 0; i< currentTreeViewNode->eKeys.size(); ++i) {
+
+		lvi.iItem = i + 1;
+		ws = chartowchar(currentTreeViewNode->eVaules[i]);
+		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
+		ListView_SetItem(listViewDetail, &lvi);
 	}
 }
 
@@ -428,7 +428,7 @@ void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
 	std::wstring ws = chartowchar(s);
 
 	tvi.pszText = const_cast<LPWSTR>(ws.c_str());
-	tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
+	tvi.cchTextMax = 256;
 	tvi.lParam = (LPARAM)node;
 	tvins.item = tvi;
 
@@ -437,7 +437,7 @@ void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
 	if (parent == TVI_FIRST)	tvins.hParent = TVI_ROOT;
 	else						tvins.hParent = parent;
 
-	HTREEITEM item = (HTREEITEM)SendMessage(treeViewList, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+	HTREEITEM item = TreeView_InsertItem(treeViewList, &tvins);
 
 	for (int i = 0; i< node->nexts.size(); ++i) {
 		addToTreeView(node->nexts[i], item);

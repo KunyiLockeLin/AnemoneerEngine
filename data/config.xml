@@ -1,7 +1,7 @@
 <confing>
   <setting>
     <application applicationName ="Demo" applicationVersion="0.1.0" engineName="QueenEngine" engineVersion="0.1.0" VulkanAPIVersion="1.1.82"/>
-    <environment debug="3" FPS="30" width="1152" height="648" editWidth="1024" editHeight="768"/>
+    <environment debug="2" FPS="30" width="1152" height="648" editWidth="1024" editHeight="768"/>
     <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
     <render msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR ="0" clearColorG="0.5" clearColorB="0.5"/>
     <startScene eid="2"/>
