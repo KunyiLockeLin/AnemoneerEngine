@@ -103,9 +103,15 @@ void QeWindow::resize(HWND & window) {
 	RECT windowRect;
 	windowRect.left = 0;
 	windowRect.top = 0;
-	windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting" ,"envir", "width"));
-	windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "height"));
 
+	if (window == mainWindow) {
+		windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "width"));
+		windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "height"));
+	}
+	else if (window == editWindow) {
+		windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "editWidth"));
+		windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "envir", "editHeight"));
+	}
 	DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
@@ -236,7 +242,7 @@ void QeWindow::openEditWindow() {
 	wndClass.hInstance = windowInstance;
 	wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndClass.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
+	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName = title.c_str();
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
@@ -287,10 +293,10 @@ void QeWindow::openEditWindow() {
 	TabCtrl_InsertItem(tabControlCategory, node->nexts.size(), &tie);
 
 	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10, 40, width/2-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
+		10, 40, width/2-200, height-55, tabControlCategory, NULL, windowInstance, NULL);
 
 	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10+ width/2-5, 40, width/2-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
+		10+ width/2- 180, 40, width/2, height-55, tabControlCategory, NULL, windowInstance, NULL);
 
 	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		10, 40, width-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
@@ -320,9 +326,23 @@ void QeWindow::updateTab() {
 		ListView_DeleteAllItems(listViewDetail);
 
 		node = node->nexts[currentTab];
+
+		for (int i = 0; i< node->nexts.size() ; ++i) {
+			addToTreeView(node->nexts[i], nullptr, 0);
+		}
 	}
 }
 
+void QeWindow::addToTreeView(QeAssetXML * node, TVINSERTSTRUCT* tvs, int level) {
+
+	TVITEM tvi;
+	TVINSERTSTRUCT tvins;
+
+	++level;
+	for (int i = 0; i< node->nexts.size(); ++i) {
+		addToTreeView(node->nexts[i], &tvins, level);
+	}
+}
 
 void QeWindow::initialize() {
 

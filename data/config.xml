@@ -7,7 +7,7 @@
     <VulkanAPIVersion>1.1.82</VulkanAPIVersion>
     <debug>3</debug>
     <render>0</render>
-    <envir FPS="30" width="1152" height="648" />
+    <envir FPS="30" width="1152" height="648"  editWidth="1024" editHeight="768"  />
     <path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\" />
     <msaa>1</msaa>
     <gamma>2.2</gamma>
