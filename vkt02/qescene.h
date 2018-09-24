@@ -8,8 +8,9 @@ public:
 	QeScene(QeGlobalKey& _key) {}
 	~QeScene() {}
 
-
 	int eid;
+	std::string name;
+
 	QeAssetXML* initProperty = nullptr;
 	std::vector<QeObject*> objects;
 

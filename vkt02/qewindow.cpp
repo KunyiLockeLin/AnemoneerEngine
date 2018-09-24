@@ -503,9 +503,7 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append(AST->getXMLValue(node, 1, "engineName"));
 	windowTitle.append(" ");
 	windowTitle.append(AST->getXMLValue(node, 1, "engineVersion"));
-	windowTitle.append(" - ");
-	windowTitle.append("VulkanAPI");
-	windowTitle.append(" ");
+	windowTitle.append(" - VulkanAPI ");
 	windowTitle.append(AST->getXMLValue(node, 1, "VulkanAPIVersion"));
 	windowTitle.append(" - ");
 	windowTitle.append(device);
@@ -513,9 +511,9 @@ std::string QeWindow::getWindowTitle(){
 	windowTitle.append(std::to_string(QE->currentFPS));
 	windowTitle.append("/");
 	windowTitle.append(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "FPS"));
-	windowTitle.append(" fps");
-	windowTitle.append(" - ");
-	windowTitle.append(" - scene eid ");
+	windowTitle.append(" FPS - ");
+	windowTitle.append(SCENE->name);
+	windowTitle.append(" ");
 	windowTitle.append(std::to_string(SCENE->eid));
 	return windowTitle;
 }

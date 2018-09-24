@@ -5,6 +5,7 @@ void QeScene::initialize(QeAssetXML* _property) {
 	initProperty = _property;
 
 	AST->getXMLiValue(&eid, initProperty, 1, "eid");
+	name = initProperty->key;
 
 	for (int index = 0; index < initProperty->nexts.size(); ++index) {
 		objects.push_back(OBJMGR->spwanObject(initProperty->nexts[index], nullptr));
