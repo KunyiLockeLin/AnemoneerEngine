@@ -9,7 +9,7 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "default", "computeShader", "particle"));
+	computeShader = AST->getShader(AST->getXMLValue(4, AST->CONFIG, "shader", "compute", "particle"));
 	AST->setGraphicsShader(graphicsShader, nullptr, "particle");
 
 	// count

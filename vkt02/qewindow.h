@@ -34,7 +34,7 @@ public:
 	void resize(HWND & window);
 	std::string getWindowTitle();
 	void Log(std::string _log);
-	void addToTreeView(QeAssetXML * node, TVINSERTSTRUCT* tvs, int level);
+	void addToTreeView(QeAssetXML * node, int level, HTREEITEM parent);
 
 	std::wstring chartowchar(std::string s);
 	std::string wchartochar(std::wstring s);

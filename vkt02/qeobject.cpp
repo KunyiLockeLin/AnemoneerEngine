@@ -7,7 +7,7 @@ void QeObject::initialize(QeAssetXML* _property, QeObject* _parent) {
 	parent = _parent;
 	AST->getXMLiValue(&oid, initProperty, 1, "oid");
 	AST->getXMLiValue(&eid, initProperty, 1, "eid");
-	name = AST->getXMLValue(initProperty, 1, "name");
+	name = initProperty->key;
 
 	QeAssetXML * node = AST->getXMLNode(initProperty, 1, "components");
 	if (node != nullptr && node->nexts.size() > 0) {

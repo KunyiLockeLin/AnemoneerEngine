@@ -328,19 +328,40 @@ void QeWindow::updateTab() {
 		node = node->nexts[currentTab];
 
 		for (int i = 0; i< node->nexts.size() ; ++i) {
-			addToTreeView(node->nexts[i], nullptr, 0);
+			addToTreeView(node->nexts[i], 0, TVI_FIRST);
 		}
 	}
 }
 
-void QeWindow::addToTreeView(QeAssetXML * node, TVINSERTSTRUCT* tvs, int level) {
+void QeWindow::addToTreeView(QeAssetXML * node, int level, HTREEITEM parent ) {
 
 	TVITEM tvi;
 	TVINSERTSTRUCT tvins;
 
+	tvi.mask = TVIF_TEXT | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+
+	std::string s = node->key;
+	s += " ";
+	s += std::to_string(node->nexts.size());
+	std::wstring ws = chartowchar(s);
+
+	tvi.pszText = const_cast<LPWSTR>(ws.c_str());
+	tvi.cchTextMax = sizeof(tvi.pszText) / sizeof(tvi.pszText[0]);
+
+
+	tvi.lParam = (LPARAM)level;
+	tvins.item = tvi;
+
+	tvins.hInsertAfter = parent;
+
+	if (parent == TVI_FIRST)	tvins.hParent = TVI_ROOT;
+	else						tvins.hParent = parent;
+
+	HTREEITEM hPrev = (HTREEITEM)SendMessage(treeViewList, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+
 	++level;
 	for (int i = 0; i< node->nexts.size(); ++i) {
-		addToTreeView(node->nexts[i], &tvins, level);
+		addToTreeView(node->nexts[i], level, hPrev);
 	}
 }
 
