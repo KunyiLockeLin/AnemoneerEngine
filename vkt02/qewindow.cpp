@@ -327,8 +327,12 @@ void QeWindow::openEditWindow() {
 
 void QeWindow::Log( std::string _log ) {
 
-	std::wstring ws = chartowchar(_log);
-	SendMessage(listBoxLog, LB_ADDSTRING, 0, (LPARAM)ws.c_str());
+	std::vector<std::string> vs = ENCODE->split(_log.c_str(), "\n");
+
+	for (int i = 0;i<vs.size();++i) {
+		std::wstring ws = chartowchar(vs[i]);
+		SendMessage(listBoxLog, LB_ADDSTRING, 0, (LPARAM)ws.c_str());
+	}
 }
 
 void QeWindow::updateListViewItem() {
