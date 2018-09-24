@@ -432,7 +432,7 @@ void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
 	tvi.lParam = (LPARAM)node;
 	tvins.item = tvi;
 
-	tvins.hInsertAfter = parent;
+	//tvins.hInsertAfter = nullptr;
 
 	if (parent == TVI_FIRST)	tvins.hParent = TVI_ROOT;
 	else						tvins.hParent = parent;
