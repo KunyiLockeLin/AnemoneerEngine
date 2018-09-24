@@ -305,7 +305,7 @@ void QeWindow::openEditWindow() {
 		10, 35, width/2-200, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
-		width/2- 180, 35, width/2+90, height-45, tabControlCategory, NULL, windowInstance, NULL);
+		width/2- 185, 35, width/2+90, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -323,19 +323,19 @@ void QeWindow::openEditWindow() {
 		10, 35, width-20, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	btnPause = CreateWindow(WC_BUTTON, L"Pause", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 35, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 90, 35, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
 	btnLoadAll = CreateWindow(WC_BUTTON, L"Load All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 105, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 90, 105, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
 	btnSaveAll = CreateWindow(WC_BUTTON, L"Save All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 175, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
-	btnLoadScene = CreateWindow(WC_BUTTON, L"Load Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 245, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 90, 175, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnLoadScene = CreateWindow(WC_BUTTON, L"SwitchScene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 90, 245, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
 	btnSaveEID = CreateWindow(WC_BUTTON, L"Save eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 315, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 90, 315, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
 	btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 385, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
-	btnCameraFocus = CreateWindow(WC_BUTTON, L"Set Camera", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 85, 455, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 90, 385, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnCameraFocus = CreateWindow(WC_BUTTON, L"CameraFocus", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 90, 455, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
 
 	updateTab();
 }
