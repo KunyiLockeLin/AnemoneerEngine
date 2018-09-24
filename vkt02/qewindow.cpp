@@ -304,7 +304,7 @@ void QeWindow::openEditWindow() {
 	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		10, 35, width/2-200, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
-	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS | LVS_EX_FULLROWSELECT,
+	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
 		width/2- 180, 35, width/2+90, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	LVCOLUMN lvc;
