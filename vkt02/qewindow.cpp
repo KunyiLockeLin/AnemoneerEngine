@@ -52,6 +52,9 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case TVN_SELCHANGED:
 				updateListView();
 				break;
+			//case LVN_BEGINLABELEDIT:
+			//	updateListViewItem();
+			//	break;
 			case LVN_ENDLABELEDIT:
 				updateListViewItem();
 				break;
@@ -299,25 +302,25 @@ void QeWindow::openEditWindow() {
 	TabCtrl_InsertItem(tabControlCategory, node->nexts.size(), &tie);
 
 	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10, 40, width/2-200, height-55, tabControlCategory, NULL, windowInstance, NULL);
+		10, 35, width/2-200, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
-	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS,
-		10+ width/2- 180, 40, width/2+40, height-55, tabControlCategory, NULL, windowInstance, NULL);
+	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS | LVS_EX_FULLROWSELECT,
+		width/2- 180, 35, width/2+90, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-	lvc.cx = 100;
+	lvc.cx = 200;
 	lvc.iSubItem = 0;
 	lvc.pszText = _T("Property");
 	ListView_InsertColumn(listViewDetail, 0, &lvc);
 
-	lvc.cx = 450;
+	lvc.cx = 400;
 	lvc.iSubItem = 1;
 	lvc.pszText = _T("Value");
 	ListView_InsertColumn(listViewDetail, 1, &lvc);
 
 	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10, 40, width-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
+		10, 35, width-20, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	updateTab();
 }
@@ -333,6 +336,7 @@ void QeWindow::updateListViewItem() {
 	int a = 0;
 	a = 1;
 	a = 1;
+	STACK("aaaaaa");
 }
 
 void QeWindow::updateListView() {
@@ -356,7 +360,7 @@ void QeWindow::updateListView() {
 	lvi.mask = LVIF_TEXT;
 	lvi.iItem = 0;
 	lvi.iSubItem = 0;
-	lvi.cchTextMax = 100;
+	lvi.cchTextMax = 200;
 	lvi.pszText = L"name";
 	ListView_InsertItem(listViewDetail, &lvi);
 
@@ -364,7 +368,7 @@ void QeWindow::updateListView() {
 	lvi2.mask = LVIF_TEXT;
 	lvi2.iItem = 0;
 	lvi2.iSubItem = 1;
-	lvi2.cchTextMax = 450;
+	lvi2.cchTextMax = 400;
 	std::wstring ws = chartowchar(currentTreeViewNode->key);
 	lvi2.pszText = const_cast<LPWSTR>(ws.c_str());
 	ListView_SetItem(listViewDetail, &lvi2);
@@ -372,13 +376,13 @@ void QeWindow::updateListView() {
 	for (int i = 0; i< currentTreeViewNode->eKeys.size() ; ++i) {
 		
 		lvi.iItem = i+1;
-		ws = chartowchar(currentTreeViewNode->eKeys[i]);
-		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
+		std::wstring ws1 = chartowchar(currentTreeViewNode->eKeys[i]);
+		lvi.pszText = const_cast<LPWSTR>(ws1.c_str());
 		ListView_InsertItem(listViewDetail, &lvi);
 
 		lvi2.iItem = i + 1;
-		ws = chartowchar(currentTreeViewNode->eVaules[i]);
-		lvi2.pszText = const_cast<LPWSTR>(ws.c_str());
+		std::wstring ws2 = chartowchar(currentTreeViewNode->eVaules[i]);
+		lvi2.pszText = const_cast<LPWSTR>(ws2.c_str());
 		ListView_SetItem(listViewDetail, &lvi2);
 	}
 }
