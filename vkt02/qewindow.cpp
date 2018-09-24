@@ -52,9 +52,9 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case TVN_SELCHANGED:
 				updateListView();
 				break;
-			//case LVN_BEGINLABELEDIT:
-			//	updateListViewItem();
-			//	break;
+			case LVN_BEGINLABELEDIT:
+				currentEditListView = ListView_GetEditControl(listViewDetail);
+				break;
 			case LVN_ENDLABELEDIT:
 				updateListViewItem();
 				break;
@@ -337,22 +337,27 @@ void QeWindow::Log( std::string _log ) {
 
 void QeWindow::updateListViewItem() {
 
-	int a = 0;
-	a = 1;
-	a = 1;
-	STACK("aaaaaa");
+	TCHAR text[512] = L"";
+	GetWindowText(currentEditListView, text, sizeof(text));
+
+	int iIndex = ListView_GetNextItem(listViewDetail, -1, LVNI_FOCUSED);
+	LVITEM LvItem;
+	LvItem.iSubItem = 1;
+	LvItem.pszText = text;
+
+	SendMessage(listViewDetail, LVM_SETITEMTEXT, (WPARAM)iIndex, (LPARAM)&LvItem);
 }
 
 void QeWindow::updateListView() {
 	HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewList);
 	if (!hSelectedItem) return;
 	
-	TCHAR buffer[128];
+	TCHAR buffer[512];
 
 	TVITEM item;
 	item.hItem = hSelectedItem;
 	item.mask = TVIF_TEXT;
-	item.cchTextMax = 128;
+	item.cchTextMax = 512;
 	item.pszText = buffer;
 
 	if (!TreeView_GetItem(treeViewList, &item)) return;
