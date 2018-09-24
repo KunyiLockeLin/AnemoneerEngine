@@ -334,6 +334,8 @@ void QeWindow::openEditWindow() {
 		width - 85, 315, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
 	btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 		width - 85, 385, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnCameraFocus = CreateWindow(WC_BUTTON, L"Set Camera", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 455, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
 
 	updateTab();
 }
@@ -425,6 +427,7 @@ void QeWindow::updateTab() {
 		ShowWindow(btnLoadScene, SW_HIDE);
 		ShowWindow(btnSaveEID, SW_HIDE);
 		ShowWindow(btnLoadEID, SW_HIDE);
+		ShowWindow(btnCameraFocus, SW_HIDE);
 	}
 	else {
 		ShowWindow(btnPause, SW_SHOW);
@@ -433,6 +436,7 @@ void QeWindow::updateTab() {
 		ShowWindow(btnLoadScene, SW_SHOW);
 		ShowWindow(btnSaveEID, SW_SHOW);
 		ShowWindow(btnLoadEID, SW_SHOW);
+		ShowWindow(btnCameraFocus, SW_SHOW);
 
 		ShowWindow(listBoxLog, SW_HIDE);
 		ShowWindow(treeViewList, SW_SHOW);
