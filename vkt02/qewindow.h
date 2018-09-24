@@ -18,7 +18,6 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
-	std::vector<QeAssetXML*> treeViewListXMLNode;
 	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID;
 
 	int currentTabIndex;

@@ -411,6 +411,7 @@ void QeWindow::updateListView() {
 
 void QeWindow::updateTab() {
 
+	currentTreeViewNode = nullptr;
 	currentTabIndex = TabCtrl_GetCurSel(tabControlCategory);
 
 	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
@@ -440,7 +441,6 @@ void QeWindow::updateTab() {
 		ListView_DeleteAllItems(listViewDetail);
 
 		node = node->nexts[currentTabIndex];
-		treeViewListXMLNode.clear();
 
 		for (int i = 0; i< node->nexts.size() ; ++i) {
 			addToTreeView(node->nexts[i], TVI_FIRST);
@@ -449,8 +449,6 @@ void QeWindow::updateTab() {
 }
 
 void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
-
-	treeViewListXMLNode.push_back(node);
 
 	TVITEM tvi;
 	TVINSERTSTRUCT tvins;
