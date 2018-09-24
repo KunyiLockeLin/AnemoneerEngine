@@ -18,7 +18,7 @@
       <e r="0" g="0.5" b="0.5"/>
       <e r="1" g="0.5" b="0.5"/>
     </clearColor>
-    <startScene>1</startScene>
+    <startScene>2</startScene>
   </setting>
 
   <default>

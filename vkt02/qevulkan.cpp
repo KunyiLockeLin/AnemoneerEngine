@@ -75,7 +75,7 @@ void QeVulkan::initialize() {
 
 	createInstance();
 	setupDebugCallback();
-	surface = createSurface(WIN->window, WIN->windowInstance);
+	surface = createSurface(WIN->mainWindow, WIN->windowInstance);
 	pickPhysicalDevice();
 	createLogicalDevice();
 	createDescriptorPool();
@@ -840,7 +840,7 @@ VkExtent2D QeVulkan::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabiliti
 	}
 	else {
 		int width = 0, height = 0;
-		WIN->getWindowSize(width, height);
+		WIN->getWindowSize(WIN->mainWindow, width, height);
 
 		VkExtent2D actualExtent = {
 			static_cast<uint32_t>(width),

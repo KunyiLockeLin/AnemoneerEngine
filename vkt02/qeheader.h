@@ -17,6 +17,7 @@
 #include <functional>
 #include <thread>
 #include <memory>
+#include <commctrl.h>
 #include <cmath>
 #include <chrono>
 #include <ctime>

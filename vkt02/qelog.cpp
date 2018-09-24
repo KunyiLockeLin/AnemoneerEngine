@@ -71,7 +71,7 @@ void QeLog::print(std::string& msg, bool bShowStack, int stackLevel) {
 	s += msg;
 	
 	if (bShowStack) s += stack(2, stackLevel);
-
+	WIN->Log(s);
 	if (isConsole())		std::cout << s.c_str() << std::endl;
 	if (isOutput()) {
 		

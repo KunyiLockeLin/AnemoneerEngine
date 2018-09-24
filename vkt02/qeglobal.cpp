@@ -126,4 +126,4 @@ void QeGlobal::clear() {
 
 QeGlobal& QeGlobal::getInstance() { static QeGlobal _s; return _s; }
 
-void QeGlobal::restart() { clear(); initialize(); WIN->resize(); }
+void QeGlobal::restart() { clear(); initialize(); WIN->resize(WIN->mainWindow); }

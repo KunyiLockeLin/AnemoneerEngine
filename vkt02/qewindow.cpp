@@ -29,7 +29,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 void QeWindow::closeCommand() {
 	ShowWindow(commandBox, SW_HIDE);
-	SetFocus(window);
+	SetFocus(mainWindow);
 }
 
 void QeWindow::sendCommand() {
@@ -41,43 +41,57 @@ void QeWindow::sendCommand() {
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
-	inputData.inputType = uMsg;
-	inputData.inputKey = int(wParam);
-	inputData.mousePos.x = LOWORD(lParam);
-	inputData.mousePos.y = HIWORD(lParam);
+	if (hWnd == editWindow) {
 
-	switch (inputData.inputType) {
-	case WM_CLOSE:
-		QE->bClosed = true;
-		break;
-	case WM_EXITSIZEMOVE:
-		GRAP->bRecreateRender = true;
-		break;
-
-	default:
-
-		switch (inputData.inputKey) {
-		case VK_ESCAPE:
-			if(uMsg != WM_IME_COMPOSITION)	QE->bClosed = true;
-			break;
-		case KEY_FSLASH:
-			SetWindowText(commandBox, L"");
-			ShowWindow(commandBox, SW_SHOW);
-			SetFocus(commandBox);
+		switch (uMsg) {
+		case WM_NOTIFY:
+			if (((LPNMHDR)lParam)->code == TCN_SELCHANGE) {
+				currentTab = TabCtrl_GetCurSel(tabControlCategory);
+				updateTab();
+			}				
 			break;
 		}
-		break;
 	}
 
-	std::vector<QeInputControl*>::iterator it = inputControls.begin();
-	while (it != inputControls.end()) {
-		(*it)->updateInput();
-		++it;
+	if (hWnd == mainWindow) {
+		inputData.inputType = uMsg;
+		inputData.inputKey = int(wParam);
+		inputData.mousePos.x = LOWORD(lParam);
+		inputData.mousePos.y = HIWORD(lParam);
+
+		switch (inputData.inputType) {
+		case WM_CLOSE:
+			QE->bClosed = true;
+			break;
+		case WM_EXITSIZEMOVE:
+			GRAP->bRecreateRender = true;
+			break;
+
+		default:
+
+			switch (inputData.inputKey) {
+			case VK_ESCAPE:
+				if (uMsg != WM_IME_COMPOSITION)	QE->bClosed = true;
+				break;
+			case KEY_FSLASH:
+				SetWindowText(commandBox, L"");
+				ShowWindow(commandBox, SW_SHOW);
+				SetFocus(commandBox);
+			default:
+				std::vector<QeInputControl*>::iterator it = inputControls.begin();
+				while (it != inputControls.end()) {
+					(*it)->updateInput();
+					++it;
+				}
+				break;
+			}
+			break;
+		}
 	}
 }
 
 
-void QeWindow::getWindowSize(int& width, int& height) {
+void QeWindow::getWindowSize(HWND & window, int& width, int& height) {
 
 	RECT rect;
 	GetClientRect(window, &rect);
@@ -85,7 +99,7 @@ void QeWindow::getWindowSize(int& width, int& height) {
 	height = rect.bottom - rect.top;
 }
 
-void QeWindow::resize() {
+void QeWindow::resize(HWND & window) {
 	RECT windowRect;
 	windowRect.left = 0;
 	windowRect.top = 0;
@@ -107,15 +121,8 @@ void QeWindow::resize() {
 	GRAP->bRecreateRender = true;
 }
 
-void QeWindow::initialize() {
 
-	if (bInit) return;
-	bInit = true;
-
-	if (!DEBUG->isConsole()) FreeConsole();
-
-	windowInstance = GetModuleHandle(nullptr);
-
+void QeWindow::openMainWindow() {
 	WNDCLASSEX wndClass;
 	std::wstring title = chartowchar(AST->getXMLValue(3, AST->CONFIG, "setting", "applicationName"));
 
@@ -132,8 +139,8 @@ void QeWindow::initialize() {
 	wndClass.lpszClassName = title.c_str();
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
-	if (!RegisterClassEx(&wndClass)){
-		LOG( "Could not register window class!");
+	if (!RegisterClassEx(&wndClass)) {
+		LOG("Could not register window class!");
 		fflush(stdout);
 		exit(1);
 	}
@@ -187,7 +194,7 @@ void QeWindow::initialize() {
 	windowRect.right += windowRect.left;
 	windowRect.bottom += windowRect.top;*/
 
-	window = CreateWindowEx(0, title.c_str(), 0,
+	mainWindow = CreateWindowEx(0, title.c_str(), 0,
 		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
 
 	//if (!settings.fullscreen){
@@ -196,25 +203,138 @@ void QeWindow::initialize() {
 	//uint32_t y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom) / 2;
 	//SetWindowPos(window, 0, x, y, 0, 0, SWP_NOSIZE);
 	//}
-	resize();
+	resize(mainWindow);
 
-	if (!window) {
-		LOG( "Could not create window!" );
+	if (!mainWindow) {
+		LOG("Could not create window!");
 		fflush(stdout);
 		exit(1);
 	}
 
-	ShowWindow(window, SW_SHOW);
-	SetForegroundWindow(window);
-	SetFocus(window);
+	ShowWindow(mainWindow, SW_SHOW);
+	SetForegroundWindow(mainWindow);
+	SetFocus(mainWindow);
 
 	int width; int height;
-	getWindowSize(width, height);
-	commandBox = CreateWindow(L"EDIT", L"", WS_CHILD , 0, 0, width, 20, window, (HMENU)1, NULL, NULL);
+	getWindowSize(mainWindow, width, height);
+	commandBox = CreateWindow(WC_EDITW, L"", WS_CHILD, 0, 0, width, 20, mainWindow, (HMENU)1, NULL, NULL);
 
 	ShowWindow(commandBox, SW_HIDE);
 	WIN->DefEditProc = (WNDPROC)SetWindowLongPtr(WIN->commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
+}
 
+void QeWindow::openEditWindow() {
+
+	WNDCLASSEX wndClass;
+	std::wstring title = L"EditPanel";
+
+	wndClass.cbSize = sizeof(WNDCLASSEX);
+	wndClass.style = CS_HREDRAW | CS_VREDRAW;
+	wndClass.lpfnWndProc = WndProc;
+	wndClass.cbClsExtra = 0;
+	wndClass.cbWndExtra = 0;
+	wndClass.hInstance = windowInstance;
+	wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndClass.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
+	wndClass.lpszMenuName = NULL;
+	wndClass.lpszClassName = title.c_str();
+	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
+
+	if (!RegisterClassEx(&wndClass)) {
+		LOG("Could not register window class!");
+		fflush(stdout);
+		exit(1);
+	}
+
+	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+
+	editWindow = CreateWindowEx(0, title.c_str(), 0,
+		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
+
+	resize(editWindow);
+
+	if (!editWindow) {
+		LOG("Could not create window!");
+		fflush(stdout);
+		exit(1);
+	}
+
+	ShowWindow(editWindow, SW_SHOW);
+	SetForegroundWindow(editWindow);
+	SetWindowText(editWindow, title.c_str());
+
+	int width; int height;
+	getWindowSize(editWindow, width, height);
+
+	tabControlCategory = CreateWindow(WC_TABCONTROL, L"", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
+		0, 0, width, height, editWindow, NULL, windowInstance, NULL);
+
+	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
+
+	currentTab = 0;
+
+	TCITEM tie;
+	tie.mask = TCIF_TEXT;
+
+	for (int i = 0;i<node->nexts.size(); ++i) {
+		std::wstring ws = chartowchar(node->nexts[i]->key);
+		tie.pszText = const_cast<LPWSTR>(ws.c_str());
+		TabCtrl_InsertItem(tabControlCategory, i, &tie);
+	}
+
+	tie.pszText = L"log";
+	TabCtrl_InsertItem(tabControlCategory, node->nexts.size(), &tie);
+
+	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
+		10, 40, width/2-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
+
+	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
+		10+ width/2-5, 40, width/2-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
+
+	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
+		10, 40, width-20, height-55, tabControlCategory, NULL, windowInstance, NULL);
+
+	updateTab();
+}
+
+void QeWindow::Log( std::string _log ) {
+
+	std::wstring ws = chartowchar(_log);
+	SendMessage(listBoxLog, LB_ADDSTRING, 0, (LPARAM)ws.c_str());
+}
+
+void QeWindow::updateTab() {
+
+	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
+	if (currentTab == node->nexts.size() ) {
+		ShowWindow(listBoxLog, SW_SHOW);
+		ShowWindow(treeViewList, SW_HIDE);
+		ShowWindow(listViewDetail, SW_HIDE);
+	}
+	else {
+		ShowWindow(listBoxLog, SW_HIDE);
+		ShowWindow(treeViewList, SW_SHOW);
+		TreeView_DeleteAllItems(treeViewList);
+		ShowWindow(listViewDetail, SW_SHOW);
+		ListView_DeleteAllItems(listViewDetail);
+
+		node = node->nexts[currentTab];
+	}
+}
+
+
+void QeWindow::initialize() {
+
+	if (bInit) return;
+	bInit = true;
+
+	if (!DEBUG->isConsole()) FreeConsole();
+
+	windowInstance = GetModuleHandle(nullptr);
+
+	openMainWindow();
+	openEditWindow();
 }
 
 std::string QeWindow::getWindowTitle(){
@@ -249,7 +369,7 @@ void QeWindow::update1() {
 
 	std::string windowTitle = getWindowTitle();
 	std::wstring ws = chartowchar(windowTitle);
-	SetWindowText(window, ws.c_str());
+	SetWindowText(mainWindow, ws.c_str());
 
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
