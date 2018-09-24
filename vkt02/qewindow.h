@@ -34,6 +34,7 @@ public:
 	void openEditWindow();
 	void updateTab();
 	void updateListView();
+	void updateListViewItem();
 	void resize(HWND & window);
 	std::string getWindowTitle();
 	void Log(std::string _log);

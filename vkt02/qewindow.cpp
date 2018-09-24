@@ -52,6 +52,9 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case TVN_SELCHANGED:
 				updateListView();
 				break;
+			case LVN_ENDLABELEDIT:
+				updateListViewItem();
+				break;
 			}
 		}
 	}
@@ -299,16 +302,16 @@ void QeWindow::openEditWindow() {
 		10, 40, width/2-200, height-55, tabControlCategory, NULL, windowInstance, NULL);
 
 	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS,
-		10+ width/2- 180, 40, width/2+50, height-55, tabControlCategory, NULL, windowInstance, NULL);
+		10+ width/2- 180, 40, width/2+40, height-55, tabControlCategory, NULL, windowInstance, NULL);
 
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-	lvc.cx = 150;
+	lvc.cx = 100;
 	lvc.iSubItem = 0;
 	lvc.pszText = _T("Property");
 	ListView_InsertColumn(listViewDetail, 0, &lvc);
 
-	lvc.cx = 410;
+	lvc.cx = 450;
 	lvc.iSubItem = 1;
 	lvc.pszText = _T("Value");
 	ListView_InsertColumn(listViewDetail, 1, &lvc);
@@ -323,6 +326,13 @@ void QeWindow::Log( std::string _log ) {
 
 	std::wstring ws = chartowchar(_log);
 	SendMessage(listBoxLog, LB_ADDSTRING, 0, (LPARAM)ws.c_str());
+}
+
+void QeWindow::updateListViewItem() {
+
+	int a = 0;
+	a = 1;
+	a = 1;
 }
 
 void QeWindow::updateListView() {
@@ -342,22 +352,34 @@ void QeWindow::updateListView() {
 	currentTreeViewNode = (QeAssetXML*)item.lParam;
 	ListView_DeleteAllItems(listViewDetail);
 
+	LVITEM lvi;
+	lvi.mask = LVIF_TEXT;
+	lvi.iItem = 0;
+	lvi.iSubItem = 0;
+	lvi.cchTextMax = 100;
+	lvi.pszText = L"name";
+	ListView_InsertItem(listViewDetail, &lvi);
+
+	LVITEM lvi2;
+	lvi2.mask = LVIF_TEXT;
+	lvi2.iItem = 0;
+	lvi2.iSubItem = 1;
+	lvi2.cchTextMax = 450;
+	std::wstring ws = chartowchar(currentTreeViewNode->key);
+	lvi2.pszText = const_cast<LPWSTR>(ws.c_str());
+	ListView_SetItem(listViewDetail, &lvi2);
+
 	for (int i = 0; i< currentTreeViewNode->eKeys.size() ; ++i) {
-		LVITEM lvi;
-		lvi.mask = LVIF_TEXT;
-		lvi.iItem = i;
-		lvi.iSubItem = 0;
-		lvi.cchTextMax = 150;
-		std::wstring ws = chartowchar(currentTreeViewNode->eKeys[i]);
+		
+		lvi.iItem = i+1;
+		ws = chartowchar(currentTreeViewNode->eKeys[i]);
 		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 		ListView_InsertItem(listViewDetail, &lvi);
 
-		lvi.iItem = i;
-		lvi.iSubItem = 1;
-		lvi.cchTextMax = 410;
+		lvi2.iItem = i + 1;
 		ws = chartowchar(currentTreeViewNode->eVaules[i]);
-		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
-		ListView_SetItem(listViewDetail, &lvi);
+		lvi2.pszText = const_cast<LPWSTR>(ws.c_str());
+		ListView_SetItem(listViewDetail, &lvi2);
 	}
 }
 
