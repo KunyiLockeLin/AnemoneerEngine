@@ -322,6 +322,19 @@ void QeWindow::openEditWindow() {
 	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		10, 35, width-20, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
+	btnPause = CreateWindow(WC_BUTTON, L"Pause", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 35, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnLoadAll = CreateWindow(WC_BUTTON, L"Load All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 105, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnSaveAll = CreateWindow(WC_BUTTON, L"Save All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 175, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnLoadScene = CreateWindow(WC_BUTTON, L"Load Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 245, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnSaveEID = CreateWindow(WC_BUTTON, L"Save eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 315, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+	btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 85, 385, 80, 60, tabControlCategory, NULL, windowInstance, NULL);
+
 	updateTab();
 }
 
@@ -405,8 +418,21 @@ void QeWindow::updateTab() {
 		ShowWindow(listBoxLog, SW_SHOW);
 		ShowWindow(treeViewList, SW_HIDE);
 		ShowWindow(listViewDetail, SW_HIDE);
+		ShowWindow(btnPause, SW_HIDE);
+		ShowWindow(btnLoadAll, SW_HIDE);
+		ShowWindow(btnSaveAll, SW_HIDE);
+		ShowWindow(btnLoadScene, SW_HIDE);
+		ShowWindow(btnSaveEID, SW_HIDE);
+		ShowWindow(btnLoadEID, SW_HIDE);
 	}
 	else {
+		ShowWindow(btnPause, SW_SHOW);
+		ShowWindow(btnLoadAll, SW_SHOW);
+		ShowWindow(btnSaveAll, SW_SHOW);
+		ShowWindow(btnLoadScene, SW_SHOW);
+		ShowWindow(btnSaveEID, SW_SHOW);
+		ShowWindow(btnLoadEID, SW_SHOW);
+
 		ShowWindow(listBoxLog, SW_HIDE);
 		ShowWindow(treeViewList, SW_SHOW);
 		TreeView_DeleteAllItems(treeViewList);
