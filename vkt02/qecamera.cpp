@@ -101,6 +101,19 @@ void QeCamera::reset() {
 	initialize(initProperty, owner);
 }
 
+void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
+	if (!lookAtTransformOID) return;
+	if (!_lookAtransformOID) return;
+
+	QeTransform* lookAtTransform1 = (QeTransform*)OBJMGR->findComponent(eComponent_transform, _lookAtransformOID);
+	if (!lookAtTransform1) return;
+	QeTransform* lookAtTransform2 = (QeTransform*)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
+	if (!lookAtTransform2) return;
+
+	lookAtTransform2->setWorldPosition(lookAtTransform1->worldPosition());
+	owner->transform->localPosition = { 20.f,0.f,1.f };
+}
+
 void QeCamera::update1() {
 
 	//if (bUpdate) {

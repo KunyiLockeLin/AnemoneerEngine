@@ -1503,8 +1503,8 @@ void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree* t
 std::vector<std::string> QeEncode::split(const char* s, const char* delim) {
 	
 	std::vector<std::string> tokens;
-	char dup[256];
-	strncpy_s(dup, s, 256);
+	char dup[4096];
+	strncpy_s(dup, s, 4096);
 	char *context = NULL;
 	char * token = strtok_s(dup, delim, &context);
 	while (token != NULL) {

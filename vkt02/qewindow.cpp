@@ -77,7 +77,15 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case eUIType_btnLoadEID:
 				break;
 			case eUIType_btnSetCamera:
-
+				if (currentTreeViewNode) {
+					int type=0;
+					AST->getXMLiValue(&type, currentTreeViewNode, 1, "type");
+					if (type ==eComponent_transform) {
+						int oid = 0;
+						AST->getXMLiValue(&oid, currentTreeViewNode, 1, "oid");
+						GRAP->getTargetCamera()->setLookAtTransformOID(oid);
+					}
+				}
 				break;
 			case eUIType_btnNewScene:
 				break;
@@ -594,15 +602,15 @@ void QeWindow::consoleInput() {
 }
 
 std::wstring QeWindow::chartowchar(std::string s) {
-	wchar_t rtn[256];
+	wchar_t rtn[4096];
 	size_t outSize;
-	mbstowcs_s(&outSize, rtn, 256, s.c_str(), s.length());
+	mbstowcs_s(&outSize, rtn, 4096, s.c_str(), s.length());
 	return rtn;
 }
 
 std::string QeWindow::wchartochar(std::wstring s) {
-	char rtn[256];
+	char rtn[4096];
 	size_t outSize;
-	wcstombs_s(&outSize, rtn, 256, s.c_str(), s.length());
+	wcstombs_s(&outSize, rtn, 4096, s.c_str(), s.length());
 	return rtn;
 }

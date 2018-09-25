@@ -36,6 +36,7 @@ public:
 	virtual void update1();
 
 	virtual void reset();
+	void setLookAtTransformOID( int _lookAtTransformOID);
 	void rotateTarget(QeVector3f _addRotate);
 	void rotateTargetByMouse(QeVector2i mousePos);
 	void setMousePos(QeVector2i mousePos);

@@ -1258,7 +1258,7 @@ void QeAsset::setGraphicsShader(QeAssetGraphicsShader& shader, QeAssetXML* shade
 
 	if (defaultShaderType && strlen(defaultShaderType)) {
 
-		QeAssetXML * node = getXMLNode(4, CONFIG, "shader", "graphics", defaultShaderType);
+		QeAssetXML * node = getXMLNode(4, CONFIG, "shaders", "graphics", defaultShaderType);
 		if (shader.vert == nullptr) {
 			c = getXMLValue(node, 1, "vert");
 			if (c != nullptr && strlen(c)) shader.vert = getShader(c);

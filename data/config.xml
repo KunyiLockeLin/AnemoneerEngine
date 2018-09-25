@@ -31,7 +31,7 @@
       <MainCamera oid ="1" eid="1" type="1000">
         <components>
           <Transform oid ="10" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
-          <e oid ="11" eid="1" type ="13"/>
+          <Axis oid ="11" eid="1" type ="13"/>
         </components>
         <children>
           <camera oid ="3" eid="1" type="1000">
@@ -71,7 +71,7 @@
             <components>
               <Transform oid ="80" eid="1" type ="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="3"/>
               <Light oid ="81" eid="1" type ="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90"/>
-              <e oid ="82" eid="1" type ="8" alpha="1" image="light.png" emissive="10"/>
+              <Billboard oid ="82" eid="1" type ="8" alpha="1" image="light.png" emissive="10"/>
             </components>
             <children>
             </children>
