@@ -41,6 +41,13 @@ void QeWindow::sendCommand() {
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
+	switch (uMsg) {
+
+	case WM_COMMAND:
+		LOG("aaaaaaaaaaaaaaaa");
+		break;
+	}
+
 	if (hWnd == editWindow) {
 
 		switch (uMsg) {
@@ -59,7 +66,13 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				updateListViewItem();
 				break;
 			}
+			break;
+
+		case WM_COMMAND:
+			LOG("bbbbbbbbbbbbb");
+			break;
 		}
+
 	}
 
 	if (hWnd == mainWindow) {
@@ -302,10 +315,10 @@ void QeWindow::openEditWindow() {
 	TabCtrl_InsertItem(tabControlCategory, node->nexts.size(), &tie);
 
 	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10, 35, width/2-200, height-45, tabControlCategory, NULL, windowInstance, NULL);
+		0, 35, width/2-200, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
-		width/2- 185, 35, width/2+90, height-45, tabControlCategory, NULL, windowInstance, NULL);
+		width/2- 195, 35, width/2+90, height-45, tabControlCategory, NULL, windowInstance, NULL);
 
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -320,22 +333,28 @@ void QeWindow::openEditWindow() {
 	ListView_InsertColumn(listViewDetail, 1, &lvc);
 
 	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
-		10, 35, width-20, height-45, tabControlCategory, NULL, windowInstance, NULL);
+		0, 35, width-5, height-35, tabControlCategory, NULL, windowInstance, NULL);
 
 	btnPause = CreateWindow(WC_BUTTON, L"Pause", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 35, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 100, 35, 100, 50, tabControlCategory, (HMENU) eUIType_btnPause, windowInstance, NULL);
 	btnLoadAll = CreateWindow(WC_BUTTON, L"Load All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 105, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 100, 35 + 55 * 1, 100, 50, tabControlCategory, (HMENU)eUIType_btnLoadAll, windowInstance, NULL);
 	btnSaveAll = CreateWindow(WC_BUTTON, L"Save All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 175, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
-	btnLoadScene = CreateWindow(WC_BUTTON, L"SwitchScene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 245, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 100, 35 + 55 * 2, 100, 50, tabControlCategory, (HMENU)eUIType_btnSaveAll, windowInstance, NULL);
+	btnLoadScene = CreateWindow(WC_BUTTON, L"Load Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 3, 100, 50, tabControlCategory, (HMENU)eUIType_btnLoadScene, windowInstance, NULL);
 	btnSaveEID = CreateWindow(WC_BUTTON, L"Save eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 315, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 100, 35 + 55 * 4, 100, 50, tabControlCategory, (HMENU)eUIType_btnSaveEID, windowInstance, NULL);
 	btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 385, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
-	btnCameraFocus = CreateWindow(WC_BUTTON, L"CameraFocus", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 90, 455, 85, 60, tabControlCategory, NULL, windowInstance, NULL);
+		width - 100, 35 + 55 * 5, 100, 50, tabControlCategory, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
+	btnSetCamera = CreateWindow(WC_BUTTON, L"Set Camera", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 6, 100, 50, tabControlCategory, (HMENU)eUIType_btnSetCamera, windowInstance, NULL);
+	btnNewScene = CreateWindow(WC_BUTTON, L"New Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 7, 100, 50, tabControlCategory, (HMENU)eUIType_btnNewScene, windowInstance, NULL);
+	btnNewObject = CreateWindow(WC_BUTTON, L"New Object", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 8, 100, 50, tabControlCategory, (HMENU)eUIType_btnNewObject, windowInstance, NULL);
+	btnNewComponent = CreateWindow(WC_BUTTON, L"New Component", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 9, 100, 50, tabControlCategory, (HMENU)eUIType_btnNewComponent, windowInstance, NULL);
 
 	updateTab();
 }
@@ -427,7 +446,10 @@ void QeWindow::updateTab() {
 		ShowWindow(btnLoadScene, SW_HIDE);
 		ShowWindow(btnSaveEID, SW_HIDE);
 		ShowWindow(btnLoadEID, SW_HIDE);
-		ShowWindow(btnCameraFocus, SW_HIDE);
+		ShowWindow(btnSetCamera, SW_HIDE);
+		ShowWindow(btnNewScene, SW_HIDE);
+		ShowWindow(btnNewObject, SW_HIDE);
+		ShowWindow(btnNewComponent, SW_HIDE);
 	}
 	else {
 		ShowWindow(btnPause, SW_SHOW);
@@ -436,7 +458,10 @@ void QeWindow::updateTab() {
 		ShowWindow(btnLoadScene, SW_SHOW);
 		ShowWindow(btnSaveEID, SW_SHOW);
 		ShowWindow(btnLoadEID, SW_SHOW);
-		ShowWindow(btnCameraFocus, SW_SHOW);
+		ShowWindow(btnSetCamera, SW_SHOW);
+		ShowWindow(btnNewScene, SW_SHOW);
+		ShowWindow(btnNewObject, SW_SHOW);
+		ShowWindow(btnNewComponent, SW_SHOW);
 
 		ShowWindow(listBoxLog, SW_HIDE);
 		ShowWindow(treeViewList, SW_SHOW);

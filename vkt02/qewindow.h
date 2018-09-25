@@ -9,6 +9,19 @@ struct QeInputData {
 	std::string consoleCommandInput;
 };
 
+enum QeUIType {
+	eUIType_btnPause=1,
+	eUIType_btnLoadAll=2,
+	eUIType_btnSaveAll=3,
+	eUIType_btnLoadScene=4,
+	eUIType_btnSaveEID=5,
+	eUIType_btnLoadEID=6,
+	eUIType_btnSetCamera=7,
+	eUIType_btnNewScene = 8,
+	eUIType_btnNewObject = 9,
+	eUIType_btnNewComponent = 10,
+};
+
 class QeWindow
 {
 public:
@@ -18,7 +31,7 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
-	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnCameraFocus;
+	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewScene, btnNewObject, btnNewComponent;
 
 	int currentTabIndex;
 	QeAssetXML * currentTreeViewNode;
