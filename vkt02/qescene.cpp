@@ -37,3 +37,8 @@ void QeScene::update2() {
 		++it;
 	}
 }
+
+void QeScene::loadScene(int _eid) {
+	clear();
+	initialize(AST->getXMLEditNode("scenes", _eid));
+}

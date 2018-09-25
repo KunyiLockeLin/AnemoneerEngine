@@ -19,5 +19,7 @@ public:
 	void clear();
 	void update1();
 	void update2();
+
+	void loadScene(int _eid);
 };
 

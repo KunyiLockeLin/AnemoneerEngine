@@ -71,6 +71,16 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case eUIType_btnSaveAll:
 				break;
 			case eUIType_btnLoadScene:
+				if (currentTreeViewNode) {
+					int type = 0;
+					AST->getXMLiValue(&type, currentTreeViewNode, 1, "type");
+					if (type == eScene) {
+						int eid = 0;
+						AST->getXMLiValue(&eid, currentTreeViewNode, 1, "eid");
+						SCENE->loadScene(eid);
+					}
+				}
+				break;
 				break;
 			case eUIType_btnSaveEID:
 				break;

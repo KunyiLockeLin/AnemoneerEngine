@@ -16,11 +16,10 @@ private:
 	QeQueenEngineKey key;
 
 public:
-	QueenEngine(QeGlobalKey& _key):sceneEID(0){}
+	QueenEngine(QeGlobalKey& _key){}
 	//~QueenEngine() {}
 	void run();
 
-	int sceneEID;
 	bool bPause = false;
 	bool bClosed = false;
 	bool bRestart = false;

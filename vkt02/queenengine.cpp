@@ -14,13 +14,12 @@ void QueenEngine::run() {
 	WIN->initialize();
 	VK->initialize();
 	GRAP->initialize();
-
-	if(sceneEID ==0)	AST->getXMLiValue(&sceneEID, node, 2, "startScene", "eid");
+	
 	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "environment", "FPS")));
 
-	node = AST->getXMLEditNode("scenes", sceneEID);
-	SCENE->clear();
-	SCENE->initialize(node);
+	int sceneEID = 0;
+	AST->getXMLiValue(&sceneEID, node, 2, "startScene", "eid");
+	SCENE->loadScene(sceneEID);
 
 	mainLoop();
 }

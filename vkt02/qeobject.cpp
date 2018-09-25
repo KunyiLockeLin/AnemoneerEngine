@@ -39,10 +39,10 @@ void QeObject::clear() {
 	}
 	children.clear();
 
-	if (!parent) {
+	/*if (!parent) {
 		eraseElementFromVector(SCENE->objects, this);
 		parent = nullptr;
-	}
+	}*/
 }
 
 void QeObject::update1() {

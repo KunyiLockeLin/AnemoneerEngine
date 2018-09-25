@@ -18,6 +18,8 @@ enum QeComponentType {
 	eComponent_axis=13,
 	eComponent_grid=14,
 	eComponent_render=15,
+	eObject = 1000,
+	eScene = 2000,
 };
 
 class QeComponent
