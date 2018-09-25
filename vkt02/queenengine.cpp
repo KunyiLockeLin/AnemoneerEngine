@@ -34,17 +34,20 @@ void QueenEngine::mainLoop() {
 			currentFPS = 1000 / passMilliSecond;
 			deltaTime = float(passMilliSecond) / 1000;
 
-			VK->update1();
-			GRAP->update1();
+			if (!bPause) {
+				VK->update1();
+				GRAP->update1();
+				SCENE->update1();
+			}
 			WIN->update1();
-			SCENE->update1();
-			//OBJMGR->update1();
 
+			if (!bPause) {
+				SCENE->update2();
+				//OBJMGR->update2();
+				GRAP->update2();
+				VK->update2();
+			}
 			WIN->update2();
-			SCENE->update2();
-			//OBJMGR->update2();
-			GRAP->update2();
-			VK->update2();
 		}
 	}
 	vkDeviceWaitIdle(VK->device);

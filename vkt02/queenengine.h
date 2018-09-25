@@ -21,6 +21,7 @@ public:
 	void run();
 
 	int sceneEID;
+	bool bPause = false;
 	bool bClosed = false;
 	bool bRestart = false;
 	float deltaTime;

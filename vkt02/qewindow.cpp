@@ -62,7 +62,30 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			break;
 
 		case WM_COMMAND:
-			LOG("bbbbbbbbbbbbb");
+			switch (wParam) {
+			case eUIType_btnPause:
+				QE->bPause = !QE->bPause;
+				break;
+			case eUIType_btnLoadAll:
+				break;
+			case eUIType_btnSaveAll:
+				break;
+			case eUIType_btnLoadScene:
+				break;
+			case eUIType_btnSaveEID:
+				break;
+			case eUIType_btnLoadEID:
+				break;
+			case eUIType_btnSetCamera:
+
+				break;
+			case eUIType_btnNewScene:
+				break;
+			case eUIType_btnNewObject:
+				break;
+			case eUIType_btnNewComponent:
+				break;
+			}
 			break;
 		}
 
