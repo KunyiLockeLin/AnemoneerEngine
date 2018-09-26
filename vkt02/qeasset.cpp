@@ -654,8 +654,7 @@ QeAssetXML* QeAsset::copyXMLNode(QeAssetXML* source) {
 void QeAsset::copyXMLValue(QeAssetXML* from, QeAssetXML* to) {
 
 	if (from == nullptr || to == nullptr)	return;
-
-	to->~QeAssetXML();
+	
 	to->key = from->key;
 	to->value = from->value;
 	to->eKeys.clear();
@@ -669,6 +668,14 @@ void QeAsset::copyXMLNode(QeAssetXML* from, QeAssetXML* to) {
 	if (from == nullptr || to == nullptr)	return;
 
 	copyXMLValue(from, to);
+
+	//to->~QeAssetXML();
+	std::vector<QeAssetXML*>::iterator it = to->nexts.begin();
+	while (it != to->nexts.end()) {
+		if ((*it) != nullptr) delete (*it);
+		++it;
+	}
+	to->nexts.clear();
 
 	for (int i = 0; i< from->nexts.size();++i) {
 		QeAssetXML* node = new QeAssetXML();
