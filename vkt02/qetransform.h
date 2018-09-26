@@ -10,6 +10,7 @@ public:
 	// Face is Euler angles(pitch-roll-yaw)  roll, pitch, yaw.
 	QeVector3f localPosition, localScale, localFaceEular; 
 	QeVector3f rotateSpeed, revoluteSpeed;
+	bool revoluteFixAxisX = false, revoluteFixAxisY = false, revoluteFixAxisZ = false;
 	int targetAnimationOID;
 	const char * targetBoneName = nullptr;
 

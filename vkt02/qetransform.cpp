@@ -20,6 +20,9 @@ void QeTransform::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLfValue(&revoluteSpeed.x, initProperty, 1, "revoluteSpeedX");
 	AST->getXMLfValue(&revoluteSpeed.y, initProperty, 1, "revoluteSpeedY");
 	AST->getXMLfValue(&revoluteSpeed.z, initProperty, 1, "revoluteSpeedZ");
+	AST->getXMLbValue(&revoluteFixAxisX, initProperty, 1, "revoluteFixAxisX");
+	AST->getXMLbValue(&revoluteFixAxisY, initProperty, 1, "revoluteFixAxisY");
+	AST->getXMLbValue(&revoluteFixAxisZ, initProperty, 1, "revoluteFixAxisZ");
 	targetAnimationOID = 0;
 	AST->getXMLiValue(&targetAnimationOID, initProperty, 1, "targetAnimationOID");
 	targetBoneName = AST->getXMLValue(initProperty, 1, "targetBoneName");
@@ -32,7 +35,7 @@ void QeTransform::update1() {
 
 	if ( (owner && owner->parent && owner->parent->transform) &&
 		(revoluteSpeed.x != 0.f || revoluteSpeed.y != 0.f || revoluteSpeed.z != 0.f )) {
-		revolute((revoluteSpeed*QE->deltaTime*30.f), owner->parent->transform->worldPosition());
+		revolute((revoluteSpeed*QE->deltaTime*30.f), owner->parent->transform->worldPosition(), revoluteFixAxisX, revoluteFixAxisY, revoluteFixAxisZ);
 	}
 }
 
