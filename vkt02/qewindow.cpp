@@ -43,6 +43,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 	if (hWnd == editWindow) {
 		TCHAR text[512] = L"";
+		QeAssetXML * node;
 
 		switch (uMsg) {
 		case WM_NOTIFY:
@@ -69,13 +70,19 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case eUIType_btnPause:
 				QE->bPause = !QE->bPause;
 				break;
+			case eUIType_btnUpdateAll:
+				QE->initialize();
+				updateTab();
+				break;
 			case eUIType_btnLoadAll:
 				AST->removeXML(AST->CONFIG);
 				QE->initialize();
 				updateTab();
 				break;
 			case eUIType_btnSaveAll:
-				AST->outputXML(AST->getXMLNode(1, AST->CONFIG), AST->CONFIG);
+				node = AST->getXMLNode(1, AST->CONFIG);
+				adjustComponetData(node);
+				AST->outputXML(node, AST->CONFIG);
 				QE->initialize();
 				updateTab();
 				break;
@@ -224,6 +231,47 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			}
 			break;
 		}
+	}
+}
+
+void QeWindow::adjustComponetData(QeAssetXML * node) {
+	int _type = 0;
+	AST->getXMLiValue(&_type, node, 1, "type");
+	if (_type != 0) {
+		QeAssetXML * source = AST->getXMLEditNode((QeComponentType)_type, 0);
+
+		for (int i = 0; i<node->eKeys.size();++i) {
+			bool b = false;
+			for (int j = 0; j<source->eKeys.size(); ++j) {
+				if (node->eKeys[i].compare(source->eKeys[j])==0 ) {
+					b = true;
+					break;
+				}
+			}
+			if (!b) {
+				node->eKeys.erase(node->eKeys.begin() + i);
+				node->eVaules.erase(node->eVaules.begin() + i);
+				--i;
+			}
+		}
+
+		for (int i = 0; i<source->eKeys.size(); ++i) {
+			bool b = false;
+			for (int j = 0; j<node->eKeys.size(); ++j) {
+				if (node->eKeys[j].compare(source->eKeys[i]) == 0) {
+					b = true;
+					break;
+				}
+			}
+			if (!b) {
+				node->eKeys.insert(node->eKeys.begin() + i, source->eKeys[i]);
+				node->eVaules.insert(node->eVaules.begin() + i, source->eVaules[i]);
+			}
+		}
+	}
+
+	for (int i = 0;i<node->nexts.size();++i) {
+		adjustComponetData(node->nexts[i]);
 	}
 }
 
@@ -452,22 +500,24 @@ void QeWindow::openEditWindow() {
 
 	btnPause = CreateWindow(WC_BUTTON, L"Pause", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 		width - 100, 35, 100, 50, editWindow, (HMENU) eUIType_btnPause, windowInstance, NULL);
+	btnUpdateAll = CreateWindow(WC_BUTTON, L"Update All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 1, 100, 50, editWindow, (HMENU)eUIType_btnUpdateAll, windowInstance, NULL);
 	btnLoadAll = CreateWindow(WC_BUTTON, L"Load All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 1, 100, 50, editWindow, (HMENU)eUIType_btnLoadAll, windowInstance, NULL);
+		width - 100, 35 + 55 * 2, 100, 50, editWindow, (HMENU)eUIType_btnLoadAll, windowInstance, NULL);
 	btnSaveAll = CreateWindow(WC_BUTTON, L"Save All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 2, 100, 50, editWindow, (HMENU)eUIType_btnSaveAll, windowInstance, NULL);
+		width - 100, 35 + 55 * 3, 100, 50, editWindow, (HMENU)eUIType_btnSaveAll, windowInstance, NULL);
 	btnLoadScene = CreateWindow(WC_BUTTON, L"Load Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 3, 100, 50, editWindow, (HMENU)eUIType_btnLoadScene, windowInstance, NULL);
+		width - 100, 35 + 55 * 4, 100, 50, editWindow, (HMENU)eUIType_btnLoadScene, windowInstance, NULL);
 	btnSaveEID = CreateWindow(WC_BUTTON, L"Save eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 4, 100, 50, editWindow, (HMENU)eUIType_btnSaveEID, windowInstance, NULL);
+		width - 100, 35 + 55 * 5, 100, 50, editWindow, (HMENU)eUIType_btnSaveEID, windowInstance, NULL);
 	btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 5, 100, 50, editWindow, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
+		width - 100, 35 + 55 * 6, 100, 50, editWindow, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
 	btnSetCamera = CreateWindow(WC_BUTTON, L"Set Camera", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 6, 100, 50, editWindow, (HMENU)eUIType_btnSetCamera, windowInstance, NULL);
+		width - 100, 35 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnSetCamera, windowInstance, NULL);
 	btnNewItem = CreateWindow(WC_BUTTON, L"New Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
+		width - 100, 35 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
 	btnDeleteItem = CreateWindow(WC_BUTTON, L"Delete Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
+		width - 100, 35 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
 
 	updateTab();
 }

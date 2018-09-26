@@ -11,14 +11,15 @@ struct QeInputData {
 
 enum QeUIType {
 	eUIType_btnPause=1,
-	eUIType_btnLoadAll=2,
-	eUIType_btnSaveAll=3,
-	eUIType_btnLoadScene=4,
-	eUIType_btnSaveEID=5,
-	eUIType_btnLoadEID=6,
-	eUIType_btnSetCamera=7,
-	eUIType_btnNewItem = 8,
-	eUIType_btnDeleteItem = 9,
+	eUIType_btnUpdateAll = 2,
+	eUIType_btnLoadAll=3,
+	eUIType_btnSaveAll=4,
+	eUIType_btnLoadScene=5,
+	eUIType_btnSaveEID=6,
+	eUIType_btnLoadEID=7,
+	eUIType_btnSetCamera=8,
+	eUIType_btnNewItem = 9,
+	eUIType_btnDeleteItem = 10,
 };
 
 class QeWindow
@@ -30,7 +31,7 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
-	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewItem, btnDeleteItem;
+	HWND btnPause, btnUpdateAll, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewItem, btnDeleteItem;
 
 	int currentTabIndex;
 	int currentTreeViewNodeIndex;
@@ -54,6 +55,7 @@ public:
 	std::string getWindowTitle();
 	void Log(std::string _log);
 	void addToTreeView(QeAssetXML * node, HTREEITEM parent);
+	void adjustComponetData(QeAssetXML * node);
 
 	std::wstring chartowchar(std::string s);
 	std::string wchartochar(std::wstring s);
