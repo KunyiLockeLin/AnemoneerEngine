@@ -57,6 +57,7 @@ QeDataRender::~QeDataRender() {
 
 void QeGraphics::initialize() {
 
+	lights.clear();
 	bUpdateDrawCommandBuffers = true;
 	bRecreateRender = true;
 	renders.resize(eRender_MAX);

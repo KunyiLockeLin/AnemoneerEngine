@@ -7,14 +7,13 @@ QeLog::~QeLog() {
 	}
 }
 
-void QeLog::initialize()
-{
-	mode = QeDebugMode(atoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "debug")));
+QeDebugMode QeLog::mode() {
+	return QeDebugMode(atoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "debug")));
 }
 
-bool QeLog::isDebug()	{	return mode == eModeNoDebug ? false : true;	}
-bool QeLog::isConsole() {	return (mode == eModeConsole  || mode == eModeConsoleOutput )? true	: false; }
-bool QeLog::isOutput()	{	return (mode == eModeOutput || mode == eModeConsoleOutput) ? true : false; }
+bool QeLog::isDebug()	{	return mode() == eModeNoDebug ? false : true;	}
+bool QeLog::isConsole() {	return (mode() == eModeConsole  || mode() == eModeConsoleOutput )? true	: false; }
+bool QeLog::isOutput()	{	return (mode() == eModeOutput || mode() == eModeConsoleOutput) ? true : false; }
 
 std::string QeLog::stack(int from, int to) {
 	
@@ -57,7 +56,7 @@ std::string QeLog::stack(int from, int to) {
 
 void QeLog::print(std::string& msg, bool bShowStack, int stackLevel) {
 
-	if (this == nullptr || mode == eModeNoDebug) return;
+	if (this == nullptr || !isDebug() ) return;
 
 	time_t rawtime;
 	struct tm timeinfo;

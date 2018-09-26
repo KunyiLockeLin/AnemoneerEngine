@@ -37,7 +37,6 @@ namespace  QeLib {
 class QeGlobalKey
 {
 	friend class QeGlobal;
-
 private:
 	QeGlobalKey() {}
 };
@@ -47,15 +46,9 @@ class QeGlobal
 private:
 	QeGlobal();
 	QeGlobalKey	key;
-	void initialize();
-	void clear();
 public:
 	~QeGlobal();
 
-	void restart();
-	//bool libGLFW;
-	//bool libGLM;
-	//bool libGLI;
 	static QeGlobal&	getInstance();
 	QueenEngine*		engine = nullptr;
 	QeVulkan*			vulkan = nullptr;

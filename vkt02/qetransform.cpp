@@ -27,12 +27,12 @@ void QeTransform::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 void QeTransform::update1() {
 	if (rotateSpeed.x != 0.f || rotateSpeed.x != 0.f || rotateSpeed.z != 0.f) {
-		localFaceEular += rotateSpeed;
+		localFaceEular += (rotateSpeed*QE->deltaTime*30.f);
 	}
 
 	if ( (owner && owner->parent && owner->parent->transform) &&
 		(revoluteSpeed.x != 0.f || revoluteSpeed.y != 0.f || revoluteSpeed.z != 0.f )) {
-		revolute(revoluteSpeed, owner->parent->transform->worldPosition());
+		revolute((revoluteSpeed*QE->deltaTime*30.f), owner->parent->transform->worldPosition());
 	}
 }
 

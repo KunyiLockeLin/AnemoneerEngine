@@ -191,6 +191,8 @@ public:
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset();
 
+	void initialize();
+
 	QeAssetJSON* getJSON(const char* _filePath);
 	const char*	 getJSONValue(int length, ...);
 	const char*	 getJSONValue(QeAssetJSON* source, int length, ...);

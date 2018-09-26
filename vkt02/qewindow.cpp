@@ -67,6 +67,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				QE->bPause = !QE->bPause;
 				break;
 			case eUIType_btnLoadAll:
+				QE->initialize();
 				break;
 			case eUIType_btnSaveAll:
 				break;
@@ -102,6 +103,8 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case eUIType_btnNewObject:
 				break;
 			case eUIType_btnNewComponent:
+				break;
+			case eUIType_btnDeleteItem:
 				break;
 			}
 			break;
@@ -153,6 +156,11 @@ void QeWindow::getWindowSize(HWND & window, int& width, int& height) {
 	GetClientRect(window, &rect);
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
+}
+
+void QeWindow::resizeAll() {
+	resize(mainWindow);
+	resize(editWindow);
 }
 
 void QeWindow::resize(HWND & window) {
@@ -384,6 +392,8 @@ void QeWindow::openEditWindow() {
 		width - 100, 35 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnNewObject, windowInstance, NULL);
 	btnNewComponent = CreateWindow(WC_BUTTON, L"NewComponent", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 		width - 100, 35 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnNewComponent, windowInstance, NULL);
+	btnDeleteItem = CreateWindow(WC_BUTTON, L"Delete Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 10, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
 
 	updateTab();
 }

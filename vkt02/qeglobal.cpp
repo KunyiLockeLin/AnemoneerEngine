@@ -59,9 +59,7 @@ namespace  QeLib {
 	}
 };
 
-QeGlobal::QeGlobal() { initialize(); }
-
-void QeGlobal::initialize() {
+QeGlobal::QeGlobal() {
 	if (engine == nullptr)		engine = new QueenEngine(key);
 	if (window == nullptr)		window = new QeWindow(key);
 	if (scene == nullptr)		scene = new QeScene(key);
@@ -75,25 +73,7 @@ void QeGlobal::initialize() {
 	if (command == nullptr)		command = new QeCommand(key);
 }
 
-QeGlobal::~QeGlobal() {
-	
-	clear();
-	if (vulkan != nullptr) {
-		delete vulkan;
-		vulkan = nullptr;
-	}
-	if (window != nullptr) {
-		delete window;
-		window = nullptr;
-	}
-	if (engine != nullptr) {
-		delete engine;
-		engine = nullptr;
-	}
-}
-
-void QeGlobal::clear() {
-
+QeGlobal::~QeGlobal() {	
 	if (math != nullptr) {
 		delete math;
 		math = nullptr;
@@ -122,8 +102,22 @@ void QeGlobal::clear() {
 		delete command;
 		command = nullptr;
 	}
+	if (vulkan != nullptr) {
+		delete vulkan;
+		vulkan = nullptr;
+	}
+	if (scene != nullptr) {
+		delete scene;
+		scene = nullptr;
+	}
+	if (window != nullptr) {
+		delete window;
+		window = nullptr;
+	}
+	if (engine != nullptr) {
+		delete engine;
+		engine = nullptr;
+	}
 }
 
 QeGlobal& QeGlobal::getInstance() { static QeGlobal _s; return _s; }
-
-void QeGlobal::restart() { clear(); initialize(); WIN->resize(WIN->mainWindow); }

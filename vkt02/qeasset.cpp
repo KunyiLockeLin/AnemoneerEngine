@@ -133,6 +133,15 @@ bool QeVertex::operator==(const QeVertex& other) const {
 	return pos == other.pos && normal == other.normal && uv == other.uv && color == other.color;
 }
 
+void QeAsset::initialize() {
+	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.find(CONFIG);
+
+	if (it != astXMLs.end()) {
+		delete it->second;
+		astXMLs.erase(it);
+	}
+}
+
 std::vector<char> QeAsset::loadFile(const char* _filePath) {
 
 	std::vector<char> ret;

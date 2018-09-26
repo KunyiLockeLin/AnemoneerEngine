@@ -13,14 +13,8 @@ void QeScene::initialize(QeAssetXML* _property) {
 }
 
 void QeScene::clear() {
-	std::vector<QeObject*>::iterator it = objects.begin();
-	while (it != objects.end()) {
-		OBJMGR->removeObject(*it);
-		++it;
-	}
 	objects.clear();
 }
-
 
 void QeScene::update1() {
 	std::vector<QeObject*>::iterator it = objects.begin();
@@ -39,6 +33,8 @@ void QeScene::update2() {
 }
 
 void QeScene::loadScene(int _eid) {
+	OBJMGR->clear();
 	clear();
+	GRAP->bRecreateRender = true;
 	initialize(AST->getXMLEditNode("scenes", _eid));
 }

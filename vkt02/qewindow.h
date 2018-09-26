@@ -20,6 +20,7 @@ enum QeUIType {
 	eUIType_btnNewScene = 8,
 	eUIType_btnNewObject = 9,
 	eUIType_btnNewComponent = 10,
+	eUIType_btnDeleteItem = 11,
 };
 
 class QeWindow
@@ -31,7 +32,7 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
-	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewScene, btnNewObject, btnNewComponent;
+	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewScene, btnNewObject, btnNewComponent, btnDeleteItem;
 
 	int currentTabIndex;
 	QeAssetXML * currentTreeViewNode;
@@ -48,6 +49,7 @@ public:
 	void updateTab();
 	void updateListView();
 	void updateListViewItem();
+	void resizeAll();
 	void resize(HWND & window);
 	std::string getWindowTitle();
 	void Log(std::string _log);
