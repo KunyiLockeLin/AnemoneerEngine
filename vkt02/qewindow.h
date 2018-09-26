@@ -17,10 +17,8 @@ enum QeUIType {
 	eUIType_btnSaveEID=5,
 	eUIType_btnLoadEID=6,
 	eUIType_btnSetCamera=7,
-	eUIType_btnNewScene = 8,
-	eUIType_btnNewObject = 9,
-	eUIType_btnNewComponent = 10,
-	eUIType_btnDeleteItem = 11,
+	eUIType_btnNewItem = 8,
+	eUIType_btnDeleteItem = 9,
 };
 
 class QeWindow
@@ -32,10 +30,12 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
-	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewScene, btnNewObject, btnNewComponent, btnDeleteItem;
+	HWND btnPause, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewItem, btnDeleteItem;
 
 	int currentTabIndex;
-	QeAssetXML * currentTreeViewNode;
+	int currentTreeViewNodeIndex;
+	std::string currentEditListViewKey;
+	std::vector<QeAssetXML*> currentTreeViewNodes;
 	QeInputData inputData;
 	std::vector<QeInputControl*> inputControls;
 

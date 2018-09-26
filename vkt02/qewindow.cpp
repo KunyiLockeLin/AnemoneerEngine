@@ -42,6 +42,7 @@ void QeWindow::sendCommand() {
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	if (hWnd == editWindow) {
+		TCHAR text[512] = L"";
 
 		switch (uMsg) {
 		case WM_NOTIFY:
@@ -54,6 +55,8 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				break;
 			case LVN_BEGINLABELEDIT:
 				currentEditListView = ListView_GetEditControl(listViewDetail);
+				GetWindowText(currentEditListView, text, sizeof(text));
+				currentEditListViewKey = wchartochar(text);
 				break;
 			case LVN_ENDLABELEDIT:
 				updateListViewItem();
@@ -67,44 +70,83 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				QE->bPause = !QE->bPause;
 				break;
 			case eUIType_btnLoadAll:
+				AST->removeXML(AST->CONFIG);
 				QE->initialize();
+				updateTab();
 				break;
 			case eUIType_btnSaveAll:
+				AST->outputXML(AST->getXMLNode(1, AST->CONFIG), AST->CONFIG);
+				updateTab();
 				break;
 			case eUIType_btnLoadScene:
-				if (currentTreeViewNode) {
+				if (currentTreeViewNodeIndex!= INDEX_NONE) {
 					int type = 0;
-					AST->getXMLiValue(&type, currentTreeViewNode, 1, "type");
+					AST->getXMLiValue(&type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
 					if (type == eScene) {
 						int eid = 0;
-						AST->getXMLiValue(&eid, currentTreeViewNode, 1, "eid");
+						AST->getXMLiValue(&eid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "eid");
 						SCENE->loadScene(eid);
 					}
 				}
 				break;
-				break;
 			case eUIType_btnSaveEID:
+				if (currentTreeViewNodeIndex != INDEX_NONE) {
+					int _type = 0, _eid = 0;
+					AST->getXMLiValue(&_type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
+					AST->getXMLiValue(&_eid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "eid");
+					if (_type != 0 && _eid != 0) {
+						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, _eid);
+						if (node) AST->copyXMLValue(currentTreeViewNodes[currentTreeViewNodeIndex], node);
+						else {
+							QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, 0);
+							QeAssetXML * newNode = AST->copyXMLNode(node);
+							AST->addXMLNode(node->parent, newNode);
+						}
+						updateTab();
+					}
+				}
 				break;
 			case eUIType_btnLoadEID:
+				if (currentTreeViewNodeIndex != INDEX_NONE) {
+					int _type = 0, _eid = 0;
+					AST->getXMLiValue(&_type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
+					AST->getXMLiValue(&_eid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "eid");
+					if (_type != 0 && _eid != 0) {
+						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, _eid);
+						if (node) AST->copyXMLNode(node, currentTreeViewNodes[currentTreeViewNodeIndex]);
+						updateTab();
+					}
+				}
 				break;
 			case eUIType_btnSetCamera:
-				if (currentTreeViewNode) {
+				if (currentTreeViewNodeIndex != INDEX_NONE) {
 					int type=0;
-					AST->getXMLiValue(&type, currentTreeViewNode, 1, "type");
+					AST->getXMLiValue(&type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
 					if (type ==eComponent_transform) {
 						int oid = 0;
-						AST->getXMLiValue(&oid, currentTreeViewNode, 1, "oid");
+						AST->getXMLiValue(&oid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "oid");
 						GRAP->getTargetCamera()->setLookAtTransformOID(oid);
 					}
 				}
 				break;
-			case eUIType_btnNewScene:
-				break;
-			case eUIType_btnNewObject:
-				break;
-			case eUIType_btnNewComponent:
+			case eUIType_btnNewItem:
+				if (currentTreeViewNodeIndex != INDEX_NONE) {
+					int _type = 0;
+					AST->getXMLiValue(&_type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
+					if (_type != 0) {
+
+						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, 0);
+						QeAssetXML * newNode = AST->copyXMLNode(node);
+						AST->addXMLNode(node->parent, newNode);
+						updateTab();
+					}
+				}
 				break;
 			case eUIType_btnDeleteItem:
+				if (currentTreeViewNodeIndex != INDEX_NONE) {
+					AST->removeXMLNode(AST->getXMLNode(1, AST->CONFIG), currentTreeViewNodes[currentTreeViewNodeIndex]);
+					updateTab();
+				}
 				break;
 			}
 			break;
@@ -386,14 +428,10 @@ void QeWindow::openEditWindow() {
 		width - 100, 35 + 55 * 5, 100, 50, editWindow, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
 	btnSetCamera = CreateWindow(WC_BUTTON, L"Set Camera", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 		width - 100, 35 + 55 * 6, 100, 50, editWindow, (HMENU)eUIType_btnSetCamera, windowInstance, NULL);
-	btnNewScene = CreateWindow(WC_BUTTON, L"New Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnNewScene, windowInstance, NULL);
-	btnNewObject = CreateWindow(WC_BUTTON, L"New Object", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnNewObject, windowInstance, NULL);
-	btnNewComponent = CreateWindow(WC_BUTTON, L"NewComponent", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnNewComponent, windowInstance, NULL);
+	btnNewItem = CreateWindow(WC_BUTTON, L"New Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 35 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
 	btnDeleteItem = CreateWindow(WC_BUTTON, L"Delete Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 35 + 55 * 10, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
+		width - 100, 35 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
 
 	updateTab();
 }
@@ -419,6 +457,7 @@ void QeWindow::updateListViewItem() {
 	LvItem.pszText = text;
 
 	SendMessage(listViewDetail, LVM_SETITEMTEXT, (WPARAM)iIndex, (LPARAM)&LvItem);
+	AST->setXMLValue(currentTreeViewNodes[currentTreeViewNodeIndex], currentEditListViewKey.c_str(), wchartochar(text).c_str());
 }
 
 void QeWindow::updateListView() {
@@ -435,7 +474,7 @@ void QeWindow::updateListView() {
 
 	if (!TreeView_GetItem(treeViewList, &item)) return;
 	
-	currentTreeViewNode = (QeAssetXML*)item.lParam;
+	currentTreeViewNodeIndex = (int)item.lParam;
 	ListView_DeleteAllItems(listViewDetail);
 
 	LVITEM lvi;
@@ -446,24 +485,24 @@ void QeWindow::updateListView() {
 	ListView_InsertItem(listViewDetail, &lvi);
 	std::wstring ws;
 
-	for (int i = 0; i< currentTreeViewNode->eKeys.size() ; ++i) {
+	for (int i = 0; i< currentTreeViewNodes[currentTreeViewNodeIndex]->eKeys.size() ; ++i) {
 		
 		lvi.iItem = i+1;
-		ws = chartowchar(currentTreeViewNode->eKeys[i]);
+		ws = chartowchar(currentTreeViewNodes[currentTreeViewNodeIndex]->eKeys[i]);
 		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 		ListView_InsertItem(listViewDetail, &lvi);
 	}
 
 	lvi.iItem = 0;
 	lvi.iSubItem = 1;
-	ws = chartowchar(currentTreeViewNode->key);
+	ws = chartowchar(currentTreeViewNodes[currentTreeViewNodeIndex]->key);
 	lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 	ListView_SetItem(listViewDetail, &lvi);
 
-	for (int i = 0; i< currentTreeViewNode->eKeys.size(); ++i) {
+	for (int i = 0; i< currentTreeViewNodes[currentTreeViewNodeIndex]->eKeys.size(); ++i) {
 
 		lvi.iItem = i + 1;
-		ws = chartowchar(currentTreeViewNode->eVaules[i]);
+		ws = chartowchar(currentTreeViewNodes[currentTreeViewNodeIndex]->eVaules[i]);
 		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 		ListView_SetItem(listViewDetail, &lvi);
 	}
@@ -471,7 +510,8 @@ void QeWindow::updateListView() {
 
 void QeWindow::updateTab() {
 
-	currentTreeViewNode = nullptr;
+	currentTreeViewNodes.clear();
+	currentTreeViewNodeIndex = INDEX_NONE;
 	currentTabIndex = TabCtrl_GetCurSel(tabControlCategory);
 
 	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
@@ -500,7 +540,9 @@ void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
 
 	tvi.pszText = const_cast<LPWSTR>(ws.c_str());
 	tvi.cchTextMax = 256;
-	tvi.lParam = (LPARAM)node;
+	tvi.lParam = (LPARAM)currentTreeViewNodes.size();
+	currentTreeViewNodes.push_back(node);
+	
 	tvins.item = tvi;
 
 	//tvins.hInsertAfter = nullptr;

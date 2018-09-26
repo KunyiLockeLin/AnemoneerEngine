@@ -173,7 +173,7 @@ QeAssetJSON* QeEncode::decodeJSON(const char* buffer, int &index) {
 	return node;
 }
 
-QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index) {
+QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index, QeAssetXML * parent) {
 	/* key
 	0: <
 	1: >
@@ -191,6 +191,7 @@ QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index) {
 	char* newChar = nullptr;
 	std::vector<std::string> *vsBuffer = nullptr;
 	bool bRoot = true;
+	node->parent = parent;
 
 	while (1) {
 		currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
@@ -206,7 +207,7 @@ QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index) {
 
 			if (bRoot) bRoot = false;
 
-			else if (buffer[currentIndex + 1] != '/')	node->nexts.push_back(decodeXML(buffer, currentIndex));
+			else if (buffer[currentIndex + 1] != '/')	node->nexts.push_back(decodeXML(buffer, currentIndex, node));
 
 			else if (lastKey == 1) {
 				std::string s(buffer + lastIndex, currentIndex - lastIndex);

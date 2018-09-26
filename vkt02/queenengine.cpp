@@ -13,7 +13,6 @@ void QueenEngine::run() {
 
 void QueenEngine::initialize() {
 
-	AST->initialize();
 	GRAP->initialize();
 	WIN->resizeAll();
 

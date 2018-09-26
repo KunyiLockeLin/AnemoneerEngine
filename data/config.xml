@@ -26,7 +26,7 @@
     </compute>
   </shaders>
   
-  <scenes>
+  <scenes type="2000">
     <default eid="0" type="2000">
       <MainCamera oid ="1" eid="1" type="1000">
         <components>
@@ -61,7 +61,6 @@
         <children>
         </children>
       </grid>
-
       <light1 oid ="7" eid="1" type="1000">
         <components>
           <Transform oid ="70" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
@@ -200,45 +199,76 @@
     </scene1>
   </scenes>
   
-  <objects>
+  <objects type="1000">
     <default oid="0" eid="0" type="1000">
       <components>
       </components>
       <children>
       </children>
     </default>
+    <MainCamera oid ="0" eid="1" type="1000">
+      <components>
+        <Transform oid ="10" eid="1" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+        <Axis oid ="11" eid="1" type ="13"/>
+      </components>
+      <children>
+        <camera oid ="3" eid="1" type="1000">
+          <components>
+            <Transform oid ="30" eid="1" type ="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0"/>
+            <Camera oid ="31" eid="1" type ="2" main="1" lookAtTransformOID="10" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" clearColorR="0" clearColorG="0.5" clearColorB="0.5"/>
+          </components>
+          <children>
+          </children>
+        </camera>
+      </children>
+    </MainCamera>
   </objects>
   
-  <components>
-    <Transform oid="0" eid="0" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" rotateByCenterSpeedX="0" rotateByCenterSpeedY="0" targetAnimationOID="0" targetBoneName="">
+  <components type ="0">
+    <Transform type ="1">
+      <default oid="0" eid="0" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" rotateByCenterSpeedX="0" rotateByCenterSpeedY="0" targetAnimationOID="0" targetBoneName=""/>
     </Transform>
-    <Camera oid="0" eid="0" type ="2" main="0" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+    <Camera type ="2">
+      <default oid="0" eid="0" type ="2" main="0" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000"/>
     </Camera>
-    <Postprocessing oid="0" eid="0" type ="3">
+    <Postprocessing type ="3">
+      <default oid="0" eid="0" type ="3"/>
     </Postprocessing>
-    <Light oid="0" eid="0" type ="4" lightType="0" colorR="0" colorG="0" colorB="0" intensity="1000" coneAngle="90">
+    <Light type ="4">
+      <default oid="0" eid="0" type ="4" lightType="0" colorR="0" colorG="0" colorB="0" intensity="1000" coneAngle="90"/>
     </Light>
-    <Line oid="0" eid="0" type ="5" targetTransformOID="0" colorR="0" colorG="0" colorB="0">
+    <Line type ="5">
+      <default oid="0" eid="0" type ="5" targetTransformOID="0" colorR="0" colorG="0" colorB="0"/>
     </Line>
-    <Model oid="0" eid="0" type ="6" obj="" alpha="0" normal="0" lineWidth="0">
+    <Model type ="6">
+      <default oid="0" eid="0" type ="6" obj="" alpha="0" normal="0" lineWidth="0"/>
     </Model>
-    <Animation oid="0" eid="0" type ="7" obj="" alpha="0" normal="0" lineWidth="0" actionState ="0" actionSpeed="0" action="0" actionType="0">
+    <Animation type ="7">
+      <default oid="0" eid="0" type ="7" obj="" alpha="0" normal="0" lineWidth="0" actionState ="0" actionSpeed="0" action="0" actionType="0"/>
     </Animation>
-    <Billboard oid="0" eid="0" type ="8">
+    <Billboard type ="8">
+      <default oid="0" eid="0" type ="8"/>
     </Billboard>
-    <Cubemap oid="0" eid="0" type ="9">
+    <Cubemap type ="9">
+      <default oid="0" eid="0" type ="9"/>
     </Cubemap>
-    <Partical oid="0" eid="0" type ="10">
+    <Partical type ="10">
+      <default oid="0" eid="0" type ="10"/>
     </Partical>
-    <Material oid="0" eid="0" type ="11">
+    <Material type ="11">
+      <default oid="0" eid="0" type ="11"/>
     </Material>
-    <InputControl oid="0" eid="0" type ="12">
+    <InputControl type ="12">
+      <default oid="0" eid="0" type ="12"/>
     </InputControl>
-    <Axis oid="0" eid="0" type ="13">
+    <Axis type ="13">
+      <default oid="0" eid="0" type ="13"/>
     </Axis>
-    <Grid oid="0" eid="0" type ="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5">
+    <Grid type ="14">
+      <default oid="0" eid="0" type ="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5"/>
     </Grid>
-    <Render oid="0" eid="0" type ="15" targetCameraOID="0" width="0" height="0">
+    <Render type ="15">
+      <default oid="0" eid="0" type ="15" targetCameraOID="0" width="0" height="0"/>
     </Render>
   </components>
   

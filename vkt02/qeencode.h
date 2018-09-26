@@ -34,7 +34,7 @@ public:
 	~QeEncode() {}
 	int readBits(const unsigned char* stream, size_t *bitPointer, size_t readCount, bool bLeft=false, bool bNegative = false);
 	std::string trim(std::string s);
-	QeAssetXML* decodeXML(const char* buffer, int &index);
+	QeAssetXML* decodeXML(const char* buffer, int &index, QeAssetXML * parent = nullptr);
 	QeAssetJSON* decodeJSON(const char* buffer, int &index);
 	//QeAssetModel* decodeOBJ(char* buffer);
 	QeAssetModel* decodeGLTF(QeAssetJSON *json, bool bCubeMap = false);

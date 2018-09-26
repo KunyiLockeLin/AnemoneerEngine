@@ -133,8 +133,8 @@ bool QeVertex::operator==(const QeVertex& other) const {
 	return pos == other.pos && normal == other.normal && uv == other.uv && color == other.color;
 }
 
-void QeAsset::initialize() {
-	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.find(CONFIG);
+void QeAsset::removeXML( std::string path ) {
+	std::map<std::string, QeAssetXML*>::iterator it = astXMLs.find(path);
 
 	if (it != astXMLs.end()) {
 		delete it->second;
@@ -642,10 +642,100 @@ QeAssetXML* QeAsset::getXMLNode(QeAssetXML* source, const char* keys[], int leng
 	return source;
 }
 
-QeAssetXML* QeAsset::getXMLEditNode(const char* type, int eid, int type2) {
+QeAssetXML* QeAsset::copyXMLNode(QeAssetXML* source) {
 
-	if (!type || strlen(type) == 0) return nullptr;
-	QeAssetXML* node = getXMLNode( 2, CONFIG, type);
+	if (source == nullptr)	return nullptr;
+
+	QeAssetXML* node = new QeAssetXML();
+	copyXMLNode(source, node);
+	return node;
+}
+
+void QeAsset::copyXMLValue(QeAssetXML* from, QeAssetXML* to) {
+
+	if (from == nullptr || to == nullptr)	return;
+
+	to->~QeAssetXML();
+	to->key = from->key;
+	to->value = from->value;
+	to->eKeys.clear();
+	to->eKeys = from->eKeys;
+	to->eVaules.clear();
+	to->eVaules = from->eVaules;
+}
+
+void QeAsset::copyXMLNode(QeAssetXML* from, QeAssetXML* to) {
+
+	if (from == nullptr || to == nullptr)	return;
+
+	copyXMLValue(from, to);
+
+	for (int i = 0; i< from->nexts.size();++i) {
+		QeAssetXML* node = new QeAssetXML();
+		to->nexts.push_back(node);
+		copyXMLNode( from->nexts[i], node);
+	}
+}
+
+void QeAsset::addXMLNode(QeAssetXML* source, QeAssetXML* node) {
+	source->nexts.push_back(node);
+}
+
+void QeAsset::setXMLKey(QeAssetXML* source, const char* key) {
+	source->key = key;
+}
+
+void QeAsset::setXMLValue(QeAssetXML* source, const char* value) {
+	source->value = value;
+}
+
+void QeAsset::setXMLValue(QeAssetXML* source, const char* key, const char* value) {
+	for (int i = 0;i< source->eKeys.size();++i) {
+		if ( source->eKeys[i].compare(key) == 0 ) {
+			source->eVaules[i] = value;
+			return;
+		}
+	}
+	source->eKeys.push_back(key);
+	source->eVaules.push_back(value);
+}
+
+void QeAsset::removeXMLNode(QeAssetXML* source, QeAssetXML* node) {
+
+	for (int i = 0; i< source->nexts.size(); ++i) {
+		if (source->nexts[i] == node) {
+			source->nexts.erase( source->nexts.begin()+i );
+			delete node;
+			return;
+		}
+	}
+
+	for (int i = 0; i< source->nexts.size(); ++i) {
+		removeXMLNode(source->nexts[i], node);
+	}
+}
+void QeAsset::outputXML(QeAssetXML* source, const char* path) {}
+
+
+QeAssetXML* QeAsset::getXMLEditNode(QeComponentType _type, int eid) {
+
+	std::string s = "";
+	int type2 = 0;
+
+	switch(_type) {
+	case eScene:
+		s = "scenes";
+		break;
+	case eObject:
+		s = "objects";
+		break;
+	default:
+		s = "components";
+		type2 = _type;
+		break;
+	}
+
+	QeAssetXML* node = getXMLNode( 2, CONFIG, s.c_str());
 
 	if (node != nullptr && node->nexts.size() > 0) {
 
@@ -655,6 +745,7 @@ QeAssetXML* QeAsset::getXMLEditNode(const char* type, int eid, int type2) {
 				int _type = 0;
 				AST->getXMLiValue(&_type, node->nexts[index], 1, "type");
 				if (_type == type2) {
+					
 					b = true;
 					node = node->nexts[index];
 					break;
@@ -1216,7 +1307,7 @@ QeAssetParticleRule* QeAsset::getParticle(int _eid) {
 	std::map<int, QeAssetParticleRule*>::iterator it = astParticles.find(_eid);
 	if (it != astParticles.end())	return it->second;
 
-	QeAssetXML* node = getXMLEditNode("component", _eid, eComponent_partical);
+	QeAssetXML* node = getXMLEditNode(eComponent_partical, _eid);
 	QeAssetParticleRule* particle = ENCODE->decodeParticle(node);
 	astParticles[_eid] = particle;
 	return particle;

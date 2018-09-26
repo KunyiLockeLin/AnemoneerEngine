@@ -157,6 +157,7 @@ struct QeAssetXML {
 	std::vector<std::string> eKeys;
 	std::vector<std::string> eVaules;
 	std::vector<QeAssetXML*> nexts;
+	QeAssetXML* parent = nullptr;
 
 	~QeAssetXML();
 };
@@ -191,8 +192,6 @@ public:
 	QeAsset(QeGlobalKey& _key) {}
 	~QeAsset();
 
-	void initialize();
-
 	QeAssetJSON* getJSON(const char* _filePath);
 	const char*	 getJSONValue(int length, ...);
 	const char*	 getJSONValue(QeAssetJSON* source, int length, ...);
@@ -217,7 +216,18 @@ public:
 	QeAssetXML* getXMLNode(int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, int length, ...);
 	QeAssetXML* getXMLNode(QeAssetXML* source, const char* keys[], int length);
-	QeAssetXML* getXMLEditNode(const char* type, int eid, int type2 = 0);
+	QeAssetXML* copyXMLNode(QeAssetXML* source);
+	void copyXMLValue(QeAssetXML* from, QeAssetXML* to);
+	void copyXMLNode(QeAssetXML* from, QeAssetXML* to);
+	void addXMLNode(QeAssetXML* source, QeAssetXML* node);
+	void setXMLKey(QeAssetXML* source, const char* key);
+	void setXMLValue(QeAssetXML* source, const char* value);
+	void setXMLValue(QeAssetXML* source, const char* key, const char* value);
+	void removeXML(std::string path);
+	void removeXMLNode(QeAssetXML* source, QeAssetXML* node);
+	void outputXML(QeAssetXML* source, const char* path);
+
+	QeAssetXML* getXMLEditNode(QeComponentType _type, int eid);
 	bool getXMLbValue(bool* output, QeAssetXML* source, int length, ...);
 	bool getXMLiValue(int* output, QeAssetXML* source, int length, ...);
 	bool getXMLfValue(float* output, QeAssetXML* source, int length, ...);
