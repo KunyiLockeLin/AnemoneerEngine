@@ -224,7 +224,7 @@
     </MainCamera>
   </objects>
   
-  <components type ="0">
+  <components>
     <Transform type ="1">
       <default oid="0" eid="0" type ="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" rotateByCenterSpeedX="0" rotateByCenterSpeedY="0" targetAnimationOID="0" targetBoneName=""/>
     </Transform>
