@@ -714,7 +714,44 @@ void QeAsset::removeXMLNode(QeAssetXML* source, QeAssetXML* node) {
 		removeXMLNode(source->nexts[i], node);
 	}
 }
-void QeAsset::outputXML(QeAssetXML* source, const char* path) {}
+
+void QeAsset::outputXML(QeAssetXML* source, const char* path, std::string * content) {
+
+	std::string s;
+
+	if (!content) {
+		content = &s;
+	}
+
+	*content += "<";
+	*content += source->key;
+
+	for (int i = 0; i<source->eKeys.size(); ++i) {
+		*content += " ";
+		*content += source->eKeys[i];
+		*content += "=\"";
+		*content += source->eVaules[i];
+		*content += "\"";
+	}
+
+	*content += ">\n";
+
+	for (int i = 0;i<source->nexts.size(); ++i) {
+		outputXML(source->nexts[i], nullptr, content);
+	}
+
+	*content += "</";
+	*content += source->key;
+	*content += ">\n";
+
+	if (path) {
+		std::ofstream ofile;
+		ofile.open(path);
+
+		ofile << s << std::endl;
+		ofile.close();
+	}
+}
 
 
 QeAssetXML* QeAsset::getXMLEditNode(QeComponentType _type, int eid) {

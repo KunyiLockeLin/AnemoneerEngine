@@ -76,6 +76,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				break;
 			case eUIType_btnSaveAll:
 				AST->outputXML(AST->getXMLNode(1, AST->CONFIG), AST->CONFIG);
+				QE->initialize();
 				updateTab();
 				break;
 			case eUIType_btnLoadScene:

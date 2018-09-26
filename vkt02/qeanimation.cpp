@@ -13,7 +13,7 @@ void QeAnimation::initialize(QeAssetXML* _property, QeObject* _owner) {
 	graphicsShader.tese = nullptr;
 	graphicsShader.vert = nullptr;
 	graphicsShader.frag = nullptr;
-	AST->setGraphicsShader(graphicsShader, initProperty, "action");
+	AST->setGraphicsShader(graphicsShader, initProperty, "animation");
 	currentActionFrame=0;
 	currentActionTime=0;
 }

@@ -157,8 +157,8 @@ public:
 	const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 	bool bInit = false;
-	VkBool32 bShowMesh = false;
-	VkBool32 bShowNormal = false;
+	bool bShowMesh = false;
+	bool bShowNormal = false;
 
 	std::vector<float> pushConstants;
 
