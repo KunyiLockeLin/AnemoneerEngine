@@ -138,7 +138,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, 0);
 						QeAssetXML * newNode = AST->copyXMLNode(node);
-
+						newNode->key = "new";
 						if (currentTreeViewNodes[currentTreeViewNodeIndex] != node->parent ) {
 							AST->addXMLNode(currentTreeViewNodes[currentTreeViewNodeIndex]->parent, newNode);
 						}
@@ -157,6 +157,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						}
 						if (node) {
 							QeAssetXML * newNode = AST->copyXMLNode(node);
+							newNode->key = "new";
 							AST->addXMLNode(currentTreeViewNodes[currentTreeViewNodeIndex], newNode);
 							updateTab();
 						}
@@ -170,6 +171,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					if (_type != 0) {
 						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, 0);
 						QeAssetXML * newNode = AST->copyXMLNode(node);
+						newNode->key = "new";
 						AST->addXMLNode(node1, newNode);
 						updateTab();
 					}

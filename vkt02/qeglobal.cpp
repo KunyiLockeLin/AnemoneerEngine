@@ -82,10 +82,6 @@ QeGlobal::~QeGlobal() {
 		delete encode;
 		encode = nullptr;
 	}
-	if (graphics != nullptr) {
-		delete graphics;
-		graphics = nullptr;
-	}
 	if (asset != nullptr) {
 		delete asset;
 		asset = nullptr;
@@ -101,6 +97,10 @@ QeGlobal::~QeGlobal() {
 	if (command != nullptr) {
 		delete command;
 		command = nullptr;
+	}
+	if (graphics != nullptr) {
+		delete graphics;
+		graphics = nullptr;
 	}
 	if (vulkan != nullptr) {
 		delete vulkan;

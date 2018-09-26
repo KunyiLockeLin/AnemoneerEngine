@@ -43,7 +43,7 @@ QeObjectManger::~QeObjectManger() {
 	while (it2 != unActiveObjects.end()) {
 		(*it2)->clear();
 		delete *it2;
-		++it1;
+		++it2;
 	}
 	unActiveObjects.clear();
 }
