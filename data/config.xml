@@ -507,8 +507,6 @@
 		<models>
 			<e eid="14001" obj="sphere.gltf" alpha="0">
 			</e>
-			<e eid="14003" obj="box.gltf" tesc="basetc.spv" tese="basete.spv" alpha="0">
-			</e>
 			<e eid="14004" obj="plane" alpha="0" frag="basevf.spv">
 			</e>
 			<e eid="14006" obj="cube" cubemapImage="cubemap1.png" alpha="0" frag="cubemapreflectf.spv">

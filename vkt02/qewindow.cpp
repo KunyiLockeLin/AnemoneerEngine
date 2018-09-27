@@ -461,7 +461,7 @@ void QeWindow::openEditWindow() {
 	int width; int height;
 	getWindowSize(editWindow, width, height);
 
-	HFONT hFont = CreateFont(20, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
+	HFONT hFont = CreateFont(24, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 	
 	tabControlCategory = CreateWindow(WC_TABCONTROL, L"", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
 		0, 0, width, height, editWindow, NULL, windowInstance, NULL);
@@ -483,22 +483,23 @@ void QeWindow::openEditWindow() {
 		0, 35, width/2-200, height-360, tabControlCategory, NULL, windowInstance, NULL);
 	SendMessage(treeViewList, WM_SETFONT, WPARAM(hFont), TRUE);
 
-	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
+	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL 
+		| LVS_REPORT | LVS_NOCOLUMNHEADER| LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
 		width/2- 195, 35, width/2+90, height-360, tabControlCategory, NULL, windowInstance, NULL);
 	SendMessage(listViewDetail, WM_SETFONT, WPARAM(hFont), TRUE);
 
 	LVCOLUMN lvc;
-	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+	lvc.mask = LVCF_WIDTH | LVCF_SUBITEM;
 	lvc.cx = 200;
 	lvc.iSubItem = 0;
-	lvc.pszText = _T("Property");
+	//lvc.pszText = _T("Property");
 	ListView_InsertColumn(listViewDetail, 0, &lvc);
 
 	lvc.cx = 400;
 	lvc.iSubItem = 1;
-	lvc.pszText = _T("Value");
+	//lvc.pszText = _T("Value");
 	ListView_InsertColumn(listViewDetail, 1, &lvc);
-
+	
 	listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		0, 450, width-105, 315, editWindow, NULL, windowInstance, NULL);
 
@@ -589,7 +590,7 @@ void QeWindow::updateListView() {
 		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 		ListView_InsertItem(listViewDetail, &lvi);
 	}
-
+	
 	lvi.iItem = 0;
 	lvi.iSubItem = 1;
 	ws = chartowchar(currentTreeViewNodes[currentTreeViewNodeIndex]->key);
