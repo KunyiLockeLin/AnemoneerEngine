@@ -33,6 +33,7 @@ public:
 	int oid, eid;
 	QeAssetXML* initProperty = nullptr;
 	QeObject* owner = nullptr;
+	std::string name;
 
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
 	virtual void clear() {}

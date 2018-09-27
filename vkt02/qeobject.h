@@ -13,6 +13,7 @@ public:
 	QeObject* parent = nullptr;
 	QeAssetXML* initProperty;
 	std::string name;
+
 	QeTransform* transform;
 
 	std::vector<QeComponent*> components;
