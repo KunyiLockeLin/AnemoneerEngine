@@ -53,7 +53,7 @@
 <components>
 <Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 </Transform>
-<Camera oid="101" eid="1" type="2" main="1" lookAtComponentOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+<Camera oid="101" eid="1" type="2" main="1" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 </Camera>
 </components>
 <children>
@@ -113,7 +113,7 @@
 <components>
 <Transform oid="30" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 </Transform>
-<Camera oid="31" eid="1" type="2" main="1" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+<Camera oid="31" eid="1" type="2" main="1" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 </Camera>
 </components>
 <children>
@@ -209,7 +209,7 @@
 <components>
 <Transform oid="110" eid="1" type="1" localPositionX="0.1" localPositionY="0" localPositionZ="20" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 </Transform>
-<Camera oid="111" eid="1" type="2" main="0" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+<Camera oid="111" eid="1" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 </Camera>
 </components>
 <children>
@@ -272,7 +272,7 @@
 <components>
 <Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 </Transform>
-<Camera oid="101" eid="1" type="2" main="1" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+<Camera oid="101" eid="1" type="2" main="1" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 </Camera>
 </components>
 <children>
@@ -410,8 +410,8 @@
 <Transform oid="401" eid="1" type="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 </Transform>
 </Transform>
-<Camera oid="0" eid="0" type="2" main="0" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
-<default oid="0" eid="0" type="2" main="0" lookAtComponentOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+<Camera oid="0" eid="0" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+<default oid="0" eid="0" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 </default>
 </Camera>
 <Postprocessing oid="0" eid="0" type="3">
