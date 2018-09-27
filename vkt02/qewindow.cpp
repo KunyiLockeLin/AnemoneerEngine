@@ -461,6 +461,8 @@ void QeWindow::openEditWindow() {
 	int width; int height;
 	getWindowSize(editWindow, width, height);
 
+	HFONT hFont = CreateFont(20, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
+	
 	tabControlCategory = CreateWindow(WC_TABCONTROL, L"", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
 		0, 0, width, height, editWindow, NULL, windowInstance, NULL);
 
@@ -479,9 +481,11 @@ void QeWindow::openEditWindow() {
 
 	treeViewList = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 		0, 35, width/2-200, height-360, tabControlCategory, NULL, windowInstance, NULL);
+	SendMessage(treeViewList, WM_SETFONT, WPARAM(hFont), TRUE);
 
 	listViewDetail = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
 		width/2- 195, 35, width/2+90, height-360, tabControlCategory, NULL, windowInstance, NULL);
+	SendMessage(listViewDetail, WM_SETFONT, WPARAM(hFont), TRUE);
 
 	LVCOLUMN lvc;
 	lvc.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
