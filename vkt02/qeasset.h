@@ -225,7 +225,7 @@ public:
 	void setXMLValue(QeAssetXML* source, const char* key, const char* value);
 	void removeXML(std::string path);
 	void removeXMLNode(QeAssetXML* source, QeAssetXML* node);
-	void outputXML(QeAssetXML* source, const char* path, std::string * content=nullptr);
+	void outputXML(QeAssetXML* source, const char* path, int level=0, std::string * content=nullptr);
 
 	QeAssetXML* getXMLEditNode(QeComponentType _type, int eid);
 	bool getXMLbValue(bool* output, QeAssetXML* source, int length, ...);

@@ -722,12 +722,16 @@ void QeAsset::removeXMLNode(QeAssetXML* source, QeAssetXML* node) {
 	}
 }
 
-void QeAsset::outputXML(QeAssetXML* source, const char* path, std::string * content) {
+void QeAsset::outputXML(QeAssetXML* source, const char* path, int level, std::string * content) {
 
 	std::string s;
 
 	if (!content) {
 		content = &s;
+	}
+
+	for (int i = 0; i<level; ++i) {
+		*content += "\t";
 	}
 
 	*content += "<";
@@ -744,7 +748,11 @@ void QeAsset::outputXML(QeAssetXML* source, const char* path, std::string * cont
 	*content += ">\n";
 
 	for (int i = 0;i<source->nexts.size(); ++i) {
-		outputXML(source->nexts[i], nullptr, content);
+		outputXML(source->nexts[i], nullptr, level+1, content);
+	}
+
+	for (int i = 0; i<level; ++i) {
+		*content += "\t";
 	}
 
 	*content += "</";
