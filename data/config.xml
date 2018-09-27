@@ -407,8 +407,6 @@
 <Transform oid="0" eid="0" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="0" localScaleY="0" localScaleZ="0" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 <default oid="0" eid="0" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="0" localScaleY="0" localScaleZ="0" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 </default>
-<Transform oid="401" eid="1" type="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-</Transform>
 </Transform>
 <Camera oid="0" eid="0" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 <default oid="0" eid="0" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
@@ -484,68 +482,6 @@
 </Render>
 </components>
 <old>
-<scenes>
-<e eid="28000" cameraOID="26000">
-<postprocessing frag="bloomf.spv" p0="2" p1="0.003" p2="1.0">
-</postprocessing>
-<renders>
-<e oid="15000" show="1" posX="0" posY="1" posZ="4" scaleX="5" scaleY="5" scaleZ="5" cameraOID="26100" width="800" height="450">
-</e>
-</renders>
-<cameras>
-<e oid="26000" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="1000">
-</e>
-<e oid="26100" posX="15" posY="0" posZ="1" centerX="0" centerY="0" centerZ="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" culling="1000">
-</e>
-</cameras>
-</e>
-<e eid="28001">
-<ambientColor r="0.0" g="0.5" b="0.5">
-</ambientColor>
-<cubemaps>
-<e oid="12000" eid="12000" show="1" scaleX="20" scaleY="20" scaleZ="20">
-</e>
-</cubemaps>
-<models>
-<e oid="14000" eid="14000" show="1" speed="50" posX="0" posY="5" posZ="-1" actionState="1" actionSpeed="1" action="0" actionType="2">
-<attachs>
-<e oid="14001" eid="14001" show="1" speed="100" scaleX="2" scaleY="2" scaleZ="2" followPos="1" followColor="0" attachskeleton="Armature_Bone_002">
-</e>
-</attachs>
-</e>
-<e oid="14002" eid="14006" show="1" speed="0" posX="0" posY="-5" posZ="0" scaleX="2" scaleY="2" scaleZ="2" culling="1000">
-</e>
-</models>
-</e>
-<e eid="28002">
-<models>
-<e oid="14000" eid="14000" show="1" speed="0" posX="0" posY="-8" posZ="-3" actionState="1" actionSpeed="0.1" action="0" actionType="2">
-<attachs>
-<e oid="13000" eid="13000" show="1" followPos="1" followColor="0" attachskeleton="Armature_Bone_002">
-</e>
-</attachs>
-</e>
-</models>
-<points>
-<e oid="25000" posX="0" posY="6" posZ="0">
-<attachs>
-<e oid="13001" eid="13000" show="1" followPos="1" followColor="0">
-</e>
-</attachs>
-</e>
-</points>
-<lights>
-<e oid="27000" type="0" posX="0" posY="2" posZ="5" centerX="-3" centerY="0" centerZ="3" axisX="1" axisY="0" axisZ="0" dirX="1" dirY="1" dirZ="1" r="1" g="0" b="0" intensity="200" coneAngle="90" speed="100">
-<attachs>
-<e oid="11000" eid="11000" show="1" followPos="1" followColor="1">
-</e>
-<e oid="13002" eid="13001" show="1" followPos="0" followColor="0">
-</e>
-</attachs>
-</e>
-</lights>
-</e>
-</scenes>
 <materials>
 <e eid="15000" baseColorR="0" baseColorG="0" baseColorB="0" metallic="1" roughness="0" emissive="1">
 </e>
@@ -569,65 +505,15 @@
 </e>
 </materials>
 <models>
-<e eid="14000" obj="animation.gltf" alpha="0">
-</e>
 <e eid="14001" obj="sphere.gltf" alpha="0">
-</e>
-<e eid="14002" obj="box.gltf" alpha="0">
 </e>
 <e eid="14003" obj="box.gltf" tesc="basetc.spv" tese="basete.spv" alpha="0">
 </e>
 <e eid="14004" obj="plane" alpha="0" frag="basevf.spv">
 </e>
-<e eid="14005" obj="cube" alpha="0" frag="basevf.spv">
-</e>
 <e eid="14006" obj="cube" cubemapImage="cubemap1.png" alpha="0" frag="cubemapreflectf.spv">
 </e>
-<e eid="14007" obj="cube" image="wood.jpg" alpha="0" frag="texturevf.spv">
-</e>
 </models>
-<billboards>
-<e eid="11000" image="light.png" alpha="1">
-</e>
-</billboards>
-<cubemaps>
-<e eid="12000" image="cubemap1.png" alpha="0">
-</e>
-</cubemaps>
-<particles>
-<e eid="13000" image="light.png" alpha="1" reborn="1">
-<count once="5" period="10" total="100" range="0">
-</count>
-<life second="1" range="3">
-</life>
-<init_pos length="1" length_range="0" width="1" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0">
-</init_pos>
-<init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.3" z_range="0.5">
-</init_speed>
-<force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5">
-</force>
-<size x="0.2" x_range="0" y="0.2" y_range="0">
-</size>
-<color r="0" r_range="1" g="0" g_range="0" b="0" b_range="0">
-</color>
-</e>
-<e eid="13001" image="light.png" alpha="1" reborn="1">
-<count once="5" period="10" total="100" range="0">
-</count>
-<life second="1" range="3">
-</life>
-<init_pos length="0" length_range="0" width="0" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0">
-</init_pos>
-<init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.3" z_range="0.5">
-</init_speed>
-<force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5">
-</force>
-<size x="0.2" x_range="0" y="0.2" y_range="0">
-</size>
-<color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1">
-</color>
-</e>
-</particles>
 </old>
 </confing>
 
