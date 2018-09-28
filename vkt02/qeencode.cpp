@@ -244,7 +244,7 @@ QeAssetXML* QeEncode::decodeXML(const char* buffer, int &index, QeAssetXML * par
 			else if (currentKey == lastKey) {
 				std::string s(buffer + lastIndex, currentIndex - lastIndex);
 				s = trim(s);
-				node->eVaules.push_back(s);
+				node->eValues.push_back(s);
 			}
 		}
 		lastKey = currentKey;

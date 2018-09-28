@@ -101,6 +101,7 @@ struct QeAssetImage {
 	QeVKImage* pBaseColorMap = nullptr;
 	QeVKImage* pCubeMap = nullptr;
 	QeVKImage* pNormalMap = nullptr;
+	QeVKImage* pEnvironmentMap = nullptr;
 };
 
 struct QeAssetGraphicsShader {
@@ -155,7 +156,7 @@ struct QeAssetXML {
 	std::string key;
 	std::string value;
 	std::vector<std::string> eKeys;
-	std::vector<std::string> eVaules;
+	std::vector<std::string> eValues;
 	std::vector<QeAssetXML*> nexts;
 	QeAssetXML* parent = nullptr;
 

@@ -445,15 +445,15 @@
 			</default>
 		</Line>
 		<Model type="6">
-			<default oid="0" eid="0" type="6" obj="" alpha="0" lineWidth="0">
+			<default oid="0" eid="0" type="6" obj="" lineWidth="0" materialOID="">
 			</default>
 		</Model>
 		<Animation type="7">
-			<default oid="0" eid="0" type="7" obj="" alpha="0" lineWidth="0" actionState="0" actionSpeed="0" actionID="0" actionType="0">
+			<default oid="0" eid="0" type="7" obj="" lineWidth="0" actionState="0" actionSpeed="0" actionID="0" actionType="0" materialOID="">
 			</default>
 		</Animation>
 		<Billboard type="8">
-			<default oid="0" eid="0" type="8" alpha="0" image="" emissive="1">
+			<default oid="0" eid="0" type="8" materialOID="">
 			</default>
 		</Billboard>
 		<Cubemap type="9">
@@ -479,7 +479,7 @@
 			</default>
 		</Partical>
 		<Material type="11">
-			<default oid="0" eid="0" type="11">
+			<default oid="0" eid="0" type="11" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" normalMap="" environmentMap="" >
 			</default>
 		</Material>
 		<InputControl type="12">

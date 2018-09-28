@@ -569,7 +569,7 @@ const char* QeAsset::getXMLValue(QeAssetXML* source, const char* keys[], int len
 			int size = int(source->eKeys.size());
 			for (int index1 = 0; index1 < size; ++index1)
 				if (strcmp(keys[index], source->eKeys[index1].c_str()) == 0) {
-					return source->eVaules[index1].c_str();
+					return source->eValues[index1].c_str();
 				}
 		}
 
@@ -659,8 +659,8 @@ void QeAsset::copyXMLValue(QeAssetXML* from, QeAssetXML* to) {
 	to->value = from->value;
 	to->eKeys.clear();
 	to->eKeys = from->eKeys;
-	to->eVaules.clear();
-	to->eVaules = from->eVaules;
+	to->eValues.clear();
+	to->eValues = from->eValues;
 }
 
 void QeAsset::copyXMLNode(QeAssetXML* from, QeAssetXML* to) {
@@ -699,12 +699,12 @@ void QeAsset::setXMLValue(QeAssetXML* source, const char* value) {
 void QeAsset::setXMLValue(QeAssetXML* source, const char* key, const char* value) {
 	for (int i = 0;i< source->eKeys.size();++i) {
 		if ( source->eKeys[i].compare(key) == 0 ) {
-			source->eVaules[i] = value;
+			source->eValues[i] = value;
 			return;
 		}
 	}
 	source->eKeys.push_back(key);
-	source->eVaules.push_back(value);
+	source->eValues.push_back(value);
 }
 
 void QeAsset::removeXMLNode(QeAssetXML* source, QeAssetXML* node) {
@@ -741,7 +741,7 @@ void QeAsset::outputXML(QeAssetXML* source, const char* path, int level, std::st
 		*content += " ";
 		*content += source->eKeys[i];
 		*content += "=\"";
-		*content += source->eVaules[i];
+		*content += source->eValues[i];
 		*content += "\"";
 	}
 

@@ -170,6 +170,7 @@
     <ClCompile Include="qeinputcontrol.cpp" />
     <ClCompile Include="qelight.cpp" />
     <ClCompile Include="qeline.cpp" />
+    <ClCompile Include="qematerial.cpp" />
     <ClCompile Include="qemodel.cpp" />
     <ClCompile Include="qeparticle.cpp" />
     <ClCompile Include="qerender.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="qeinputcontrol.h" />
     <ClInclude Include="qelight.h" />
     <ClInclude Include="qeline.h" />
+    <ClInclude Include="qematerial.h" />
     <ClInclude Include="qemodel.h" />
     <ClInclude Include="qeparticle.h" />
     <ClInclude Include="qerender.h" />

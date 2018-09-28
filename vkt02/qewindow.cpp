@@ -249,7 +249,7 @@ void QeWindow::adjustComponetData(QeAssetXML * node) {
 				}
 				if (!b) {
 					node->eKeys.erase(node->eKeys.begin() + i);
-					node->eVaules.erase(node->eVaules.begin() + i);
+					node->eValues.erase(node->eValues.begin() + i);
 					--i;
 				}
 			}
@@ -264,7 +264,7 @@ void QeWindow::adjustComponetData(QeAssetXML * node) {
 				}
 				if (!b) {
 					node->eKeys.insert(node->eKeys.begin() + i, source->eKeys[i]);
-					node->eVaules.insert(node->eVaules.begin() + i, source->eVaules[i]);
+					node->eValues.insert(node->eValues.begin() + i, source->eValues[i]);
 				}
 			}
 		}
@@ -495,7 +495,7 @@ void QeWindow::openEditWindow() {
 	//lvc.pszText = _T("Property");
 	ListView_InsertColumn(listViewDetail, 0, &lvc);
 
-	lvc.cx = 400;
+	lvc.cx = 395;
 	lvc.iSubItem = 1;
 	//lvc.pszText = _T("Value");
 	ListView_InsertColumn(listViewDetail, 1, &lvc);
@@ -600,7 +600,7 @@ void QeWindow::updateListView() {
 	for (int i = 0; i< currentTreeViewNodes[currentTreeViewNodeIndex]->eKeys.size(); ++i) {
 
 		lvi.iItem = i + 1;
-		ws = chartowchar(currentTreeViewNodes[currentTreeViewNodeIndex]->eVaules[i]);
+		ws = chartowchar(currentTreeViewNodes[currentTreeViewNodeIndex]->eValues[i]);
 		lvi.pszText = const_cast<LPWSTR>(ws.c_str());
 		ListView_SetItem(listViewDetail, &lvi);
 	}

@@ -139,6 +139,7 @@ class QeGrid;
 #include "qeanimation.h"
 #include "qecubemap.h"
 #include "qeparticle.h"
+#include "qematerial.h"
 #include "qelight.h"
 #include "qeaxis.h"
 #include "qegrid.h"
