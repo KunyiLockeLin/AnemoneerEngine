@@ -4,6 +4,7 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	QeComponent::initialize(_property, _owner);
 
+	bRotate = false;
 	particleRule = ENCODE->decodeParticle(initProperty);
 	materialData = AST->getMaterialImage(particleRule->image);
 

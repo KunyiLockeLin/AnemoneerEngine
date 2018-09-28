@@ -10,7 +10,6 @@ public:
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
 
 	bool bAlpha;
-	QeDataMaterial materialData;
-	QeAssetImage imageData;
+	QeAssetMaterial materialData;
 	QeAssetGraphicsShader shaderData;
 };

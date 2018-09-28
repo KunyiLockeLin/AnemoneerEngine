@@ -19,8 +19,11 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
 	AST->setGraphicsShader(outlineShader, nullptr, "outline");
 
-	if (graphicsPipeline.bAlpha)	GRAP->alphaModels.push_back(this);
-	else							GRAP->models.push_back(this);
+	AST->getXMLiValue(&materialOID, initProperty, 1, "materialOID");
+
+	bUpdateMaterialOID = false;
+	graphicsPipeline.bAlpha = false;
+	GRAP->models.push_back(this);
 }
 
 void QeModel::clear() {
@@ -30,10 +33,32 @@ void QeModel::clear() {
 
 void QeModel::update1() {
 
-	bool bRotate = true;
-	if (componentType == eComponent_billboard || componentType == eComponent_partical) bRotate = false;
+	if (materialOID && !bUpdateMaterialOID) {
+
+		QeMaterial * material = (QeMaterial*)OBJMGR->findComponent( eComponent_material, bUpdateMaterialOID);
+		if (material) {
+			bUpdateMaterialOID = true;
+
+			if (graphicsPipeline.bAlpha != material->bAlpha) {
+				graphicsPipeline.bAlpha = material->bAlpha;
+				if (graphicsPipeline.bAlpha) {
+					eraseElementFromVector<QeModel*>(GRAP->models, this);
+					GRAP->alphaModels.push_back(this);
+				}
+				else {
+					eraseElementFromVector<QeModel*>(GRAP->alphaModels, this);
+					GRAP->models.push_back(this);
+				}
+			}
+			materialData = &material->materialData;
+			graphicsShader = material->shaderData;
+			bufferData.material = materialData->value;
+			VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+		}
+	}
 
 	bufferData.model = owner->transform->worldTransformMatrix(bRotate);
+
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }
 void QeModel::update2() {}
@@ -58,6 +83,10 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	if (materialData->image.pNormalMap) {
 		descriptorSetData.normalMapImageView = materialData->image.pNormalMap->view;
 		descriptorSetData.normalMapSampler = materialData->image.pNormalMap->sampler;
+	}
+	if (materialData->image.pEnvironmentMap) {
+		descriptorSetData.environmentMapImageView = materialData->image.pEnvironmentMap->view;
+		descriptorSetData.environmentMapSampler = materialData->image.pEnvironmentMap->sampler;
 	}
 	bufferData.param.x = 0;
 	return descriptorSetData;

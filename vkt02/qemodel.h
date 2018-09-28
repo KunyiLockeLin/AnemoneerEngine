@@ -52,6 +52,9 @@ public:
 
 	QeDataModel bufferData;
 	QeVKBuffer modelBuffer;
+	int materialOID;
+	bool bUpdateMaterialOID;
+	bool bRotate=true;
 
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 	virtual void createPipeline();

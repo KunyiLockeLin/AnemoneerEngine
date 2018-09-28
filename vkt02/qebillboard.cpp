@@ -17,6 +17,7 @@ void QeBillboard::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	if (graphicsPipeline.bAlpha)	GRAP->alphaModels.push_back(this);
 	else							GRAP->models.push_back(this);
+	bRotate = false;
 }
 
 QeDataDescriptorSetModel QeBillboard::createDescriptorSetModel() {

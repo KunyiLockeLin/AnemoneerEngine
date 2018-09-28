@@ -156,7 +156,7 @@ QeComponent* QeObjectManger::spwanComponent(QeAssetXML* _property, QeObject* _ow
 			_component = new QeParticle(key);
 			break;
 		case eComponent_material:
-			//_component = new QeMaterial();
+			_component = new QeMaterial(key);
 			break;
 		case eComponent_inputControl:
 			_component = new QeInputControl(key);
