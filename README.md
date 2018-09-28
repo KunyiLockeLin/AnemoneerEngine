@@ -56,6 +56,9 @@
   - https://github.com/petershirley/raytracinginoneweekend
   - https://www.youtube.com/watch?v=Q1cuuepVNoY
   
+# Bug
+  - release mode crash
+  
 # Others:
   - text render, UI 
   - bounding box & sphere, ray, collision
@@ -67,7 +70,6 @@
   - convert the whole assets into a single binary data
   - release memory
   - check return
----
   - combine socket https://github.com/KunyiLockeLin/WebSocket_server
   - frustum Culling
   - Dynamic Decals
@@ -80,11 +82,6 @@
   - combine browser
   - live stream
   - machine learning for performance
-  
-# Bug
-  - release mode crash
-  
-# Reference:
   - https://vulkan-tutorial.com/
   - https://github.com/PacktPublishing/Vulkan-Cookbook
   - https://github.com/SaschaWillems/Vulkan
