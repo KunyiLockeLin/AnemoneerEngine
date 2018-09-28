@@ -45,14 +45,18 @@
   - lots of setting.......
 
 # ToDoList:
-  - study 
-    - https://github.com/SaschaWillems/Vulkan
-    - https://github.com/PacktPublishing/Vulkan-Cookbook
-    - https://learnopengl.com/
-    - https://learnopengl-cn.github.io/
-    - https://blog.selfshadow.com/
-  - PBR, Shadow, self-shahow   
----
+  - Main research: PBR, Ray-tracing
+  - My document https://docs.google.com/document/d/13Te0_iYdNy72z3EWb3UL-RaknsEJLg8ksMGtTZ2ig2g/edit?usp=sharing
+  - https://github.com/SaschaWillems/Vulkan
+  - https://github.com/PacktPublishing/Vulkan-Cookbook
+  - https://learnopengl.com/
+  - https://learnopengl-cn.github.io/
+  - https://blog.selfshadow.com/
+  - https://www.scratchapixel.com/
+  - https://github.com/petershirley/raytracinginoneweekend
+  - https://www.youtube.com/watch?v=Q1cuuepVNoY
+  
+# Others:
   - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
