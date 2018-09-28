@@ -101,7 +101,6 @@ struct QeAssetImage {
 	QeVKImage* pBaseColorMap = nullptr;
 	QeVKImage* pCubeMap = nullptr;
 	QeVKImage* pNormalMap = nullptr;
-	QeVKImage* pEnvironmentMap = nullptr;
 };
 
 struct QeAssetGraphicsShader {

@@ -14,20 +14,9 @@ void QeMaterial::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLfValue(&materialData.value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
 
 	const char * c = AST->getXMLValue(initProperty, 1, "baseMap");
-	if (c && strlen(c) ) materialData.image.pBaseColorMap = AST->getImage(c, false);
+	if (c && strlen(c) ) materialData.image.pBaseColorMap = AST->getImage(c, false);;
+	c = AST->getXMLValue(initProperty, 1, "cubeMap");
+	if (c && strlen(c)) materialData.image.pCubeMap = AST->getImage(c, false);
 	c = AST->getXMLValue(initProperty, 1, "normalMap");
 	if (c && strlen(c)) materialData.image.pNormalMap = AST->getImage(c, false);
-	c = AST->getXMLValue(initProperty, 1, "environmentMap");
-	if (c && strlen(c)) materialData.image.pEnvironmentMap = AST->getImage(c, false);
-
-	c = AST->getXMLValue(initProperty, 1, "vert");
-	if (c && strlen(c)) shaderData.vert = AST->getShader(c);
-	c = AST->getXMLValue(initProperty, 1, "tesc");
-	if (c && strlen(c)) shaderData.tesc = AST->getShader(c);
-	c = AST->getXMLValue(initProperty, 1, "tese");
-	if (c && strlen(c)) shaderData.tese = AST->getShader(c);
-	c = AST->getXMLValue(initProperty, 1, "geom");
-	if (c && strlen(c)) shaderData.geom = AST->getShader(c);
-	c = AST->getXMLValue(initProperty, 1, "frag");
-	if (c && strlen(c)) shaderData.frag = AST->getShader(c);
 }

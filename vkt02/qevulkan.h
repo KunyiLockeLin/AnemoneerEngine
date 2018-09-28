@@ -108,9 +108,6 @@ struct QeDataDescriptorSetModel {
 	VkImageView normalMapImageView = VK_NULL_HANDLE;
 	VkSampler	normalMapSampler = VK_NULL_HANDLE;
 
-	VkImageView environmentMapImageView = VK_NULL_HANDLE;
-	VkSampler	environmentMapSampler = VK_NULL_HANDLE;
-
 	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
 	VkBufferView texelBufferView = VK_NULL_HANDLE;
 
@@ -184,7 +181,7 @@ public:
 	VkQueue computeQueue;
 
 	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas = {
-		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 4 },
+		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 3 },
 			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 }},
 
 			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },

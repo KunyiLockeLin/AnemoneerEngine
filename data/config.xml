@@ -479,7 +479,7 @@
 			</default>
 		</Partical>
 		<Material type="11">
-			<default oid="0" eid="0" type="11" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" normalMap="" environmentMap="" >
+			<default oid="0" eid="0" type="11" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" cubeMap="" normalMap="">
 			</default>
 		</Material>
 		<InputControl type="12">

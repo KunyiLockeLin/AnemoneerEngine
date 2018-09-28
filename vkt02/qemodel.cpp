@@ -15,7 +15,7 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	materialData = modelData->pMaterial;
 	if(materialData) bufferData.material = materialData->value;
 
-	AST->setGraphicsShader(graphicsShader, initProperty, "model");
+	AST->setGraphicsShader(graphicsShader, nullptr, "model");
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
 	AST->setGraphicsShader(outlineShader, nullptr, "outline");
 
@@ -51,7 +51,7 @@ void QeModel::update1() {
 				}
 			}
 			materialData = &material->materialData;
-			graphicsShader = material->shaderData;
+			AST->setGraphicsShader(graphicsShader, material->initProperty, "model");
 			bufferData.material = materialData->value;
 			VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 		}
@@ -76,19 +76,22 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
+	bufferData.param = { 0,0,0,0 };
 	if (materialData->image.pBaseColorMap) {
 		descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
 		descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
+		bufferData.param.x = 1;
 	}
 	if (materialData->image.pNormalMap) {
 		descriptorSetData.normalMapImageView = materialData->image.pNormalMap->view;
 		descriptorSetData.normalMapSampler = materialData->image.pNormalMap->sampler;
+		bufferData.param.y = 1;
 	}
-	if (materialData->image.pEnvironmentMap) {
-		descriptorSetData.environmentMapImageView = materialData->image.pEnvironmentMap->view;
-		descriptorSetData.environmentMapSampler = materialData->image.pEnvironmentMap->sampler;
+	if (materialData->image.pCubeMap) {
+		descriptorSetData.cubeMapImageView = materialData->image.pCubeMap->view;
+		descriptorSetData.cubeMapSampler = materialData->image.pCubeMap->sampler;
+		bufferData.param.z = 1;
 	}
-	bufferData.param.x = 0;
 	return descriptorSetData;
 }
 
