@@ -58,7 +58,8 @@ QeDataRender::~QeDataRender() {
 void QeGraphics::initialize() {
 
 	lights.clear();
-
+	models.clear();
+	alphaModels.clear();
 	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
 	AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
 	AST->getXMLbValue(&VK->bShowMesh, node, 1, "normal");
