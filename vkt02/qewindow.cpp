@@ -119,7 +119,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					if (_type != 0) {
 						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, _eid);
 						if (node) AST->copyXMLNode(node, currentTreeViewNodes[currentTreeViewNodeIndex]);
-						updateListView();
+						updateTab();
 					}
 				}
 				break;
