@@ -72,7 +72,6 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				break;
 			case eUIType_btnUpdateAll:
 				QE->initialize();
-				updateTab();
 				break;
 			case eUIType_btnLoadAll:
 				AST->removeXML(AST->CONFIG);
@@ -84,7 +83,6 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				adjustComponetData(node);
 				AST->outputXML(node, AST->CONFIG);
 				QE->initialize();
-				updateTab();
 				break;
 			case eUIType_btnLoadScene:
 				if (currentTreeViewNodeIndex!= INDEX_NONE) {
@@ -104,13 +102,12 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					AST->getXMLiValue(&_eid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "eid");
 					if (_type != 0 && _eid != 0) {
 						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, _eid);
-						if (node) AST->copyXMLValue(currentTreeViewNodes[currentTreeViewNodeIndex], node);
+						if (node) AST->copyXMLNode(currentTreeViewNodes[currentTreeViewNodeIndex], node);
 						else {
 							QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, 0);
 							QeAssetXML * newNode = AST->copyXMLNode(currentTreeViewNodes[currentTreeViewNodeIndex]);
 							AST->addXMLNode(node->parent, newNode);
 						}
-						updateTab();
 					}
 				}
 				break;
@@ -122,7 +119,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					if (_type != 0) {
 						QeAssetXML * node = AST->getXMLEditNode((QeComponentType)_type, _eid);
 						if (node) AST->copyXMLNode(node, currentTreeViewNodes[currentTreeViewNodeIndex]);
-						updateTab();
+						updateListView();
 					}
 				}
 				break;
@@ -240,32 +237,35 @@ void QeWindow::adjustComponetData(QeAssetXML * node) {
 	if (_type != 0) {
 		QeAssetXML * source = AST->getXMLEditNode((QeComponentType)_type, 0);
 
-		for (int i = 0; i<node->eKeys.size();++i) {
-			bool b = false;
-			for (int j = 0; j<source->eKeys.size(); ++j) {
-				if (node->eKeys[i].compare(source->eKeys[j])==0 ) {
-					b = true;
-					break;
-				}
-			}
-			if (!b) {
-				node->eKeys.erase(node->eKeys.begin() + i);
-				node->eVaules.erase(node->eVaules.begin() + i);
-				--i;
-			}
-		}
+		if (source->parent != node) {
 
-		for (int i = 0; i<source->eKeys.size(); ++i) {
-			bool b = false;
-			for (int j = 0; j<node->eKeys.size(); ++j) {
-				if (node->eKeys[j].compare(source->eKeys[i]) == 0) {
-					b = true;
-					break;
+			for (int i = 0; i < node->eKeys.size(); ++i) {
+				bool b = false;
+				for (int j = 0; j < source->eKeys.size(); ++j) {
+					if (node->eKeys[i].compare(source->eKeys[j]) == 0) {
+						b = true;
+						break;
+					}
+				}
+				if (!b) {
+					node->eKeys.erase(node->eKeys.begin() + i);
+					node->eVaules.erase(node->eVaules.begin() + i);
+					--i;
 				}
 			}
-			if (!b) {
-				node->eKeys.insert(node->eKeys.begin() + i, source->eKeys[i]);
-				node->eVaules.insert(node->eVaules.begin() + i, source->eVaules[i]);
+
+			for (int i = 0; i < source->eKeys.size(); ++i) {
+				bool b = false;
+				for (int j = 0; j < node->eKeys.size(); ++j) {
+					if (node->eKeys[j].compare(source->eKeys[i]) == 0) {
+						b = true;
+						break;
+					}
+				}
+				if (!b) {
+					node->eKeys.insert(node->eKeys.begin() + i, source->eKeys[i]);
+					node->eVaules.insert(node->eVaules.begin() + i, source->eVaules[i]);
+				}
 			}
 		}
 	}

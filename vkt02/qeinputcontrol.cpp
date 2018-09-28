@@ -51,10 +51,10 @@ void QeInputControl::updateInput() {
 			break;
 
 		case KEY_E:
-			GRAP->getTargetCamera()->move({ 0.f, 0.2f, 0.f });
+			GRAP->getTargetCamera()->move({ 0.f, 0.1f, 0.f });
 			break;
 		case KEY_C:
-			GRAP->getTargetCamera()->move({ 0.f, -0.2f, 0.f });
+			GRAP->getTargetCamera()->move({ 0.f, -0.1f, 0.f });
 			break;
 		case KEY_A:
 			GRAP->getTargetCamera()->move({ -1.f, 0.f, 0.f });
@@ -63,10 +63,10 @@ void QeInputControl::updateInput() {
 			GRAP->getTargetCamera()->move({ 1.f, 0.f, 0.f });
 			break;
 		case KEY_W:
-			GRAP->getTargetCamera()->move({ 0.f, 0.f, 0.5f });
+			GRAP->getTargetCamera()->move({ 0.f, 0.f, 0.1f });
 			break;
 		case KEY_S:
-			GRAP->getTargetCamera()->move({ 0.f, 0.f, -0.5f });
+			GRAP->getTargetCamera()->move({ 0.f, 0.f, -0.1f });
 			break;
 		case KEY_Q:
 			GRAP->getTargetCamera()->move({ 0.f, 0.f, 1.f }, false);
