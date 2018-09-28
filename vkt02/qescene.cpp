@@ -35,6 +35,6 @@ void QeScene::update2() {
 void QeScene::loadScene(int _eid) {
 	OBJMGR->clear();
 	clear();
-	GRAP->bRecreateRender = true;
+	GRAP->initialize();
 	initialize(AST->getXMLEditNode(eScene, _eid));
 }

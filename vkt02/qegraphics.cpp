@@ -2,23 +2,8 @@
 
 
 QeGraphics ::~QeGraphics() {
-	cleanupRender();
-
-	size_t size = fences.size();
-	for (size_t i = 0; i < size; i++) {
-		vkWaitForFences(VK->device, 1, &fences[i], VK_TRUE, UINT64_MAX);
-		//vkResetFences(VK->device, 1, &fences[i]);
-		vkDestroyFence(VK->device, fences[i], nullptr);
-	}
-	fences.clear();
-
-	vkDestroySemaphore(VK->device, renderCompleteSemaphore, nullptr);
-	//renderFinishedSemaphores.clear();
-	//imageAvailableSemaphores.clear();
+	clear();
 }
-
-
-QeDataViewport::~QeDataViewport() {}
 
 QeDataRender::~QeDataRender() {
 
@@ -54,22 +39,32 @@ QeDataRender::~QeDataRender() {
 	subpass.clear();
 }
 
+void QeGraphics::clear() {
 
-void QeGraphics::initialize() {
+	cleanupRender();
 
 	lights.clear();
 	models.clear();
 	alphaModels.clear();
-	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
-	AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
-	AST->getXMLbValue(&VK->bShowMesh, node, 1, "normal");
+	renders.clear();
+	lightsBuffer.~QeVKBuffer();
 
-	bUpdateDrawCommandBuffers = true;
-	bRecreateRender = true;
+	size_t size = fences.size();
+	for (size_t i = 0; i < size; i++) {
+		vkWaitForFences(VK->device, 1, &fences[i], VK_TRUE, UINT64_MAX);
+		//vkResetFences(VK->device, 1, &fences[i]);
+		vkDestroyFence(VK->device, fences[i], nullptr);
+	}
+	fences.clear();
+}
+
+void QeGraphics::initialize() {
+
+	clear();
 	renders.resize(eRender_MAX);
 
+	bRecreateRender = true;
 	createRender(eRender_KHR, 0, { 0,0 });
-
 	//createRender(eRender_main, 0, {0,0});
 }
 
@@ -269,13 +264,14 @@ void QeGraphics::update1() {
 		cleanupRender();
 
 		sampleCount = VK->getMaxUsableSampleCount();
-
 		QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
+		AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
+		AST->getXMLbValue(&VK->bShowNormal, node, 1, "normal");
 		AST->getXMLfValue(&clearColor.x, node, 1, "clearColorR");
 		AST->getXMLfValue(&clearColor.y, node, 1, "clearColorG");
 		AST->getXMLfValue(&clearColor.z, node, 1, "clearColorB");
 
-		if(!renderCompleteSemaphore) renderCompleteSemaphore = VK->createSyncObjectSemaphore();
+ 		renderCompleteSemaphore = VK->createSyncObjectSemaphore();
 		if (!swapchain.khr)			VK->createSwapchain(&swapchain);
 		size_t size = swapchain.images.size();
 
@@ -293,18 +289,13 @@ void QeGraphics::update1() {
 		bRecreateRender = false;
 	}
 	VK->pushConstants[0] = QE->deltaTime;
-	bUpdateDrawCommandBuffers = true;
 }
 
 void QeGraphics::update2() {
 
 	if (bRecreateRender) return;
 	updateBuffer();
-
-	if (bUpdateDrawCommandBuffers) {
-		updateDrawCommandBuffers();
-		bUpdateDrawCommandBuffers = false;
-	}
+	updateDrawCommandBuffers();
 	drawFrame();
 }
 
@@ -409,17 +400,20 @@ void QeGraphics::refreshRender() {
 		}
 		else if (i == eRender_color || i== eRender_main) {
 
+			render->depthStencilImage.~QeVKImage();
 			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
 			formats.push_back(VK->findDepthStencilFormat());
 			views.push_back(render->depthStencilImage.view);
 
 			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 
+				render->multiSampleColorImage.~QeVKImage();
 				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
 				formats.push_back(format);
 				views.push_back(render->multiSampleColorImage.view);
 			}
 
+			render->colorImage.~QeVKImage();
 			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
 			if (size1 == 0) {
@@ -427,6 +421,7 @@ void QeGraphics::refreshRender() {
 				formats.push_back(format);
 			}
 			else{
+				render->colorImage2.~QeVKImage();
 				VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
 
 				int k = size1 % 2;
@@ -459,8 +454,7 @@ void QeGraphics::refreshRender() {
 				formats.push_back(format);
 			}
 		}
-
-		render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
+		if(!render->renderPass)	render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
 
 		for (size_t j = 0; j < size1; ++j) {
 			render->subpass[j]->graphicsPipeline.renderPass = render->renderPass;
@@ -479,8 +473,11 @@ void QeGraphics::refreshRender() {
 			if (i == eRender_KHR) {
 				views[0] = swapchain.images[j].view;
 			}
+
+			if (render->frameBuffers[j]) vkDestroyFramebuffer(VK->device, render->frameBuffers[j], nullptr);
 			render->frameBuffers[j] = VK->createFramebuffer(render->renderPass, render->scissor.extent, views);
-			render->commandBuffers[j] = VK->createCommandBuffer();
+			
+			if (!render->commandBuffers[j]) render->commandBuffers[j] = VK->createCommandBuffer();
 		}
 	}
 }
@@ -577,55 +574,30 @@ QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID, VkExtent2
 
 void QeGraphics::cleanupRender() {
 
-	//presentImage.~QeVKImage();
-	//depthImage.~QeVKImage();
-
-	//vkDestroyPipeline(VK->device, postprocessingPipeline, nullptr);
-	//postprocessingPipeline = VK_NULL_HANDLE;
 	size_t size, i;
-	//size = renders.size();
-	//for (i = 0;i<size;++i ) {
-	//	renders[i]->~QeDataRender();
-	//}
-	//postprocessingPipeline = nullptr;
 
-	//size = swapChainFramebuffers.size();
 	size = swapchain.images.size();
-
 	for ( i = 0; i < size; i++) {
-	//	vkDestroyFramebuffer(VK->device, swapChainFramebuffers[i], nullptr);
-	//	swapChainFramebuffers[i] = VK_NULL_HANDLE;
-		//vkDestroyImageView(VK->device, swapChainImageViews[i], nullptr);
-		//swapChainImageViews[i] = VK_NULL_HANDLE;
-		//vkDestroyImageView(VK->device, swapChainImages[i].view, nullptr);
 		swapchain.images[i].view = VK_NULL_HANDLE;
 		swapchain.images[i].image = VK_NULL_HANDLE;
 	}
-	//swapChainImages.clear();
-
-	//vkFreeCommandBuffers(VK->device, VK->commandPool, static_cast<uint32_t>(drawCommandBuffers.size()), drawCommandBuffers.data());
-	//drawCommandBuffers.clear();
-	
-	//if (renderPass != VK_NULL_HANDLE) {
-	//	vkDestroyRenderPass(VK->device, renderPass, nullptr);
-	//		renderPass = VK_NULL_HANDLE;
-	//}
-	//swapChainImages.clear();
+	swapchain.images.clear();
 
 	if (swapchain.khr) {
 		vkDestroySwapchainKHR(VK->device, swapchain.khr, nullptr);
 		swapchain.khr = VK_NULL_HANDLE;
 	}
-	//swapChainImages.clear();
-
+	if (renderCompleteSemaphore) {
+		vkDestroySemaphore(VK->device, renderCompleteSemaphore, nullptr);
+		renderCompleteSemaphore = VK_NULL_HANDLE;
+	}
 	for (size_t i = 0;i<VK->graphicsPipelines.size();++i ) {
 		vkDestroyPipeline(VK->device, VK->graphicsPipelines[i]->pipeline, nullptr);
 		delete VK->graphicsPipelines[i];
 	}
 	VK->graphicsPipelines.clear();
-
-	cleanupPipeline();
 }
+
 
 /*void QeViewport::updateComputeCommandBuffers() {
 	for (size_t i = 0; i < computeCommandBuffers.size(); i++) {
@@ -768,11 +740,6 @@ void QeGraphics::sortAlphaModels(QeCamera * camera) {
 	}
 }
 
-void QeGraphics::cleanupPipeline() {
-
-	//VK->cleanupPipeline();
-}
-
 void QeGraphics::recreatePipeline() {
 	
 	std::vector<QeModel*>::iterator it = models.begin();
@@ -788,7 +755,6 @@ void QeGraphics::recreatePipeline() {
 		(*it)->createPipeline();
 		++it;
 	}
-	bUpdateDrawCommandBuffers = true;
 }
 
 

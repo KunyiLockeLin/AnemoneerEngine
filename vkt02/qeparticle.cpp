@@ -198,7 +198,6 @@ void QeParticle::update1() {
 		VK->setMemoryBuffer(vertexBuffer, sizeof(particles[0])*particles.size(), particles.data());
 		//memset(bDeaths.data(), 0, sizeof(bDeaths[0])*bDeaths.size());
 		//VK->setMemoryBuffer(outBuffer, sizeof(bDeaths[0])*bDeaths.size(), bDeaths.data());
-		GRAP->bUpdateDrawCommandBuffers = true;
 	}
 
 	QeVector3f scale = owner->transform->worldScale();

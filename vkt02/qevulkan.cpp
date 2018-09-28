@@ -14,6 +14,7 @@ QeVKBuffer::~QeVKBuffer(){
 		vkDestroyBufferView(VK->device, view, nullptr);
 		view = VK_NULL_HANDLE;
 	}
+	mapped = VK_NULL_HANDLE;
 }
 
 QeVKImage::~QeVKImage(){

@@ -13,9 +13,7 @@ void QueenEngine::run() {
 
 void QueenEngine::initialize() {
 
-	GRAP->initialize();
 	WIN->resizeAll();
-
 	QeAssetXML* node = AST->getXMLNode( 2, AST->CONFIG, "setting");
 	FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "environment", "FPS")));
 

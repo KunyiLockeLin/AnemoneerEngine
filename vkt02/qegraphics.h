@@ -28,7 +28,7 @@ struct QeDataViewport {
 	QeDataViewport():environmentBuffer(eBuffer_uniform),
 		commonDescriptorSet(eDescriptorSetLayout_Common) {}
 
-	~QeDataViewport();
+	//~QeDataViewport();
 };
 
 struct QeBufferSubpass {
@@ -44,7 +44,7 @@ struct QeDataSubpass {
 	QeDataGraphicsPipeline graphicsPipeline;
 
 	QeDataSubpass() : buffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Postprocessing) {}
-	~QeDataSubpass() {}
+	//~QeDataSubpass();
 };
 
 struct QeDataRender {
@@ -66,6 +66,7 @@ struct QeDataRender {
 	QeDataRender() :colorImage(eImage_render), colorImage2(eImage_render), depthStencilImage(eImage_depthStencil),
 		multiSampleColorImage(eImage_attach)/*, multiSampleDepthStencilImage(eImage_multiSampleDepthStencil)*/{}
 	~QeDataRender();
+	void clear();
 };
 
 struct QeDataSwapchain {
@@ -107,6 +108,7 @@ public:
 	bool bUpdateLight= false;
 
 	void initialize();
+	void clear();
 	void addNewViewport(QeRenderType type);
 	void popViewport(QeRenderType type);
 	void updateViewport();
@@ -119,7 +121,7 @@ public:
 	QeCamera* getTargetCamera();
 	QeDataRender * getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);
 	//bool bUpdateComputeCommandBuffers = false;
-	bool bUpdateDrawCommandBuffers = false;
+	//bool bUpdateDrawCommandBuffers = false;
 	bool bRecreateRender = false;
 
 	//std::vector<VkSemaphore> computeSemaphores;
@@ -136,7 +138,6 @@ public:
 
 	void sortAlphaModels(QeCamera * camera);
 
-	void cleanupPipeline();
 	void recreatePipeline();
 
 	void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);

@@ -5,8 +5,8 @@
 				<components>
 					<Transform oid="100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
-					<Axis oid="100" eid="1" type="13">
-					</Axis>
+          <Axis oid="100" eid="1" type="13">
+          </Axis>
 				</components>
 				<children>
 					<camera oid="101" eid="101" type="1000">
@@ -29,16 +29,16 @@
 				<children>
 				</children>
 			</setting>
-			<grid oid="300" eid="300" type="1000">
-				<components>
-					<Transform oid="300" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-					</Transform>
-					<Grid oid="300" eid="1" type="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5">
-					</Grid>
-				</components>
-				<children>
-				</children>
-			</grid>
+      <grid oid="300" eid="300" type="1000">
+        <components>
+          <Transform oid="300" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Grid oid="300" eid="1" type="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5">
+          </Grid>
+        </components>
+        <children>
+        </children>
+      </grid>
 			<light1 oid="400" eid="400" type="1000">
 				<components>
 					<Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
@@ -51,10 +51,10 @@
 							</Transform>
 							<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90">
 							</Light>
-							<Billboard oid="400" eid="1" type="8" materialOID="400">
-							</Billboard>
-							<base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
-							</base>
+              <Billboard oid="400" eid="1" type="8" materialOID="400">
+              </Billboard>
+              <base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
+              </base>
 						</components>
 						<children>
 						</children>
@@ -67,8 +67,6 @@
 					</Transform>
 					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" lineWidth="0" materialOID="1100">
 					</Model>
-					<pbr oid="1100" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png">
-					</pbr>
 				</components>
 				<children>
 				</children>
@@ -508,7 +506,7 @@
 		</path>
 		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
 		</render>
-		<startScene eid="1">
+		<startScene eid="0">
 		</startScene>
 	</setting>
 </confing>
