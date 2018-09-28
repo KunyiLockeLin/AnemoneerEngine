@@ -77,20 +77,22 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
 	bufferData.param = { 0,0,0,0 };
-	if (materialData->image.pBaseColorMap) {
-		descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
-		descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
-		bufferData.param.x = 1;
-	}
-	if (materialData->image.pNormalMap) {
-		descriptorSetData.normalMapImageView = materialData->image.pNormalMap->view;
-		descriptorSetData.normalMapSampler = materialData->image.pNormalMap->sampler;
-		bufferData.param.y = 1;
-	}
-	if (materialData->image.pCubeMap) {
-		descriptorSetData.cubeMapImageView = materialData->image.pCubeMap->view;
-		descriptorSetData.cubeMapSampler = materialData->image.pCubeMap->sampler;
-		bufferData.param.z = 1;
+	if (materialData) {
+		if (materialData->image.pBaseColorMap) {
+			descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
+			descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
+			bufferData.param.x = 1;
+		}
+		if (materialData->image.pNormalMap) {
+			descriptorSetData.normalMapImageView = materialData->image.pNormalMap->view;
+			descriptorSetData.normalMapSampler = materialData->image.pNormalMap->sampler;
+			bufferData.param.y = 1;
+		}
+		if (materialData->image.pCubeMap) {
+			descriptorSetData.cubeMapImageView = materialData->image.pCubeMap->view;
+			descriptorSetData.cubeMapSampler = materialData->image.pCubeMap->sampler;
+			bufferData.param.z = 1;
+		}
 	}
 	return descriptorSetData;
 }
