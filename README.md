@@ -14,7 +14,7 @@
   - mutli-viewports                   
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/viewport.gif)
     
-# Feature:
+# Feature
   - Support mutli-viewports, post-processing.
   - Support light and camera control.
   - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
@@ -41,16 +41,16 @@
       - "resetcamera" : Initialize the camera.
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
-# config.xml:
+# config.xml
   - lots of setting.......
 
-# ToDoList:
+# ToDoList
   - Main research: PBR, Ray-tracing
   - My document https://docs.google.com/document/d/13Te0_iYdNy72z3EWb3UL-RaknsEJLg8ksMGtTZ2ig2g/edit?usp=sharing
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/PacktPublishing/Vulkan-Cookbook
-  - https://learnopengl.com/
-  - https://learnopengl-cn.github.io/
+  - https://learnopengl.com/PBR/Theory
+  - https://github.com/KhronosGroup/glTF-WebGL-PBR
   - https://blog.selfshadow.com/
   - https://www.scratchapixel.com/
   - https://github.com/petershirley/raytracinginoneweekend
@@ -59,7 +59,7 @@
 # Bug
   - release mode crash
   
-# Others:
+# Others
   - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
