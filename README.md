@@ -45,7 +45,7 @@
   - lots of setting.......
 
 # ToDoList
-  - Main research: PBR, Ray-tracing
+  - Main research: Physically based rendering, Ray-tracing
   - My document https://docs.google.com/document/d/13Te0_iYdNy72z3EWb3UL-RaknsEJLg8ksMGtTZ2ig2g/edit?usp=sharing
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/PacktPublishing/Vulkan-Cookbook
