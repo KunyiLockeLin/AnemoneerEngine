@@ -4,9 +4,10 @@
 
 enum QeRenderType {
 	eRender_KHR = 0,
-	eRender_main = 1,
-	eRender_color = 2,
-	eRender_MAX = 3
+	eRender_ui = 1,
+	eRender_main = 2,
+	eRender_color = 3,
+	eRender_MAX = 4
 };
 
 struct QeDataEnvironment {

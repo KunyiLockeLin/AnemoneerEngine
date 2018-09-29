@@ -286,9 +286,6 @@
     <None Include="..\data\shaders\texturev.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="..\data\shaders\render.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
     <None Include="..\data\shaders\outline.geom">
       <Filter>Resource Files\shaders</Filter>
     </None>

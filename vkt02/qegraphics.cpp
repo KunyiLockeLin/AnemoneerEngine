@@ -317,7 +317,6 @@ void QeGraphics::drawFrame() {
 	vkWaitForFences(VK->device, 1, &fences[currentFrame], VK_TRUE, UINT64_MAX);
 	vkResetFences(VK->device, 1, &fences[currentFrame]);
 
-	int size = int(renders.size());
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(VK->device, swapchain.khr, UINT64_MAX, renderCompleteSemaphore, fences[currentFrame], &imageIndex);
 
@@ -328,11 +327,19 @@ void QeGraphics::drawFrame() {
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)	LOG("failed to acquire swap chain image! "+ result);
 
 	VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	
+	int size = int(renders.size());
+	std::vector<QeDataRender*> _renders;
+	for (int i = 0; i < size; ++i) {
+		if (renders[i]) _renders.push_back(renders[i]);
+	}
+	
+	size = int(_renders.size());
 	--size;
-
+	
 	for (int i = size; i>-1 ;--i ) {
 
-		QeDataRender * render = renders[i];
+		QeDataRender * render = _renders[i];
 		if (!render) continue;
 
 		VkSubmitInfo submitInfo = {};
@@ -343,10 +350,10 @@ void QeGraphics::drawFrame() {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = &render->semaphore;
 
-		if(i==size || !renders[i + 1])
+		if(i==size)
 			submitInfo.pWaitSemaphores = &renderCompleteSemaphore;
 		else
-			submitInfo.pWaitSemaphores = &renders[i+1]->semaphore;
+			submitInfo.pWaitSemaphores = &_renders[i+1]->semaphore;
 
 		if (i == eRender_KHR)
 			submitInfo.pCommandBuffers = &render->commandBuffers[imageIndex];
@@ -363,7 +370,7 @@ void QeGraphics::drawFrame() {
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.pNext = nullptr;
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &renders[0]->semaphore;
+	presentInfo.pWaitSemaphores = &_renders[0]->semaphore;
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &swapchain.khr;
 	presentInfo.pImageIndices = &imageIndex;
@@ -390,7 +397,7 @@ void QeGraphics::refreshRender() {
 
 		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;// VK_FORMAT_R16G16B16A16_SFLOAT VK_FORMAT_R32G32B32A32_SFLOAT;
 
-		if (i == eRender_main || i == eRender_KHR)
+		if (i == eRender_main || i == eRender_KHR || i==eRender_ui)
 			render->scissor.extent = swapchain.extent;
 
 		size_t size1 = render->subpass.size();
@@ -415,19 +422,37 @@ void QeGraphics::refreshRender() {
 			VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
 			render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
 		}
-		else if (i == eRender_color || i== eRender_main) {
+		else if (i== eRender_ui) {
+			render->colorImage.~QeVKImage();
+			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
-			if(i==eRender_main )	render->depthStencilImage.~QeVKImage();
-			if(!render->depthStencilImage.view) VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
-			formats.push_back(VK->findDepthStencilFormat());
-			views.push_back(render->depthStencilImage.view);
+			views.push_back(render->colorImage.view);
+			formats.push_back(format);
 
-			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+			QeDataDescriptorSetPostprocessing data;
+			data.buffer = render->subpass[0]->buffer.buffer;
+			data.inputAttachImageView = renders[eRender_main]->colorImage.view;
+			data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
 
-				if (i == eRender_main )	render->multiSampleColorImage.~QeVKImage();
-				if (!render->multiSampleColorImage.view)	VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
-				formats.push_back(format);
-				views.push_back(render->multiSampleColorImage.view);
+			VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
+			render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
+		}
+		else if (i == eRender_color || i== eRender_main || i == eRender_ui) {
+
+			if (i != eRender_ui) {
+
+				if (i == eRender_main)	render->depthStencilImage.~QeVKImage();
+				if (!render->depthStencilImage.view) VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+				formats.push_back(VK->findDepthStencilFormat());
+				views.push_back(render->depthStencilImage.view);
+
+				if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+
+					if (i == eRender_main)	render->multiSampleColorImage.~QeVKImage();
+					if (!render->multiSampleColorImage.view)	VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
+					formats.push_back(format);
+					views.push_back(render->multiSampleColorImage.view);
+				}
 			}
 
 			if (i == eRender_main) render->colorImage.~QeVKImage();
@@ -573,6 +598,23 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 		VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
 		render->subpass.push_back(data);
 	}
+	else if (type == eRender_ui) {
+		size1 = VK->getSwapchainSize();
+		QeDataSubpass* data = new QeDataSubpass();
+
+		data->graphicsPipeline.bAlpha = false;
+		data->graphicsPipeline.componentType = eComponent_postprocessing;
+		data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
+		data->graphicsPipeline.subpass = 0;
+
+		AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
+		data->graphicsPipeline.shader = &data->graphicsShader;
+		VK->createDescriptorSet(data->descriptorSet);
+		//data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+		VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
+		render->subpass.push_back(data);
+	}
 
 	render->frameBuffers.resize(size1);
 	render->commandBuffers.resize(size1);
@@ -678,7 +720,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			size_t size2 = clearValues.size();
 			for (size_t k = 1; k < size2; ++k) {
-				clearValues[k].color = { clearColor.x, clearColor.y, clearColor.z, 1.0f };
+				clearValues[k].color = { clearColor.x, clearColor.y, clearColor.z, 0.0f };
 			}
 		}
 		renderPassInfo.renderPass = render->renderPass;
@@ -692,7 +734,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			renderPassInfo.framebuffer = render->frameBuffers[j];
 
-			if (i != eRender_KHR) {
+			if (i == eRender_main) {
 				// pushConstants
 				VK->updatePushConstnats(render->commandBuffers[j]);
 
@@ -702,12 +744,29 @@ void QeGraphics::updateDrawCommandBuffers() {
 			}
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			if (i==	eRender_KHR) {
+			if (i==	eRender_KHR ||i==eRender_ui) {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
 				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
+
+				if (i == eRender_ui) {
+					QeDataDrawCommand command;
+					command.camera = render->viewports[0]->camera;
+					command.commandBuffer = render->commandBuffers[j];
+					command.commonDescriptorSet = &render->viewports[0]->commonDescriptorSet;
+					command.renderPass = render->renderPass;
+					command.type = QeRenderType(i);
+
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
+
+					std::vector<QeModel*>::iterator it = models2D.begin();
+					while (it != models2D.end()) {
+						(*it)->updateDrawCommandBuffer(&command);
+						++it;
+					}
+				}
 			}
 			else {				
 				float lineWidth = 1.f;

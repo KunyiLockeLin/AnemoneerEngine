@@ -18,15 +18,15 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	bUpdatePostProcessingOID = false;
 	if (postProcessingOID) bUpdatePostProcessingOID = true;
 
-	AST->getXMLiValue((int*)&cameraType, initProperty, 1, "cameraType");
+	AST->getXMLiValue((int*)&renderType, initProperty, 1, "renderType");
 	AST->getXMLiValue((int*)&renderSize.width, initProperty, 1, "width");
 	AST->getXMLiValue((int*)&renderSize.height, initProperty, 1, "height");
-	GRAP->createRender(cameraType, oid, renderSize);
-
-	AST->getXMLbValue(&b2D, initProperty, 1, "b2D");
+	GRAP->createRender(renderType, oid, renderSize);
 }
 
 void QeCamera::rotateTarget(QeVector3f _addRotate) {
+
+	if (renderType == eRender_ui) return;
 
 	QeVector3f lookAtV = lookAt();
 	QeVector3f pos = owner->transform->worldPosition();
@@ -74,6 +74,8 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 	owner->transform->move(_dir, face, up);
 	pos = owner->transform->worldPosition();
 
+	if (renderType == eRender_ui) return;
+
 	if (bMoveCenter) {
 		QeTransform* lookAtTransform = (QeTransform*)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
 		lookAtTransform->move(_dir, face, up);
@@ -81,9 +83,16 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 	}
 }
 
-QeVector3f QeCamera::face() {	return 	MATH->normalize(lookAt() - owner->transform->worldPosition()); }
+QeVector3f QeCamera::face() {	
+	if (renderType == eRender_ui) return { 0,0,1 };
+	return 	MATH->normalize(lookAt() - owner->transform->worldPosition()); 
+}
 
 QeVector3f QeCamera::lookAt() {
+	if (renderType == eRender_ui) {
+		QeVector3f pos = owner->transform->worldPosition();
+		return { pos.x,pos.y,pos.z+1 };
+	}
 	if (lookAtTransformOID>0) {
 		QeTransform* lookAtTransform = (QeTransform*)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
 		return lookAtTransform->worldPosition();
@@ -117,20 +126,14 @@ void QeCamera::update1() {
 
 	if (bUpdatePostProcessingOID && postProcessingOID) {
 
-		if (GRAP->addPostProcssing(cameraType, oid, postProcessingOID)) {
+		if (GRAP->addPostProcssing(renderType, oid, postProcessingOID)) {
 			bUpdatePostProcessingOID = false;
 		}
 	}
 
-	QeVector3f lookAtV = lookAt();
 	QeVector3f pos = owner->transform->worldPosition();
-
-	if (b2D) {
-		bufferData.view = MATH->lookAt(pos, lookAtV, up);
-	}
-	else{
-		bufferData.view = MATH->lookAt(pos, lookAtV, up);
-	}
+	QeVector3f lookAtV = lookAt();
+	bufferData.view = MATH->lookAt(pos, lookAtV, up);
 	bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
 	bufferData.pos = pos;
 }

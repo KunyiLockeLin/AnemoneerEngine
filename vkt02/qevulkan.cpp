@@ -325,7 +325,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 	VkAttachmentReference depthAttachmentRef = {};
 	VkAttachmentReference resolveReference = {};
 
-	if (renderType == eRender_KHR) {
+	if (renderType == eRender_KHR || renderType == eRender_ui) {
 		subpasses.resize(1);
 		dependencies.resize(2);
 		attachments.resize(1);
@@ -337,7 +337,12 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
 		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 		attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+		if (renderType == eRender_KHR) {
+			attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		}
+		else
+			attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 		colorAttachmentRef.resize(1);
 		colorAttachmentRef[0].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
