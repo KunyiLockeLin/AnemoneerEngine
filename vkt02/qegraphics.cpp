@@ -398,29 +398,29 @@ void QeGraphics::refreshRender() {
 		}
 		else if (i == eRender_color || i== eRender_main) {
 
-			render->depthStencilImage.~QeVKImage();
-			VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
+			if(i==eRender_main)	render->depthStencilImage.~QeVKImage();
+			if(!render->depthStencilImage.view) VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
 			formats.push_back(VK->findDepthStencilFormat());
 			views.push_back(render->depthStencilImage.view);
 
 			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 
-				render->multiSampleColorImage.~QeVKImage();
-				VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
+				if (i == eRender_main) render->multiSampleColorImage.~QeVKImage();
+				if (!render->multiSampleColorImage.view)	 VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
 				formats.push_back(format);
 				views.push_back(render->multiSampleColorImage.view);
 			}
 
-			render->colorImage.~QeVKImage();
-			VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
+			if (i == eRender_main) render->colorImage.~QeVKImage();
+			if (!render->colorImage.view) VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
 			if (size1 == 0) {
 				views.push_back(render->colorImage.view);
 				formats.push_back(format);
 			}
 			else{
-				render->colorImage2.~QeVKImage();
-				VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
+				if (i == eRender_main) render->colorImage2.~QeVKImage();
+				if (!render->colorImage2.view) VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
 
 				int k = size1 % 2;
 
