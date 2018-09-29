@@ -887,7 +887,7 @@ QeVector3f QeMath::revolute(QeVector3f& _position, QeVector3f& _addRevolute, QeV
 	if (_addRevolute.x) {
 
 		if (bFixX) {
-			QeVector3f _axis = { 1.f,0.f,0.f };
+			QeVector3f _axis = { 0.f,0.f,1.f };
 			mat *= rotate(_addRevolute.x, _axis);
 		}
 		else{

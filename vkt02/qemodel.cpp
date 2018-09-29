@@ -4,7 +4,7 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	QeComponent::initialize(_property, _owner);
 
 	AST->getXMLbValue(&graphicsPipeline.bAlpha, initProperty, 1, "alpha");
-	AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "lineWidth");
+	AST->getXMLfValue(&bufferData.param.w, initProperty, 1, "outlineWidth");
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
@@ -72,7 +72,7 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
-	bufferData.param = { 0,0,0,0 };
+	bufferData.param = { 0,0,0};
 	if (materialData) {
 		if (materialData->image.pBaseColorMap) {
 			descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
@@ -156,7 +156,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 		//	break;
 	}
 
-	if (bufferData.param.z  && outlineShader.vert) {
+	if (bufferData.param.w  && outlineShader.vert) {
 
 		graphicsPipeline.minorType = eGraphicsPipeLine_stencilBuffer;
 		graphicsPipeline.shader = &outlineShader;
