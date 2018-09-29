@@ -94,6 +94,7 @@ class QeObject;
 class QeComponent;
 class QeTransform;
 class QeInputControl;
+class QePostProcessing;
 class QeEncode;
 class QeMath;
 class QeAsset;
@@ -137,6 +138,7 @@ class QeGrid;
 #include "qebillboard.h"
 #include "qeline.h"
 #include "qeanimation.h"
+#include "qepostprocessing.h"
 #include "qecubemap.h"
 #include "qeparticle.h"
 #include "qematerial.h"
