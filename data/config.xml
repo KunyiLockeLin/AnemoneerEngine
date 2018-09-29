@@ -407,7 +407,7 @@
 			</default>
 		</Transform>
 		<Camera type="2">
-			<default oid="0" eid="0" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+			<default oid="0" eid="0" type="2" main="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" PostprocessingOID="0">
 			</default>
 		</Camera>
 		<Postprocessing type="3">
