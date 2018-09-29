@@ -20,7 +20,9 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 		GRAP->createRender(eRender_main, oid, { 0,0 });
 	}
 
-	bUpdate = true;
+	AST->getXMLiValue(&postProcessingOID, initProperty, 1, "postProcessingOID");
+	bUpdatePostProcessingOID = false;
+	if (postProcessingOID) bUpdatePostProcessingOID = true;
 }
 
 void QeCamera::rotateTarget(QeVector3f _addRotate) {
@@ -39,7 +41,6 @@ void QeCamera::rotateTarget(QeVector3f _addRotate) {
 		else if (f > 85)	_addRotate.y = 89-euler.y;
 	}
 	owner->transform->revolute(_addRotate, lookAtV, false, false, true);
-	bUpdate = true;
 }
 
 void QeCamera::rotateTargetByMouse(QeVector2i mousePos){
@@ -77,8 +78,6 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 		lookAtTransform->move(_dir, face, up);
 		owner->transform->setWorldPosition(pos);
 	}
-
-	bUpdate = true;
 }
 
 QeVector3f QeCamera::face() {	return 	MATH->normalize(lookAt() - owner->transform->worldPosition()); }
@@ -116,13 +115,19 @@ void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
 
 void QeCamera::update1() {
 
-	//if (bUpdate) {
-		QeVector3f lookAtV = lookAt();
-		QeVector3f pos = owner->transform->worldPosition();
+	if (bUpdatePostProcessingOID && postProcessingOID) {
+		QeRenderType type = eRender_main;
+		if (!bMain) type = eRender_color;
 
-		bufferData.view = MATH->lookAt(pos, lookAtV, up);
-		bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
-		bufferData.pos = pos;
-		bUpdate = false;
-	//}
+		if (GRAP->addPostProcssing(type, oid, postProcessingOID)) {
+			bUpdatePostProcessingOID = false;
+		}
+	}
+
+	QeVector3f lookAtV = lookAt();
+	QeVector3f pos = owner->transform->worldPosition();
+
+	bufferData.view = MATH->lookAt(pos, lookAtV, up);
+	bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
+	bufferData.pos = pos;
 }

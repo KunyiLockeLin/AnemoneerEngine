@@ -174,6 +174,7 @@
     <ClCompile Include="qematerial.cpp" />
     <ClCompile Include="qemodel.cpp" />
     <ClCompile Include="qeparticle.cpp" />
+    <ClCompile Include="qepostprocessing.cpp" />
     <ClCompile Include="qerender.cpp" />
     <ClCompile Include="qescene.cpp" />
     <ClCompile Include="qeasset.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="qematerial.h" />
     <ClInclude Include="qemodel.h" />
     <ClInclude Include="qeparticle.h" />
+    <ClInclude Include="qepostprocessing.h" />
     <ClInclude Include="qerender.h" />
     <ClInclude Include="qescene.h" />
     <ClInclude Include="qeasset.h" />

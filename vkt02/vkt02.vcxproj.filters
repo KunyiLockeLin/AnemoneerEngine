@@ -108,6 +108,9 @@
     <ClCompile Include="qematerial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qepostprocessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -198,6 +201,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qematerial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qepostprocessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

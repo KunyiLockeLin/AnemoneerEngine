@@ -126,7 +126,7 @@ QeComponent* QeObjectManger::spwanComponent(QeAssetXML* _property, QeObject* _ow
 			_component = new QeCamera(key);
 			break;
 		case eComponent_postprocessing:
-			//_component = new QePostprocessing();
+			_component = new QePostProcessing(key);
 			break;
 		case eComponent_light:
 			_component = new QeLight(key);

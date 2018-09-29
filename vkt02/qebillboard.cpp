@@ -15,6 +15,7 @@ void QeBillboard::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLiValue(&materialOID, initProperty, 1, "materialOID");
 
 	bUpdateMaterialOID = false;
+	if (materialOID) bUpdateMaterialOID = true;
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
 	bRotate = false;

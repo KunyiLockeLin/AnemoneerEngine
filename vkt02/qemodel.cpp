@@ -22,6 +22,7 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLiValue(&materialOID, initProperty, 1, "materialOID");
 
 	bUpdateMaterialOID = false;
+	if (materialOID) bUpdateMaterialOID = true;
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
 
@@ -39,11 +40,11 @@ void QeModel::clear() {
 
 void QeModel::update1() {
 
-	if (materialOID && !bUpdateMaterialOID) {
+	if (bUpdateMaterialOID && materialOID ) {
 
 		QeMaterial * material = (QeMaterial*)OBJMGR->findComponent( eComponent_material, materialOID);
 		if (material) {
-			bUpdateMaterialOID = true;
+			bUpdateMaterialOID = false;
 
 			if (graphicsPipeline.bAlpha != material->bAlpha) {
 				graphicsPipeline.bAlpha = material->bAlpha;

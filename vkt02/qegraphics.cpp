@@ -132,7 +132,6 @@ void QeGraphics::updateViewport() {
 
 			if (viewport->camera) {
 				viewport->camera->faspect = viewport->viewport.width / viewport->viewport.height;
-				viewport->camera->bUpdate = true;
 			}
 		}
 	}
@@ -480,6 +479,16 @@ void QeGraphics::refreshRender() {
 		}
 	}
 }
+
+bool QeGraphics::addPostProcssing(QeRenderType type, int cameraOID, int postprocessingOID) {
+
+	if (renders[type]->cameraOID != cameraOID) return false;
+	QePostProcessing* postprocessing = (QePostProcessing*)OBJMGR->findComponent(eComponent_postprocessing, postprocessingOID);
+	if (!postprocessing) return false;
+
+	return false;
+}
+
 
 QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExtent2D renderSize) {
 

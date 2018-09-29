@@ -27,8 +27,8 @@ public:
 
 	QeVector2i lastMousePos;
 	float faspect;
-
-	bool bUpdate;
+	int postProcessingOID;
+	bool bUpdatePostProcessingOID;
 	QeDataCamera bufferData;
 
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
