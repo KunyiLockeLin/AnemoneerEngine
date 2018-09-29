@@ -14,7 +14,6 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	if(materialData) bufferData.material = materialData->value;
 
 	shaderKey = "model";
-	graphicsShader = {nullptr,nullptr ,nullptr ,nullptr ,nullptr};
 	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
 	AST->setGraphicsShader(outlineShader, nullptr, "outline");
@@ -33,6 +32,7 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 void QeModel::clear() {
 	b2D = false;
 	bRotate = true;
+	graphicsShader = { nullptr,nullptr ,nullptr ,nullptr ,nullptr };
 	descriptorSet.~QeDataDescriptorSet();
 	modelBuffer.~QeVKBuffer();
 	if (graphicsPipeline.bAlpha)	eraseElementFromVector<QeModel*>(GRAP->alphaModels, this);
