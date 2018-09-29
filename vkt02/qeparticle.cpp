@@ -11,7 +11,8 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
 	computeShader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "particle", "comp"));
-	AST->setGraphicsShader(graphicsShader, nullptr, "particle");
+	shaderKey = "particle";
+	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
 	// count
 	totalParticlesSize = MATH->iRandom(particleRule->count_total, particleRule->count_range);
@@ -42,6 +43,11 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 void QeParticle::clear() {
 	delete particleRule;
+	particles.clear();
+	bDeaths.clear();
+	vertexBuffer.~QeVKBuffer();
+	outBuffer.~QeVKBuffer();
+
 	QeModel::clear();
 }
 

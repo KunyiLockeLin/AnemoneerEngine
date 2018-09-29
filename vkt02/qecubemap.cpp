@@ -10,7 +10,8 @@ void QeCubemap::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 	bufferData.material = materialData->value;
-	AST->setGraphicsShader(graphicsShader, nullptr, "cubemap");
+	shaderKey = "cubemap";
+	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
 }

@@ -8,8 +8,8 @@ void QeAxis::initialize(QeAssetXML* _property, QeObject* _owner) {
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
 	modelData = AST->getModel("axis");
-
-	AST->setGraphicsShader(graphicsShader, nullptr, "line");
+	shaderKey = "line";
+	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);

@@ -23,6 +23,7 @@ public:
 	virtual void update2();
 
 	// QeMaterial, QeAnimation
+	const char* shaderKey;
 	QeAssetModel* modelData = nullptr;
 	QeAssetMaterial* materialData = nullptr;
 	QeAssetGraphicsShader graphicsShader;
@@ -31,9 +32,7 @@ public:
 	QeDataGraphicsPipeline graphicsPipeline;
 
 	VkShaderModule computeShader = VK_NULL_HANDLE;
-
 	QeDataDescriptorSet descriptorSet;
-
 	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeDataModel bufferData;

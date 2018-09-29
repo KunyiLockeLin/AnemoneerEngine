@@ -1,7 +1,5 @@
 #include "qeheader.h"
 
-
-
 void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	QeComponent::initialize(_property, _owner);
 
@@ -15,7 +13,8 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	materialData = modelData->pMaterial;
 	if(materialData) bufferData.material = materialData->value;
 
-	AST->setGraphicsShader(graphicsShader, nullptr, "model");
+	shaderKey = "model";
+	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
 	AST->setGraphicsShader(outlineShader, nullptr, "outline");
 
@@ -24,9 +23,13 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	bUpdateMaterialOID = false;
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
+
+	bRotate = true;
 }
 
 void QeModel::clear() {
+	descriptorSet.~QeDataDescriptorSet();
+	modelBuffer.~QeVKBuffer();
 	if (graphicsPipeline.bAlpha)	eraseElementFromVector<QeModel*>(GRAP->alphaModels, this);
 	else							eraseElementFromVector<QeModel*>(GRAP->models, this);
 }
@@ -51,7 +54,7 @@ void QeModel::update1() {
 				}
 			}
 			materialData = &material->materialData;
-			AST->setGraphicsShader(graphicsShader, material->initProperty, "model");
+			AST->setGraphicsShader(graphicsShader, material->initProperty, shaderKey);
 			bufferData.material = materialData->value;
 			VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 		}

@@ -14,7 +14,8 @@ void QeLine::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	modelData = AST->getModel("line", false, (float*)&color);
 
-	AST->setGraphicsShader(graphicsShader, nullptr, "line");
+	shaderKey = "line";
+	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);

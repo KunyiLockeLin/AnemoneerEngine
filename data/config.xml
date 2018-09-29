@@ -63,10 +63,12 @@
 			</light1>
 			<sphere oid="1100" eid="1100" type="1000">
 				<components>
-					<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.2" localScaleY="1.2" localScaleZ="1.2" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
 					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" lineWidth="0" materialOID="1100">
 					</Model>
+          <pbr oid="1100" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png">
+          </pbr>
 				</components>
 				<children>
 				</children>

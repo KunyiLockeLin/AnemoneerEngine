@@ -5,7 +5,9 @@ void QeRender::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	QeComponent::initialize(_property, _owner);
 	//modelData = AST->getModel("plane");
-	AST->setGraphicsShader(graphicsShader, nullptr, "render");
+
+	shaderKey = "render";
+	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
 	AST->getXMLiValue((int*)&renderSize.width, initProperty, 1, "width");
 	AST->getXMLiValue((int*)&renderSize.height, initProperty, 1, "height");

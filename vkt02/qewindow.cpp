@@ -285,8 +285,8 @@ void QeWindow::getWindowSize(HWND & window, int& width, int& height) {
 }
 
 void QeWindow::resizeAll() {
-	resize(mainWindow);
 	resize(editWindow);
+	resize(mainWindow);
 }
 
 void QeWindow::resize(HWND & window) {
@@ -308,6 +308,12 @@ void QeWindow::resize(HWND & window) {
 
 	int x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right + windowRect.left) / 2;
 	int y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom + windowRect.top) / 2 - 10;
+	if (window == mainWindow) {
+		x -= 150;
+	}
+	else if (window == editWindow) {
+		x += 150;
+	}
 	windowRect.right += (x - windowRect.left);
 	windowRect.bottom += (y - windowRect.top);
 	windowRect.left = x;
@@ -335,81 +341,15 @@ void QeWindow::openMainWindow() {
 	wndClass.lpszClassName = title.c_str();
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
-	if (!RegisterClassEx(&wndClass)) {
-		LOG("Could not register window class!");
-		fflush(stdout);
-		exit(1);
-	}
-
-	/*int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-
-	if (settings.fullscreen) {
-	DEVMODE dmScreenSettings;
-	memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
-	dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-	dmScreenSettings.dmPelsWidth = screenWidth;
-	dmScreenSettings.dmPelsHeight = screenHeight;
-	dmScreenSettings.dmBitsPerPel = 32;
-	dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-
-	if ((width != (uint32_t)screenWidth) && (height != (uint32_t)screenHeight)) {
-	if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
-	if (MessageBox(NULL, "Fullscreen Mode not supported!\n Switch to window mode?", "Error", MB_YESNO | MB_ICONEXCLAMATION) == IDYES) {
-	settings.fullscreen = false;
-	} else {
-	return nullptr;
-	}
-	}
-	}
-
-	}*/
-
-	//DWORD dwStyle;
-
-	/*if (settings.fullscreen){
-	dwExStyle = WS_EX_APPWINDOW;
-	dwStyle = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-	} else {*/
-	//dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+	RegisterClassEx(&wndClass);
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-	//}
-	//currentWidth = std::stoi(AST->getString("winWidth"));
-	//currentHeight = std::stoi(AST->getString("winHeight"));
-	/*RECT windowRect;
-	windowRect.left = 0;
-	windowRect.top = 0;
-	windowRect.right = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "width"));//settings.fullscreen ? (long)screenWidth : (long)width;
-	windowRect.bottom = std::stoi(AST->getXMLValue(3, AST->CONFIG, "envir", "height"));//settings.fullscreen ? (long)screenHeight : (long)height;
-	AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
-
-	float f = GetSystemMetrics(SM_CXSCREEN);
-
-	windowRect.left = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right+ windowRect.left) / 2;
-	windowRect.top = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom+ windowRect.top) / 2;
-	windowRect.right += windowRect.left;
-	windowRect.bottom += windowRect.top;*/
 
 	mainWindow = CreateWindowEx(0, title.c_str(), 0,
 		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
 
-	//if (!settings.fullscreen){
-	// Center on screen
-	//uint32_t x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right) / 2;
-	//uint32_t y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom) / 2;
-	//SetWindowPos(window, 0, x, y, 0, 0, SWP_NOSIZE);
-	//}
 	resize(mainWindow);
 
-	if (!mainWindow) {
-		LOG("Could not create window!");
-		fflush(stdout);
-		exit(1);
-	}
-
 	ShowWindow(mainWindow, SW_SHOW);
-	SetForegroundWindow(mainWindow);
-	SetFocus(mainWindow);
 
 	int width; int height;
 	getWindowSize(mainWindow, width, height);
@@ -437,25 +377,13 @@ void QeWindow::openEditWindow() {
 	wndClass.lpszClassName = title.c_str();
 	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
-	if (!RegisterClassEx(&wndClass)) {
-		LOG("Could not register window class!");
-		fflush(stdout);
-		exit(1);
-	}
+	RegisterClassEx(&wndClass);
 
 	editWindow = CreateWindowEx(0, title.c_str(), 0,
 		WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
 
 	resize(editWindow);
-
-	if (!editWindow) {
-		LOG("Could not create window!");
-		fflush(stdout);
-		exit(1);
-	}
-
 	ShowWindow(editWindow, SW_SHOW);
-	SetForegroundWindow(editWindow);
 	SetWindowText(editWindow, title.c_str());
 
 	int width; int height;
@@ -664,8 +592,11 @@ void QeWindow::initialize() {
 
 	windowInstance = GetModuleHandle(nullptr);
 
-	openMainWindow();
 	openEditWindow();
+	openMainWindow();
+
+	SetForegroundWindow(mainWindow);
+	SetFocus(mainWindow);
 }
 
 std::string QeWindow::getWindowTitle(){
