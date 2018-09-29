@@ -1019,7 +1019,7 @@ void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
 
 	if (vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet.set) != VK_SUCCESS) LOG("failed to allocate descriptor set!");
 
-	descriptorSet.bRender = false;
+	descriptorSet.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 }
 
 void QeVulkan::createDescriptorPool() {
@@ -1430,12 +1430,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
 
 					VkDescriptorImageInfo imgInfo;
-					if (descriptorSet.bRender) {
-							if( GRAP->sampleCount == VK_SAMPLE_COUNT_1_BIT)	imgInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-							else											imgInfo.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-					}
-					else						imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
+					imgInfo.imageLayout = descriptorSet.imageLayout;
 					imgInfo.imageView = *(VkImageView*)(pos);
 					imgInfo.sampler = *(VkSampler*)(pos + sizeof(VkSampler));
 					imgInfos.push_back(imgInfo);
@@ -1451,7 +1446,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
 
 					VkDescriptorImageInfo imgInfo;
-					imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+					imgInfo.imageLayout = descriptorSet.imageLayout;
 					imgInfo.imageView = *(VkImageView*)(pos);
 					imgInfo.sampler = VK_NULL_HANDLE;
 					imgInfos.push_back(imgInfo);

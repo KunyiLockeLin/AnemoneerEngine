@@ -71,7 +71,7 @@ enum QeDescriptorSetLayoutType {
 struct QeDataDescriptorSet {
 	QeDescriptorSetLayoutType type;
 	VkDescriptorSet set= VK_NULL_HANDLE;
-	bool bRender = false;
+	VkImageLayout imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 	QeDataDescriptorSet(QeDescriptorSetLayoutType _type) :type(_type) {}
 	~QeDataDescriptorSet();

@@ -25,10 +25,14 @@ void QeRender::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 QeDataDescriptorSetModel QeRender::createDescriptorSetModel() {
 
-	descriptorSet.bRender = true;
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	QeDataRender* render = GRAP->getRender(eRender_color, targetCameraOID, renderSize);
+
+	if (render->subpass.size()>0)
+		descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	else
+		descriptorSet.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 	descriptorSetData.baseColorMapImageView = render->colorImage.view;
 	descriptorSetData.baseColorMapSampler = render->colorImage.sampler;

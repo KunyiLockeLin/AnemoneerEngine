@@ -61,6 +61,8 @@ void QeGraphics::clear() {
 void QeGraphics::initialize() {
 
 	clear();
+	sampleCount = VK->getMaxUsableSampleCount();
+
 	renders.resize(eRender_MAX);
 
 	bRecreateRender = true;
@@ -267,9 +269,6 @@ void QeGraphics::update1() {
 	if (bRecreateRender) {
 
 		cleanupRender();
-
-		sampleCount = VK->getMaxUsableSampleCount();
-
  		renderCompleteSemaphore = VK->createSyncObjectSemaphore();
 		if (!swapchain.khr)			VK->createSwapchain(&swapchain);
 		size_t size = swapchain.images.size();
@@ -437,7 +436,6 @@ void QeGraphics::refreshRender() {
 					else {
 						image = &render->colorImage2;
 					}
-					if(i == eRender_color) render->subpass[j]->descriptorSet.bRender = true;
 					data.inputAttachImageView = image->view;
 					data.inputAttachSampler = image->sampler;
 
@@ -508,6 +506,8 @@ bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int po
 		data->graphicsPipeline.shader = &data->graphicsShader;
 		VK->createDescriptorSet(data->descriptorSet);
 
+		//if(renderType==eRender_color)	data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
 		data->bufferData.param1 = postprocessing->param1;
 
 		if (type == 1) {
@@ -543,6 +543,8 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 		AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
 		data->graphicsPipeline.shader = &data->graphicsShader;
 		VK->createDescriptorSet(data->descriptorSet);
+		//data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
 		VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
 		render->subpass.push_back(data);
 	}

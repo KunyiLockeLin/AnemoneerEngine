@@ -534,7 +534,7 @@
 		</path>
 		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
 		</render>
-		<startScene eid="0">
+		<startScene eid="1">
 		</startScene>
 	</setting>
 </confing>
