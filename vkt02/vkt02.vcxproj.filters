@@ -90,13 +90,7 @@
     <ClCompile Include="qegrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qebillboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qecubemap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="qerender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qeparticle.cpp">
@@ -109,6 +103,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qepostprocessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qeplane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,13 +182,7 @@
     <ClInclude Include="qegrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qebillboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="qecubemap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="qerender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeparticle.h">
@@ -204,6 +195,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qepostprocessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qeplane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

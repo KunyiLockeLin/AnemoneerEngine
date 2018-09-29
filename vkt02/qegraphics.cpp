@@ -67,7 +67,6 @@ void QeGraphics::initialize() {
 
 	bRecreateRender = true;
 	createRender(eRender_KHR, 0, { 0,0 });
-	//createRender(eRender_main, 0, {0,0});
 }
 
 void QeGraphics::updateViewport() {
@@ -147,6 +146,19 @@ void QeGraphics::addLight(QeLight* light) {
 void QeGraphics::removeLight(QeLight* light) {
 	bUpdateLight = true;
 	eraseElementFromVector(lights, light);
+}
+
+void QeGraphics::add2DModel(QeModel* model) {
+	
+	for (size_t i = models2D.size() - 1; i>-1 ;++i) {
+
+		if ((models2D[i]->owner->transform->worldPosition().z== model->owner->transform->worldPosition().z) ||
+			(models2D[i]->owner->transform->worldPosition().z< model->owner->transform->worldPosition().z)) {
+			models2D.insert(models2D.begin()+i, model);
+			return;
+		}
+	}
+	models2D.push_back(model);
 }
 
 void QeGraphics::popViewport(QeRenderType type) {
@@ -390,23 +402,30 @@ void QeGraphics::refreshRender() {
 
 			QeDataDescriptorSetPostprocessing data;
 			data.buffer = render->subpass[0]->buffer.buffer;
-			data.inputAttachImageView = renders[eRender_main]->colorImage.view;
-			data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
+
+			QeDataRender * render2=nullptr;
+			for (int i = 1;i<size;++i ) {
+				render2 = renders[i];
+				if (render2) break;
+			}
+
+			data.inputAttachImageView = render2->colorImage.view;
+			data.inputAttachSampler = render2->colorImage.sampler;
 
 			VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
 			render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
 		}
 		else if (i == eRender_color || i== eRender_main) {
 
-			if(i==eRender_main)	render->depthStencilImage.~QeVKImage();
+			if(i==eRender_main )	render->depthStencilImage.~QeVKImage();
 			if(!render->depthStencilImage.view) VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(), nullptr, sampleCount);
 			formats.push_back(VK->findDepthStencilFormat());
 			views.push_back(render->depthStencilImage.view);
 
 			if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
 
-				if (i == eRender_main) render->multiSampleColorImage.~QeVKImage();
-				if (!render->multiSampleColorImage.view)	 VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
+				if (i == eRender_main )	render->multiSampleColorImage.~QeVKImage();
+				if (!render->multiSampleColorImage.view)	VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr, sampleCount);
 				formats.push_back(format);
 				views.push_back(render->multiSampleColorImage.view);
 			}
@@ -564,7 +583,7 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 }
 
 
-QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize) {
+QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID) {
 	size_t size = renders.size();
 
 	for (size_t i = 1; i<size; ++i) {
@@ -573,7 +592,8 @@ QeDataRender * QeGraphics::getRender(QeRenderType type, int cameraOID, VkExtent2
 
 		if (render->viewports[0]->camera->oid == cameraOID) return render;
 	}
-	return createRender(type, cameraOID, renderSize);
+	//return createRender(type, cameraOID, renderSize);
+	return nullptr;
 }
 
 void QeGraphics::cleanupRender() {

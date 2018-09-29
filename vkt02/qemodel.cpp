@@ -26,12 +26,13 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
 
-	bRotate = true;
 	VK->createDescriptorSet(descriptorSet);
 	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
 void QeModel::clear() {
+	b2D = false;
+	bRotate = true;
 	descriptorSet.~QeDataDescriptorSet();
 	modelBuffer.~QeVKBuffer();
 	if (graphicsPipeline.bAlpha)	eraseElementFromVector<QeModel*>(GRAP->alphaModels, this);
@@ -142,8 +143,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 		vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
 		break;
 
-	case eComponent_render:
-	case eComponent_billboard:
+	case eComponent_plane:
 		vkCmdDraw(command->commandBuffer, 1, 1, 0, 0);
 		break;
 

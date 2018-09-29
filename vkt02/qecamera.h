@@ -15,8 +15,9 @@ public:
 	QeCamera(QeObjectMangerKey& _key):QeComponent(_key){}
 	~QeCamera() {}
 
-	bool bMain;
+	QeRenderType cameraType;
 	int lookAtTransformOID;
+	VkExtent2D renderSize;
 
 	QeVector3f up;
 	float fov;
@@ -24,6 +25,7 @@ public:
 	float ffar;
 	float speed;
 	int cullingDistance;
+	bool b2D;
 
 	QeVector2i lastMousePos;
 	float faspect;

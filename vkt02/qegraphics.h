@@ -103,6 +103,7 @@ public:
 
 	std::vector<QeModel*> models;
 	std::vector<QeModel*> alphaModels;
+	std::vector<QeModel*> models2D;
 	std::vector<QeLight*> lights;
 	QeVKBuffer lightsBuffer;
 	bool bUpdateLight= false;
@@ -114,13 +115,14 @@ public:
 	void popViewport(QeRenderType type);
 	void updateViewport();
 	void updateBuffer();
+	void add2DModel(QeModel* model);
 	void addLight(QeLight* light);
 	void removeLight(QeLight* light);
 	void update1();
 	void update2();
 	void setTargetCamera(int cameraOID);
 	QeCamera* getTargetCamera();
-	QeDataRender * getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);
+	QeDataRender * getRender(QeRenderType type, int cameraOID);
 	//bool bUpdateComputeCommandBuffers = false;
 	//bool bUpdateDrawCommandBuffers = false;
 	bool bRecreateRender = false;

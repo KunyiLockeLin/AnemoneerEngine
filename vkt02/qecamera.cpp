@@ -6,7 +6,6 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	//type = eCameraThirdPerson;
 
 	AST->getXMLiValue(&lookAtTransformOID, initProperty, 1, "lookAtTransformOID");
-	AST->getXMLbValue(&bMain, initProperty, 1, "main");
 	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
 	AST->getXMLfValue(&up.y, initProperty, 1, "upY");
 	AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
@@ -15,14 +14,16 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLfValue(&fov, initProperty, 1, "fov");
 	AST->getXMLfValue(&fnear, initProperty, 1, "near");
 	AST->getXMLfValue(&ffar, initProperty, 1, "far");
-
-	if (bMain) {
-		GRAP->createRender(eRender_main, oid, { 0,0 });
-	}
-
 	AST->getXMLiValue(&postProcessingOID, initProperty, 1, "postProcessingOID");
 	bUpdatePostProcessingOID = false;
 	if (postProcessingOID) bUpdatePostProcessingOID = true;
+
+	AST->getXMLiValue((int*)&cameraType, initProperty, 1, "cameraType");
+	AST->getXMLiValue((int*)&renderSize.width, initProperty, 1, "width");
+	AST->getXMLiValue((int*)&renderSize.height, initProperty, 1, "height");
+	GRAP->createRender(cameraType, oid, renderSize);
+
+	AST->getXMLbValue(&b2D, initProperty, 1, "b2D");
 }
 
 void QeCamera::rotateTarget(QeVector3f _addRotate) {
@@ -115,10 +116,8 @@ void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
 void QeCamera::update1() {
 
 	if (bUpdatePostProcessingOID && postProcessingOID) {
-		QeRenderType type = eRender_main;
-		if (!bMain) type = eRender_color;
 
-		if (GRAP->addPostProcssing(type, oid, postProcessingOID)) {
+		if (GRAP->addPostProcssing(cameraType, oid, postProcessingOID)) {
 			bUpdatePostProcessingOID = false;
 		}
 	}
@@ -126,7 +125,12 @@ void QeCamera::update1() {
 	QeVector3f lookAtV = lookAt();
 	QeVector3f pos = owner->transform->worldPosition();
 
-	bufferData.view = MATH->lookAt(pos, lookAtV, up);
+	if (b2D) {
+		bufferData.view = MATH->lookAt(pos, lookAtV, up);
+	}
+	else{
+		bufferData.view = MATH->lookAt(pos, lookAtV, up);
+	}
 	bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
 	bufferData.pos = pos;
 }

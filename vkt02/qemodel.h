@@ -40,6 +40,7 @@ public:
 	int materialOID;
 	bool bUpdateMaterialOID;
 	bool bRotate=true;
+	bool b2D=false;
 
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 	virtual void createPipeline();

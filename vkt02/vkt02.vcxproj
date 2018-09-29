@@ -165,7 +165,7 @@
   <ItemGroup>
     <ClCompile Include="qeanimation.cpp" />
     <ClCompile Include="qeaxis.cpp" />
-    <ClCompile Include="qebillboard.cpp" />
+    <ClCompile Include="qeplane.cpp" />
     <ClCompile Include="qecubemap.cpp" />
     <ClCompile Include="qegrid.cpp" />
     <ClCompile Include="qeinputcontrol.cpp" />
@@ -175,7 +175,6 @@
     <ClCompile Include="qemodel.cpp" />
     <ClCompile Include="qeparticle.cpp" />
     <ClCompile Include="qepostprocessing.cpp" />
-    <ClCompile Include="qerender.cpp" />
     <ClCompile Include="qescene.cpp" />
     <ClCompile Include="qeasset.cpp" />
     <ClCompile Include="qecomponent.cpp" />
@@ -198,7 +197,7 @@
   <ItemGroup>
     <ClInclude Include="qeanimation.h" />
     <ClInclude Include="qeaxis.h" />
-    <ClInclude Include="qebillboard.h" />
+    <ClInclude Include="qeplane.h" />
     <ClInclude Include="qecubemap.h" />
     <ClInclude Include="qegrid.h" />
     <ClInclude Include="qeinputcontrol.h" />
@@ -208,7 +207,6 @@
     <ClInclude Include="qemodel.h" />
     <ClInclude Include="qeparticle.h" />
     <ClInclude Include="qepostprocessing.h" />
-    <ClInclude Include="qerender.h" />
     <ClInclude Include="qescene.h" />
     <ClInclude Include="qeasset.h" />
     <ClInclude Include="qecomponent.h" />

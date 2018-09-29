@@ -146,8 +146,8 @@ QeComponent* QeObjectManger::spwanComponent(QeAssetXML* _property, QeObject* _ow
 		case eComponent_animation:
 			_component = new QeAnimation(key);
 			break;
-		case eComponent_billboard:
-			_component = new QeBillboard(key);
+		case eComponent_plane:
+			_component = new QePlane(key);
 			break;
 		case eComponent_cubemap:
 			_component = new QeCubemap(key);
@@ -160,9 +160,6 @@ QeComponent* QeObjectManger::spwanComponent(QeAssetXML* _property, QeObject* _ow
 			break;
 		case eComponent_inputControl:
 			_component = new QeInputControl(key);
-			break;
-		case eComponent_render:
-			_component = new QeRender(key);
 			break;
 		}
 	}
