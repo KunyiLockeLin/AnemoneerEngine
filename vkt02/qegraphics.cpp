@@ -216,6 +216,13 @@ void QeGraphics::updateBuffer() {
 		VK->setMemoryBuffer(lightsBuffer, sizeof(QeDataLight) * lights.size(), lightsData.data());
 	}
 
+	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
+	AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
+	AST->getXMLbValue(&VK->bShowNormal, node, 1, "normal");
+	AST->getXMLfValue(&clearColor.x, node, 1, "clearColorR");
+	AST->getXMLfValue(&clearColor.y, node, 1, "clearColorG");
+	AST->getXMLfValue(&clearColor.z, node, 1, "clearColorB");
+
 	size_t size = renders.size();
 	for (size_t i = 1; i < size; ++i) {
 		
@@ -231,7 +238,6 @@ void QeGraphics::updateBuffer() {
 			viewport->environmentData.camera = viewport->camera->bufferData;
 			viewport->environmentData.param.x = float(lights.size());
 
-			QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
 			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "gamma");
 			AST->getXMLfValue(&viewport->environmentData.param.z, node, 1, "exposure");
 
@@ -263,12 +269,6 @@ void QeGraphics::update1() {
 		cleanupRender();
 
 		sampleCount = VK->getMaxUsableSampleCount();
-		QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
-		AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
-		AST->getXMLbValue(&VK->bShowNormal, node, 1, "normal");
-		AST->getXMLfValue(&clearColor.x, node, 1, "clearColorR");
-		AST->getXMLfValue(&clearColor.y, node, 1, "clearColorG");
-		AST->getXMLfValue(&clearColor.z, node, 1, "clearColorB");
 
  		renderCompleteSemaphore = VK->createSyncObjectSemaphore();
 		if (!swapchain.khr)			VK->createSwapchain(&swapchain);
@@ -452,7 +452,8 @@ void QeGraphics::refreshRender() {
 				formats.push_back(format);
 			}
 		}
-		if(!render->renderPass)	render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
+		if(render->renderPass)	vkDestroyRenderPass(VK->device, render->renderPass, nullptr);
+		render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
 
 		for (size_t j = 0; j < size1; ++j) {
 			render->subpass[j]->graphicsPipeline.renderPass = render->renderPass;
@@ -480,13 +481,45 @@ void QeGraphics::refreshRender() {
 	}
 }
 
-bool QeGraphics::addPostProcssing(QeRenderType type, int cameraOID, int postprocessingOID) {
+bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int postprocessingOID) {
 
-	if (renders[type]->cameraOID != cameraOID) return false;
+	if (renders[renderType]->cameraOID != cameraOID) return false;
 	QePostProcessing* postprocessing = (QePostProcessing*)OBJMGR->findComponent(eComponent_postprocessing, postprocessingOID);
 	if (!postprocessing) return false;
 
-	return false;
+	bRecreateRender = true;
+
+	int count = 1;
+	int type = 0; // 1: bloom
+
+	if (strcmp(AST->getXMLValue(postprocessing->initProperty, 1, "frag"), "bloomf.spv") == 0) {
+		if (postprocessing->param1.x > 1.f) count = int(postprocessing->param1.x);
+		type = 1;
+	}
+
+	for (int i = 0; i < count; ++i) {
+		QeDataSubpass* data = new QeDataSubpass();
+
+		data->graphicsPipeline.bAlpha = false;
+		data->graphicsPipeline.componentType = eComponent_postprocessing;
+		data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
+		data->graphicsPipeline.subpass = i + 1;
+
+		AST->setGraphicsShader(data->graphicsShader, postprocessing->initProperty, "postprocessing");
+		data->graphicsPipeline.shader = &data->graphicsShader;
+		VK->createDescriptorSet(data->descriptorSet);
+
+		data->bufferData.param1 = postprocessing->param1;
+
+		if (type == 1) {
+			if (postprocessing->param1.x < 2)	data->bufferData.param1.x = postprocessing->param1.x;
+			else				data->bufferData.param1.x = float(i);
+		}
+
+		VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
+		renders[renderType]->subpass.push_back(data);
+	}
+	return true;
 }
 
 
@@ -499,51 +532,7 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 	render->scissor.extent = renderSize;
 
 	size_t size1 = 1;
-	if (type == eRender_main) {
-
-		/*QeAssetXML * node = AST->getXMLNode(initProperty, 1, "postprocessing");
-		if (node) {
-
-			QeVector4f param1;
-			AST->getXMLfValue(&param1.x, node, 1, "p0");
-			AST->getXMLfValue(&param1.y, node, 1, "p1");
-			AST->getXMLfValue(&param1.z, node, 1, "p2");
-			AST->getXMLfValue(&param1.w, node, 1, "p3");
-
-			int count = 1;
-			int type = 0; // 1: bloom
-
-			if (strcmp(AST->getXMLValue(node, 1, "frag"), "bloomf.spv") == 0) {
-
-				if (param1.x > 1.f) count = int(param1.x);
-				type = 1;
-			}
-
-			for (int i = 0;i<count; ++i) {
-				QeDataSubpass* data = new QeDataSubpass();
-
-				data->graphicsPipeline.bAlpha = false;
-				data->graphicsPipeline.objectType = eObject_Scene;
-				data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
-				data->graphicsPipeline.subpass = i + 1;
-
-				AST->setGraphicsShader(data->graphicsShader, AST->getXMLNode(initProperty, 1, "postprocessing"), "postprocessing");
-				data->graphicsPipeline.shader = &data->graphicsShader;
-				VK->createDescriptorSet(data->descriptorSet);
-				
-				data->bufferData.param1 = param1;
-				
-				if (type==1) {
-					if (param1.x < 2)	data->bufferData.param1.x = param1.x;
-					else				data->bufferData.param1.x = float(i);
-				}
-
-				VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
-				render->subpass.push_back(data);
-			}
-		}*/
-	}
-	else if(type == eRender_KHR){
+	if(type == eRender_KHR){
 		size1 = VK->getSwapchainSize();
 		QeDataSubpass* data = new QeDataSubpass();
 

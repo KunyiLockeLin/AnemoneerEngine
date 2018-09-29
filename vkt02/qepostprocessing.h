@@ -8,7 +8,7 @@ public:
 	QePostProcessing(QeObjectMangerKey& _key) :QeComponent(_key) {}
 	//~QePostProcessing();
 
-	float param[4];
+	QeVector4f param1;
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
 };
 

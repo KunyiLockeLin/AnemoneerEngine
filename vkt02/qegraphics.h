@@ -109,7 +109,7 @@ public:
 
 	void initialize();
 	void clear();
-	bool addPostProcssing(QeRenderType type, int cameraOID, int postprocessingOID);
+	bool addPostProcssing(QeRenderType renderType, int cameraOID, int postprocessingOID);
 	void addNewViewport(QeRenderType type);
 	void popViewport(QeRenderType type);
 	void updateViewport();
