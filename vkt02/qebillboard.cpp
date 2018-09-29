@@ -18,6 +18,7 @@ void QeBillboard::initialize(QeAssetXML* _property, QeObject* _owner) {
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
 	bRotate = false;
-	computeShader = VK_NULL_HANDLE;
-	computePipeline = VK_NULL_HANDLE;
+
+	VK->createDescriptorSet(descriptorSet);
+	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }

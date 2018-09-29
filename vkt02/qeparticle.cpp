@@ -11,6 +11,8 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
 	computeShader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "particle", "comp"));
+	computePipeline = VK->createComputePipeline(computeShader);
+
 	shaderKey = "particle";
 	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
@@ -39,6 +41,9 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createBuffer(vertexBuffer, sizeof(QeVertex) * totalParticlesSize, nullptr);
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
+
+	VK->createDescriptorSet(descriptorSet);
+	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
 void QeParticle::clear() {
@@ -47,6 +52,8 @@ void QeParticle::clear() {
 	bDeaths.clear();
 	vertexBuffer.~QeVKBuffer();
 	outBuffer.~QeVKBuffer();
+	vkDestroyPipeline(VK->device, computePipeline, nullptr);
+	computePipeline = VK_NULL_HANDLE;
 
 	QeModel::clear();
 }

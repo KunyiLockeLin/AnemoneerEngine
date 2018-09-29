@@ -18,6 +18,9 @@ void QeRender::initialize(QeAssetXML* _property, QeObject* _owner) {
 	GRAP->models.push_back(this);
 
 	GRAP->getRender(eRender_color, targetCameraOID, renderSize);
+	VK->createDescriptorSet(descriptorSet);
+	//VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+	bUpdate = false;
 }
 
 QeDataDescriptorSetModel QeRender::createDescriptorSetModel() {
@@ -34,6 +37,11 @@ QeDataDescriptorSetModel QeRender::createDescriptorSetModel() {
 
 
 void QeRender::update1() {
+
+	if (!bUpdate) {
+		VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+		bUpdate = true;
+	}
 
 	QeVector3f scale = owner->transform->worldScale();
 	scale.x *= MATH->fastSqrt((float(renderSize.width) / renderSize.height));

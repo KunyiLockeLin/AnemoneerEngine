@@ -285,7 +285,6 @@ void QeGraphics::update1() {
 		refreshRender();
 		updateViewport();
 
-		recreatePipeline();		
 		bRecreateRender = false;
 	}
 	VK->pushConstants[0] = QE->deltaTime;
@@ -739,24 +738,6 @@ void QeGraphics::sortAlphaModels(QeCamera * camera) {
 		}
 	}
 }
-
-void QeGraphics::recreatePipeline() {
-	
-	std::vector<QeModel*>::iterator it = models.begin();
-	while (it != models.end()) {
-		(*it)->updateShaderData();
-		(*it)->createPipeline();
-		++it;
-	}
-
-	it = alphaModels.begin();
-	while (it != alphaModels.end()) {
-		(*it)->updateShaderData();
-		(*it)->createPipeline();
-		++it;
-	}
-}
-
 
 void QeGraphics::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 

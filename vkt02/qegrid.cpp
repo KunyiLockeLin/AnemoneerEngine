@@ -26,6 +26,9 @@ void QeGrid::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
+
+	VK->createDescriptorSet(descriptorSet);
+	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
 void QeGrid::update1() {

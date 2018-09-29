@@ -138,8 +138,6 @@ public:
 
 	void sortAlphaModels(QeCamera * camera);
 
-	void recreatePipeline();
-
 	void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet);
 	void updateDrawCommandBuffer(QeDataDrawCommand* command);
 };

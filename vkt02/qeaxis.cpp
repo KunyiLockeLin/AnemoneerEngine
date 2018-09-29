@@ -13,6 +13,9 @@ void QeAxis::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
+
+	VK->createDescriptorSet(descriptorSet);
+	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
 void QeAxis::update1() {

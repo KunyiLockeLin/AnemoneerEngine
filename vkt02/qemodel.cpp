@@ -25,6 +25,8 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	GRAP->models.push_back(this);
 
 	bRotate = true;
+	VK->createDescriptorSet(descriptorSet);
+	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
 void QeModel::clear() {
@@ -65,15 +67,6 @@ void QeModel::update1() {
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }
 void QeModel::update2() {}
-
-
-void QeModel::updateShaderData() {
-
-	if (!descriptorSet.set) {
-		VK->createDescriptorSet(descriptorSet);
-		VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
-	}
-}
 
 QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;

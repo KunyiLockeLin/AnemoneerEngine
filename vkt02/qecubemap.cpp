@@ -14,6 +14,9 @@ void QeCubemap::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 	graphicsPipeline.bAlpha = false;
 	GRAP->models.push_back(this);
+
+	VK->createDescriptorSet(descriptorSet);
+	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
 QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel() {
