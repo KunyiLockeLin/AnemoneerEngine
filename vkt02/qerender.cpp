@@ -12,6 +12,7 @@ void QeRender::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLiValue((int*)&renderSize.width, initProperty, 1, "width");
 	AST->getXMLiValue((int*)&renderSize.height, initProperty, 1, "height");
 	AST->getXMLiValue(&targetCameraOID, initProperty, 1, "targetCameraOID");
+	//AST->getXMLbValue(&b2D, initProperty, 1, "b2D");
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 	graphicsPipeline.bAlpha = false;
@@ -50,6 +51,5 @@ void QeRender::update1() {
 	QeVector3f scale = owner->transform->worldScale();
 	scale.x *= MATH->fastSqrt((float(renderSize.width) / renderSize.height));
 	bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale);
-
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }

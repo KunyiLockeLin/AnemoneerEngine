@@ -10,6 +10,7 @@ public:
 	VkExtent2D renderSize;
 	int targetCameraOID;
 	bool bUpdate;
+	//bool b2D;
 
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
 	virtual void update1();
