@@ -73,19 +73,19 @@
 			</sphere>
 		</default>
 		<scene1 eid="1" type="2000">
-			<MainCamera oid="1" eid="1" type="1000">
+			<MainCamera oid="100" eid="100" type="1000">
 				<components>
-					<Transform oid="10" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
-					<Axis oid="11" eid="1" type="13">
+					<Axis oid="100" eid="1" type="13">
 					</Axis>
 				</components>
 				<children>
-					<camera oid="3" eid="1" type="1000">
+					<camera oid="101" eid="101" type="1000">
 						<components>
-							<Transform oid="30" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+							<Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Camera oid="31" eid="1" type="2" main="1" lookAtTransformOID="10" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
+							<Camera oid="101" eid="1" type="2" main="1" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000">
 							</Camera>
 						</components>
 						<children>
@@ -93,9 +93,9 @@
 					</camera>
 				</children>
 			</MainCamera>
-			<setting oid="2" eid="1" type="1000">
+			<setting oid="200" eid="200" type="1000">
 				<components>
-					<InputControl oid="20" eid="1" type="12">
+					<InputControl oid="200" eid="1" type="12">
 					</InputControl>
 				</components>
 				<children>
@@ -125,17 +125,17 @@
 				<components>
 					<Transform oid="1100" eid="1" type="1" localPositionX="2" localPositionY="2" localPositionZ="-1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="10" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="700" targetBoneName="Armature_Bone_002">
 					</Transform>
-					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="">
+					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="0">
 					</Model>
 				</components>
 				<children>
 				</children>
 			</sphere>
-			<grid oid="6" eid="1" type="1000">
+			<grid oid="300" eid="300" type="1000">
 				<components>
-					<Transform oid="60" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="300" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
-					<Grid oid="61" eid="1" type="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5">
+					<Grid oid="300" eid="1" type="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5">
 					</Grid>
 				</components>
 				<children>
@@ -394,7 +394,7 @@
 			<components>
 				<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 				</Transform>
-				<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0.2" materialOID="">
+				<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="0">
 				</Model>
 			</components>
 			<children>
@@ -463,7 +463,7 @@
 			</base>
 			<pbr oid="0" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png">
 			</pbr>
-			<reflect oid="0" eid="3" type="11" vert="" tesc="" tese="" geom="baseg.spv" frag="cubemapreflectf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="">
+			<reflect oid="0" eid="3" type="11" vert="" tesc="" tese="" geom="" frag="cubemapreflectf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="">
 			</reflect>
 		</Material>
 		<InputControl type="12">
@@ -520,7 +520,7 @@
 		</path>
 		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
 		</render>
-		<startScene eid="1">
+		<startScene eid="0">
 		</startScene>
 	</setting>
 </confing>

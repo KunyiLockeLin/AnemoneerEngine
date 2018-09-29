@@ -11,5 +11,4 @@ public:
 
 	bool bAlpha;
 	QeAssetMaterial materialData;
-	QeAssetGraphicsShader shaderData;
 };

@@ -14,6 +14,7 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	if(materialData) bufferData.material = materialData->value;
 
 	shaderKey = "model";
+	graphicsShader = {nullptr,nullptr ,nullptr ,nullptr ,nullptr};
 	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 	AST->setGraphicsShader(normalShader, nullptr, "normal");
 	AST->setGraphicsShader(outlineShader, nullptr, "outline");
