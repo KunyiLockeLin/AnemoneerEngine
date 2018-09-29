@@ -389,7 +389,6 @@ void QeGraphics::refreshRender() {
 
 			QeDataDescriptorSetPostprocessing data;
 			data.buffer = render->subpass[0]->buffer.buffer;
-			//render->subpass[0]->descriptorSet.bRender = true;
 			data.inputAttachImageView = renders[eRender_main]->colorImage.view;
 			data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
 
@@ -438,7 +437,7 @@ void QeGraphics::refreshRender() {
 					else {
 						image = &render->colorImage2;
 					}
-					//render->subpass[j]->descriptorSet.bRender = true;
+					if(i == eRender_color) render->subpass[j]->descriptorSet.bRender = true;
 					data.inputAttachImageView = image->view;
 					data.inputAttachSampler = image->sampler;
 
