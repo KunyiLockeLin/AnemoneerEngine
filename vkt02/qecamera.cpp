@@ -101,7 +101,6 @@ void QeCamera::reset() {
 }
 
 void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
-	if (!lookAtTransformOID) return;
 	if (!_lookAtransformOID) return;
 
 	QeTransform* lookAtTransform1 = (QeTransform*)OBJMGR->findComponent(eComponent_transform, _lookAtransformOID);

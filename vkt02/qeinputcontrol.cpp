@@ -14,11 +14,11 @@ void QeInputControl::updateInput() {
 
 	switch (WIN->inputData.inputType) {
 
-// viewport
 	case WM_KEYDOWN:
 		switch (WIN->inputData.inputKey) {
+		// viewport
 
-		case VK_NUMPAD1:
+		/*case VK_NUMPAD1:
 		case VK_NUMPAD2:
 		case VK_NUMPAD3:
 		case VK_NUMPAD4:
@@ -35,6 +35,7 @@ void QeInputControl::updateInput() {
 		case VK_SUBTRACT:
 			GRAP->popViewport(eRender_main);
 			break;
+		*/
 
 // camera
 		case VK_UP:

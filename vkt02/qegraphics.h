@@ -95,8 +95,8 @@ public:
 	QeVector3f clearColor;
 	QeDataSwapchain swapchain;
 
-	int currentTargetViewport = 0;
-
+	//int currentTargetViewport = 0;
+	QeCamera* currentCamera = nullptr;
 	VkSemaphore renderCompleteSemaphore = VK_NULL_HANDLE;
 	std::vector<VkFence> fences;
 	VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT;
@@ -118,7 +118,7 @@ public:
 	void removeLight(QeLight* light);
 	void update1();
 	void update2();
-	void setTargetCamera(int index);
+	void setTargetCamera(int cameraOID);
 	QeCamera* getTargetCamera();
 	QeDataRender * getRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);
 	//bool bUpdateComputeCommandBuffers = false;

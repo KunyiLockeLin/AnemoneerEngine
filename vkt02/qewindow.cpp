@@ -123,7 +123,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					}
 				}
 				break;
-			case eUIType_btnSetCamera:
+			case eUIType_btnCameraFocus:
 				if (currentTreeViewNodeIndex != INDEX_NONE) {
 					int type=0;
 					AST->getXMLiValue(&type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
@@ -131,6 +131,17 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						int oid = 0;
 						AST->getXMLiValue(&oid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "oid");
 						GRAP->getTargetCamera()->setLookAtTransformOID(oid);
+					}
+				}
+				break;
+			case eUIType_btnCameraControl:
+				if (currentTreeViewNodeIndex != INDEX_NONE) {
+					int type = 0;
+					AST->getXMLiValue(&type, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "type");
+					if (type == eComponent_camera) {
+						int oid = 0;
+						AST->getXMLiValue(&oid, currentTreeViewNodes[currentTreeViewNodeIndex], 1, "oid");
+						GRAP->setTargetCamera(oid);
 					}
 				}
 				break;
@@ -445,12 +456,14 @@ void QeWindow::openEditWindow() {
 		width - 100, 25 + 55 * 5, 100, 50, editWindow, (HMENU)eUIType_btnSaveEID, windowInstance, NULL);
 	btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 		width - 100, 25 + 55 * 6, 100, 50, editWindow, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
-	btnSetCamera = CreateWindow(WC_BUTTON, L"Set Camera", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 25 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnSetCamera, windowInstance, NULL);
+	btnCameraFocus = CreateWindow(WC_BUTTON, L"Camera Focus", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 25 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnCameraFocus, windowInstance, NULL);
+	btnCameraControl = CreateWindow(WC_BUTTON, L"Camera Ctrl", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		width - 100, 25 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnCameraControl, windowInstance, NULL);
 	btnNewItem = CreateWindow(WC_BUTTON, L"New Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 25 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
+		width - 100, 25 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
 	btnDeleteItem = CreateWindow(WC_BUTTON, L"Delete Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		width - 100, 25 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
+		width - 100, 25 + 55 * 10, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
 
 	updateTab();
 }

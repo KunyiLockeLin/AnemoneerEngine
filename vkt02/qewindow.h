@@ -17,9 +17,10 @@ enum QeUIType {
 	eUIType_btnLoadScene=5,
 	eUIType_btnSaveEID=6,
 	eUIType_btnLoadEID=7,
-	eUIType_btnSetCamera=8,
+	eUIType_btnCameraFocus=8,
 	eUIType_btnNewItem = 9,
 	eUIType_btnDeleteItem = 10,
+	eUIType_btnCameraControl = 11,
 };
 
 class QeWindow
@@ -31,7 +32,7 @@ public:
 	HINSTANCE windowInstance;
 	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
-	HWND btnPause, btnUpdateAll, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnSetCamera, btnNewItem, btnDeleteItem;
+	HWND btnPause, btnUpdateAll, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnCameraFocus, btnCameraControl, btnNewItem, btnDeleteItem;
 
 	int currentTabIndex;
 	int currentTreeViewNodeIndex;

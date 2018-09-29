@@ -186,16 +186,18 @@ void QeGraphics::addNewViewport(QeRenderType type) {
 	VK->updateDescriptorSet(&data, vp->commonDescriptorSet);
 }
 
-void QeGraphics::setTargetCamera( int index ) {
+void QeGraphics::setTargetCamera( int cameraOID ) {
 	
-	if (index < renders[eRender_main]->viewports.size() && index != currentTargetViewport ) {
-		currentTargetViewport = index;
+	//if (index < renders[eRender_main]->viewports.size() && index != currentTargetViewport ) {
+	//	currentTargetViewport = index;
 		//getTargetCamera()->updateAxis();
-	}
+	//}
+	currentCamera = (QeCamera*)OBJMGR->findComponent( eComponent_camera, cameraOID);
 }
 
 QeCamera* QeGraphics::getTargetCamera() {
-	return renders[eRender_main]->viewports[currentTargetViewport]->camera;
+	//return renders[eRender_main]->viewports[currentTargetViewport]->camera;
+	return currentCamera;
 }
 
 void QeGraphics::updateBuffer() {
@@ -529,6 +531,10 @@ QeDataRender* QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 
 	render->cameraOID = cameraOID;
 	render->scissor.extent = renderSize;
+
+	if (type == eRender_main){
+		setTargetCamera(cameraOID);
+	}
 
 	size_t size1 = 1;
 	if(type == eRender_KHR){

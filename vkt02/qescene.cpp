@@ -10,7 +10,7 @@ void QeScene::initialize(QeAssetXML* _property) {
 	for (int index = 0; index < initProperty->nexts.size(); ++index) {
 		objects.push_back(OBJMGR->spwanObject(initProperty->nexts[index], nullptr));
 	}
-	LOG("current Scene:" + name + " " + eid);
+	LOG("current Scene: " + name + " " + eid);
 }
 
 void QeScene::clear() {
