@@ -738,12 +738,12 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			renderPassInfo.framebuffer = render->frameBuffers[j];
 
-			if (i != eRender_KHR) {
+			if (i == eRender_main) {
 				// pushConstants
-         
+				VK->updatePushConstnats(render->commandBuffers[j]);
 				//compute shader
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
-				updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
+				updateComputeCommandBuffer(render->commandBuffers[j]);
 			}
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -842,17 +842,17 @@ void QeGraphics::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	}
 }
 
-void QeGraphics::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
+void QeGraphics::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer) {
 
 	std::vector<QeModel*>::iterator it = models.begin();
 	while (it != models.end()) {
-		(*it)->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
+		(*it)->updateComputeCommandBuffer(commandBuffer);
 		++it;
 	}
 
 	it = alphaModels.begin();
 	while (it != alphaModels.end()) {
-		(*it)->updateComputeCommandBuffer(commandBuffer, camera, commonDescriptorSet);
+		(*it)->updateComputeCommandBuffer(commandBuffer);
 		++it;
 	}
 }

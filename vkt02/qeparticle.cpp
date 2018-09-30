@@ -134,7 +134,7 @@ QeDataDescriptorSetModel QeParticle::createDescriptorSetModel() {
 	return descriptorSetData;
 }
 
-void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {
+void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer) {
 
 	if (!currentParticlesSize) return;
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet.set, 0, nullptr);

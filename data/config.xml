@@ -234,11 +234,11 @@
 						</life>
 						<init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0">
 						</init_pos>
-						<init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.5" z_range="1">
+						<init_speed x="-0.3" x_range="0.6" y="-0.3" y_range="0.6" z="1.0" z_range="2.0">
 						</init_speed>
-						<force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5">
+						<force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="-1.0">
 						</force>
-						<size x="0.5" x_range="0" y="0.5" y_range="0">
+						<size x="0.6" x_range="0" y="0.6" y_range="0">
 						</size>
 						<color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1">
 						</color>
@@ -544,7 +544,7 @@
 		</path>
 		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
 		</render>
-		<startScene eid="1">
+		<startScene eid="0">
 		</startScene>
 	</setting>
 </confing>

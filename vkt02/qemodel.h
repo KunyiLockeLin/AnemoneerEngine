@@ -47,5 +47,5 @@ public:
 	virtual bool isShowByCulling(QeCamera* camera);
 
 	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);
-	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer, QeCamera* camera, QeDataDescriptorSet* commonDescriptorSet) {}
+	virtual void updateComputeCommandBuffer(VkCommandBuffer& commandBuffer) {}
 };
