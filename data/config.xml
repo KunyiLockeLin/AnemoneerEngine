@@ -39,38 +39,38 @@
 				<children>
 				</children>
 			</grid>
-			<light1 oid="400" eid="400" type="1000">
-				<components>
-					<Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-					</Transform>
-				</components>
-				<children>
-					<light1 oid="401" eid="1" type="1000">
-						<components>
-							<Transform oid="401" eid="1" type="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-							</Transform>
-							<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90">
-							</Light>
-							<Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
-							</Plane>
-							<base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
-							</base>
-						</components>
-						<children>
-						</children>
-					</light1>
-				</children>
-			</light1>
-			<sphere oid="1100" eid="1100" type="1000">
-				<components>
-					<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-					</Transform>
-					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0.2" materialOID="">
-					</Model>
-				</components>
-				<children>
-				</children>
-			</sphere>
+      <light1 oid="400" eid="400" type="1000">
+        <components>
+          <Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+        </components>
+        <children>
+          <light1 oid="401" eid="1" type="1000">
+            <components>
+              <Transform oid="401" eid="1" type="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+              </Transform>
+              <Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90">
+              </Light>
+              <Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
+              </Plane>
+              <base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
+              </base>
+            </components>
+            <children>
+            </children>
+          </light1>
+        </children>
+      </light1>
+      <sphere oid="1100" eid="1100" type="1000">
+        <components>
+          <Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0.2" materialOID="">
+          </Model>
+        </components>
+        <children>
+        </children>
+      </sphere>
 		</default>
 		<scene1 eid="1" type="2000">
 			<MainCamera oid="100" eid="100" type="1000">
@@ -193,7 +193,7 @@
 			</camera_render>
 			<render oid="1000" eid="1000" type="1000">
 				<components>
-					<Transform oid="1000" eid="1" type="1" localPositionX="0" localPositionY="6" localPositionZ="5" localScaleX="2.5" localScaleY="2.5" localScaleZ="2.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="1000" eid="1" type="1" localPositionX="0.5" localPositionY="-0.9" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
 					<plane oid="1000" eid="1000" type="8" planeType="2" materialOID="" targetCameraOID="2002">
 					</plane>
@@ -203,7 +203,7 @@
 			</render>
 			<camera_2D oid="2300" eid="2300" type="1000">
 				<components>
-					<Transform oid="2300" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="2300" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
 					<Camera oid="2300" eid="1" type="2" renderType="1" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
 					</Camera>
@@ -511,6 +511,8 @@
 			</normal>
 			<render vert="" tesc="" tese="" geom="" frag="texturef.spv">
 			</render>
+      <b2d vert="pointv.spv" tesc="" tese="" geom="b2dg.spv" frag="basevf.spv">
+      </b2d>
 			<plane vert="pointv.spv" tesc="" tese="" geom="triangleg.spv" frag="basevf.spv">
 			</plane>
 			<billboard vert="pointv.spv" tesc="" tese="" geom="billboardg.spv" frag="basevf.spv">

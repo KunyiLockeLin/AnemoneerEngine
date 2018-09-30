@@ -28,7 +28,7 @@ void main(void)
 		viewModel[2].x = 0;
 		viewModel[2].y = 0;
 		viewModel[2].z = size.z;
-
+ 
 		mat4 mvp = environmentData.camera.projection*viewModel;
 
 		gl_Position = mvp*vec4( 0.0, 0.0, 0.0, 1.0 );

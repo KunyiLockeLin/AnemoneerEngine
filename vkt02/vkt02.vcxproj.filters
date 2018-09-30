@@ -310,6 +310,12 @@
     <None Include="..\data\shaders\bloom.frag">
       <Filter>Resource Files\shaders</Filter>
     </None>
+    <None Include="..\data\shaders\texture.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\data\shaders\b2d.geom">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\data\config.xml">

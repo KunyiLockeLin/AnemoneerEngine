@@ -66,6 +66,13 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 	QeVector3f pos = owner->transform->worldPosition();
 	QeVector3f face = pos - lookAtV;
 
+	if (renderType == eRender_ui) {
+		_dir *= speed;
+		pos += _dir;
+		owner->transform->setWorldPosition(pos);
+		return;
+	}
+
 	// forward
 	if (_dir.z > 0 && !bMoveCenter && MATH->length(face) < 1) {
 		return;
@@ -73,8 +80,6 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 	_dir *= speed;
 	owner->transform->move(_dir, face, up);
 	pos = owner->transform->worldPosition();
-
-	if (renderType == eRender_ui) return;
 
 	if (bMoveCenter) {
 		QeTransform* lookAtTransform = (QeTransform*)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
@@ -130,10 +135,16 @@ void QeCamera::update1() {
 			bUpdatePostProcessingOID = false;
 		}
 	}
-
+	
 	QeVector3f pos = owner->transform->worldPosition();
-	QeVector3f lookAtV = lookAt();
-	bufferData.view = MATH->lookAt(pos, lookAtV, up);
-	bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
 	bufferData.pos = pos;
+
+	if (renderType == eRender_ui) {
+		bufferData.pos.w = ((float)renderSize.width) / renderSize.height;
+	}
+	else {
+		QeVector3f lookAtV = lookAt();
+		bufferData.view = MATH->lookAt(pos, lookAtV, up);
+		bufferData.projection = MATH->perspective(fov, faspect, fnear, ffar);
+	}
 }

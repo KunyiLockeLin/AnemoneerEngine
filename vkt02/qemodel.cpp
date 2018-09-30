@@ -35,6 +35,7 @@ void QeModel::clear() {
 	graphicsShader = { nullptr,nullptr ,nullptr ,nullptr ,nullptr };
 	descriptorSet.~QeDataDescriptorSet();
 	modelBuffer.~QeVKBuffer();
+
 	if (graphicsPipeline.bAlpha)	eraseElementFromVector<QeModel*>(GRAP->alphaModels, this);
 	else							eraseElementFromVector<QeModel*>(GRAP->models, this);
 }
@@ -102,6 +103,10 @@ void QeModel::createPipeline() {
 
 bool QeModel::isShowByCulling(QeCamera* camera) {
 
+	if (componentType == eComponent_plane) {
+		QePlane* plane = (QePlane*)this;
+		if (plane->planeType == ePlane_2D) return true;
+	}
 	bool _bCullingShow = true;
 	QeVector3f vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
 	float dis = MATH->length(vec);

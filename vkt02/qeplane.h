@@ -20,6 +20,7 @@ public:
 	bool bUpdateTargetCameraOID;
 
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
+	virtual void clear();
 	virtual void update1();
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

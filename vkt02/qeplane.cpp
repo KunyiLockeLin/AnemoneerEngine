@@ -33,7 +33,7 @@ void QePlane::initialize(QeAssetXML* _property, QeObject* _owner) {
 		GRAP->models.push_back(this);
 		break;
 	case ePlane_2D:
-		shaderKey = "plane";
+		shaderKey = "b2d";
 		bRotate = false;
 		GRAP->add2DModel(this);
 		break;
@@ -43,6 +43,11 @@ void QePlane::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createDescriptorSet(descriptorSet);
 	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+}
+
+void QePlane::clear(){
+	QeModel::clear();
+	if (planeType == ePlane_2D)	eraseElementFromVector<QeModel*>(GRAP->models2D, this);
 }
 
 QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {

@@ -20,6 +20,7 @@
 %VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.geom -o pbrg.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.frag -o pbrf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V postprocessing.geom -o postprocessingg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V b2d.geom -o b2dg.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V postprocessing.frag -o postprocessingf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V grayscale.frag -o grayscalef.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V bloom.frag -o bloomf.spv

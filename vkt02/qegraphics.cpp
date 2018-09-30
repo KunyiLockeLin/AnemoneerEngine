@@ -46,6 +46,7 @@ void QeGraphics::clear() {
 	lights.clear();
 	models.clear();
 	alphaModels.clear();
+	models2D.clear();
 	renders.clear();
 	lightsBuffer.~QeVKBuffer();
 
@@ -397,9 +398,12 @@ void QeGraphics::refreshRender() {
 
 		VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;// VK_FORMAT_R16G16B16A16_SFLOAT VK_FORMAT_R32G32B32A32_SFLOAT;
 
-		if (i == eRender_main || i == eRender_KHR || i==eRender_ui)
+		if (i == eRender_main || i == eRender_KHR || i == eRender_ui) {
 			render->scissor.extent = swapchain.extent;
-
+			if (render->viewports[0]->camera) {
+				render->viewports[0]->camera->renderSize = render->scissor.extent;
+			}
+		}
 		size_t size1 = render->subpass.size();
 
 		if (i == eRender_KHR) {
@@ -734,10 +738,9 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 			renderPassInfo.framebuffer = render->frameBuffers[j];
 
-			if (i == eRender_main) {
+			if (i != eRender_KHR) {
 				// pushConstants
-				VK->updatePushConstnats(render->commandBuffers[j]);
-
+         
 				//compute shader
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
 				updateComputeCommandBuffer(render->commandBuffers[j], render->viewports[0]->camera, &render->viewports[0]->commonDescriptorSet);
@@ -763,7 +766,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 					std::vector<QeModel*>::iterator it = models2D.begin();
 					while (it != models2D.end()) {
-						(*it)->updateDrawCommandBuffer(&command);
+ 						(*it)->updateDrawCommandBuffer(&command);
 						++it;
 					}
 				}
