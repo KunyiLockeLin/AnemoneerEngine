@@ -53,8 +53,8 @@
               </Light>
               <Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
               </Plane>
-              <base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
-              </base>
+              <MaterialBase oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
+              </MaterialBase>
             </components>
             <children>
             </children>
@@ -155,8 +155,8 @@
 							</Light>
 							<Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
 							</Plane>
-							<base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
-							</base>
+							<MaterialBase oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
+							</MaterialBase>
 						</components>
 						<children>
 						</children>
@@ -217,8 +217,8 @@
 					</Transform>
 					<Model oid="500" eid="1" type="6" obj="box.gltf" outlineWidth="0" materialOID="1100">
 					</Model>
-					<reflect oid="1100" eid="3" type="11" vert="" tesc="" tese="" geom="" frag="cubemapreflectf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="">
-					</reflect>
+					<MaterialReflect oid="1100" eid="3" type="11" vert="" tesc="" tese="" geom="" frag="cubemapreflectf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="">
+					</MaterialReflect>
 				</components>
 				<children>
 				</children>
@@ -318,8 +318,8 @@
 						</Light>
 						<Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
 						</Plane>
-						<base oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
-						</base>
+						<MaterialBase oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
+						</MaterialBase>
 					</components>
 					<children>
 					</children>
@@ -328,7 +328,7 @@
 		</light1>
 		<box oid="500" eid="500" type="1000">
 			<components>
-				<Transform oid="500" eid="1" type="1" localPositionX="2" localPositionY="2" localPositionZ="-1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="10" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="141" targetBoneName="Armature_Bone_002">
+				<Transform oid="500" eid="1" type="1" localPositionX="2" localPositionY="2" localPositionZ="-1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="10" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 				</Transform>
 				<Model oid="500" eid="1" type="6" obj="box.gltf" outlineWidth="0" materialOID="">
 				</Model>
@@ -483,12 +483,12 @@
 		<Material type="11">
 			<default oid="0" eid="0" type="11" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" cubeMap="" normalMap="">
 			</default>
-			<base oid="0" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="wall.png" cubeMap="" normalMap="">
-			</base>
-			<pbr oid="0" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png">
-			</pbr>
-			<reflect oid="0" eid="3" type="11" vert="" tesc="" tese="" geom="" frag="cubemapreflectf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="">
-			</reflect>
+			<MaterialBase oid="0" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="wall.png" cubeMap="" normalMap="">
+			</MaterialBase>
+			<MaterialPBR oid="0" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png">
+			</MaterialPBR>
+			<MaterialReflect oid="0" eid="3" type="11" vert="" tesc="" tese="" geom="" frag="cubemapreflectf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="">
+			</MaterialReflect>
 		</Material>
 		<InputControl type="12">
 			<default oid="0" eid="0" type="12">
