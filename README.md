@@ -18,7 +18,9 @@
     - reflection & refraction, mulit-render, 2D render, bloom, grayscale.
 
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample02.gif)
-    
+  
+  - In qeheader.h, you can find out the whole flag and type.
+
 # Feature
   - Support mutli-viewports, post-processing.
   - Support light and camera control.
