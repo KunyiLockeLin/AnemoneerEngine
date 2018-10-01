@@ -1,6 +1,6 @@
 # QueenEngine
 
-Introduction YouTube video:
+Introduction video:
 
 [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/9tUlwZJ_3Cc/0.jpg)](https://youtu.be/9tUlwZJ_3Cc)
 
@@ -59,7 +59,8 @@ Introduction YouTube video:
   - https://www.youtube.com/watch?v=Q1cuuepVNoY
   
 # Bug
-  - release mode crash
+  - release mode crash sometimes.
+  - lines flash sometimes.
   
 # Others
   - text render, UI 
