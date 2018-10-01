@@ -2,13 +2,6 @@
 
 #include "qeheader.h"
 
-enum QeDebugMode {
-	eModeNoDebug,
-	eModeConsole,
-	eModeOutput,
-	eModeConsoleOutput,
-};
-
 class QeLog
 {
 public:

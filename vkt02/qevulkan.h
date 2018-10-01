@@ -18,16 +18,6 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
-enum QeVKBufferType {
-	eBuffer = 0,
-	eBuffer_vertex = 1,
-	eBuffer_index = 2,
-	eBuffer_storage_compute_shader_return = 3,
-	eBuffer_vertex_texel = 4,
-	eBuffer_uniform = 5,
-	eBuffer_storage = 6,
-};
-
 struct QeVKBuffer {
 
 	const QeVKBufferType type;
@@ -38,15 +28,6 @@ struct QeVKBuffer {
 
 	QeVKBuffer(QeVKBufferType _type):type(_type) {}
 	~QeVKBuffer();
-};
-
-enum QeVKImageType {
-	eImage_depthStencil = 0,
-	eImage_swapchain = 1,
-	eImage_attach = 2,
-	eImage_2D = 3,
-	eImage_cube = 4,
-	eImage_render = 5,
 };
 
 struct QeVKImage {
@@ -60,12 +41,6 @@ struct QeVKImage {
 
 	QeVKImage(QeVKImageType _type):type(_type) {}
 	~QeVKImage();
-};
-
-enum QeDescriptorSetLayoutType {
-	eDescriptorSetLayout_Model = 0,
-	eDescriptorSetLayout_Common = 1,
-	eDescriptorSetLayout_Postprocessing = 2,
 };
 
 struct QeDataDescriptorSet {
@@ -123,12 +98,6 @@ struct QeDataDescriptorSetPostprocessing {
 	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
 	VkImageView inputAttachImageView = VK_NULL_HANDLE;
 	VkSampler	inputAttachSampler = VK_NULL_HANDLE;
-};
-
-enum QeGraphicsPipelineOtherType {
-	eGraphicsPipeLine_none = 0,
-	eGraphicsPipeLine_normal = 1,
-	eGraphicsPipeLine_stencilBuffer = 2,
 };
 
 struct QeDataGraphicsPipeline {

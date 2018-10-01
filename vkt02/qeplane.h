@@ -2,12 +2,6 @@
 #include "qeheader.h"
 
 
-enum QePlaneType {
-	ePlane_3D=0,
-	ePlane_billboard = 1,
-	ePlane_2D = 2,
-};
-
 class QePlane : public QeModel
 {
 public:

@@ -2,17 +2,6 @@
 
 #include "qeheader.h"
 
-
-enum QeModelDataType {
-
-	eModelData_cube =0,
-	eModelData_axis =1,
-	eModelData_grid =2,
-	eModelData_line =3,
-	eModelData_plane =4,
-	eModelData_gltf = 5,
-};
-
 struct QeVertex {
 	QeVector4f pos = {0.0f,0.0f,0.0f,1.0f};
 	QeVector4f color = { 0.0f,0.0f,0.0f,1.0f };
@@ -121,15 +110,6 @@ struct QeAssetMaterial {
 	QeAssetMaterial() {}
 };
 
-enum QeAssetType {
-	eAssetModel,
-	eAssetMaterial,
-	eAssetBin,
-	eAssetShader,
-	eAssetTexture,
-	eAssetXML,
-	eAssetJSON,
-};
 
 struct QeAssetParticleRule {
 

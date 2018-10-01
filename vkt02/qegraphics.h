@@ -2,14 +2,6 @@
 
 #include "qeheader.h"
 
-enum QeRenderType {
-	eRender_KHR = 0,
-	eRender_ui = 1,
-	eRender_main = 2,
-	eRender_color = 3,
-	eRender_MAX = 4
-};
-
 struct QeDataEnvironment {
 	QeVector4f ambientColor;
 	QeDataCamera camera;

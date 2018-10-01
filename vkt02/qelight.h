@@ -1,11 +1,6 @@
 #pragma once
 #include "qeheader.h"
 
-enum QeLightType {
-	eLightPoint,
-	eLightDirection,
-	eLightSpot,
-};
 
 struct QeDataLight {
 	QeVector4f pos;

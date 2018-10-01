@@ -63,8 +63,6 @@ const int MAX_DESCRIPTOR_NUM = UINT8_MAX;
 const int MAX_PARTICLES_NUM = UINT16_MAX;
 const int PUSH_CONSTANTS_SIZE = 4;
 
-enum QeComponentType;
-enum QeRenderType;
 struct QeVKBuffer;
 struct QeVKImageBuffer;
 struct QeVector2i;
@@ -121,6 +119,128 @@ class QeLine;
 class QeAxis;
 class QeGrid;
 
+enum QeActionType {
+	eActionTypeOnce=0,
+	eActionTypeReplay=1,
+	eActionTypeNext=2,
+};
+
+enum QeActionState {
+	eActionStateStop=0,
+	eActionStatePlay=1,
+	eActionStatePause=2,
+};
+
+enum QeModelDataType {
+	eModelData_cube = 0,
+	eModelData_axis = 1,
+	eModelData_grid = 2,
+	eModelData_line = 3,
+	eModelData_plane = 4,
+	eModelData_gltf = 5,
+};
+
+enum QeAssetType {
+	eAssetModel=0,
+	eAssetMaterial=1,
+	eAssetBin=2,
+	eAssetShader=3,
+	eAssetTexture=4,
+	eAssetXML=5,
+	eAssetJSON=6,
+};
+
+enum QeComponentType {
+	eComponent_transform = 1,
+	eComponent_camera = 2,
+	eComponent_postprocessing = 3,
+	eComponent_light = 4,
+	eComponent_line = 5,
+	eComponent_model = 6,
+	eComponent_animation = 7,
+	eComponent_plane = 8,
+	eComponent_cubemap = 9,
+	eComponent_partical = 10,
+	eComponent_material = 11,
+	eComponent_inputControl = 12,
+	eComponent_axis = 13,
+	eComponent_grid = 14,
+	eObject = 1000,
+	eScene = 2000,
+};
+
+enum QeRenderType {
+	eRender_KHR = 0,
+	eRender_ui = 1,
+	eRender_main = 2,
+	eRender_color = 3,
+	eRender_MAX = 4
+};
+
+enum QeLightType {
+	eLightPoint=0,
+	eLightDirection=1,
+	eLightSpot=2,
+};
+
+enum QeDebugMode {
+	eModeNoDebug=0,
+	eModeConsole=1,
+	eModeOutput=2,
+	eModeConsoleOutput=3,
+};
+
+enum QePlaneType {
+	ePlane_3D = 0,
+	ePlane_billboard = 1,
+	ePlane_2D = 2,
+};
+
+enum QeVKBufferType {
+	eBuffer = 0,
+	eBuffer_vertex = 1,
+	eBuffer_index = 2,
+	eBuffer_storage_compute_shader_return = 3,
+	eBuffer_vertex_texel = 4,
+	eBuffer_uniform = 5,
+	eBuffer_storage = 6,
+};
+
+enum QeVKImageType {
+	eImage_depthStencil = 0,
+	eImage_swapchain = 1,
+	eImage_attach = 2,
+	eImage_2D = 3,
+	eImage_cube = 4,
+	eImage_render = 5,
+};
+
+
+enum QeDescriptorSetLayoutType {
+	eDescriptorSetLayout_Model = 0,
+	eDescriptorSetLayout_Common = 1,
+	eDescriptorSetLayout_Postprocessing = 2,
+};
+
+enum QeGraphicsPipelineOtherType {
+	eGraphicsPipeLine_none = 0,
+	eGraphicsPipeLine_normal = 1,
+	eGraphicsPipeLine_stencilBuffer = 2,
+};
+
+enum QeUIType {
+	eUIType_btnPause = 1,
+	eUIType_btnUpdateAll = 2,
+	eUIType_btnLoadAll = 3,
+	eUIType_btnSaveAll = 4,
+	eUIType_btnLoadScene = 5,
+	eUIType_btnSaveEID = 6,
+	eUIType_btnLoadEID = 7,
+	eUIType_btnCameraFocus = 8,
+	eUIType_btnNewItem = 9,
+	eUIType_btnDeleteItem = 10,
+	eUIType_btnCameraControl = 11,
+};
 
 #include "qeencode.h"
 #include "qemath.h"

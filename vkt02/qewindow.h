@@ -9,20 +9,6 @@ struct QeInputData {
 	std::string consoleCommandInput;
 };
 
-enum QeUIType {
-	eUIType_btnPause=1,
-	eUIType_btnUpdateAll = 2,
-	eUIType_btnLoadAll=3,
-	eUIType_btnSaveAll=4,
-	eUIType_btnLoadScene=5,
-	eUIType_btnSaveEID=6,
-	eUIType_btnLoadEID=7,
-	eUIType_btnCameraFocus=8,
-	eUIType_btnNewItem = 9,
-	eUIType_btnDeleteItem = 10,
-	eUIType_btnCameraControl = 11,
-};
-
 class QeWindow
 {
 public:

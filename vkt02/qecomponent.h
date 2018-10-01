@@ -2,25 +2,6 @@
 
 #include "qeheader.h"
 
-enum QeComponentType {
-	eComponent_transform=1,
-	eComponent_camera=2,
-	eComponent_postprocessing=3,
-	eComponent_light=4,
-	eComponent_line=5,
-	eComponent_model=6,
-	eComponent_animation=7,
-	eComponent_plane=8,
-	eComponent_cubemap=9,
-	eComponent_partical=10,
-	eComponent_material=11,
-	eComponent_inputControl=12,
-	eComponent_axis=13,
-	eComponent_grid=14,
-	eObject = 1000,
-	eScene = 2000,
-};
-
 class QeComponent
 {
 public:

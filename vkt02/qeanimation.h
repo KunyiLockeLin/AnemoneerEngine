@@ -1,18 +1,6 @@
 #pragma once
 #include "qeheader.h"
 
-enum QeActionType {
-	eActionTypeOnce,
-	eActionTypeReplay,
-	eActionTypeNext,
-};
-
-enum QeActionState {
-	eActionStateStop,
-	eActionStatePlay,
-	eActionStatePause,
-};
-
 
 class QeAnimation :	public QeModel
 {
