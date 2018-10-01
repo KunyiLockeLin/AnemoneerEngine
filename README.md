@@ -1,5 +1,5 @@
 # QueenEngine  
-  - Scene: default 0 - mulit-render, outline(stencil buffer)
+  - Scene: default 0 - 
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample01.gif)
   
   - Scene: scene1 1 - cubemap, skeletal animation, attach obj
@@ -12,7 +12,7 @@
   - Support ~~Phong shading~~ and PBR(Physically-Based Rendering), HDR, exposure, bloom.     
   - Support ~~diffuse map,~~ baseColor map, cubemap & reflection & refraction, normal map.
   - Support skeletal animation, attach obj, draw lines, billboards, particle system.
-  - Support draw mulit-render, outline(stencil buffer) and multisample anti-aliasing(MASS)
+  - Support draw mulit-render, 2D render, outline(stencil buffer) and multisample anti-aliasing(MASS)
   - Support Log output, call stack trace and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
