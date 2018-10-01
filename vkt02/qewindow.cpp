@@ -59,13 +59,6 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 				GetWindowText(currentEditListView, text, sizeof(text));
 				currentEditListViewKey = wchartochar(text);
-
-				int iIndex = ListView_GetNextItem(listViewDetail, -1, LVNI_FOCUSED);
-				LVITEM LvItem;
-				LvItem.iSubItem = 1;
-				LvItem.pszText = L"";
-
-				SendMessage(listViewDetail, LVM_SETITEMTEXT, (WPARAM)iIndex, (LPARAM)&LvItem);
 			}
 				break;
 			case LVN_ENDLABELEDIT:
@@ -302,7 +295,6 @@ void QeWindow::setTreeViewText(HTREEITEM hItem, QeAssetXML * node) {
 	item.pszText = const_cast<LPWSTR>(ws.c_str());;
 
 	TreeView_SetItem(treeViewList, &item);
-
 }
 
 void QeWindow::adjustComponetData(QeAssetXML * node) {
@@ -547,11 +539,7 @@ void QeWindow::updateListViewItem() {
 	GetWindowText(currentEditListView, text, sizeof(text));
 
 	int iIndex = ListView_GetNextItem(listViewDetail, -1, LVNI_FOCUSED);
-	LVITEM LvItem;
-	LvItem.iSubItem = 1;
-	LvItem.pszText = text;
-
-	SendMessage(listViewDetail, LVM_SETITEMTEXT, (WPARAM)iIndex, (LPARAM)&LvItem);
+	ListView_SetItemText(listViewDetail, iIndex, 1, text);
 
 	if(currentEditListViewKey.compare("name")==0){
 		AST->setXMLKey(currentTreeViewNodes[currentTreeViewNodeIndex], wchartochar(text).c_str());
