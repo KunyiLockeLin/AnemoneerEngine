@@ -1,7 +1,10 @@
 # QueenEngine  
   - Scene: default 0 - How to add and delete a scene, object, component,
+
                        and load eid for scene, object, component, 
+
                        and modify paraments and update the modification.
+                       
                        and set model, outline, position, material. 
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample01.gif)
   
