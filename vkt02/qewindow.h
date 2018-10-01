@@ -43,6 +43,7 @@ public:
 	void Log(std::string _log);
 	void addToTreeView(QeAssetXML * node, HTREEITEM parent);
 	void adjustComponetData(QeAssetXML * node);
+	void setTreeViewText(HTREEITEM hItem, QeAssetXML * node);
 
 	std::wstring chartowchar(std::string s);
 	std::string wchartochar(std::wstring s);

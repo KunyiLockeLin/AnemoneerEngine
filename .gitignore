@@ -11,3 +11,5 @@
 *.spv
 .vs/vkt/v15/.suo
 *.txt
+*.iobj
+*.ipdb
