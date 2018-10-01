@@ -1,18 +1,9 @@
 # QueenEngine  
-  - scene 28000 - mulit-render, outline(stencil buffer)
-  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28000.gif)
+  - Scene: default 0 - mulit-render, outline(stencil buffer)
+  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample01.gif)
   
-  - scene 28001 - cubemap, skeletal animation, attach obj
-  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28001.gif)
-    
-  - scene 28002 - paritcle(compute shader)
-  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28002.gif)
-    
-  - scene 28003 - post-processing(grayscale), show noraml & mesh, change scene
-  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/scene28003.gif)
-    
-  - mutli-viewports                   
-  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/viewport.gif)
+  - Scene: scene1 1 - cubemap, skeletal animation, attach obj
+  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample02.gif)
     
 # Feature
   - Support mutli-viewports, post-processing.
