@@ -23,6 +23,7 @@ public:
 	int currentTabIndex;
 	//int currentTreeViewNodeIndex;
 	std::string currentEditListViewKey;
+	bool bAddTreeView = false;
 	//std::vector<QeAssetXML*> currentTreeViewNodes;
 	QeAssetXML* currentTreeViewNode;
 	QeInputData inputData;
@@ -35,6 +36,7 @@ public:
 	void initialize();
 	void openMainWindow();
 	void openEditWindow();
+	void setAllTreeView();
 	void updateTab();
 	void updateListView();
 	void updateListViewItem();

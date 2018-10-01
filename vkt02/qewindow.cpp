@@ -78,7 +78,8 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case eUIType_btnLoadAll:
 				AST->removeXML(AST->CONFIG);
 				QE->initialize();
-				updateTab();
+				//updateTab();
+				setAllTreeView();
 				break;
 			case eUIType_btnSaveAll:
 			{
@@ -232,6 +233,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			case eUIType_btnDeleteItem:
 				if (currentTreeViewNode) {
 					AST->removeXMLNode(AST->getXMLNode(1, AST->CONFIG), currentTreeViewNode);
+					currentTreeViewNode = nullptr;
 					//updateTab();
 					HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
 					TreeView_DeleteItem(treeViewLists[currentTabIndex], hSelectedItem);
@@ -474,13 +476,6 @@ void QeWindow::openEditWindow() {
 		treeViewLists[i] = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL,
 			0, 25, width / 2 - 200, height - 345, editWindow, NULL, windowInstance, NULL);
 		SendMessage(treeViewLists[i], WM_SETFONT, WPARAM(hFont), TRUE);
-
-		currentTabIndex = i;
-		QeAssetXML* node2 = node->nexts[currentTabIndex];
-
-		for (int i = 0; i< node2->nexts.size(); ++i) {
-			addToTreeView(node2->nexts[i], TVI_FIRST);
-		}
 	}
 	currentTabIndex = 0;
 
@@ -526,8 +521,9 @@ void QeWindow::openEditWindow() {
 		width - 100, 25 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
 	btnDeleteItem = CreateWindow(WC_BUTTON, L"Delete Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
 		width - 100, 25 + 55 * 10, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
-
-	updateTab();
+	
+	setAllTreeView();
+	//updateTab();
 }
 
 void QeWindow::Log( std::string _log ) {
@@ -558,7 +554,8 @@ void QeWindow::updateListViewItem() {
 }
 
 void QeWindow::updateListView() {
-	currentTreeViewNode = nullptr;
+
+	if (bAddTreeView) return;
 	HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
 	if (!hSelectedItem) return;
 	
@@ -606,20 +603,41 @@ void QeWindow::updateListView() {
 	}
 }
 
+void QeWindow::setAllTreeView() {
+
+	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
+	bAddTreeView = true;
+	for (int i = 0; i< node->nexts.size(); ++i) {
+		currentTabIndex = i;
+		TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
+		QeAssetXML * node2 = node->nexts[currentTabIndex];
+
+		for (int j = 0; j < node2->nexts.size(); ++j) {
+			addToTreeView(node2->nexts[j], TVI_FIRST);
+		}
+	}
+	bAddTreeView = false;
+
+	currentTabIndex = 0;
+
+	ListView_DeleteAllItems(listViewDetail);
+	currentTreeViewNode = nullptr;
+	updateTab();
+}
+
 void QeWindow::updateTab() {
 
-	currentTreeViewNode = nullptr;
 	currentTabIndex = TabCtrl_GetCurSel(tabControlCategory);
 
 	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
 	//TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
-	ListView_DeleteAllItems(listViewDetail);
+	//ListView_DeleteAllItems(listViewDetail);
 	for (int i = 0; i< node->nexts.size(); ++i) {
 		ShowWindow(treeViewLists[i], SW_HIDE);
 	}
 	ShowWindow(treeViewLists[currentTabIndex], SW_SHOW);
 	updateListView();
-	currentTreeViewNode = nullptr;
+	//currentTreeViewNode = nullptr;
 }
 
 void QeWindow::addToTreeView(QeAssetXML * node, HTREEITEM parent ) {
