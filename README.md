@@ -13,7 +13,7 @@
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample01.gif)
   
   - Scene: scene1 1
-    - How to set camera control, use post-processing, and modify gamma and exposure.
+    - How to set camera control and focus, use post-processing, and modify gamma and exposure.
     - Main featurn in this scene, cubemap, animation, attach skeletion, particle,
     - line, reflection & refraction, mulit-render, 2D render, bloom, grayscale.
 
