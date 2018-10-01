@@ -1,8 +1,13 @@
 # QueenEngine  
-  - Scene: default 0 - 
+  - Scene: default 0 - How to add and delete a scene, object, component,
+                       and load eid for scene, object, component, 
+                       and modify paraments and update the modification.
+                       and set model, outline, position, material. 
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample01.gif)
   
-  - Scene: scene1 1 - cubemap, skeletal animation, attach obj
+  - Scene: scene1 1 - How to set camera control, use post-processing, and modify gamma and exposure.
+                      Main featurn in this scene, cubemap, animation, attach skeletion, 
+                      reflection & refraction, mulit-render, 2D render, bloom, grayscale.
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample02.gif)
     
 # Feature
