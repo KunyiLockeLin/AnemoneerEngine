@@ -2,7 +2,7 @@
 
   - Introduction video:
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/9tUlwZJ_3Cc/0.jpg)](https://youtu.be/9tUlwZJ_3Cc)
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/lYOUqqthTN8/0.jpg)](https://youtu.be/lYOUqqthTN8)
 
   - Scene: default 0
     - How to add and delete a scene, object, component,
