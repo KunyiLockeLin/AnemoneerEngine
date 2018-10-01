@@ -631,7 +631,7 @@ void QeWindow::updateTab() {
 
 	QeAssetXML * node = AST->getXMLNode(1, AST->CONFIG);
 	//TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
-	//ListView_DeleteAllItems(listViewDetail);
+	ListView_DeleteAllItems(listViewDetail);
 	for (int i = 0; i< node->nexts.size(); ++i) {
 		ShowWindow(treeViewLists[i], SW_HIDE);
 	}
