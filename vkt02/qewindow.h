@@ -16,14 +16,15 @@ public:
 	~QeWindow() {}
 
 	HINSTANCE windowInstance;
-	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewList, listViewDetail, listBoxLog, currentEditListView;
+	HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewLists[10], listViewDetail, listBoxLog, currentEditListView;
 	WNDPROC DefEditProc;
 	HWND btnPause, btnUpdateAll, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnCameraFocus, btnCameraControl, btnNewItem, btnDeleteItem;
 
 	int currentTabIndex;
-	int currentTreeViewNodeIndex;
+	//int currentTreeViewNodeIndex;
 	std::string currentEditListViewKey;
-	std::vector<QeAssetXML*> currentTreeViewNodes;
+	//std::vector<QeAssetXML*> currentTreeViewNodes;
+	QeAssetXML* currentTreeViewNode;
 	QeInputData inputData;
 	std::vector<QeInputControl*> inputControls;
 
