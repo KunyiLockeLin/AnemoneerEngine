@@ -112,7 +112,7 @@ void QeCamera::reset() {
 		lookAtTransform->initialize(lookAtTransform->owner->transform->initProperty, lookAtTransform->owner);
 	}
 	owner->transform->initialize(owner->transform->initProperty, owner);
-	initialize(initProperty, owner);
+	//initialize(initProperty, owner);
 }
 
 void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
