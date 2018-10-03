@@ -50,7 +50,7 @@
 
 # ToDoList
   - Main research: Physically based rendering, Ray-tracing, Physical system
-  - My document https://docs.google.com/document/d/1dAEe2tXsjRVBTrZSXxgv0pRTG2HKSkCp-2j8VYmVXKY/edit?usp=sharing
+  - Research document https://docs.google.com/document/d/1dAEe2tXsjRVBTrZSXxgv0pRTG2HKSkCp-2j8VYmVXKY/edit?usp=sharing
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/PacktPublishing/Vulkan-Cookbook
   - https://learnopengl.com/PBR/Theory
