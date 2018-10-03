@@ -1,4 +1,4 @@
-# QueenEngine
+# Queen Engine
 
   - Introduction video:
 
@@ -49,7 +49,7 @@
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # ToDoList
-  - Main research: Physically based rendering, Ray-tracing
+  - Main research: Physically based rendering, Ray-tracing, Physical system
   - My document https://docs.google.com/document/d/13Te0_iYdNy72z3EWb3UL-RaknsEJLg8ksMGtTZ2ig2g/edit?usp=sharing
   - https://github.com/SaschaWillems/Vulkan
   - https://github.com/PacktPublishing/Vulkan-Cookbook
