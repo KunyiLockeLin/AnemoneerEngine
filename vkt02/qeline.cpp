@@ -37,6 +37,8 @@ void QeLine::update1() {
 	QeVector3f vec = targetPos - pos;
 	float size = MATH->fastSqrt(MATH->length(vec));
 	QeVector3f scale = { size, size ,size };
+
+	//LOG("line x: " + vec.x + "  y: " + vec.y + "  z: " + vec.z);
 	bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), MATH->vectorToEulerAngles(vec), scale);
 
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);

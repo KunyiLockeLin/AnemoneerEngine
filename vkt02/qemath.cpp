@@ -73,7 +73,7 @@ QeVector3f QeMath::eulerAnglesToVector(QeVector3f& _eulerAngles) {
 	QeVector3f ret;
 	ret.x = cos(_eulerAngles.z)*cos(_eulerAngles.y);
 	ret.y = sin(_eulerAngles.z)*cos(_eulerAngles.y);
-	ret.z = cos(_eulerAngles.y);
+	ret.z = sin(_eulerAngles.y);
 	return normalize(ret);
 }
 
@@ -82,14 +82,21 @@ QeVector3f QeMath::vectorToEulerAngles(QeVector3f& _vector) {
 	QeVector3f _radians;
 	QeVector3f _vec = normalize(_vector);
 
-	_radians.z = atan(_vec.y/_vec.x);
+	_radians.z = atan(_vec.y / _vec.x);
 	_radians.x = 0;
 	_radians.y = -asin(_vec.z);
 
-	_radians = _radians*RADIANS_TO_DEGREES;
+	_radians = _radians * RADIANS_TO_DEGREES;
 
-	if (_vec.x < 0 && _vec.y>0)		_radians.z += 180;
-	else if (_vec.x < 0 && _vec.y<0)_radians.z -= 180;
+	//LOG("vectorToEulerAngles1 y: " + _radians.y + "  z: " + _radians.z);
+	if (_vec.x < 0) {
+		if (_vec.y>0)		_radians.z += 180;
+		else if (_vec.y < 0)_radians.z -= 180;
+
+		//if (_vec.z>0)		_radians.z += 180;
+		//else if (_vec.z < 0)_radians.z -= 180;
+	}
+	//LOG("vectorToEulerAngles2 y: " + _radians.y + "  z: " + _radians.z);
 
 	return _radians;
 }
