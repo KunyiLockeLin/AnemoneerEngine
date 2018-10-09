@@ -305,7 +305,7 @@
 				<children>
 					<light1 oid="401" eid="1" type="1000">
 						<components>
-							<Transform oid="401" eid="1" type="1" localPositionX="-3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+							<Transform oid="401" eid="1" type="1" localPositionX="3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
 							<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90">
 							</Light>
@@ -331,6 +331,28 @@
 				<children>
 				</children>
 			</sphere>
+			<light1 oid="401" eid="400" type="1000">
+				<components>
+					<Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+				</components>
+				<children>
+					<light1 oid="401" eid="1" type="1000">
+						<components>
+							<Transform oid="401" eid="1" type="1" localPositionX="3" localPositionY="-3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+							</Transform>
+							<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="0" colorB="0" intensity="100" coneAngle="90">
+							</Light>
+							<Plane oid="400" eid="1" type="8" planeType="1" materialOID="401" targetCameraOID="">
+							</Plane>
+							<MaterialBase oid="401" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="">
+							</MaterialBase>
+						</components>
+						<children>
+						</children>
+					</light1>
+				</children>
+			</light1>
 		</pbr1>
 	</scenes>
 	<objects type="1000">
