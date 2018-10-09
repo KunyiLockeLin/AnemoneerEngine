@@ -325,7 +325,7 @@
 					</Transform>
 					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1100">
 					</Model>
-					<MaterialPBR oid="1100" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="cubemap1.png" normalMap="normalmap.png">
+					<MaterialPBR oid="1100" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="">
 					</MaterialPBR>
 				</components>
 				<children>

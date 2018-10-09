@@ -13,8 +13,12 @@ void QeMaterial::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLfValue(&materialData.value.metallicRoughnessEmissive.y, initProperty, 1, "roughness");
 	AST->getXMLfValue(&materialData.value.metallicRoughnessEmissive.z, initProperty, 1, "emissive");
 
+	materialData.image.pBaseColorMap = nullptr;
+	materialData.image.pCubeMap = nullptr;
+	materialData.image.pNormalMap = nullptr;
+
 	const char * c = AST->getXMLValue(initProperty, 1, "baseMap");
-	if (c && strlen(c) ) materialData.image.pBaseColorMap = AST->getImage(c, false);;
+	if (c && strlen(c) ) materialData.image.pBaseColorMap = AST->getImage(c, false);
 	c = AST->getXMLValue(initProperty, 1, "cubeMap");
 	if (c && strlen(c)) materialData.image.pCubeMap = AST->getImage(c, true);
 	c = AST->getXMLValue(initProperty, 1, "normalMap");
