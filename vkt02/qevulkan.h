@@ -119,7 +119,7 @@ struct QeDataGraphicsPipeline {
 class QeVulkan {
 
 public:
-	QeVulkan(QeGlobalKey& _key) {}
+	QeVulkan(QeGlobalKey& _key): emptyImage2D(eImage_2D), emptyImageCube(eImage_cube){}
 	~QeVulkan();
 
 	const std::vector<const char*> validationLayers = {	"VK_LAYER_LUNARG_standard_validation"};
@@ -128,6 +128,8 @@ public:
 	bool bInit = false;
 	bool bShowMesh = false;
 	bool bShowNormal = false;
+	QeVKImage emptyImage2D;
+	QeVKImage emptyImageCube;
 
 	std::vector<float> pushConstants;
 

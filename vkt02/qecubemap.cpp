@@ -19,10 +19,13 @@ void QeCubemap::initialize(QeAssetXML* _property, QeObject* _owner) {
 	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
-QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel() {
+/*QeDataDescriptorSetModel QeCubemap::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
+	bufferData.param = { 0,0,0 };
 	descriptorSetData.cubeMapImageView = materialData->image.pCubeMap->view;
 	descriptorSetData.cubeMapSampler = materialData->image.pCubeMap->sampler;
+	bufferData.param.z = 1;
+
 	return descriptorSetData;
-}
+}*/

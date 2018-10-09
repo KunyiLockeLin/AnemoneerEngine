@@ -184,7 +184,7 @@ void main() {
 	outColor = adjustColor(color, baseColor.a);
 
 	// cubemap
-	/*if(modelData.param.x == 0) return;
+	if(modelData.param.z == 0) return;
 
 	vec3 view_vector =  normalize(inPostion - environmentData.camera.pos.xyz);
   
@@ -197,5 +197,5 @@ void main() {
 	vec4 refract_color = texture( cubeMapSampler, refrac_vector );
   
 	vec4 cubemapColor = mix( reflect_color, refract_color, angle );
-	outColor =  mix( outColor, cubemapColor, 0.7 ); */
+	outColor =  mix( outColor, cubemapColor, 0.7 );
 }

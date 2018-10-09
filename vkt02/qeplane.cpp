@@ -64,9 +64,16 @@ QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {
 				descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			else
 				descriptorSet.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			bufferData.param = { 0,0,0 };
+			descriptorSetData.normalMapImageView = VK->emptyImage2D.view;
+			descriptorSetData.normalMapSampler = VK->emptyImage2D.sampler;
+			descriptorSetData.cubeMapImageView = VK->emptyImageCube.view;
+			descriptorSetData.cubeMapSampler = VK->emptyImageCube.sampler;
 
 			descriptorSetData.baseColorMapImageView = render->colorImage.view;
 			descriptorSetData.baseColorMapSampler = render->colorImage.sampler;
+			bufferData.param.x = 1;
+
 			return descriptorSetData;
 		}
 	}

@@ -45,6 +45,9 @@ QeDataDescriptorSet::~QeDataDescriptorSet() {
 
  QeVulkan::~QeVulkan() {
 
+	emptyImage2D.~QeVKImage();
+	emptyImageCube.~QeVKImage();
+
 	vkDestroySurfaceKHR(VK->instance, surface, nullptr);
 	surface = VK_NULL_HANDLE;
 	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
@@ -83,6 +86,11 @@ void QeVulkan::initialize() {
 	createDescriptorSetLayout();
 	pipelineLayout = createPipelineLayout();
 	createCommandPool();
+
+
+	VkExtent2D size = { 1,1 };
+	VK->createImage(emptyImage2D, 1, 1, size, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
+	VK->createImage(emptyImageCube, 1, 1, size, VK_FORMAT_R8G8B8A8_UNORM, nullptr);
 }
 
 VkResult QeVulkan::CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {

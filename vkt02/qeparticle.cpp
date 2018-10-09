@@ -127,6 +127,8 @@ QeVertex QeParticle::createParticleData() {
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
+	bufferData.param = { 0,0,0 };
+	bufferData.param.x = 1;
 	descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
 	descriptorSetData.texelBufferView = vertexBuffer.view;

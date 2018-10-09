@@ -15,6 +15,6 @@ public:
 	virtual void update1();
 	//virtual void update2() {}
 
-	virtual QeDataDescriptorSetModel createDescriptorSetModel();
+	//virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };
 

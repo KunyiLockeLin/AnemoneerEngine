@@ -8,5 +8,5 @@ public:
 	//~QeCubemap() {}
 
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);
-	virtual QeDataDescriptorSetModel createDescriptorSetModel();
+	//virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

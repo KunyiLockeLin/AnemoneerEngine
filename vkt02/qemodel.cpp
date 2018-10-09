@@ -77,6 +77,13 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
 	bufferData.param = { 0,0,0};
+	descriptorSetData.baseColorMapImageView = VK->emptyImage2D.view;
+	descriptorSetData.baseColorMapSampler = VK->emptyImage2D.sampler;
+	descriptorSetData.normalMapImageView = VK->emptyImage2D.view;
+	descriptorSetData.normalMapSampler = VK->emptyImage2D.sampler;
+	descriptorSetData.cubeMapImageView = VK->emptyImageCube.view;
+	descriptorSetData.cubeMapSampler = VK->emptyImageCube.sampler;
+	
 	if (materialData) {
 		if (materialData->image.pBaseColorMap) {
 			descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;

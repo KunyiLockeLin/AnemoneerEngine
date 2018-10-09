@@ -44,8 +44,8 @@ void QeLine::update1() {
 	VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }
 
-QeDataDescriptorSetModel QeLine::createDescriptorSetModel() {
+/*QeDataDescriptorSetModel QeLine::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 	return descriptorSetData;
-}
+}*/
