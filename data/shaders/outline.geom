@@ -7,7 +7,7 @@ layout (triangle_strip, max_vertices = 3) out;
 
 void main(void)
 {	
-	mat4 outline=mat4(modelData.param[3]+1);
+	mat4 outline=mat4(modelData.param2[0]+1);
 	outline[3].w = 1;
 
 	mat4 mvp = environmentData.camera.projection * environmentData.camera.view * modelData.model*outline;

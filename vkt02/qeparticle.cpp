@@ -37,7 +37,7 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 	AST->getXMLiValue(&bornTargetTranformOID, initProperty, 1, "bornTargetTranformOID");
 
 	bufferData.material = materialData->value;
-	bufferData.param.x = (float)bornTargetTranformOID;
+	//bufferData.param2.y = (float)bornTargetTranformOID;
 
 	VK->createBuffer(vertexBuffer, sizeof(QeVertex) * totalParticlesSize, nullptr);
 	VK->createBuffer(outBuffer, sizeof(bDeaths[0]) * bDeaths.size(), (void*)bDeaths.data());
@@ -127,8 +127,8 @@ QeVertex QeParticle::createParticleData() {
 QeDataDescriptorSetModel QeParticle::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
-	bufferData.param = { 0,0,0 };
-	bufferData.param.x = 1;
+	bufferData.param1 = { 0,0,0,0 };
+	bufferData.param1.x = 1;
 	descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
 	descriptorSetData.texelBufferView = vertexBuffer.view;

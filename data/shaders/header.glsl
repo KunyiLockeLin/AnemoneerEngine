@@ -28,7 +28,6 @@ struct QeDataCamera {
 };
 
 layout( set = layoutSet_Common, binding = Common_uniform+ 0) uniform QeDataEnvironment {
-	vec4 ambientColor;
 	QeDataCamera camera;
 	vec4 param; // 0: light num, 1: gamma, 2: exposure
 } environmentData;
@@ -54,6 +53,7 @@ struct QeDataMaterial {
 layout( set = layoutSet_Model, binding = Model_uniform + 0) uniform QeDataModel {
 	mat4 model;
 	mat4 joints[MAX_JOINT_NUM];
-	vec4 param; // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3: outlineWidth
+	vec4 param1; // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3: bMetallicRoughnessMap
+	vec4 param2; // 0: outlineWidth,
 	QeDataMaterial mtl;
 } modelData;

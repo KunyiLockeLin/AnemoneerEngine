@@ -16,7 +16,7 @@ void main(void) {
 		outUV = inUV[i];
 		outNormal = normalize(vec3(modelData.model * vec4(inNormal[i], 0.0)));
 		outTangent = normalize(vec3(modelData.model * vec4(inTangent[i].xyz, 0.0)));
-		outBiTanget = cross(outNormal, outTangent) * inTangent[i].w;	
+		outBiTanget = normalize(cross(outNormal, outTangent));	
 		outPostion = (modelData.model*gl_in[i].gl_Position).xyz;
 		outLighttoVertex = vec3(lights[0].pos) - outPostion;
 

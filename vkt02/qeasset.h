@@ -90,6 +90,7 @@ struct QeAssetImage {
 	QeVKImage* pBaseColorMap = nullptr;
 	QeVKImage* pCubeMap = nullptr;
 	QeVKImage* pNormalMap = nullptr;
+	QeVKImage* pMetallicRoughnessMap = nullptr;
 };
 
 struct QeAssetGraphicsShader {

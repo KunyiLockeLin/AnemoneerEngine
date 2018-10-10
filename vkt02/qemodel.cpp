@@ -4,7 +4,7 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	QeComponent::initialize(_property, _owner);
 
 	AST->getXMLbValue(&graphicsPipeline.bAlpha, initProperty, 1, "alpha");
-	AST->getXMLfValue(&bufferData.param.w, initProperty, 1, "outlineWidth");
+	AST->getXMLfValue(&bufferData.param2.x, initProperty, 1, "outlineWidth");
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
@@ -76,29 +76,36 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	QeDataDescriptorSetModel descriptorSetData;
 	descriptorSetData.modelBuffer = modelBuffer.buffer;
 
-	bufferData.param = { 0,0,0};
+	bufferData.param1 = { 0,0,0,0};
 	descriptorSetData.baseColorMapImageView = VK->emptyImage2D.view;
 	descriptorSetData.baseColorMapSampler = VK->emptyImage2D.sampler;
 	descriptorSetData.normalMapImageView = VK->emptyImage2D.view;
 	descriptorSetData.normalMapSampler = VK->emptyImage2D.sampler;
 	descriptorSetData.cubeMapImageView = VK->emptyImageCube.view;
 	descriptorSetData.cubeMapSampler = VK->emptyImageCube.sampler;
-	
+	descriptorSetData.metallicRoughnessMapImageView = VK->emptyImage2D.view;
+	descriptorSetData.metallicRoughnessMapSampler = VK->emptyImage2D.sampler;
+
 	if (materialData) {
 		if (materialData->image.pBaseColorMap) {
 			descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
 			descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
-			bufferData.param.x = 1;
+			bufferData.param1.x = 1;
 		}
 		if (materialData->image.pNormalMap) {
 			descriptorSetData.normalMapImageView = materialData->image.pNormalMap->view;
 			descriptorSetData.normalMapSampler = materialData->image.pNormalMap->sampler;
-			bufferData.param.y = 1;
+			bufferData.param1.y = 1;
 		}
 		if (materialData->image.pCubeMap) {
 			descriptorSetData.cubeMapImageView = materialData->image.pCubeMap->view;
 			descriptorSetData.cubeMapSampler = materialData->image.pCubeMap->sampler;
-			bufferData.param.z = 1;
+			bufferData.param1.z = 1;
+		}
+		if (materialData->image.pMetallicRoughnessMap) {
+			descriptorSetData.metallicRoughnessMapImageView = materialData->image.pMetallicRoughnessMap->view;
+			descriptorSetData.metallicRoughnessMapSampler = materialData->image.pMetallicRoughnessMap->sampler;
+			bufferData.param1.w = 1;
 		}
 	}
 	return descriptorSetData;
@@ -170,7 +177,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 		//	break;
 	}
 
-	if (bufferData.param.w  && outlineShader.vert) {
+	if (bufferData.param2.x  && outlineShader.vert) {
 
 		graphicsPipeline.minorType = eGraphicsPipeLine_stencilBuffer;
 		graphicsPipeline.shader = &outlineShader;

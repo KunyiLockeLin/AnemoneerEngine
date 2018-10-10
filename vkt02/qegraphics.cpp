@@ -251,7 +251,6 @@ void QeGraphics::updateBuffer() {
 		for (size_t j = 0; j < size1; ++j) {
 
 			QeDataViewport * viewport = render->viewports[j];
-			viewport->environmentData.ambientColor = clearColor;
 			viewport->environmentData.camera = viewport->camera->bufferData;
 			viewport->environmentData.param.x = float(lights.size());
 

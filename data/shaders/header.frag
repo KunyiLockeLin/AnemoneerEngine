@@ -6,6 +6,7 @@
 layout( set = layoutSet_Model, binding = Model_image + 0) uniform sampler2D	baseColorMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 1) uniform samplerCube cubeMapSampler;
 layout( set = layoutSet_Model, binding = Model_image + 2) uniform sampler2D	normalMapSampler;
+layout( set = layoutSet_Model, binding = Model_image + 3) uniform sampler2D	metallicRoughnessMapSampler;
 
 
 layout( set = layoutSet_Postprocessing, binding = Postprocessing_buffer + 0) uniform QeDataSubpass {
@@ -30,10 +31,14 @@ layout(location = 0) out vec4 outColor;
 // hdr, alpha, gamma
 vec4 adjustColor( vec3 inColor, float alpha ){
 
-	// reinhard tone mapping
-    //inColor = inColor / (inColor + vec3(1.0));
-	// Exposure tone mapping
-    inColor = vec3(1.0) - exp(-inColor * environmentData.param.z);
+	if(environmentData.param.z==0){
+		// reinhard tone mapping
+		inColor = inColor / (inColor + vec3(1.0));
+	}
+	else if(environmentData.param.z>0){
+		// Exposure tone mapping
+		inColor = vec3(1.0) - exp(-inColor * environmentData.param.z);
+	}
 
 	inColor *= modelData.mtl.metallicRoughnessEmissive.z;
 
