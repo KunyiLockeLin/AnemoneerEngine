@@ -13,7 +13,7 @@ void main()
 	outNormal = normalize(mat3(modelData.model) * inNormal.xyz);
 	outTangent = normalize(vec3(modelData.model * inTangent));
 	//outTangent = normalize(mat3(modelData.model) * inTangent.xyz);
-	outBiTanget = normalize(cross(outNormal, outTangent.xyz));	
+	outBiTanget = normalize(cross(outNormal, outTangent));	
 	outColor = inColor.xyz;
 	outUV = inUV.xy;
 }
