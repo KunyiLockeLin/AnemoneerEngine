@@ -307,11 +307,11 @@
 						<components>
 							<Transform oid="401" eid="1" type="1" localPositionX="3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90">
+							<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="0" colorB="0" intensity="100" coneAngle="90">
 							</Light>
 							<Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
 							</Plane>
-							<MaterialBase oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+							<MaterialBase oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
 							</MaterialBase>
 						</components>
 						<children>
@@ -319,114 +319,114 @@
 					</light1>
 				</children>
 			</light1>
-			<sphere oid="1100" eid="1100" type="1000">
+			<sphere00 oid="1100" eid="1100" type="1000">
 				<components>
 					<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="-3" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
 					<Model oid="1100" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1100">
 					</Model>
-					<MaterialPBR oid="1100" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
+					<MaterialPBR oid="1100" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
 					</MaterialPBR>
 				</components>
 				<children>
 				</children>
-			</sphere>
-      <sphere oid="1101" eid="1100" type="1000">
-        <components>
-          <Transform oid="1101" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1101" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1101">
-          </Model>
-          <MaterialPBR oid="1101" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1102" eid="1100" type="1000">
-        <components>
-          <Transform oid="1102" eid="1" type="1" localPositionX="0" localPositionY="3" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1102" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1102">
-          </Model>
-          <MaterialPBR oid="1102" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1103" eid="1100" type="1000">
-        <components>
-          <Transform oid="1103" eid="1" type="1" localPositionX="0" localPositionY="-3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1103" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1103">
-          </Model>
-          <MaterialPBR oid="1103" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1.0" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1104" eid="1100" type="1000">
-        <components>
-          <Transform oid="1104" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1104" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1104">
-          </Model>
-          <MaterialPBR oid="1104" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1105" eid="1100" type="1000">
-        <components>
-          <Transform oid="1105" eid="1" type="1" localPositionX="0" localPositionY="3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1105" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1105">
-          </Model>
-          <MaterialPBR oid="1105" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1106" eid="1100" type="1000">
-        <components>
-          <Transform oid="1106" eid="1" type="1" localPositionX="0" localPositionY="-3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1106" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1106">
-          </Model>
-          <MaterialPBR oid="1106" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1.0" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1107" eid="1100" type="1000">
-        <components>
-          <Transform oid="1107" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1107" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1107">
-          </Model>
-          <MaterialPBR oid="1107" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
-      <sphere oid="1108" eid="1100" type="1000">
-        <components>
-          <Transform oid="1108" eid="1" type="1" localPositionX="0" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-          </Transform>
-          <Model oid="1108" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1108">
-          </Model>
-          <MaterialPBR oid="1108" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="">
-          </MaterialPBR>
-        </components>
-        <children>
-        </children>
-      </sphere>
+			</sphere00>
+			<sphere10 oid="1101" eid="1100" type="1000">
+				<components>
+					<Transform oid="1101" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1101" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1101">
+					</Model>
+					<MaterialPBR oid="1101" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere10>
+			<sphere20 oid="1102" eid="1100" type="1000">
+				<components>
+					<Transform oid="1102" eid="1" type="1" localPositionX="0" localPositionY="3" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1102" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1102">
+					</Model>
+					<MaterialPBR oid="1102" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere20>
+			<sphere01 oid="1103" eid="1100" type="1000">
+				<components>
+					<Transform oid="1103" eid="1" type="1" localPositionX="0" localPositionY="-3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1103" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1103">
+					</Model>
+					<MaterialPBR oid="1103" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1.0" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere01>
+			<sphere11 oid="1104" eid="1100" type="1000">
+				<components>
+					<Transform oid="1104" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1104" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1104">
+					</Model>
+					<MaterialPBR oid="1104" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere11>
+			<sphere21 oid="1105" eid="1100" type="1000">
+				<components>
+					<Transform oid="1105" eid="1" type="1" localPositionX="0" localPositionY="3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1105" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1105">
+					</Model>
+					<MaterialPBR oid="1105" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere21>
+			<sphere02 oid="1106" eid="1100" type="1000">
+				<components>
+					<Transform oid="1106" eid="1" type="1" localPositionX="0" localPositionY="-3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1106" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1106">
+					</Model>
+					<MaterialPBR oid="1106" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1.0" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere02>
+			<sphere12 oid="1107" eid="1100" type="1000">
+				<components>
+					<Transform oid="1107" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1107" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1107">
+					</Model>
+					<MaterialPBR oid="1107" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere12>
+			<sphere22 oid="1108" eid="1100" type="1000">
+				<components>
+					<Transform oid="1108" eid="1" type="1" localPositionX="0" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Model oid="1108" eid="1" type="6" obj="sphere.gltf" outlineWidth="0" materialOID="1108">
+					</Model>
+					<MaterialPBR oid="1108" eid="2" type="11" vert="" tesc="" tese="" geom="pbrg.spv" frag="pbrf.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
+					</MaterialPBR>
+				</components>
+				<children>
+				</children>
+			</sphere22>
 			<light1 oid="401" eid="400" type="1000">
 				<components>
 					<Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
@@ -441,7 +441,7 @@
 							</Light>
 							<Plane oid="400" eid="1" type="8" planeType="1" materialOID="401" targetCameraOID="">
 							</Plane>
-							<MaterialBase oid="401" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+							<MaterialBase oid="401" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="normalmap2.png" metallicRoughnessMap="">
 							</MaterialBase>
 						</components>
 						<children>
@@ -449,6 +449,132 @@
 					</light1>
 				</children>
 			</light1>
+			<light2 oid="410" eid="410" type="1000">
+				<components>
+					<Transform oid="410" eid="1" type="1" localPositionX="3" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Light oid="410" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+					</Light>
+					<Plane oid="410" eid="1" type="8" planeType="1" materialOID="410" targetCameraOID="">
+					</Plane>
+					<MaterialBase oid="410" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+					</MaterialBase>
+				</components>
+				<children>
+				</children>
+			</light2>
+			<light2 oid="411" eid="410" type="1000">
+				<components>
+					<Transform oid="411" eid="1" type="1" localPositionX="3" localPositionY="0" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Light oid="411" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+					</Light>
+					<Plane oid="411" eid="1" type="8" planeType="1" materialOID="411" targetCameraOID="">
+					</Plane>
+					<MaterialBase oid="411" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+					</MaterialBase>
+				</components>
+				<children>
+				</children>
+			</light2>
+			<light2 oid="412" eid="410" type="1000">
+				<components>
+					<Transform oid="412" eid="1" type="1" localPositionX="3" localPositionY="-3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Light oid="412" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+					</Light>
+					<Plane oid="412" eid="1" type="8" planeType="1" materialOID="412" targetCameraOID="">
+					</Plane>
+					<MaterialBase oid="412" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+					</MaterialBase>
+				</components>
+				<children>
+				</children>
+			</light2>
+			<light2 oid="413" eid="410" type="1000">
+				<components>
+					<Transform oid="413" eid="1" type="1" localPositionX="3" localPositionY="3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					</Transform>
+					<Light oid="413" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+					</Light>
+					<Plane oid="413" eid="1" type="8" planeType="1" materialOID="413" targetCameraOID="">
+					</Plane>
+					<MaterialBase oid="413" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+					</MaterialBase>
+				</components>
+				<children>
+				</children>
+			</light2>
+      <light2 oid="414" eid="410" type="1000">
+        <components>
+          <Transform oid="414" eid="1" type="1" localPositionX="3" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Light oid="414" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+          </Light>
+          <Plane oid="414" eid="1" type="8" planeType="1" materialOID="414" targetCameraOID="">
+          </Plane>
+          <MaterialBase oid="414" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+          </MaterialBase>
+        </components>
+        <children>
+        </children>
+      </light2>
+      <light2 oid="415" eid="410" type="1000">
+        <components>
+          <Transform oid="415" eid="1" type="1" localPositionX="3" localPositionY="-3" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Light oid="415" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+          </Light>
+          <Plane oid="415" eid="1" type="8" planeType="1" materialOID="415" targetCameraOID="">
+          </Plane>
+          <MaterialBase oid="415" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+          </MaterialBase>
+        </components>
+        <children>
+        </children>
+      </light2>
+      <light2 oid="416" eid="410" type="1000">
+        <components>
+          <Transform oid="416" eid="1" type="1" localPositionX="3" localPositionY="3" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Light oid="416" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+          </Light>
+          <Plane oid="416" eid="1" type="8" planeType="1" materialOID="416" targetCameraOID="">
+          </Plane>
+          <MaterialBase oid="416" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+          </MaterialBase>
+        </components>
+        <children>
+        </children>
+      </light2>
+      <light2 oid="417" eid="410" type="1000">
+        <components>
+          <Transform oid="417" eid="1" type="1" localPositionX="3" localPositionY="0" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Light oid="417" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+          </Light>
+          <Plane oid="417" eid="1" type="8" planeType="1" materialOID="417" targetCameraOID="">
+          </Plane>
+          <MaterialBase oid="417" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+          </MaterialBase>
+        </components>
+        <children>
+        </children>
+      </light2>
+      <light2 oid="418" eid="410" type="1000">
+        <components>
+          <Transform oid="418" eid="1" type="1" localPositionX="3" localPositionY="-3" localPositionZ="-3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+          </Transform>
+          <Light oid="418" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90">
+          </Light>
+          <Plane oid="418" eid="1" type="8" planeType="1" materialOID="418" targetCameraOID="">
+          </Plane>
+          <MaterialBase oid="418" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+          </MaterialBase>
+        </components>
+        <children>
+        </children>
+      </light2>
 		</pbr1>
 	</scenes>
 	<objects type="1000">
@@ -612,6 +738,20 @@
 			<children>
 			</children>
 		</sphere>
+		<light2 oid="410" eid="410" type="1000">
+			<components>
+				<Transform oid="401" eid="1" type="1" localPositionX="2" localPositionY="3" localPositionZ="3" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+				</Transform>
+				<Light oid="400" eid="1" type="4" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90">
+				</Light>
+				<Plane oid="400" eid="1" type="8" planeType="1" materialOID="400" targetCameraOID="">
+				</Plane>
+				<MaterialBase oid="400" eid="1" type="11" vert="" tesc="" tese="" geom="" frag="texturemf.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+				</MaterialBase>
+			</components>
+			<children>
+			</children>
+		</light2>
 	</objects>
 	<components>
 		<Transform type="1">
