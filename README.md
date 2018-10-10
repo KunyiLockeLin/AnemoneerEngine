@@ -20,6 +20,10 @@
 
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/sample02.gif)
   
+  - Scene: pbr1 2
+    - The scene is for PBR demo.
+  ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/pbrDemo.jpg)
+  
   - In qeheader.h, you can find out the whole flag and type.
 
 # Feature
