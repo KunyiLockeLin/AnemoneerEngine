@@ -24,7 +24,7 @@ void main()
 	gl_Position = totalLocalPos;
 
 	outNormal = totalNormal.xyz;
-	outTangent = totalTangent;
+	outTangent = totalTangent.xyz;
 	outColor = inColor.xyz;
 	outUV = inUV.xy;
 }
