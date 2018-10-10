@@ -129,14 +129,13 @@ void main() {
 		float fDist2		 = pow(length(L),2);
 		float attenuation	 = lightIntensity/fDist2;
 		
-		L = normalize(L);
-
 		if( lightType == 1 )	L = normalize(vec3(lights[i].dir));
 		else if( lightType == 2 ){
 
-			float lightToSurfaceAngle = degrees(acos( dot( -inLighttoVertex, normalize(vec3(lights[i].dir)) ) ));
+			float lightToSurfaceAngle = degrees(acos( dot( -L, normalize(vec3(lights[i].dir)) ) ));
 			if( lightToSurfaceAngle>lightConeAngle ) attenuation = 0;
 		}
+		L = normalize(L);
 
 		color += (BRDF(L, V, N, F0, metallic, roughness, baseColor.rgb)*vec3(lights[i].color) * attenuation);
 	};

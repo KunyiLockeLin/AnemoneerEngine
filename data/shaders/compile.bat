@@ -17,6 +17,7 @@
 %VULKAN_SDK%/Bin/glslangValidator.exe -V cubemapreflect.frag -o cubemapreflectf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V skeleton.vert -o skeletonv.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V toon.frag -o toonf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.vert -o pbrv.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.geom -o pbrg.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.frag -o pbrf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V postprocessing.geom -o postprocessingg.spv
