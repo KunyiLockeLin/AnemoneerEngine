@@ -4,6 +4,12 @@
 
 
 void main() {
-	outColor = texture(cubeMapSampler, inUV3);
-	outColor = adjustColor(outColor.rgb, 1);
+
+	vec4 baseColor = modelData.mtl.baseColor;
+	if(modelData.param1.z == 1) {
+		vec4 color = texture(cubeMapSampler, inUV3);
+		if( 0.01 > color.a )	discard;
+		baseColor *= color;
+	}
+	outColor = adjustColor(baseColor.rgb, 1);
 }

@@ -1,5 +1,10 @@
 ﻿#include "qeheader.h"
 
+
+QeVector3f QeRay::positionByTime(float t) {
+	return origin + direction * t;
+}
+
 float QeMath::dot(QeVector2f& _vec1, QeVector2f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y; }
 float QeMath::dot(QeVector3f& _vec1, QeVector3f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z; }
 float QeMath::dot(QeVector4f& _vec1, QeVector4f& _vec2) { return _vec1.x*_vec2.x + _vec1.y*_vec2.y + _vec1.z*_vec2.z + _vec1.w*_vec2.w; }
@@ -1030,3 +1035,42 @@ QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f & _translate, QeVector3f & _r
 	mat *= scale(_scale*dis);
 	return mat;
 }
+
+bool QeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere& sphere, float maxDistance, QeRayHitRecord* hit) {
+
+	QeVector3f vrs = sphere.center - ray.origin;
+	float vrs2 = dot(vrs, vrs);
+	float r2 = sphere.radius * sphere.radius;
+	float vrsd = 0;
+	float discriminant = 0;
+	float d2 = 0;
+	if (vrs2 > r2) {
+		vrsd = dot(vrs, ray.direction);
+		if (vrsd < 0 ) return false;
+
+		d2 = dot(ray.direction, ray.direction);
+		float vrsd2 = vrsd * vrsd;
+		//if ((vrs2 - vrsd2- r2)>0) return false;
+		discriminant = vrsd2 - d2 * (vrs2-r2);
+		if (discriminant < 0) return false;
+	}
+	if (hit == nullptr) return true;
+
+	float sqrtD = fastSqrt(discriminant);
+	bool b = false;
+
+	float t = (vrsd - sqrtD) / d2;
+	if (t > 0 && (maxDistance>0 && t < maxDistance)) b = true;
+	else {
+		t = (vrsd + sqrtD) / d2;
+		if (t > 0 && (maxDistance>0 && t < maxDistance))	b = true;
+	}
+
+	if(b){
+		hit->t = t;
+		hit->position = ray.positionByTime(t);
+		hit->nomral = (hit->position-sphere.center)/sphere.radius;
+	}
+	return b;
+}
+

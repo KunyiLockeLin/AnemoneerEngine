@@ -40,7 +40,6 @@ struct QeVector3i {
 	QeVector3i operator*(const int& other);
 };
 
-
 struct QeVector3f {
 	float x, y, z;
 
@@ -116,6 +115,27 @@ struct QeMatrix4x4f {
 	QeMatrix4x4f& operator/=(const float& other);
 };
 
+struct QeRay {
+	QeVector3f origin;
+	QeVector3f direction;
+	QeVector3f positionByTime(float t);
+};
+
+struct QeRayHitRecord {
+	float t;
+	QeVector3f position;
+	QeVector3f nomral;
+};
+
+struct QeBoundingSphere {
+	QeVector3f center;
+	float radius;
+};
+
+struct QeBoundingBox {
+	QeVector3f mixPosition;
+	QeVector3f maxPosition;
+};
 
 class QeMath
 {
@@ -168,4 +188,5 @@ public:
 	//void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
+	bool hit_test_raycast_sphere( QeRay &ray, QeBoundingSphere& sphere, float maxDistance, QeRayHitRecord* hit );
 };
