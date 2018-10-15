@@ -133,8 +133,8 @@ struct QeBoundingSphere {
 };
 
 struct QeBoundingBox {
-	QeVector3f mixPosition;
-	QeVector3f maxPosition;
+	QeVector3f min;
+	QeVector3f max;
 };
 
 class QeMath
@@ -188,5 +188,5 @@ public:
 	//void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
-	bool hit_test_raycast_sphere( QeRay &ray, QeBoundingSphere& sphere, float maxDistance, QeRayHitRecord* hit );
+	bool hit_test_raycast_sphere( QeRay &ray, QeBoundingSphere& sphere, float maxDistance=0.f, QeRayHitRecord* hit=nullptr );
 };
