@@ -54,14 +54,10 @@
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # ToDoList
-  - Main research: Physically based rendering, Ray-tracing, Physical system
+  - Main research: Ray-tracing, Physical system
   - Research document 
     https://docs.google.com/document/d/1dAEe2tXsjRVBTrZSXxgv0pRTG2HKSkCp-2j8VYmVXKY/edit?usp=sharing
   - https://github.com/SaschaWillems/Vulkan
-  - https://github.com/PacktPublishing/Vulkan-Cookbook
-  - https://learnopengl.com/PBR/Theory
-  - https://github.com/KhronosGroup/glTF-WebGL-PBR
-  - https://blog.selfshadow.com/
   - https://www.scratchapixel.com/
   - https://github.com/petershirley/raytracinginoneweekend
   - https://www.youtube.com/watch?v=Q1cuuepVNoY
