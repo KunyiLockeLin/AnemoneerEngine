@@ -67,6 +67,7 @@
   - lines flash sometimes.
   
 # Others
+  - http://www.pbr-book.org/
   - IBL-image based lighting
   - text render, UI 
   - bounding box & sphere, ray, collision
