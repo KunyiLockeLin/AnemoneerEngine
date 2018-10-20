@@ -133,7 +133,7 @@ void QeGraphics::updateViewport() {
 			viewport->scissor.offset.y = int(viewport->viewport.y);
 
 			if (viewport->camera) {
-				viewport->camera->faspect = viewport->viewport.width / viewport->viewport.height;
+				viewport->camera->bufferData.fov_aspect_near_far.y = viewport->viewport.width / viewport->viewport.height;
 			}
 		}
 	}

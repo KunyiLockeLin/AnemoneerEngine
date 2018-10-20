@@ -26,4 +26,5 @@
 %VULKAN_SDK%/Bin/glslangValidator.exe -V grayscale.frag -o grayscalef.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V bloom.frag -o bloomf.spv
 %VULKAN_SDK%/Bin/glslangValidator.exe -V particle.comp -o particlec.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V raytracing.comp -o raytracingc.spv
 pause

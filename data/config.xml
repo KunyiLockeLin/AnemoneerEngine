@@ -833,7 +833,7 @@
 			</default>
 		</Transform>
 		<Camera type="2">
-			<default oid="0" eid="0" type="2" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+			<default oid="0" eid="0" type="2" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" postProcessingOID="0">
 			</default>
 		</Camera>
 		<PostProcessing type="3">
@@ -941,6 +941,8 @@
 		<compute comp="">
 			<particle comp="particlec.spv">
 			</particle>
+      <raytracing comp="raytracingc.spv">
+      </raytracing>
 		</compute>
 	</shaders>
 	<setting>
@@ -950,9 +952,9 @@
 		</environment>
 		<path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\">
 		</path>
-		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
+		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5" raytracingDepth="0">
 		</render>
-		<startScene eid="0">
+		<startScene eid="2">
 		</startScene>
 	</setting>
 </confing>

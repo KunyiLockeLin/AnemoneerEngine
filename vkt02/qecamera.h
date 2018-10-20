@@ -4,6 +4,9 @@
 
 struct QeDataCamera {
 	QeVector4f pos;
+	QeVector4f face_focusDist;
+	QeVector4f up_aperture;
+	QeVector4f fov_aspect_near_far;
 	QeMatrix4x4f view;
 	QeMatrix4x4f projection;
 };
@@ -19,15 +22,10 @@ public:
 	int lookAtTransformOID;
 	VkExtent2D renderSize;
 
-	QeVector3f up;
-	float fov;
-	float fnear;
-	float ffar;
 	float speed;
 	int cullingDistance;
 
 	QeVector2i lastMousePos;
-	float faspect;
 	int postProcessingOID;
 	bool bUpdatePostProcessingOID;
 	QeDataCamera bufferData;

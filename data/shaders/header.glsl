@@ -23,9 +23,13 @@ layout( push_constant ) uniform TimeState {
 
 struct QeDataCamera {
 	vec4 pos;
+	vec4 face_aperture;
+	vec4 up_focusDist;
+	vec4 fov_aspect_near_far;
 	mat4 view;
 	mat4 projection;
 };
+
 
 layout( set = layoutSet_Common, binding = Common_uniform+ 0) uniform QeDataEnvironment {
 	QeDataCamera camera;
