@@ -54,7 +54,7 @@
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # ToDoList
-  - Main research: Ray-tracing, Physical system
+  - Main research: Ray-tracing
   - Research document 
     https://docs.google.com/document/d/1dAEe2tXsjRVBTrZSXxgv0pRTG2HKSkCp-2j8VYmVXKY/edit?usp=sharing
   - https://github.com/SaschaWillems/Vulkan
@@ -69,6 +69,7 @@
 # Others
   - http://www.pbr-book.org/
   - IBL-image based lighting
+  - Physical system
   - text render, UI 
   - bounding box & sphere, ray, collision
   - Terrain system
