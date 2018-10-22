@@ -24,7 +24,7 @@ public:
 
 	float speed;
 	int cullingDistance;
-
+	int rayTracingDepth;
 	QeVector2i lastMousePos;
 	int postProcessingOID;
 	bool bUpdatePostProcessingOID;

@@ -32,9 +32,7 @@ public:
 	QeAssetGraphicsShader outlineShader;
 	QeDataGraphicsPipeline graphicsPipeline;
 
-	VkShaderModule computeShader = VK_NULL_HANDLE;
 	QeDataDescriptorSet descriptorSet;
-	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeDataModel bufferData;
 	QeVKBuffer modelBuffer;
@@ -44,7 +42,6 @@ public:
 	bool b2D=false;
 
 	virtual QeDataDescriptorSetModel createDescriptorSetModel();
-	virtual void createPipeline();
 	virtual bool isShowByCulling(QeCamera* camera);
 
 	virtual void updateDrawCommandBuffer(QeDataDrawCommand* command);

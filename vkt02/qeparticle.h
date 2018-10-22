@@ -7,7 +7,7 @@ class QeParticle : public QeModel
 public:
 
 	QeParticle(QeObjectMangerKey& _key) :QeModel(_key), vertexBuffer(eBuffer_vertex_texel), 
-		outBuffer(eBuffer_storage_compute_shader_return){}
+		outBuffer(eBuffer_storage_compute_shader_return), descriptorSetCompute(eDescriptorSetLayout_Compute){}
 	//~QeParticle() {}
 
 	//QeAssetShader shader;
@@ -21,6 +21,10 @@ public:
 	QeTimer periodTimer;
 	QeVector3f size;
 	int bornTargetTranformOID;
+
+	QeDataDescriptorSet descriptorSetCompute;
+	VkShaderModule computeShader = VK_NULL_HANDLE;
+	VkPipeline computePipeline = VK_NULL_HANDLE;
 
 	QeVertex createParticleData();
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);

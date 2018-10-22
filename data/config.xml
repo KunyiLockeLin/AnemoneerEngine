@@ -13,7 +13,7 @@
 						<components>
 							<Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0">
 							</Camera>
 						</components>
 						<children>
@@ -85,7 +85,7 @@
 						<components>
 							<Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="1201">
+							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201">
 							</Camera>
 						</components>
 						<children>
@@ -183,7 +183,7 @@
 						<components>
 							<Transform oid="2001" eid="1" type="1" localPositionX="0.1" localPositionY="0" localPositionZ="20" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Camera oid="2002" eid="1" type="2" renderType="3" width="800" height="600" lookAtTransformOID="2000" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="1200">
+							<Camera oid="2002" eid="1" type="2" renderType="3" width="800" height="600" lookAtTransformOID="2000" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1200">
 							</Camera>
 						</components>
 						<children>
@@ -205,7 +205,7 @@
 				<components>
 					<Transform oid="2300" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="2" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
-					<Camera oid="2300" eid="1" type="2" renderType="1" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+					<Camera oid="2300" eid="1" type="2" renderType="1" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0">
 					</Camera>
 				</components>
 				<children>
@@ -271,7 +271,7 @@
 						<components>
 							<Transform oid="101" eid="1" type="1" localPositionX="10" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0">
 							</Camera>
 						</components>
 						<children>
@@ -579,7 +579,7 @@
 						<components>
 							<Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 							</Transform>
-							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+							<Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="10" postProcessingOID="0">
 							</Camera>
 						</components>
 						<children>
@@ -670,7 +670,7 @@
 					<components>
 						<Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 						</Transform>
-						<Camera oid="101" eid="1" type="2" renderType="1" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+						<Camera oid="101" eid="1" type="2" renderType="1" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0">
 						</Camera>
 					</components>
 					<children>
@@ -833,7 +833,7 @@
 			</default>
 		</Transform>
 		<Camera type="2">
-			<default oid="0" eid="0" type="2" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" postProcessingOID="0">
+			<default oid="0" eid="0" type="2" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" focusDist="1" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0">
 			</default>
 		</Camera>
 		<PostProcessing type="3">
@@ -941,8 +941,8 @@
 		<compute comp="">
 			<particle comp="particlec.spv">
 			</particle>
-      <raytracing comp="raytracingc.spv">
-      </raytracing>
+			<raytracing comp="raytracingc.spv">
+			</raytracing>
 		</compute>
 	</shaders>
 	<setting>
@@ -952,7 +952,7 @@
 		</environment>
 		<path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\">
 		</path>
-		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5" raytracingDepth="0">
+		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
 		</render>
 		<startScene eid="2">
 		</startScene>

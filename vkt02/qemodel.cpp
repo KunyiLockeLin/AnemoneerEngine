@@ -111,10 +111,6 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 	return descriptorSetData;
 }
 
-void QeModel::createPipeline() {
-	if (computeShader) computePipeline = VK->createComputePipeline(computeShader);
-}
-
 bool QeModel::isShowByCulling(QeCamera* camera) {
 
 	if (componentType == eComponent_plane) {
@@ -140,7 +136,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 
 	if (!isShowByCulling(command->camera)) return;
 
-	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet.set, 0, nullptr);
+	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Model, 1, &descriptorSet.set, 0, nullptr);
 
 	VkDeviceSize offsets[] = { 0 };
 

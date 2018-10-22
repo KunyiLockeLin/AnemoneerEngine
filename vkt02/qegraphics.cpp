@@ -741,7 +741,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 				// pushConstants
 				VK->updatePushConstnats(render->commandBuffers[j]);
 				//compute shader
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
+				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
 				updateComputeCommandBuffer(render->commandBuffers[j]);
 			}
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -749,7 +749,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 			if (i==	eRender_KHR ||i==eRender_ui) {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
+				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
 				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
 				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 
@@ -761,7 +761,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 					command.renderPass = render->renderPass;
 					command.type = QeRenderType(i);
 
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
 
 					std::vector<QeModel*>::iterator it = models2D.begin();
 					while (it != models2D.end()) {
@@ -787,7 +787,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 					command.renderPass = render->renderPass;
 					command.type = QeRenderType(i);
 
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 1, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
 					updateDrawCommandBuffer(&command);
 				}
 
@@ -796,7 +796,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 					vkCmdNextSubpass(render->commandBuffers[j], VK_SUBPASS_CONTENTS_INLINE);
 					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 2, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
 
 					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[k]->graphicsPipeline));
 					vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);

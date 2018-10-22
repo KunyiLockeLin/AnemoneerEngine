@@ -44,6 +44,13 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createDescriptorSet(descriptorSet);
 	VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
+
+	VK->createDescriptorSet(descriptorSetCompute);
+	QeDataDescriptorSetCompute descriptorSetData;
+	descriptorSetData.texelBufferView = vertexBuffer.view;
+	descriptorSetData.buffer = outBuffer.buffer;
+
+	VK->updateDescriptorSet(&descriptorSetData, descriptorSetCompute);
 }
 
 void QeParticle::clear() {
@@ -131,15 +138,13 @@ QeDataDescriptorSetModel QeParticle::createDescriptorSetModel() {
 	bufferData.param1.x = 1;
 	descriptorSetData.baseColorMapImageView = materialData->image.pBaseColorMap->view;
 	descriptorSetData.baseColorMapSampler = materialData->image.pBaseColorMap->sampler;
-	descriptorSetData.texelBufferView = vertexBuffer.view;
-	descriptorSetData.computeShaderoutputBuffer = outBuffer.buffer;
 	return descriptorSetData;
 }
 
 void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer) {
 
 	if (!currentParticlesSize) return;
-	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, 0, 1, &descriptorSet.set, 0, nullptr);
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Compute, 1, &descriptorSetCompute.set, 0, nullptr);
 	
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 	vkCmdDispatch(commandBuffer, currentParticlesSize, 1, 1);
@@ -150,7 +155,7 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand* command) {
 	if (!isShowByCulling(command->camera)) return;
 	if (!currentParticlesSize) return;
 
-	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, 0, 1, &descriptorSet.set, 0, nullptr);
+	vkCmdBindDescriptorSets(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Model, 1, &descriptorSet.set, 0, nullptr);
 
 	graphicsPipeline.subpass = 0;
 	graphicsPipeline.componentType = componentType;

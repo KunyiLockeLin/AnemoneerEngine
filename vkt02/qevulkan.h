@@ -85,12 +85,14 @@ struct QeDataDescriptorSetModel {
 
 	VkImageView metallicRoughnessMapImageView = VK_NULL_HANDLE;
 	VkSampler	metallicRoughnessMapSampler = VK_NULL_HANDLE;
+};
 
+struct QeDataDescriptorSetCompute {
 	// VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
 	VkBufferView texelBufferView = VK_NULL_HANDLE;
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
-	VkBuffer	computeShaderoutputBuffer = VK_NULL_HANDLE;
+	VkBuffer	buffer = VK_NULL_HANDLE;
 };
 
 struct QeDataDescriptorSetPostprocessing {
@@ -155,12 +157,13 @@ public:
 	VkQueue computeQueue;
 
 	std::vector<std::vector<QeDataDescriptorSetLayout>> descriptorSetLayoutDatas = {
-		{	{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 4 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 20, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 30, 1 }},
+		{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 4 }},
 
-			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
+		{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
 
-			{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/*VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT*/, 10, 1 } }
+		{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/*VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT*/, 10, 1 } },
+
+		{ { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } }
 	};
 
 	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;

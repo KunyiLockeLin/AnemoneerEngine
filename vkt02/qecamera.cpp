@@ -4,7 +4,7 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	
 	QeComponent::initialize(_property, _owner);
 	//type = eCameraThirdPerson;
-
+	AST->getXMLiValue(&rayTracingDepth, initProperty, 1, "rayTracingDepth");
 	AST->getXMLiValue(&lookAtTransformOID, initProperty, 1, "lookAtTransformOID");
 	AST->getXMLfValue(&bufferData.up_aperture.x, initProperty, 1, "upX");
 	AST->getXMLfValue(&bufferData.up_aperture.y, initProperty, 1, "upY");

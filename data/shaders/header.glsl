@@ -15,6 +15,9 @@ const int layoutSet_Postprocessing = 2;
 const int Postprocessing_buffer = 0;
 const int Postprocessing_image = 10;
 
+const int layoutSet_Compute = 3;
+const int Compute_texel = 0;
+const int Compute_sotrage = 10;
 
 layout( push_constant ) uniform TimeState {
   float DeltaTime;
