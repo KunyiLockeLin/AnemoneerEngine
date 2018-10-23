@@ -118,6 +118,11 @@ struct QeDataGraphicsPipeline {
 	//bool bStencilBuffer;
 };
 
+struct QeDataComputePipeline {
+	VkPipeline pipeline;
+	VkShaderModule shader = VK_NULL_HANDLE;
+};
+
 // VK_CHECK_RESULT
 // VkDestroyer
 
@@ -151,6 +156,7 @@ public:
 	VkPhysicalDeviceProperties deviceProperties;
 
 	std::vector<QeDataGraphicsPipeline*> graphicsPipelines;
+	std::vector<QeDataComputePipeline*> computePipelines;
 
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
@@ -219,7 +225,7 @@ public:
 	void createDescriptorSet(QeDataDescriptorSet& descriptorSet);
 	void updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet);
 	VkPipeline createGraphicsPipeline(QeDataGraphicsPipeline* data);
-	VkPipeline createComputePipeline(VkShaderModule shader);
+	VkPipeline createComputePipeline(QeDataComputePipeline* data);
 	VkShaderModule createShaderModel(void* data, VkDeviceSize size);
 	//void generateMipmaps(VkImage image, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 	

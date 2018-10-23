@@ -665,6 +665,12 @@ void QeGraphics::cleanupRender() {
 		delete VK->graphicsPipelines[i];
 	}
 	VK->graphicsPipelines.clear();
+
+	for (i = 0; i<VK->computePipelines.size(); ++i) {
+		vkDestroyPipeline(VK->device, VK->computePipelines[i]->pipeline, nullptr);
+		delete VK->computePipelines[i];
+	}
+	VK->computePipelines.clear();
 }
 
 

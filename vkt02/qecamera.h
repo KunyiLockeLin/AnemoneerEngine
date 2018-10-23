@@ -3,7 +3,7 @@
 #include "qeheader.h"
 
 struct QeDataCamera {
-	QeVector4f pos;
+	QeVector4f pos_rayTracingDepth;
 	QeVector4f face_focusDist;
 	QeVector4f up_aperture;
 	QeVector4f fov_aspect_near_far;
@@ -24,7 +24,6 @@ public:
 
 	float speed;
 	int cullingDistance;
-	int rayTracingDepth;
 	QeVector2i lastMousePos;
 	int postProcessingOID;
 	bool bUpdatePostProcessingOID;

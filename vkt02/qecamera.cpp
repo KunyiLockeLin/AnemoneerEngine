@@ -4,7 +4,7 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	
 	QeComponent::initialize(_property, _owner);
 	//type = eCameraThirdPerson;
-	AST->getXMLiValue(&rayTracingDepth, initProperty, 1, "rayTracingDepth");
+	AST->getXMLfValue(&bufferData.pos_rayTracingDepth.w, initProperty, 1, "rayTracingDepth");
 	AST->getXMLiValue(&lookAtTransformOID, initProperty, 1, "lookAtTransformOID");
 	AST->getXMLfValue(&bufferData.up_aperture.x, initProperty, 1, "upX");
 	AST->getXMLfValue(&bufferData.up_aperture.y, initProperty, 1, "upY");
@@ -141,9 +141,9 @@ void QeCamera::update1() {
 	}
 	
 	QeVector3f pos = owner->transform->worldPosition();
-	bufferData.pos = pos;
+	bufferData.pos_rayTracingDepth = pos;
 	QeVector3f lookAtV = lookAt();
-	QeVector3f face = lookAtV - bufferData.pos;
+	QeVector3f face = lookAtV - bufferData.pos_rayTracingDepth;
 	
 	if (bufferData.face_focusDist.w>0) {
 		bufferData.face_focusDist.w = MATH->length(face);
@@ -152,7 +152,7 @@ void QeCamera::update1() {
 	bufferData.face_focusDist = MATH->normalize(face);
 
 	if (renderType == eRender_ui) {
-		bufferData.pos.w = ((float)renderSize.width) / renderSize.height;
+		bufferData.pos_rayTracingDepth.w = ((float)renderSize.width) / renderSize.height;
 	}
 	else {
 		QeVector3f up = bufferData.up_aperture;

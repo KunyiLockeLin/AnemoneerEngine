@@ -23,8 +23,8 @@ public:
 	int bornTargetTranformOID;
 
 	QeDataDescriptorSet descriptorSetCompute;
-	VkShaderModule computeShader = VK_NULL_HANDLE;
-	VkPipeline computePipeline = VK_NULL_HANDLE;
+	QeDataComputePipeline computePipeline;
+
 
 	QeVertex createParticleData();
 	virtual void initialize(QeAssetXML* _property, QeObject* _owner);

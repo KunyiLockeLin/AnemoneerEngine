@@ -1369,12 +1369,20 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline* data) {
 	return pipeline;
 }
 
-VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
+VkPipeline QeVulkan::createComputePipeline(QeDataComputePipeline* data) {
+
+	std::vector<QeDataComputePipeline*>::iterator it = computePipelines.begin();
+	while (it != computePipelines.end()) {
+		if ((*it)->shader == data->shader ) {
+			return (*it)->pipeline;
+		}
+		++it;
+	}
 
 	VkPipelineShaderStageCreateInfo shaderStageInfo = {};
 	shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	shaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-	shaderStageInfo.module = shader;
+	shaderStageInfo.module = data->shader;
 	shaderStageInfo.pName = "main";
 
 	VkComputePipelineCreateInfo createInfo = {};
@@ -1386,7 +1394,13 @@ VkPipeline QeVulkan::createComputePipeline(VkShaderModule shader) {
 
 	VkPipeline pipeline;
 	if (VK_SUCCESS != vkCreateComputePipelines(device, VK_NULL_HANDLE, 1, &createInfo, nullptr, &pipeline)) LOG("Could not create compute pipeline.");
-	
+
+	QeDataComputePipeline* s = new QeDataComputePipeline();
+	s->shader = data->shader;
+	s->pipeline = pipeline;
+
+	computePipelines.push_back(s);
+
 	return pipeline;
 }
 

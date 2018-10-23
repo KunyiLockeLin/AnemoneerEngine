@@ -10,8 +10,7 @@ void QeParticle::initialize(QeAssetXML* _property, QeObject* _owner) {
 
 	VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-	computeShader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "particle", "comp"));
-	computePipeline = VK->createComputePipeline(computeShader);
+	computePipeline.shader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "particle", "comp"));
 
 	shaderKey = "particle";
 	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
@@ -59,8 +58,6 @@ void QeParticle::clear() {
 	bDeaths.clear();
 	vertexBuffer.~QeVKBuffer();
 	outBuffer.~QeVKBuffer();
-	vkDestroyPipeline(VK->device, computePipeline, nullptr);
-	computePipeline = VK_NULL_HANDLE;
 
 	QeModel::clear();
 }
@@ -146,7 +143,7 @@ void QeParticle::updateComputeCommandBuffer(VkCommandBuffer& commandBuffer) {
 	if (!currentParticlesSize) return;
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Compute, 1, &descriptorSetCompute.set, 0, nullptr);
 	
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, VK->createComputePipeline(&computePipeline));
 	vkCmdDispatch(commandBuffer, currentParticlesSize, 1, 1);
 }
 

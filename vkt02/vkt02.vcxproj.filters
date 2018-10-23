@@ -108,9 +108,6 @@
     <ClCompile Include="qeplane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qeraytracing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qeasset.h">
@@ -201,9 +198,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qeplane.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="qeraytracing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,13 +12,17 @@ struct QeDataViewport {
 	VkRect2D scissor;
 	QeCamera* camera = nullptr;
 	//std::vector<QeLight*> lights;
+	
+	QeDataDescriptorSet descriptorSetComputeRayTracing;
+	QeDataComputePipeline computePipelineRayTracing;
+
 
 	QeDataDescriptorSet commonDescriptorSet;
 	QeDataEnvironment environmentData;
 	QeVKBuffer environmentBuffer;
 
 	QeDataViewport():environmentBuffer(eBuffer_uniform),
-		commonDescriptorSet(eDescriptorSetLayout_Common) {}
+		commonDescriptorSet(eDescriptorSetLayout_Common), descriptorSetComputeRayTracing(eDescriptorSetLayout_Compute){}
 
 	//~QeDataViewport();
 };
