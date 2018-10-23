@@ -16,7 +16,6 @@ struct QeDataViewport {
 	QeDataDescriptorSet descriptorSetComputeRayTracing;
 	QeDataComputePipeline computePipelineRayTracing;
 
-
 	QeDataDescriptorSet commonDescriptorSet;
 	QeDataEnvironment environmentData;
 	QeVKBuffer environmentBuffer;

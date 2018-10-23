@@ -4,7 +4,7 @@
 
 void main() {
 
-	vec3 view_vector =  normalize(inPostion - environmentData.camera.pos.xyz);
+	vec3 view_vector =  normalize(inPostion - environmentData.camera.pos_rayTracingDepth.xyz);
   
 	float angle = smoothstep( 0.3, 0.7, dot( normalize( -view_vector ), inNormal ) );
   

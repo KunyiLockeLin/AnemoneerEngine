@@ -215,7 +215,6 @@ enum QeVKImageType {
 	eImage_render = 5,
 };
 
-
 enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Model = 0,
 	eDescriptorSetLayout_Common = 1,

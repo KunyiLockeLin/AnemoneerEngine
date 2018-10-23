@@ -115,7 +115,7 @@ void main() {
 	}
 
 	vec3 N = getNormal();
-	vec3 V = normalize(environmentData.camera.pos.xyz - inPostion);
+	vec3 V = normalize(environmentData.camera.pos_rayTracingDepth.xyz - inPostion);
 	vec3 F0 = mix(vec3(0.04), modelData.mtl.baseColor.rgb, metallic);
 
 	vec3 color = baseColor.rgb*0.1;
@@ -143,7 +143,7 @@ void main() {
 	// cubemap
 	if(modelData.param1.z == 1) {
 
-		vec3 view_vector =  normalize(inPostion - environmentData.camera.pos.xyz);
+		vec3 view_vector =  normalize(inPostion - environmentData.camera.pos_rayTracingDepth.xyz);
   
 		float angle = smoothstep( 0.3, 0.7, dot( normalize( -view_vector ), N ) );
   

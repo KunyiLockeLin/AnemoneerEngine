@@ -131,6 +131,7 @@ void QeGraphics::updateViewport() {
 			viewport->scissor.extent.height = int(viewport->viewport.height);
 			viewport->scissor.offset.x = int(viewport->viewport.x);
 			viewport->scissor.offset.y = int(viewport->viewport.y);
+			viewport->computePipelineRayTracing.shader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "raytracing", "comp"));
 
 			if (viewport->camera) {
 				viewport->camera->bufferData.fov_aspect_near_far.y = viewport->viewport.width / viewport->viewport.height;
