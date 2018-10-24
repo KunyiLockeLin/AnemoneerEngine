@@ -31,18 +31,18 @@ layout(location = 0) out vec4 outColor;
 // hdr, alpha, gamma
 vec4 adjustColor( vec3 inColor, float alpha ){
 
-	if(environmentData.param.z==0){
+	if(environmentData.param.y==0){
 		// reinhard tone mapping
 		inColor = inColor / (inColor + vec3(1.0));
 	}
-	else if(environmentData.param.z>0){
+	else if(environmentData.param.y>0){
 		// Exposure tone mapping
-		inColor = vec3(1.0) - exp(-inColor * environmentData.param.z);
+		inColor = vec3(1.0) - exp(-inColor * environmentData.param.y);
 	}
 
 	inColor *= modelData.mtl.metallicRoughnessEmissive.z;
 
-	vec3 gamma = vec3(1.0/environmentData.param.y);
+	vec3 gamma = vec3(1.0/environmentData.param.x);
 	return vec4(pow(inColor,gamma), alpha)*alpha;
 	//return vec4(inColor, alpha)*alpha;
 	//return vec4(10,10,10,1);

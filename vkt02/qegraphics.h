@@ -4,7 +4,7 @@
 
 struct QeDataEnvironment {
 	QeDataCamera camera;
-	QeVector4f param; // 0: light num, 1: gamma, 2: exposure
+	QeVector4f param; // 0: gamma, 1: exposure
 };
 
 struct QeDataViewport {
@@ -15,13 +15,15 @@ struct QeDataViewport {
 	
 	QeDataDescriptorSet descriptorSetComputeRayTracing;
 	QeDataComputePipeline computePipelineRayTracing;
+	QeVKBuffer modelVerticsBuffer;
+	QeVKBuffer modelDatasBuffer;
 
 	QeDataDescriptorSet commonDescriptorSet;
 	QeDataEnvironment environmentData;
 	QeVKBuffer environmentBuffer;
 
 	QeDataViewport():environmentBuffer(eBuffer_uniform),
-		commonDescriptorSet(eDescriptorSetLayout_Common), descriptorSetComputeRayTracing(eDescriptorSetLayout_Compute){}
+		commonDescriptorSet(eDescriptorSetLayout_Common), descriptorSetComputeRayTracing(eDescriptorSetLayout_Compute), modelVerticsBuffer(eBuffer_vertex_texel), modelDatasBuffer(eBuffer_storage){}
 
 	//~QeDataViewport();
 };

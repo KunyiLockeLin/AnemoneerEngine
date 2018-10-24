@@ -152,7 +152,7 @@ void QeCamera::update1() {
 	bufferData.face_focusDist = MATH->normalize(face);
 
 	if (renderType == eRender_ui) {
-		bufferData.pos_rayTracingDepth.w = ((float)renderSize.width) / renderSize.height;
+		bufferData.fov_aspect_near_far.y = ((float)renderSize.width) / renderSize.height;
 	}
 	else {
 		QeVector3f up = bufferData.up_aperture;

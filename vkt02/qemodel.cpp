@@ -13,6 +13,8 @@ void QeModel::initialize(QeAssetXML* _property, QeObject* _owner) {
 	materialData = modelData->pMaterial;
 	if(materialData) bufferData.material = materialData->value;
 
+	bufferData.param2.y = (float)modelData->vertices.size();
+
 	shaderKey = "model";
 	AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 	AST->setGraphicsShader(normalShader, nullptr, "normal");

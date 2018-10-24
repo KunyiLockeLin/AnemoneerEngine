@@ -18,6 +18,7 @@ const int Postprocessing_image = 10;
 const int layoutSet_Compute = 3;
 const int Compute_texel = 0;
 const int Compute_sotrage = 10;
+const int Compute_image = 20;
 
 layout( push_constant ) uniform TimeState {
   float DeltaTime;
@@ -36,7 +37,7 @@ struct QeDataCamera {
 
 layout( set = layoutSet_Common, binding = Common_uniform+ 0) uniform QeDataEnvironment {
 	QeDataCamera camera;
-	vec4 param; // 0: light num, 1: gamma, 2: exposure
+	vec4 param; // 0: gamma, 1: exposure
 } environmentData;
 
 

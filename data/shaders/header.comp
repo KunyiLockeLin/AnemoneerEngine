@@ -1,10 +1,12 @@
 #include "header.glsl"
 
 
-layout( local_size_x = 1024) in;
+layout( local_size_x = 16, local_size_y = 16) in;
 
 layout( set = layoutSet_Compute, binding = Compute_texel + 0, rgba32f  ) uniform imageBuffer texelBuffer;
 
 layout( set = layoutSet_Compute, binding = Compute_sotrage + 0 ) buffer outSSBO {
 	int death[];
 }outputData;
+
+layout( set = layoutSet_Compute, binding = Compute_image + 0, rgba8 ) uniform image2D imageMap;

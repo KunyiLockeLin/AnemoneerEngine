@@ -132,6 +132,7 @@ void QeGraphics::updateViewport() {
 			viewport->scissor.offset.x = int(viewport->viewport.x);
 			viewport->scissor.offset.y = int(viewport->viewport.y);
 			viewport->computePipelineRayTracing.shader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "raytracing", "comp"));
+			VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
 
 			if (viewport->camera) {
 				viewport->camera->bufferData.fov_aspect_near_far.y = viewport->viewport.width / viewport->viewport.height;
@@ -253,10 +254,9 @@ void QeGraphics::updateBuffer() {
 
 			QeDataViewport * viewport = render->viewports[j];
 			viewport->environmentData.camera = viewport->camera->bufferData;
-			viewport->environmentData.param.x = float(lights.size());
 
-			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "gamma");
-			AST->getXMLfValue(&viewport->environmentData.param.z, node, 1, "exposure");
+			AST->getXMLfValue(&viewport->environmentData.param.x, node, 1, "gamma");
+			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "exposure");
 
 			VK->setMemoryBuffer(viewport->environmentBuffer,
 				sizeof(viewport->environmentData), &viewport->environmentData);
@@ -751,9 +751,23 @@ void QeGraphics::updateDrawCommandBuffers() {
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
 				updateComputeCommandBuffer(render->commandBuffers[j]);
 			}
+
+			// ray tracing
+			size_t size2 = render->viewports.size();
+			for (size_t k = 0; k < size2; ++k) {
+				if (render->viewports[k]->camera && render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w >= 1.f) {
+
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Compute, 1, &render->viewports[k]->descriptorSetComputeRayTracing.set, 0, nullptr);
+
+					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->createComputePipeline(&render->viewports[k]->computePipelineRayTracing));
+					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width / 16, render->viewports[k]->scissor.extent.height / 16, 1);
+				}
+			}
+		
 			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			if (i==	eRender_KHR ||i==eRender_ui) {
+			if ( i==eRender_KHR || i==eRender_ui ) {
 				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
 				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
 				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
@@ -787,15 +801,17 @@ void QeGraphics::updateDrawCommandBuffers() {
 					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
 					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
 
-					QeDataDrawCommand command;
-					command.camera = render->viewports[k]->camera;
-					command.commandBuffer = render->commandBuffers[j];
-					command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
-					command.renderPass = render->renderPass;
-					command.type = QeRenderType(i);
+					if (render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w < 1.f) {
+						QeDataDrawCommand command;
+						command.camera = render->viewports[k]->camera;
+						command.commandBuffer = render->commandBuffers[j];
+						command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+						command.renderPass = render->renderPass;
+						command.type = QeRenderType(i);
 
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
-					updateDrawCommandBuffer(&command);
+						vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
+						updateDrawCommandBuffer(&command);
+					}
 				}
 
 				size2 = render->subpass.size();

@@ -119,7 +119,7 @@ void main() {
 	vec3 F0 = mix(vec3(0.04), modelData.mtl.baseColor.rgb, metallic);
 
 	vec3 color = baseColor.rgb*0.1;
-	for (int i = 0; i < environmentData.param.x; i++) {
+	for (int i = 0; i < lights.length(); i++) {
 
 		vec3 L = lights[i].pos.xyz-inPostion;
 
