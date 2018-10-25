@@ -1,5 +1,5 @@
-http://www.pbr-book.org/
-http://www.adriancourreges.com/blog/
+- http://www.pbr-book.org/
+- http://www.adriancourreges.com/blog/
 IBL-image based lighting
 Physical system
 text render, UI 
