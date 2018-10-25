@@ -534,10 +534,13 @@ void QeVulkan::createDescriptorSetLayout() {
 				break;
 			case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
 			case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-				binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+				//binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+				binding.stageFlags = VK_SHADER_STAGE_ALL;
 				break;
 			case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-				binding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+			case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+				//binding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+				binding.stageFlags = VK_SHADER_STAGE_ALL;
 				break;
 			}
 
@@ -1036,7 +1039,7 @@ void QeVulkan::createDescriptorSet(QeDataDescriptorSet& descriptorSet) {
 }
 
 void QeVulkan::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 5> poolSizes = {};
+	std::array<VkDescriptorPoolSize, 6> poolSizes = {};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = MAX_DESCRIPTOR_UNIFORM_NUM;
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -1047,6 +1050,8 @@ void QeVulkan::createDescriptorPool() {
 	poolSizes[3].descriptorCount = MAX_DESCRIPTOR_STORAGETEXEL_NUM;
 	poolSizes[4].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	poolSizes[4].descriptorCount = MAX_DESCRIPTOR_STORAG_NUM;
+	poolSizes[5].type = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+	poolSizes[5].descriptorCount = MAX_DESCRIPTOR_STORAG_NUM;
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -1429,6 +1434,7 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 		++it;
 	}
 
+	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	descriptorWrite.descriptorCount = (uint32_t)bufInfos1.size();
 	descriptorWrite.dstBinding = 0;
 	descriptorWrite.pBufferInfo = bufInfos1.data();
@@ -1446,8 +1452,9 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 		++it;
 	}
 
+	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	descriptorWrite.descriptorCount = (uint32_t)bufInfos2.size();
-	descriptorWrite.dstBinding = 1;
+	descriptorWrite.dstBinding = 10;
 	descriptorWrite.pBufferInfo = bufInfos2.data();
 	descriptorWrite.pTexelBufferView = nullptr;
 	descriptorWrite.pImageInfo = nullptr;
@@ -1457,8 +1464,9 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 	imgInfo.imageView = descriptor.imageView;
 	imgInfo.sampler = descriptor.imageSampler;
 
+	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 	descriptorWrite.descriptorCount = 1;
-	descriptorWrite.dstBinding = 10;
+	descriptorWrite.dstBinding = 20;
 	descriptorWrite.pBufferInfo = nullptr;
 	descriptorWrite.pTexelBufferView = nullptr;
 	descriptorWrite.pImageInfo = &imgInfo;
@@ -1669,7 +1677,7 @@ void QeVulkan::createBuffer(QeVKBuffer& buffer, VkDeviceSize size, void* data) {
 		break;
 
 	case eBuffer_vertex:
-		usage =  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT; // VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+		usage =  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
 		//properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 		break;
 
@@ -1778,7 +1786,7 @@ void QeVulkan::createImage(QeVKImage& image, VkDeviceSize dataSize, int imageCou
 		break;
 
 	case eImage_render:
-		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
 		bSampler = true;
 		break;
 

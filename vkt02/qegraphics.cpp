@@ -133,6 +133,7 @@ void QeGraphics::updateViewport() {
 			viewport->scissor.offset.y = int(viewport->viewport.y);
 			viewport->computePipelineRayTracing.shader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "raytracing", "comp"));
 			VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
+			viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
 			if (viewport->camera) {
 				viewport->camera->bufferData.fov_aspect_near_far.y = viewport->viewport.width / viewport->viewport.height;
@@ -693,7 +694,6 @@ void QeGraphics::cleanupRender() {
 
 		if (vkEndCommandBuffer(computeCommandBuffers[i]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 	}
-
 }*/
 
 void QeGraphics::updateDrawCommandBuffers() {
@@ -763,15 +763,21 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 					std::vector<QeModel*>::iterator it = models.begin();
 					while (it != models.end()) {
-						descriptor.modelDataBuffers.push_back((*it)->modelData->vertex.buffer);
-						descriptor.modelVertexBuffers.push_back((*it)->modelBuffer.buffer);
+
+						if ((*it)->modelData) {
+							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
+						}
 						++it;
 					}
 
 					it = alphaModels.begin();
 					while (it != alphaModels.end()) {
-						descriptor.modelDataBuffers.push_back((*it)->modelData->vertex.buffer);
-						descriptor.modelVertexBuffers.push_back((*it)->modelBuffer.buffer);
+
+						if ((*it)->modelData) {
+							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
+						}
 						++it;
 					}
 
@@ -781,7 +787,19 @@ void QeGraphics::updateDrawCommandBuffers() {
 					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Raytracing, 1, &render->viewports[k]->descriptorSetComputeRayTracing.set, 0, nullptr);
 
 					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->createComputePipeline(&render->viewports[k]->computePipelineRayTracing));
-					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width / 16, render->viewports[k]->scissor.extent.height / 16, 1);
+
+					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width, render->viewports[k]->scissor.extent.height, 1);
+
+					/*VkImageMemoryBarrier imageMemoryBarrier = {};
+					imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+					imageMemoryBarrier.oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+					imageMemoryBarrier.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+					imageMemoryBarrier.image = render->colorImage.image;
+					imageMemoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+					imageMemoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+					imageMemoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+					vkCmdPipelineBarrier( render->commandBuffers[j], VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+						0, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);*/
 				}
 			}
 		

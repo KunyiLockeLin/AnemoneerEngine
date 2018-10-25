@@ -15,11 +15,11 @@ struct QeVertex {
 	vec4 weight;
 };
 
-layout( set = layoutSet_Raytracing, binding = Raytracing_sotrage + 0 ) buffer QeModelVertex {
+layout( set = layoutSet_Raytracing, binding = 0 ) buffer QeModelVertex {
 	QeVertex vertics[];
 } modelVertics[];
 
-layout( set = layoutSet_Raytracing, binding = Raytracing_sotrage + 1 ) uniform QeModelData {
+layout( set = layoutSet_Raytracing, binding = 10 ) uniform QeModelData {
 	mat4 model;
 	mat4 joints[MAX_JOINT_NUM];
 	vec4 param1; // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3: bMetallicRoughnessMap
@@ -27,7 +27,7 @@ layout( set = layoutSet_Raytracing, binding = Raytracing_sotrage + 1 ) uniform Q
 	QeDataMaterial mtl;
 } modelDatas[];
 
-layout (set = layoutSet_Raytracing, binding = Raytracing_image + 0, rgba8) uniform writeonly image2D resultImage;
+layout (set = layoutSet_Raytracing, binding = 20, rgba8) uniform writeonly image2D resultImage;
 
 
 struct QeRay {
@@ -44,6 +44,18 @@ struct QeRayHitRecord {
 };
 
 
-void main() {
 
+
+void main() {
+	ivec2 dim = imageSize(resultImage);
+	vec2 uv = vec2(gl_GlobalInvocationID.xy) / dim;
+
+	/*QeRay ray;
+	ray.origin = environmentData.camera.pos_rayTracingDepth.xyz;
+	ray.direction = normalize(vec3((-1.0 + 2.0 * uv) * vec2(environmentData.camera.fov_aspect_near_far.y, 1.0), -1.0));
+
+	int id = 0;
+	vec3 finalColor = renderScene(ray, id);
+	*/
+	imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(1.0, 0.0, 0.0, 1.0));
 }

@@ -571,8 +571,6 @@
 				<components>
 					<Transform oid="100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
-					<Axis oid="100" eid="1" type="13">
-					</Axis>
 				</components>
 				<children>
 					<camera oid="101" eid="101" type="1000">
@@ -595,16 +593,6 @@
 				<children>
 				</children>
 			</setting>
-			<grid oid="300" eid="300" type="1000">
-				<components>
-					<Transform oid="300" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-					</Transform>
-					<Grid oid="300" eid="1" type="14" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5">
-					</Grid>
-				</components>
-				<children>
-				</children>
-			</grid>
 			<light1 oid="400" eid="400" type="1000">
 				<components>
 					<Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
@@ -639,16 +627,6 @@
 				<children>
 				</children>
 			</sphere>
-			<cubemap oid="600" eid="600" type="1000">
-				<components>
-					<Transform oid="600" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="2" localScaleY="2" localScaleZ="2" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-					</Transform>
-					<Cubemap oid="600" eid="1" type="9" image="">
-					</Cubemap>
-				</components>
-				<children>
-				</children>
-			</cubemap>
 		</raytracing1>
 	</scenes>
 	<objects type="1000">
