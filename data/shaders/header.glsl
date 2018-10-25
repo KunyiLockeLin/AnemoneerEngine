@@ -20,6 +20,11 @@ const int Compute_texel = 0;
 const int Compute_sotrage = 10;
 const int Compute_image = 20;
 
+const int layoutSet_Raytracing = 4;
+const int Raytracing_sotrage = 0;
+const int Raytracing_image = 10;
+
+
 layout( push_constant ) uniform TimeState {
   float DeltaTime;
 } pushConstant;

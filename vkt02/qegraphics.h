@@ -15,15 +15,13 @@ struct QeDataViewport {
 	
 	QeDataDescriptorSet descriptorSetComputeRayTracing;
 	QeDataComputePipeline computePipelineRayTracing;
-	QeVKBuffer modelVerticsBuffer;
-	QeVKBuffer modelDatasBuffer;
 
 	QeDataDescriptorSet commonDescriptorSet;
 	QeDataEnvironment environmentData;
 	QeVKBuffer environmentBuffer;
 
 	QeDataViewport():environmentBuffer(eBuffer_uniform),
-		commonDescriptorSet(eDescriptorSetLayout_Common), descriptorSetComputeRayTracing(eDescriptorSetLayout_Compute), modelVerticsBuffer(eBuffer_vertex_texel), modelDatasBuffer(eBuffer_storage){}
+		commonDescriptorSet(eDescriptorSetLayout_Common), descriptorSetComputeRayTracing(eDescriptorSetLayout_Raytracing) {}
 
 	//~QeDataViewport();
 };

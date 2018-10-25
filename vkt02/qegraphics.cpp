@@ -756,9 +756,29 @@ void QeGraphics::updateDrawCommandBuffers() {
 			size_t size2 = render->viewports.size();
 			for (size_t k = 0; k < size2; ++k) {
 				if (render->viewports[k]->camera && render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w >= 1.f) {
+					
+					QeDataDescriptorSetRaytracing descriptor;
+					descriptor.imageView = render->colorImage.view;
+					descriptor.imageSampler = render->colorImage.sampler;
+
+					std::vector<QeModel*>::iterator it = models.begin();
+					while (it != models.end()) {
+						descriptor.modelDataBuffers.push_back((*it)->modelData->vertex.buffer);
+						descriptor.modelVertexBuffers.push_back((*it)->modelBuffer.buffer);
+						++it;
+					}
+
+					it = alphaModels.begin();
+					while (it != alphaModels.end()) {
+						descriptor.modelDataBuffers.push_back((*it)->modelData->vertex.buffer);
+						descriptor.modelVertexBuffers.push_back((*it)->modelBuffer.buffer);
+						++it;
+					}
+
+					VK->updateDescriptorSetRayTracing(descriptor, render->viewports[k]->descriptorSetComputeRayTracing);
 
 					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Compute, 1, &render->viewports[k]->descriptorSetComputeRayTracing.set, 0, nullptr);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Raytracing, 1, &render->viewports[k]->descriptorSetComputeRayTracing.set, 0, nullptr);
 
 					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->createComputePipeline(&render->viewports[k]->computePipelineRayTracing));
 					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width / 16, render->viewports[k]->scissor.extent.height / 16, 1);

@@ -220,6 +220,7 @@ enum QeDescriptorSetLayoutType {
 	eDescriptorSetLayout_Common = 1,
 	eDescriptorSetLayout_Postprocessing = 2,
 	eDescriptorSetLayout_Compute = 3,
+	eDescriptorSetLayout_Raytracing = 4,
 };
 
 enum QeGraphicsPipelineOtherType {

@@ -1404,6 +1404,70 @@ VkPipeline QeVulkan::createComputePipeline(QeDataComputePipeline* data) {
 	return pipeline;
 }
 
+void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& descriptor, QeDataDescriptorSet& descriptorSet) {
+
+	std::vector<VkWriteDescriptorSet> descriptorWrites;
+	std::vector<VkDescriptorBufferInfo> bufInfos1;
+	std::vector<VkDescriptorBufferInfo> bufInfos2;
+	std::vector<VkBuffer>::iterator it;
+
+	VkDescriptorImageInfo imgInfo;
+
+	VkWriteDescriptorSet descriptorWrite;
+	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrite.pNext = nullptr;
+	descriptorWrite.dstSet = descriptorSet.set;
+	descriptorWrite.dstArrayElement = 0;
+	
+	it = descriptor.modelVertexBuffers.begin();
+	while(it != descriptor.modelVertexBuffers.end()) {
+		VkDescriptorBufferInfo bufInfo;
+		bufInfo.buffer = (*it);
+		bufInfo.offset = 0;
+		bufInfo.range = VK_WHOLE_SIZE;
+		bufInfos1.push_back(bufInfo);
+		++it;
+	}
+
+	descriptorWrite.descriptorCount = (uint32_t)bufInfos1.size();
+	descriptorWrite.dstBinding = 0;
+	descriptorWrite.pBufferInfo = bufInfos1.data();
+	descriptorWrite.pTexelBufferView = nullptr;
+	descriptorWrite.pImageInfo = nullptr;
+	descriptorWrites.push_back(descriptorWrite);
+
+	it = descriptor.modelDataBuffers.begin();
+	while (it != descriptor.modelDataBuffers.end()) {
+		VkDescriptorBufferInfo bufInfo;
+		bufInfo.buffer = (*it);
+		bufInfo.offset = 0;
+		bufInfo.range = VK_WHOLE_SIZE;
+		bufInfos2.push_back(bufInfo);
+		++it;
+	}
+
+	descriptorWrite.descriptorCount = (uint32_t)bufInfos2.size();
+	descriptorWrite.dstBinding = 1;
+	descriptorWrite.pBufferInfo = bufInfos2.data();
+	descriptorWrite.pTexelBufferView = nullptr;
+	descriptorWrite.pImageInfo = nullptr;
+	descriptorWrites.push_back(descriptorWrite);
+	
+	imgInfo.imageLayout = descriptorSet.imageLayout;
+	imgInfo.imageView = descriptor.imageView;
+	imgInfo.sampler = descriptor.imageSampler;
+
+	descriptorWrite.descriptorCount = 1;
+	descriptorWrite.dstBinding = 10;
+	descriptorWrite.pBufferInfo = nullptr;
+	descriptorWrite.pTexelBufferView = nullptr;
+	descriptorWrite.pImageInfo = &imgInfo;
+	descriptorWrites.push_back(descriptorWrite);
+
+	vkUpdateDescriptorSets(device, uint32_t(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+}
+
+
 void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet) {
 
 	uint8_t* pos = (uint8_t*)data;
@@ -1417,8 +1481,10 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 	descriptorWrite.dstSet = descriptorSet.set;
 	descriptorWrite.dstArrayElement = 0;
 	descriptorWrite.descriptorCount = 1;
-		
+
 	size_t size = descriptorSetLayoutDatas[descriptorSet.type].size();
+	size_t index = 0;
+
 	for (size_t i = 0; i < size; ++i) {
 
 		descriptorWrite.descriptorType = descriptorSetLayoutDatas[descriptorSet.type][i].type;
@@ -1440,6 +1506,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 					bufInfo.buffer = *(VkBuffer*)(pos);
 					bufInfo.offset = 0;
 					bufInfo.range = VK_WHOLE_SIZE;
+		
 					bufInfos.push_back(bufInfo);
 
 					descriptorWrite.pBufferInfo = &bufInfos.back();

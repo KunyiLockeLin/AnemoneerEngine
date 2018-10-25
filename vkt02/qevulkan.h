@@ -93,6 +93,13 @@ struct QeDataDescriptorSetCompute {
 
 	// VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
 	VkBuffer	buffer = VK_NULL_HANDLE;
+};
+
+struct QeDataDescriptorSetRaytracing {
+
+	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+	std::vector<VkBuffer>	modelVertexBuffers;
+	std::vector<VkBuffer>	modelDataBuffers;
 
 	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
 	VkImageView imageView = VK_NULL_HANDLE;
@@ -173,7 +180,9 @@ public:
 
 		{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER/*VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT*/, 10, 1 } },
 
-		{ { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 20, 1 } }
+		{ { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
+		
+		{ { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, 2 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10, 1 } },
 	};
 
 	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
@@ -227,6 +236,7 @@ public:
 
 	void createDescriptorPool();
 	void createDescriptorSet(QeDataDescriptorSet& descriptorSet);
+	void updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& descriptor, QeDataDescriptorSet& descriptorSet);
 	void updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet);
 	VkPipeline createGraphicsPipeline(QeDataGraphicsPipeline* data);
 	VkPipeline createComputePipeline(QeDataComputePipeline* data);

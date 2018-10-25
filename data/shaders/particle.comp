@@ -1,6 +1,14 @@
 #version 450
 #extension GL_GOOGLE_include_directive : enable
-#include "header.comp"
+#include "header.glsl"
+
+layout( local_size_x = 1024) in;
+
+layout( set = layoutSet_Compute, binding = Compute_texel + 0, rgba32f  ) uniform imageBuffer texelBuffer;
+
+layout( set = layoutSet_Compute, binding = Compute_sotrage + 0 ) buffer outSSBO {
+	int death[];
+}outputData;
 
 
 void main() {
