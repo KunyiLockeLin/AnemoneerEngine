@@ -27,14 +27,14 @@
   - In qeheader.h, you can find out the whole flag and type.
 
 # Feature
-  - Support mutli-viewports, post-processing.
-  - Support light and camera control.
-  - Support vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
-  - Support ~~Phong shading~~ and PBR(Physically-Based Rendering), gamma, exposure, grayscale, bloom.     
-  - Support ~~diffuse map,~~ baseColor map, cubemap & reflection & refraction, normal map.
-  - Support skeletal animation, attach obj, draw lines, billboards, particle system.
-  - Support draw mulit-render, 2D render, outline(stencil buffer) and multisample anti-aliasing(MASS)
-  - Support Log output, call stack trace and command.
+  - mutli-viewports, post-processing.
+  - light and camera control.
+  - vertex, tessellation control & evaluation(triangle-faces become opposite(cw)), geometry, fragment shader, compute shader(particles).
+  - ~~Phong shading~~ and PBR(Physically-Based Rendering), gamma, exposure, grayscale, bloom.     
+  - ~~diffuse map,~~ baseColor map, cubemap & reflection & refraction, normal map.
+  - skeletal animation, attach obj, draw lines, billboards, particle system.
+  - draw mulit-render, 2D render, outline(stencil buffer) and multisample anti-aliasing(MSAA)
+  - Log output, call stack trace and command.
   - For model  - ~~obj, mtl~~, gltf.
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
