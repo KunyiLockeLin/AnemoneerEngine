@@ -753,10 +753,11 @@ void QeGraphics::updateDrawCommandBuffers() {
 			}
 
 			// ray tracing
+			bool bRayTracing = false;
 			size_t size2 = render->viewports.size();
 			for (size_t k = 0; k < size2; ++k) {
 				if (render->viewports[k]->camera && render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w >= 1.f) {
-					
+					bRayTracing = true;
 					QeDataDescriptorSetRaytracing descriptor;
 					descriptor.imageView = render->colorImage.view;
 					descriptor.imageSampler = render->colorImage.sampler;
@@ -802,68 +803,70 @@ void QeGraphics::updateDrawCommandBuffers() {
 						0, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);*/
 				}
 			}
-		
-			vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+			
+			if (bRayTracing == false) {
+				vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			if ( i==eRender_KHR || i==eRender_ui ) {
-				vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
-				vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
-				vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
-				vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
-				vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
+				if (i == eRender_KHR || i == eRender_ui) {
+					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
+					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
+					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[0]->descriptorSet.set, 0, nullptr);
+					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
+					vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 
-				if (i == eRender_ui) {
-					QeDataDrawCommand command;
-					command.camera = render->viewports[0]->camera;
-					command.commandBuffer = render->commandBuffers[j];
-					command.commonDescriptorSet = &render->viewports[0]->commonDescriptorSet;
-					command.renderPass = render->renderPass;
-					command.type = QeRenderType(i);
-
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
-
-					std::vector<QeModel*>::iterator it = models2D.begin();
-					while (it != models2D.end()) {
- 						(*it)->updateDrawCommandBuffer(&command);
-						++it;
-					}
-				}
-			}
-			else {				
-				float lineWidth = 1.f;
-				AST->getXMLfValue(&lineWidth, AST->getXMLNode(2, AST->CONFIG, "setting"), 1, "lineWidth");
-				vkCmdSetLineWidth(render->commandBuffers[j], lineWidth);
-
-				size_t size2 = render->viewports.size();
-				for (size_t k = 0; k < size2; ++k) {
-					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
-					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
-
-					if (render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w < 1.f) {
+					if (i == eRender_ui) {
 						QeDataDrawCommand command;
-						command.camera = render->viewports[k]->camera;
+						command.camera = render->viewports[0]->camera;
 						command.commandBuffer = render->commandBuffers[j];
-						command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+						command.commonDescriptorSet = &render->viewports[0]->commonDescriptorSet;
 						command.renderPass = render->renderPass;
 						command.type = QeRenderType(i);
 
-						vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
-						updateDrawCommandBuffer(&command);
+						vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[0]->commonDescriptorSet.set, 0, nullptr);
+
+						std::vector<QeModel*>::iterator it = models2D.begin();
+						while (it != models2D.end()) {
+							(*it)->updateDrawCommandBuffer(&command);
+							++it;
+						}
 					}
 				}
+				else {
+					float lineWidth = 1.f;
+					AST->getXMLfValue(&lineWidth, AST->getXMLNode(2, AST->CONFIG, "setting"), 1, "lineWidth");
+					vkCmdSetLineWidth(render->commandBuffers[j], lineWidth);
 
-				size2 = render->subpass.size();
-				for (size_t k = 0; k < size2; ++k) {
-					vkCmdNextSubpass(render->commandBuffers[j], VK_SUBPASS_CONTENTS_INLINE);
-					vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
-					vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
-					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
+					size_t size2 = render->viewports.size();
+					for (size_t k = 0; k < size2; ++k) {
+						vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewports[k]->viewport);
+						vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->viewports[k]->scissor);
 
-					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[k]->graphicsPipeline));
-					vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
+						if (render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w < 1.f) {
+							QeDataDrawCommand command;
+							command.camera = render->viewports[k]->camera;
+							command.commandBuffer = render->commandBuffers[j];
+							command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
+							command.renderPass = render->renderPass;
+							command.type = QeRenderType(i);
+
+							vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
+							updateDrawCommandBuffer(&command);
+						}
+					}
+
+					size2 = render->subpass.size();
+					for (size_t k = 0; k < size2; ++k) {
+						vkCmdNextSubpass(render->commandBuffers[j], VK_SUBPASS_CONTENTS_INLINE);
+						vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
+						vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
+						vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout, eDescriptorSetLayout_Postprocessing, 1, &render->subpass[k]->descriptorSet.set, 0, nullptr);
+
+						vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&render->subpass[k]->graphicsPipeline));
+						vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
+					}
 				}
+				vkCmdEndRenderPass(render->commandBuffers[j]);
 			}
-			vkCmdEndRenderPass(render->commandBuffers[j]);
 			if (vkEndCommandBuffer(render->commandBuffers[j]) != VK_SUCCESS)	LOG("failed to record command buffer!");
 		}
 	}
