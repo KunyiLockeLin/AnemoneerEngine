@@ -136,7 +136,7 @@ void QeGraphics::updateViewport() {
 			viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
 			if (viewport->camera) {
-				viewport->camera->bufferData.fov_aspect_near_far.y = viewport->viewport.width / viewport->viewport.height;
+				viewport->camera->bufferData.horizontal_aspect.w = viewport->viewport.width / viewport->viewport.height;
 			}
 		}
 	}
@@ -829,7 +829,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->createComputePipeline(&render->viewports[k]->computePipelineRayTracing));
 
-					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width/16, render->viewports[k]->scissor.extent.height/16, 1);
+					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width, render->viewports[k]->scissor.extent.height, 1);
 
 					/*VkImageMemoryBarrier imageMemoryBarrier = {};
 					imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;

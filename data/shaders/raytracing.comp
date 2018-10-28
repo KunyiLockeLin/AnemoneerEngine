@@ -58,13 +58,20 @@ vec3 reflect1(vec3 v, vec3 n) {
 }
 
 vec3 random_in_unit_sphere() {
-    vec3 p;
-    do {
-        p = 2.0*vec3(random(),random(),random()) - vec3(1,1,1);
-    } while (dot(p,p) >= 1.0);
+    vec3 p=vec3(0,0,0);
+    //do {
+    //    p = 2.0*vec3(random(),random(),random()) - vec3(1,1,1);
+    //} while (dot(p,p) >= 1.0);
     return p;
 }
 
+vec3 random_in_unit_disk() {
+    vec3 p=vec3(0,0,0);
+    //do {
+    //    p = 2.0*vec3(random(),random(),0) - vec3(1,1,0);
+    //} while (dot(p,p) >= 1.0);
+    return p;
+}
 
 bool refract(vec3 v, vec3 n, float ni_over_nt, vec3 refracted) {
     vec3 uv = normalize(v);
@@ -196,21 +203,20 @@ vec3 color(QeRay ray) {
 		if (hit(ray, 0.001, FLT_MAX, rec)) { 
 			QeRay scattered;
 			vec3 attenuation;
-			color = vec3(1,0,0);
 
-			/*if (material_scatter(ray, rec, attenuation, scattered)) {
+			if (material_scatter(ray, rec, attenuation, scattered)) {
 				ray = scattered;
-				color *= attenuation;
+				if(depth==0)	color = attenuation;
+				else	color *= attenuation;
 			}
 			else {
-				color *= vec3(0,0,0);
 				break;
-			}*/
+			}
 		}
 		else {
 			float t = 0.5*(ray.direction.y + 1.0);
-			color *= ((1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0));
-			color = vec3(0,0,1);
+			vec3 color1 = ((1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0));
+			if(depth==0)	color = color1;
 			break;
 		}
 		depth++;
@@ -223,9 +229,23 @@ void main() {
 	ivec2 dim = imageSize(resultImage);
 	vec2 uv = vec2(gl_GlobalInvocationID.xy) / dim;
 
+	QeDataCamera cam = environmentData.camera;
+
+	vec3 rd = cam.vertical_lensRadius.w*random_in_unit_disk();
+
+	vec3 u = vec3(cam.view[0][0], cam.view[1][0], cam.view[2][0]); // cross(vup, w);
+	vec3 v = vec3(cam.view[0][1], cam.view[1][1], cam.view[2][1]); // cross(w, u);
+
+	vec3 offset = u * rd.x + v * rd.y;
+    
 	QeRay ray;
-	ray.origin = environmentData.camera.pos_rayTracingDepth.xyz;
-	ray.direction = normalize(vec3( -1.0, (-1.0 + 2.0 * uv) * vec2(environmentData.camera.fov_aspect_near_far.y, 1.0)));
+	ray.origin = cam.pos_rayTracingDepth.xyz;
+	ray.direction = normalize(vec3( -1.0, (-1.0 + 2.0 * uv) * vec2(cam.horizontal_aspect.w, 1.0)));
+	//ray.origin = cam.pos_rayTracingDepth.xyz + offset;
+	//vec3 direction = normalize(cam.lowerLeftCorner.xyz + uv.x*cam.horizontal_aspect.xyz + uv.y*cam.vertical_lensRadius.xyz - ray.origin - offset);
+	//ray.direction.x = direction.z;
+	//ray.direction.y = direction.x;
+	//ray.direction.z = direction.y;
 
 	vec3 finalColor = color(ray);
 

@@ -6,17 +6,17 @@ void QeCamera::initialize(QeAssetXML* _property, QeObject* _owner) {
 	//type = eCameraThirdPerson;
 	AST->getXMLfValue(&bufferData.pos_rayTracingDepth.w, initProperty, 1, "raytracingDepth");
 	AST->getXMLiValue(&lookAtTransformOID, initProperty, 1, "lookAtTransformOID");
-	AST->getXMLfValue(&bufferData.up_aperture.x, initProperty, 1, "upX");
-	AST->getXMLfValue(&bufferData.up_aperture.y, initProperty, 1, "upY");
-	AST->getXMLfValue(&bufferData.up_aperture.z, initProperty, 1, "upZ");
-	AST->getXMLfValue(&bufferData.up_aperture.w, initProperty, 1, "aperture");
-	bufferData.face_focusDist.w = 0;
-	AST->getXMLfValue(&bufferData.face_focusDist.w, initProperty, 1, "focusDist");
+	AST->getXMLfValue(&up.x, initProperty, 1, "upX");
+	AST->getXMLfValue(&up.y, initProperty, 1, "upY");
+	AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
+	AST->getXMLfValue(&aperture, initProperty, 1, "aperture");
+	bufferData.vertical_lensRadius.w = aperture / 2;
+
 	AST->getXMLfValue(&speed, initProperty, 1, "speed");
 	AST->getXMLiValue(&cullingDistance, initProperty, 1, "cullingDistance");
-	AST->getXMLfValue(&bufferData.fov_aspect_near_far.x, initProperty, 1, "fov");
-	AST->getXMLfValue(&bufferData.fov_aspect_near_far.z, initProperty, 1, "near");
-	AST->getXMLfValue(&bufferData.fov_aspect_near_far.w, initProperty, 1, "far");
+	AST->getXMLfValue(&fov, initProperty, 1, "fov");
+	AST->getXMLfValue(&fnear, initProperty, 1, "near");
+	AST->getXMLfValue(&ffar, initProperty, 1, "far");
 	AST->getXMLiValue(&postProcessingOID, initProperty, 1, "postProcessingOID");
 	bUpdatePostProcessingOID = false;
 	if (postProcessingOID) bUpdatePostProcessingOID = true;
@@ -81,7 +81,7 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
 		return;
 	}
 	_dir *= speed;
-	QeVector3f up = bufferData.up_aperture;
+
 	owner->transform->move(_dir, face, up);
 	pos = owner->transform->worldPosition();
 
@@ -144,19 +144,24 @@ void QeCamera::update1() {
 	bufferData.pos_rayTracingDepth = pos;
 	QeVector3f lookAtV = lookAt();
 	QeVector3f face = lookAtV - bufferData.pos_rayTracingDepth;
-	
-	if (bufferData.face_focusDist.w>0) {
-		bufferData.face_focusDist.w = MATH->length(face);
-	}
-
-	bufferData.face_focusDist = MATH->normalize(face);
+	float focusDist = MATH->length(face);
+	face = MATH->normalize(face);
 
 	if (renderType == eRender_ui) {
-		bufferData.fov_aspect_near_far.y = ((float)renderSize.width) / renderSize.height;
+		bufferData.horizontal_aspect.w = ((float)renderSize.width) / renderSize.height;
 	}
 	else {
-		QeVector3f up = bufferData.up_aperture;
 		bufferData.view = MATH->lookAt(pos, lookAtV, up);
-		bufferData.projection = MATH->perspective(bufferData.fov_aspect_near_far.x, bufferData.fov_aspect_near_far.y, bufferData.fov_aspect_near_far.z, bufferData.fov_aspect_near_far.w);
+		bufferData.projection = MATH->perspective(fov, bufferData.horizontal_aspect.w, fnear, ffar);
+
+		float half_height = -1.0f / bufferData.projection._11; //tan(theta/2);
+		float half_width = bufferData.horizontal_aspect.w * half_height; //1.0/cam.projection[0][0];
+
+		QeVector3f w = face; // vec3(cam.view[0][2], cam.view[1][2], cam.view[2][2]);
+		QeVector3f u = QeVector3f(bufferData.view._00, bufferData.view._10, bufferData.view._20); // cross(vup, w);
+		QeVector3f v = QeVector3f(bufferData.view._01, bufferData.view._11, bufferData.view._21); // cross(w, u);
+		bufferData.lowerLeftCorner = pos - u * half_width * focusDist - v * half_height * focusDist - w * focusDist;
+		bufferData.horizontal_aspect = u * 2 * half_width*focusDist;
+		bufferData.vertical_lensRadius = v * 2 * half_height*focusDist;
 	}
 }

@@ -18,7 +18,7 @@ void main(void)
 	mvp[0].y = 0;
 	mvp[0].z = 0;
 	mvp[1].x = 0;
-	mvp[1].y *= (scale * environmentData.camera.fov_aspect_near_far.y);
+	mvp[1].y *= (scale * environmentData.camera.horizontal_aspect.w);
 	mvp[1].x = 0;
 	mvp[2].x = 0;
 	mvp[2].y = 0;
