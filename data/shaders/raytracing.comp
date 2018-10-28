@@ -237,15 +237,13 @@ void main() {
 	vec3 v = vec3(cam.view[0][1], cam.view[1][1], cam.view[2][1]); // cross(w, u);
 
 	vec3 offset = u * rd.x + v * rd.y;
-    
+    //offset = vec3(0,0,0);
+
 	QeRay ray;
-	ray.origin = cam.pos_rayTracingDepth.xyz;
-	ray.direction = normalize(vec3( -1.0, (-1.0 + 2.0 * uv) * vec2(cam.horizontal_aspect.w, 1.0)));
-	//ray.origin = cam.pos_rayTracingDepth.xyz + offset;
-	//vec3 direction = normalize(cam.lowerLeftCorner.xyz + uv.x*cam.horizontal_aspect.xyz + uv.y*cam.vertical_lensRadius.xyz - ray.origin - offset);
-	//ray.direction.x = direction.z;
-	//ray.direction.y = direction.x;
-	//ray.direction.z = direction.y;
+	//ray.origin = cam.pos_rayTracingDepth.xyz;
+	//ray.direction = normalize(vec3( -1.0, (-1.0 + 2.0 * uv) * vec2(cam.horizontal_aspect.w, 1.0)));
+	ray.origin = cam.pos_rayTracingDepth.xyz + offset;
+	ray.direction = normalize(cam.lowerLeftCorner.xyz + uv.x*cam.horizontal_aspect.xyz + uv.y*cam.vertical_lensRadius.xyz - ray.origin - offset);
 
 	vec3 finalColor = color(ray);
 

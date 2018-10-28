@@ -143,10 +143,10 @@ void QeCamera::update1() {
 	QeVector3f pos = owner->transform->worldPosition();
 	bufferData.pos_rayTracingDepth = pos;
 	QeVector3f lookAtV = lookAt();
-	QeVector3f face = lookAtV - bufferData.pos_rayTracingDepth;
+	QeVector3f face = lookAtV - pos;
 	float focusDist = MATH->length(face);
 	face = MATH->normalize(face);
-
+	//focusDist = 1;
 	if (renderType == eRender_ui) {
 		bufferData.horizontal_aspect.w = ((float)renderSize.width) / renderSize.height;
 	}
@@ -160,7 +160,7 @@ void QeCamera::update1() {
 		QeVector3f w = face; // vec3(cam.view[0][2], cam.view[1][2], cam.view[2][2]);
 		QeVector3f u = QeVector3f(bufferData.view._00, bufferData.view._10, bufferData.view._20); // cross(vup, w);
 		QeVector3f v = QeVector3f(bufferData.view._01, bufferData.view._11, bufferData.view._21); // cross(w, u);
-		bufferData.lowerLeftCorner = pos - u * half_width * focusDist - v * half_height * focusDist - w * focusDist;
+		bufferData.lowerLeftCorner = pos - u * half_width * focusDist - v * half_height * focusDist + w * focusDist;
 		bufferData.horizontal_aspect = u * 2 * half_width*focusDist;
 		bufferData.vertical_lensRadius = v * 2 * half_height*focusDist;
 	}
