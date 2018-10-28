@@ -124,7 +124,7 @@ struct QeRay {
 struct QeRayHitRecord {
 	float t;
 	QeVector3f position;
-	QeVector3f nomral;
+	QeVector3f normal;
 };
 
 struct QeBoundingSphere {

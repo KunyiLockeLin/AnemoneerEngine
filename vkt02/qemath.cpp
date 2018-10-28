@@ -1069,7 +1069,7 @@ bool QeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere& sphere, float
 	if(b){
 		hit->t = t;
 		hit->position = ray.positionByTime(t);
-		hit->nomral = (hit->position-sphere.center)/sphere.radius;
+		hit->normal = (hit->position-sphere.center)/sphere.radius;
 	}
 	return b;
 }

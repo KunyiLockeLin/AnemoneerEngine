@@ -208,6 +208,10 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.wideLines = VK_TRUE;
 	deviceFeatures.vertexPipelineStoresAndAtomics = VK_TRUE;
 	deviceFeatures.fragmentStoresAndAtomics = VK_TRUE;
+	deviceFeatures.shaderUniformBufferArrayDynamicIndexing = VK_TRUE;
+	deviceFeatures.shaderSampledImageArrayDynamicIndexing = VK_TRUE;
+	deviceFeatures.shaderStorageBufferArrayDynamicIndexing = VK_TRUE;
+	deviceFeatures.shaderStorageImageArrayDynamicIndexing = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

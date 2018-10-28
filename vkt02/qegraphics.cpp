@@ -300,6 +300,45 @@ void QeGraphics::update1() {
 		updateViewport();
 
 		bRecreateRender = false;
+
+		/*size = renders.size();
+		for (size_t i = 0; i<size; ++i) {
+
+			QeDataRender * render = renders[i];
+			if (!render) continue;
+
+			size_t size2 = render->viewports.size();
+			for (size_t k = 0; k < size2; ++k) {
+				if (render->viewports[k]->camera && render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w >= 1.f) {
+
+					QeDataDescriptorSetRaytracing descriptor;
+					descriptor.imageView = render->colorImage.view;
+					descriptor.imageSampler = render->colorImage.sampler;
+
+					std::vector<QeModel*>::iterator it = models.begin();
+					while (it != models.end()) {
+
+						if ((*it)->modelData) {
+							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
+						}
+						++it;
+					}
+
+					it = alphaModels.begin();
+					while (it != alphaModels.end()) {
+
+						if ((*it)->modelData) {
+							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
+						}
+						++it;
+					}
+
+					VK->updateDescriptorSetRayTracing(descriptor, render->viewports[k]->descriptorSetComputeRayTracing);
+				}
+			}
+		}*/
 	}
 	VK->pushConstants[0] = QE->deltaTime;
 }
@@ -758,6 +797,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 			for (size_t k = 0; k < size2; ++k) {
 				if (render->viewports[k]->camera && render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w >= 1.f) {
 					bRayTracing = true;
+
 					QeDataDescriptorSetRaytracing descriptor;
 					descriptor.imageView = render->colorImage.view;
 					descriptor.imageSampler = render->colorImage.sampler;
@@ -789,7 +829,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
 					vkCmdBindPipeline(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->createComputePipeline(&render->viewports[k]->computePipelineRayTracing));
 
-					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width, render->viewports[k]->scissor.extent.height, 1);
+					vkCmdDispatch(render->commandBuffers[j], render->viewports[k]->scissor.extent.width/16, render->viewports[k]->scissor.extent.height/16, 1);
 
 					/*VkImageMemoryBarrier imageMemoryBarrier = {};
 					imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
