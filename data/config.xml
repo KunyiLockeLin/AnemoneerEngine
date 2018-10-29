@@ -647,7 +647,7 @@
 					</Transform>
 					<Model oid="1104" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="1104">
 					</Model>
-					<MaterialBase2 oid="1104" eid="4" type="11" vert="" tesc="" tese="" geom="" frag="basemf.spv" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+					<MaterialBase2 oid="1104" eid="4" type="11" vert="" tesc="" tese="" geom="" frag="basemf.spv" alpha="0" baseColorR="0.7" baseColorG="0.6" baseColorB="0.5" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="">
 					</MaterialBase2>
 				</components>
 				<children>
@@ -659,7 +659,7 @@
 					</Transform>
 					<Model oid="1105" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="1105">
 					</Model>
-					<MaterialBase2 oid="1105" eid="4" type="11" vert="" tesc="" tese="" geom="" frag="basemf.spv" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="0" roughness="1" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="">
+					<MaterialBase2 oid="1105" eid="4" type="11" vert="" tesc="" tese="" geom="" frag="basemf.spv" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="0" roughness="1.5" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="">
 					</MaterialBase2>
 				</components>
 				<children>

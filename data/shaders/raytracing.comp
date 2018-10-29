@@ -130,14 +130,14 @@ bool material_scatter(QeRay ray, QeRayHitRecord rec, inout vec3 attenuation, ino
 			reflect_prob = schlick(cosine, mtl.metallicRoughnessEmissive.y);
 		else 
 			reflect_prob = 1.0;
-		if (random() < reflect_prob){
+		/*if (random() < reflect_prob){
 			scattered.origin = rec.position;
 			scattered.direction = reflected;
 		}
-		else {
+		else {*/
 			scattered.origin = rec.position;
 			scattered.direction = refracted;
-		}
+		//}
 		return true;
 	}
 
@@ -214,9 +214,10 @@ vec3 color(QeRay ray) {
 			if (material_scatter(ray, rec, attenuation, scattered)) {
 				ray = scattered;
 				if(depth==0)	color = attenuation;
-				else	color *= attenuation;
+				else			color *= attenuation;
 			}
 			else {
+				color = vec3(0.0, 0.0, 0.0);
 				break;
 			}
 		}
@@ -224,6 +225,7 @@ vec3 color(QeRay ray) {
 			float t = 0.5*(ray.direction.y + 1.0);
 			vec3 color1 = ((1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0));
 			if(depth==0)	color = color1;
+			else			color *= color1;
 			break;
 		}
 		depth++;
