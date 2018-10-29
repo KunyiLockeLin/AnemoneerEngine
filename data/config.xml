@@ -643,7 +643,7 @@
 			</sphere3>
 			<sphereM oid="1104" eid="1101" type="1000">
 				<components>
-					<Transform oid="1104" eid="1" type="1" localPositionX="2" localPositionY="2" localPositionZ="2" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="1104" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="2" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
 					<Model oid="1104" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="1104">
 					</Model>
@@ -653,18 +653,6 @@
 				<children>
 				</children>
 			</sphereM>
-			<sphereD oid="1105" eid="1101" type="1000">
-				<components>
-					<Transform oid="1105" eid="1" type="1" localPositionX="-2" localPositionY="-2" localPositionZ="2" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
-					</Transform>
-					<Model oid="1105" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="1105">
-					</Model>
-					<MaterialBase2 oid="1105" eid="4" type="11" vert="" tesc="" tese="" geom="" frag="basemf.spv" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="0" roughness="1.5" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="">
-					</MaterialBase2>
-				</components>
-				<children>
-				</children>
-			</sphereD>
 		</raytracing1>
 	</scenes>
 	<objects type="1000">
