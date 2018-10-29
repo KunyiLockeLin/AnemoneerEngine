@@ -258,6 +258,7 @@ void QeGraphics::updateBuffer() {
 
 			AST->getXMLfValue(&viewport->environmentData.param.x, node, 1, "gamma");
 			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "exposure");
+			viewport->environmentData.param.z = float(models.size() + alphaModels.size());
 
 			VK->setMemoryBuffer(viewport->environmentBuffer,
 				sizeof(viewport->environmentData), &viewport->environmentData);
@@ -301,7 +302,7 @@ void QeGraphics::update1() {
 
 		bRecreateRender = false;
 
-		/*size = renders.size();
+		size = renders.size();
 		for (size_t i = 0; i<size; ++i) {
 
 			QeDataRender * render = renders[i];
@@ -319,7 +320,7 @@ void QeGraphics::update1() {
 					while (it != models.end()) {
 
 						if ((*it)->modelData) {
-							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							//descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
 							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
 						}
 						++it;
@@ -329,7 +330,7 @@ void QeGraphics::update1() {
 					while (it != alphaModels.end()) {
 
 						if ((*it)->modelData) {
-							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							//descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
 							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
 						}
 						++it;
@@ -338,7 +339,7 @@ void QeGraphics::update1() {
 					VK->updateDescriptorSetRayTracing(descriptor, render->viewports[k]->descriptorSetComputeRayTracing);
 				}
 			}
-		}*/
+		}
 	}
 	VK->pushConstants[0] = QE->deltaTime;
 }
@@ -798,7 +799,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 				if (render->viewports[k]->camera && render->viewports[k]->camera->bufferData.pos_rayTracingDepth.w >= 1.f) {
 					bRayTracing = true;
 
-					QeDataDescriptorSetRaytracing descriptor;
+					/*QeDataDescriptorSetRaytracing descriptor;
 					descriptor.imageView = render->colorImage.view;
 					descriptor.imageSampler = render->colorImage.sampler;
 
@@ -822,7 +823,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 						++it;
 					}
 
-					VK->updateDescriptorSetRayTracing(descriptor, render->viewports[k]->descriptorSetComputeRayTracing);
+					VK->updateDescriptorSetRayTracing(descriptor, render->viewports[k]->descriptorSetComputeRayTracing);*/
 
 					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set, 0, nullptr);
 					vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_COMPUTE, VK->pipelineLayout, eDescriptorSetLayout_Raytracing, 1, &render->viewports[k]->descriptorSetComputeRayTracing.set, 0, nullptr);

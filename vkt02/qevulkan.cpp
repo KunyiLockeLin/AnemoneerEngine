@@ -213,9 +213,13 @@ void QeVulkan::createLogicalDevice() {
 	deviceFeatures.shaderStorageBufferArrayDynamicIndexing = VK_TRUE;
 	deviceFeatures.shaderStorageImageArrayDynamicIndexing = VK_TRUE;
 
+	VkPhysicalDeviceDescriptorIndexingFeaturesEXT descriptorFeatures = {};
+	descriptorFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
+	descriptorFeatures.runtimeDescriptorArray = VK_TRUE;
+
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	createInfo.pNext = nullptr;
+	createInfo.pNext = &descriptorFeatures;
 	createInfo.flags = 0;
 	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	createInfo.pQueueCreateInfos = queueCreateInfos.data();
@@ -1416,7 +1420,7 @@ VkPipeline QeVulkan::createComputePipeline(QeDataComputePipeline* data) {
 void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& descriptor, QeDataDescriptorSet& descriptorSet) {
 
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
-	std::vector<VkDescriptorBufferInfo> bufInfos1;
+	//std::vector<VkDescriptorBufferInfo> bufInfos1;
 	std::vector<VkDescriptorBufferInfo> bufInfos2;
 	std::vector<VkBuffer>::iterator it;
 
@@ -1428,7 +1432,7 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 	descriptorWrite.dstSet = descriptorSet.set;
 	descriptorWrite.dstArrayElement = 0;
 	
-	it = descriptor.modelVertexBuffers.begin();
+	/*it = descriptor.modelVertexBuffers.begin();
 	while(it != descriptor.modelVertexBuffers.end()) {
 		VkDescriptorBufferInfo bufInfo;
 		bufInfo.buffer = (*it);
@@ -1444,7 +1448,7 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 	descriptorWrite.pBufferInfo = bufInfos1.data();
 	descriptorWrite.pTexelBufferView = nullptr;
 	descriptorWrite.pImageInfo = nullptr;
-	descriptorWrites.push_back(descriptorWrite);
+	descriptorWrites.push_back(descriptorWrite);*/
 
 	it = descriptor.modelDataBuffers.begin();
 	while (it != descriptor.modelDataBuffers.end()) {

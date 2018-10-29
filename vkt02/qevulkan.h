@@ -98,7 +98,7 @@ struct QeDataDescriptorSetCompute {
 struct QeDataDescriptorSetRaytracing {
 
 	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
-	std::vector<VkBuffer>	modelVertexBuffers;
+	//std::vector<VkBuffer>	modelVertexBuffers;
 	std::vector<VkBuffer>	modelDataBuffers;
 
 	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER

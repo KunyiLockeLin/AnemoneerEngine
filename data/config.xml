@@ -595,7 +595,7 @@
 			</setting>
 			<sphere oid="1100" eid="1100" type="1000">
 				<components>
-					<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="-400" localScaleX="20" localScaleY="20" localScaleZ="20" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
+					<Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="-4" localScaleX="2" localScaleY="2" localScaleZ="2" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="">
 					</Transform>
 					<Model oid="1100" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="1100">
 					</Model>

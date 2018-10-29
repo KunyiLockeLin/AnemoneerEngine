@@ -42,7 +42,7 @@ struct QeDataCamera {
 
 layout( set = layoutSet_Common, binding = Common_uniform+ 0) uniform QeDataEnvironment {
 	QeDataCamera camera;
-	vec4 param; // 0: gamma, 1: exposure
+	vec4 param; // 0: gamma, 1: exposure, 2: modelNum
 } environmentData;
 
 
