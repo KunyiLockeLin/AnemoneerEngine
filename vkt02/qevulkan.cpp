@@ -1417,7 +1417,7 @@ VkPipeline QeVulkan::createComputePipeline(QeDataComputePipeline* data) {
 	return pipeline;
 }
 
-void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& descriptor, QeDataDescriptorSet& descriptorSet) {
+/*void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& descriptor, QeDataDescriptorSet& descriptorSet) {
 
 	std::vector<VkWriteDescriptorSet> descriptorWrites;
 	//std::vector<VkDescriptorBufferInfo> bufInfos1;
@@ -1432,7 +1432,7 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 	descriptorWrite.dstSet = descriptorSet.set;
 	descriptorWrite.dstArrayElement = 0;
 	
-	/*it = descriptor.modelVertexBuffers.begin();
+	it = descriptor.modelVertexBuffers.begin();
 	while(it != descriptor.modelVertexBuffers.end()) {
 		VkDescriptorBufferInfo bufInfo;
 		bufInfo.buffer = (*it);
@@ -1448,7 +1448,7 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 	descriptorWrite.pBufferInfo = bufInfos1.data();
 	descriptorWrite.pTexelBufferView = nullptr;
 	descriptorWrite.pImageInfo = nullptr;
-	descriptorWrites.push_back(descriptorWrite);*/
+	descriptorWrites.push_back(descriptorWrite);
 
 	it = descriptor.modelDataBuffers.begin();
 	while (it != descriptor.modelDataBuffers.end()) {
@@ -1481,7 +1481,7 @@ void QeVulkan::updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing& desc
 	descriptorWrites.push_back(descriptorWrite);
 
 	vkUpdateDescriptorSets(device, uint32_t(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-}
+}*/
 
 
 void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSet) {
@@ -1532,6 +1532,7 @@ void QeVulkan::updateDescriptorSet(void* data, QeDataDescriptorSet& descriptorSe
 
 				break;
 			case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+			case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
 
 				if ((*(VkImageView*)(pos)) != VK_NULL_HANDLE) {
 

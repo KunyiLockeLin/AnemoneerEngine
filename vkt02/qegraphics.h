@@ -83,7 +83,7 @@ class QeGraphics
 {
 public:
 
-	QeGraphics(QeGlobalKey& _key): lightsBuffer(eBuffer_storage) {}
+	QeGraphics(QeGlobalKey& _key): lightsBuffer(eBuffer_storage), modelDatasBuffer(eBuffer_storage){}
 	~QeGraphics();
 
 	std::vector<QeDataRender*> renders;
@@ -95,11 +95,12 @@ public:
 	VkSemaphore renderCompleteSemaphore = VK_NULL_HANDLE;
 	std::vector<VkFence> fences;
 	VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT;
-
+ 
 	std::vector<QeModel*> models;
 	std::vector<QeModel*> alphaModels;
 	std::vector<QeModel*> models2D;
 	std::vector<QeLight*> lights;
+	QeVKBuffer modelDatasBuffer;
 	QeVKBuffer lightsBuffer;
 	bool bUpdateLight= false;
 

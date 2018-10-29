@@ -236,6 +236,23 @@ void QeGraphics::updateBuffer() {
 		VK->setMemoryBuffer(lightsBuffer, sizeof(QeDataLight) * lights.size(), lightsData.data());
 	}
 
+	if (modelDatasBuffer.buffer) {
+		std::vector<QeDataModel> modelsData;
+		std::vector<QeModel*>::iterator it = models.begin();
+		while (it != models.end()) {
+			modelsData.push_back((*it)->bufferData);
+			++it;
+		}
+		it = alphaModels.begin();
+		while (it != alphaModels.end()) {
+			modelsData.push_back((*it)->bufferData);
+			++it;
+		}
+		size_t size = models.size() + alphaModels.size();
+
+		VK->setMemoryBuffer(modelDatasBuffer, sizeof(QeDataModel) * size, modelsData.data());
+	}
+
 	QeAssetXML* node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
 	AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
 	AST->getXMLbValue(&VK->bShowNormal, node, 1, "normal");
@@ -258,7 +275,6 @@ void QeGraphics::updateBuffer() {
 
 			AST->getXMLfValue(&viewport->environmentData.param.x, node, 1, "gamma");
 			AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "exposure");
-			viewport->environmentData.param.z = float(models.size() + alphaModels.size());
 
 			VK->setMemoryBuffer(viewport->environmentBuffer,
 				sizeof(viewport->environmentData), &viewport->environmentData);
@@ -316,11 +332,17 @@ void QeGraphics::update1() {
 					descriptor.imageView = render->colorImage.view;
 					descriptor.imageSampler = render->colorImage.sampler;
 
-					std::vector<QeModel*>::iterator it = models.begin();
+					if (!modelDatasBuffer.buffer) {
+						int size = int(models.size() + alphaModels.size());
+						VK->createBuffer(modelDatasBuffer, sizeof(QeDataModel) * size, nullptr);
+
+					}
+					descriptor.modelDatasBuffer = modelDatasBuffer.buffer;
+					/*std::vector<QeModel*>::iterator it = models.begin();
 					while (it != models.end()) {
 
 						if ((*it)->modelData) {
-							//descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
 							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
 						}
 						++it;
@@ -330,13 +352,13 @@ void QeGraphics::update1() {
 					while (it != alphaModels.end()) {
 
 						if ((*it)->modelData) {
-							//descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
+							descriptor.modelVertexBuffers.push_back((*it)->modelData->vertex.buffer);
 							descriptor.modelDataBuffers.push_back((*it)->modelBuffer.buffer);
 						}
 						++it;
-					}
+					}*/
 
-					VK->updateDescriptorSetRayTracing(descriptor, render->viewports[k]->descriptorSetComputeRayTracing);
+					VK->updateDescriptorSet((void*)&descriptor, render->viewports[k]->descriptorSetComputeRayTracing);
 				}
 			}
 		}

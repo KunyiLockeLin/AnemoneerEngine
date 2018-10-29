@@ -99,7 +99,7 @@ struct QeDataDescriptorSetRaytracing {
 
 	// VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
 	//std::vector<VkBuffer>	modelVertexBuffers;
-	std::vector<VkBuffer>	modelDataBuffers;
+	VkBuffer	modelDatasBuffer;
 
 	// VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
 	VkImageView imageView = VK_NULL_HANDLE;
@@ -182,7 +182,7 @@ public:
 
 		{ { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 10, 1 } },
 		
-		{ { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 20, 1 } },
+		{ { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, 1 }, { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 10, 1 } },
 	};
 
 	std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
