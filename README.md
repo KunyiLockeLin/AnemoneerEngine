@@ -26,8 +26,8 @@
   
   - Scene: raytracing1 3
     - When raytracingDepth of camera component is larger than 0, it runs ray tracing.
-    - The system only supoorts spheres. In transform, it could edit the location and radius of the sphere. localScaleX is radius.
-    - Material is neccseary. It only supports baseColor and metallic. If metallic is larger than 0, it will reflect the environment.
+    - The system only supoorts spheres. In transform component, it could edit the location and radius of the sphere. localScaleX is radius.
+    - Material component is neccseary. It only supports baseColor and metallic. If metallic is larger than 0, it will reflect the environment.
   ![alt text](https://github.com/KunyiLockeLin/QueenEngine_Vulkan/blob/master/raytracingDemo.jpg)
   
   - In qeheader.h, you can find out the whole flag and type.
