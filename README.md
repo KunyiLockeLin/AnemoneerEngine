@@ -62,13 +62,17 @@
       - "scene [p1]" : Restart the programe. p1 is scene name. If p1 is empty, it means to restart the current scene. In config.xml, it has 28000, 28001, 28002, 28003.
 
 # ToDoList
-  - Main research: Ray-tracing
-  - Research document 
-    https://docs.google.com/document/d/1dAEe2tXsjRVBTrZSXxgv0pRTG2HKSkCp-2j8VYmVXKY/edit?usp=sharing
-  - https://github.com/SaschaWillems/Vulkan
-  - https://www.scratchapixel.com/
-  - https://github.com/petershirley/raytracinginoneweekend
-  - https://www.youtube.com/watch?v=Q1cuuepVNoY
+  - Physically based rendering and IBL-image based lighting
+    - http://www.pbr-book.org/
+    - https://learnopengl.com/PBR/IBL/Diffuse-irradiance
+    - https://github.com/SaschaWillems/Vulkan#-physically-based-rendering
+  - Ray-tracing
+    - https://github.com/SaschaWillems/Vulkan#04---ray-tracing    
+    - https://www.scratchapixel.com/
+    - https://github.com/petershirley/raytracinginoneweekend
+    - https://www.youtube.com/watch?v=Q1cuuepVNoY
+  - optimize decode png and jpeg
+  - Wiki
   
 # Bug
   - release mode crash sometimes.
