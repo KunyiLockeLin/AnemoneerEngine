@@ -189,4 +189,5 @@ public:
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
 	//void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
 	bool hit_test_raycast_sphere( QeRay &ray, QeBoundingSphere& sphere, float maxDistance=0.f, QeRayHitRecord* hit=nullptr );
+	void quicksort( float* data, int count );
 };

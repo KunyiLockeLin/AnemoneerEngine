@@ -1074,3 +1074,27 @@ bool QeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere& sphere, float
 	return b;
 }
 
+void QeMath::quicksort(float* data, int count) {
+
+	float r = data[count - 1];
+	int i = 0;
+	int final = count - 1;
+	for (int j = 0; j< final; ++j) {
+		if (data[j]<r) {
+			if (j>i) {
+				float temp = data[j];
+				data[j] = data[i];
+				data[i] = temp;
+			}
+			++i;
+		}
+	}
+	data[count - 1] = data[i];
+	data[i] = r;
+
+	if (i > 1) quicksort(data, i);
+
+	int secondIndex = i + 1;
+	if ((count - secondIndex) >1)
+		quicksort(data + secondIndex, count - secondIndex);
+}
