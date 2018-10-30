@@ -66,7 +66,7 @@
     - http://www.pbr-book.org/
     - https://learnopengl.com/PBR/IBL/Diffuse-irradiance
     - https://github.com/SaschaWillems/Vulkan#-physically-based-rendering
-  - Ray-tracing - texture, lighting, refraction, optimization
+  - Ray-tracing - model, texture, lighting, refraction, optimization
     - https://github.com/SaschaWillems/Vulkan#04---ray-tracing
     - https://www.scratchapixel.com/
     - https://github.com/petershirley/raytracinginoneweekend
