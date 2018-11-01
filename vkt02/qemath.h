@@ -137,6 +137,16 @@ struct QeBoundingBox {
 	QeVector3f max;
 };
 
+class QeBinaryTree {
+	void* data;
+	int key;
+	QeBinaryTree* left = nullptr;
+	QeBinaryTree* right = nullptr;
+	void insertNode(QeBinaryTree& node) {}
+	void removeNode(QeBinaryTree& node) {}
+	QeBinaryTree* getNode(int& key) { return nullptr; }
+};
+
 class QeMath
 {
 public:
