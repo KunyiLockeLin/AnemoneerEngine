@@ -73,6 +73,7 @@
     - https://www.youtube.com/watch?v=Q1cuuepVNoY
   - optimize decode png and jpeg
   - Wiki
+  - debuggin tool
   
 # Bug
   - release mode crash sometimes.
