@@ -1,6 +1,8 @@
 - http://www.pbr-book.org/
 - http://www.adriancourreges.com/blog/
 - https://www.3dgep.com/forward-plus/#Forward
+- Fur shader
+- https://docs.aws.amazon.com/lumberyard/latest/userguide/shader-ref-fur.html?fbclid=IwAR2CmBY5yeL7fLxFV2q4OxHOz3QbFPwu3TXZou0i8yCEZe7tBmI0rjW2zEc
 - IBL-image based lighting
 - Physical system
 - text render, UI 
