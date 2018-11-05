@@ -206,12 +206,14 @@ vec3 color(QeRay ray) {
 	int depth=0;
 	vec3 color=vec3(0.0, 0.0, 0.0);
 
-	while(depth < environmentData.camera.pos_rayTracingDepth.w){
+	while(true){
+	//while(depth < environmentData.camera.pos_rayTracingDepth.w){
 		if (hit(ray, 0.001, FLT_MAX, rec)) { 
 			QeRay scattered;
 			vec3 attenuation;
 
-			if (material_scatter(ray, rec, attenuation, scattered)) {
+			if (depth < environmentData.camera.pos_rayTracingDepth.w && material_scatter(ray, rec, attenuation, scattered)) {
+			//if (material_scatter(ray, rec, attenuation, scattered)) {
 				ray = scattered;
 				if(depth==0)	color = attenuation;
 				else			color *= attenuation;
