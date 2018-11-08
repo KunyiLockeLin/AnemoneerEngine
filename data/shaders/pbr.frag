@@ -126,7 +126,8 @@ void main() {
 		float lightType		 = lights[i].param.x;
 		float lightIntensity = lights[i].param.y;
 		float lightConeAngle = lights[i].param.z;
-		float fDist2		 = pow(length(L),2);
+		//float fDist2		 = pow(length(L),2);
+		float fDist2		 = pow(length(L),environmentData.param.x);
 		float attenuation	 = lightIntensity/fDist2;
 		
 		if( lightType == 1 )	L = normalize(vec3(lights[i].dir));

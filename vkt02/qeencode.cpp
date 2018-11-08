@@ -678,8 +678,8 @@ QeAssetModel* QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 		std::vector<QeAssetJSON*>* imageJSON = AST->getJSONArrayNodes(json, 1, "images");
 		const char* texturePath = AST->getJSONValue((*imageJSON)[textureIndex], 1, "uri");
 
-		if (bCubeMap)pMaterial->image.pCubeMap = AST->getImage(texturePath, bCubeMap);
-		else		pMaterial->image.pBaseColorMap = AST->getImage(texturePath, bCubeMap);
+		if (bCubeMap)pMaterial->image.pCubeMap = AST->getImage(texturePath, bCubeMap, true);
+		else		pMaterial->image.pBaseColorMap = AST->getImage(texturePath, bCubeMap, true);
 	}
 
 	c = AST->getJSONValue(json, 3, "materials", "normalTexture", "index");

@@ -19,9 +19,9 @@ void QeMaterial::initialize(QeAssetXML* _property, QeObject* _owner) {
 	materialData.image.pMetallicRoughnessMap = nullptr;
 
 	const char * c = AST->getXMLValue(initProperty, 1, "baseMap");
-	if (c && strlen(c) ) materialData.image.pBaseColorMap = AST->getImage(c, false);
+	if (c && strlen(c) ) materialData.image.pBaseColorMap = AST->getImage(c, false, true);
 	c = AST->getXMLValue(initProperty, 1, "cubeMap");
-	if (c && strlen(c)) materialData.image.pCubeMap = AST->getImage(c, true);
+	if (c && strlen(c)) materialData.image.pCubeMap = AST->getImage(c, true, true);
 	c = AST->getXMLValue(initProperty, 1, "normalMap");
 	if (c && strlen(c)) materialData.image.pNormalMap = AST->getImage(c, false);
 	c = AST->getXMLValue(initProperty, 1, "metallicRoughnessMap");

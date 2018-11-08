@@ -1219,8 +1219,8 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	mtl->value.metallicRoughnessEmissive = { 1.f,1.f,1.f,1.f };
 
 	if (_filePath.length() == 0) {}
-	else if (bCubeMap)	mtl->image.pCubeMap = AST->getImage(_filename, bCubeMap);
-	else				mtl->image.pBaseColorMap = AST->getImage(_filename, bCubeMap);
+	else if (bCubeMap)	mtl->image.pCubeMap = AST->getImage(_filename, bCubeMap, true);
+	else				mtl->image.pBaseColorMap = AST->getImage(_filename, bCubeMap, true);
 
 	//VK->createBuffer(mtl->uboBuffer, sizeof(mtl->value), (void*)&mtl->value);
 	//VK->createUniformBuffer(sizeof(mtl->value), mtl->uboBuffer.buffer, mtl->uboBuffer.memory);
@@ -1231,7 +1231,7 @@ QeAssetMaterial* QeAsset::getMaterialImage(const char* _filename, bool bCubeMap)
 	return mtl;
 }
 
-QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
+QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap, bool bGamma) {
 
 	std::string _filePath = combinePath(_filename, eAssetTexture);
 	std::map<std::string, QeVKImage*>::iterator it = astTextures.find(_filePath.c_str());
@@ -1246,15 +1246,18 @@ QeVKImage* QeAsset::getImage(const char* _filename, bool bCubeMap) {
 
 	if (strcmp(ret + 1, "bmp") == 0) {
 		type = 0;
-		format = VK_FORMAT_B8G8R8A8_UNORM;
+		if (bGamma)	format = VK_FORMAT_B8G8R8A8_SRGB;
+		else		format = VK_FORMAT_B8G8R8A8_UNORM;
 	}
 	else if (strcmp(ret + 1, "png") == 0) {
 		type = 1;
-		format = VK_FORMAT_R8G8B8A8_UNORM;
+		if (bGamma)	format = VK_FORMAT_R8G8B8A8_SRGB;
+		else		format = VK_FORMAT_R8G8B8A8_UNORM;
 	}
 	else if (strcmp(ret + 1, "jpg") == 0 || strcmp(ret + 1, "jpeg") == 0) {
 		type = 2;
-		format = VK_FORMAT_R8G8B8A8_UNORM;
+		if (bGamma)	format = VK_FORMAT_R8G8B8A8_SRGB;
+		else		format = VK_FORMAT_R8G8B8A8_UNORM;
 	}
 	else return nullptr;
 

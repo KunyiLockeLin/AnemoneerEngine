@@ -216,7 +216,7 @@ public:
 	QeAssetModel* getModel(const char* _filename, bool bCubeMap=false, float* param = nullptr );
 	//QeAssetMaterial* getMaterial(const char* _filename);
 	QeAssetMaterial* getMaterialImage(const char* _filename, bool bCubeMap=false);
-	QeVKImage* getImage(const char* _filename, bool bCubeMap=false);
+	QeVKImage* getImage(const char* _filename, bool bCubeMap=false, bool bGamma = false);
 	VkShaderModule getShader(const char* _filename);
 	QeAssetParticleRule* getParticle(int eid);
 
