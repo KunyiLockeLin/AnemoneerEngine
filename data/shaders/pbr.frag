@@ -70,28 +70,26 @@ vec3 BRDF(vec3 L, vec3 V, vec3 N, vec3 F0, float metallic, float roughness, vec3
 
 vec3 getNormal(){
 
-	/*mat3 TBN = mat3(inTangent, inBiTanget, inNormal);
-	vec3 N = normalize(TBN[2].xyz);
+	float u_NormalScale = 1.0;
+	vec3 N;
 	if(modelData.param1.y == 1) {
+		//mat3 TBN = mat3(inTangent, inBiTanget, inNormal);
+		
+		vec3 t = inTangent;
+		/*vec3 pos_dx = dFdx(inPostion);
+		vec3 pos_dy = dFdy(inPostion);
+		vec3 tex_dx = dFdx(vec3(inUV, 0.0));
+		vec3 tex_dy = dFdy(vec3(inUV, 0.0));
+		vec3 t = (tex_dy.t * pos_dx - tex_dx.t * pos_dy) / (tex_dx.s * tex_dy.t - tex_dy.s * tex_dx.t);*/
+		vec3 ng = normalize(inNormal);
+		t = normalize(t - ng * dot(ng, t));
+		vec3 b = normalize(cross(ng, t));
+		mat3 TBN = mat3(t, b, ng);
 		N = texture(normalMapSampler, inUV).rgb;
-		float u_NormalScale = 1.0;
-		N = normalize(TBN * ((2.0 * N - 1.0)*vec3(u_NormalScale, u_NormalScale, 1.0)));
-	}*/
-
-	vec3 pos_dx = dFdx(inPostion);
-    vec3 pos_dy = dFdy(inPostion);
-    vec3 tex_dx = dFdx(vec3(inUV, 0.0));
-    vec3 tex_dy = dFdy(vec3(inUV, 0.0));
-    vec3 t = (tex_dy.t * pos_dx - tex_dx.t * pos_dy) / (tex_dx.s * tex_dy.t - tex_dy.s * tex_dx.t);
-	vec3 ng = normalize(inNormal);
-	t = normalize(t - ng * dot(ng, t));
-    vec3 b = normalize(cross(ng, t));
-    mat3 TBN = mat3(t, b, ng);
-	vec3 N = normalize(TBN[2].xyz);
-	if(modelData.param1.y == 1) {
-		N = texture(normalMapSampler, inUV).rgb;
-		float u_NormalScale = 1.0;
 		N = normalize(TBN * ((2.0 * N - 1.0) * vec3(u_NormalScale, u_NormalScale, 1.0)));
+	}
+	else{
+		N = normalize(inNormal* vec3(u_NormalScale, u_NormalScale, 1.0));
 	}
 	return N;
 }
