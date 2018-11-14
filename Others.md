@@ -1,3 +1,5 @@
+- defer shading
+- shadow mapping
 - http://www.pbr-book.org/
 - http://www.adriancourreges.com/blog/
 - https://www.3dgep.com/forward-plus/#Forward
