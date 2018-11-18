@@ -6,6 +6,7 @@
 - Create a really big VkDeviceMemory for each buffer and image, exception Swapchain
 - manage multi-commandbuffer,
 - Vulkan layers setting in config.xml
+- VK_LAYER_LUNARG_screenshot
 - http://www.pbr-book.org/
 - http://www.adriancourreges.com/blog/
 - https://www.3dgep.com/forward-plus/#Forward
