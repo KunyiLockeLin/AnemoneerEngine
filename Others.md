@@ -5,6 +5,7 @@
 - Debugging tool
 - Create a really big VkDeviceMemory for each buffer and image, exception Swapchain
 - manage multi-commandbuffer,
+- How to create a list of VKBuffer for shader of ray tracing,
 - Vulkan layers setting in config.xml
 - VK_LAYER_LUNARG_screenshot
 - http://www.pbr-book.org/
