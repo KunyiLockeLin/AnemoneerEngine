@@ -43,7 +43,7 @@
   - skeletal animation, attach obj, draw lines, billboards, particle system.
   - draw mulit-render, 2D render, outline(stencil buffer) and multisample anti-aliasing(MSAA)
   - Log output, call stack trace and command.
-  - For model  - ~~obj, mtl~~, gltf (use https://github.com/KhronosGroup/glTF-Blender-Exporter to export).
+  - For model  - ~~obj, mtl~~, gltf (https://github.com/KhronosGroup/glTF-Blender-Exporter).
   - For image  - png, jpeg, bmp.
   - For string - xml, json.
   - Decode deflate, Huffman code, png, jpeg.
