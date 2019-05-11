@@ -2,35 +2,31 @@
 #extension GL_GOOGLE_include_directive : enable
 #include "header.glsl"
 
-layout( local_size_x = 1024) in;
+layout(local_size_x = 1024) in;
 
-layout( set = layoutSet_Compute, binding = Compute_texel + 0, rgba32f  ) uniform imageBuffer texelBuffer;
+layout(set = layoutSet_Compute, binding = Compute_texel + 0, rgba32f) uniform imageBuffer texelBuffer;
 
-layout( set = layoutSet_Compute, binding = Compute_sotrage + 0 ) buffer outSSBO {
-	int death[];
-}outputData;
-
+layout(set = layoutSet_Compute, binding = Compute_sotrage + 0) buffer outSSBO { int death[]; }
+outputData;
 
 void main() {
-	
-	vec4 pos = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7) );
-	// speed = normal
-    vec4 speed = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+3) ); 
-	
-	// force = tangent
-    vec4 force = imageLoad( texelBuffer, int(gl_GlobalInvocationID.x * 7+4) ); 
+    vec4 pos = imageLoad(texelBuffer, int(gl_GlobalInvocationID.x * 7));
+    // speed = normal
+    vec4 speed = imageLoad(texelBuffer, int(gl_GlobalInvocationID.x * 7 + 3));
 
-	if(speed.w>0){ // life time
-		pos.xyz += speed.xyz*pushConstant.DeltaTime;
-		speed.w -= pushConstant.DeltaTime;
-		speed.xyz += (force.xyz*pushConstant.DeltaTime);
-		outputData.death[gl_GlobalInvocationID.x] = 0;
-	}
-	else{
-		//atomicAdd(outputs.death, 1);
-		//atomicExchange(outputs.death, 1);
-		outputData.death[gl_GlobalInvocationID.x] = 1;
-	}
-	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7), pos );
-	imageStore( texelBuffer, int(gl_GlobalInvocationID.x  * 7+3), speed );
+    // force = tangent
+    vec4 force = imageLoad(texelBuffer, int(gl_GlobalInvocationID.x * 7 + 4));
+
+    if (speed.w > 0) {  // life time
+        pos.xyz += speed.xyz * pushConstant.DeltaTime;
+        speed.w -= pushConstant.DeltaTime;
+        speed.xyz += (force.xyz * pushConstant.DeltaTime);
+        outputData.death[gl_GlobalInvocationID.x] = 0;
+    } else {
+        // atomicAdd(outputs.death, 1);
+        // atomicExchange(outputs.death, 1);
+        outputData.death[gl_GlobalInvocationID.x] = 1;
+    }
+    imageStore(texelBuffer, int(gl_GlobalInvocationID.x * 7), pos);
+    imageStore(texelBuffer, int(gl_GlobalInvocationID.x * 7 + 3), speed);
 }

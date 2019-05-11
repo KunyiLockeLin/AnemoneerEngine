@@ -3,7 +3,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (triangles, equal_spacing, cw ) in;
+layout(triangles, equal_spacing, cw) in;
 
 layout(location = 0) in vec3 inColor[];
 layout(location = 1) in vec2 inUV[];

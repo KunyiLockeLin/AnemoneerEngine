@@ -1684,11 +1684,11 @@
 		</compute>
 	</shaders>
 	<setting>
-		<application applicationName="Demo" applicationVersion="0.1.0" engineName="QueenEngine" engineVersion="0.1.0" VulkanAPIVersion="1.1.82">
+		<application applicationName="Demo" applicationVersion="0.2.0" engineName="QueenEngine" engineVersion="0.2.0" VulkanAPIVersion="1.1.97">
 		</application>
 		<environment debug="2" FPS="30" width="1152" height="648" editWidth="1024" editHeight="768">
 		</environment>
-		<path log="..\data\" model="..\data\models\" material="..\data\models\" bin="..\data\models\" texture="..\data\textures\" sharder="..\data\shaders\">
+		<path log="data\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\">
 		</path>
 		<render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5">
 		</render>

@@ -1,30 +1,37 @@
-%VULKAN_SDK%/Bin/glslangValidator.exe -u
-%VULKAN_SDK%/Bin/glslangValidator.exe -V base.vert -o basev.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V base.tesc -o basetc.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V base.tese -o basete.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V base.geom -o baseg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V basem.frag -o basemf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V basev.frag -o basevf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V point.vert -o pointv.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V line.geom -o lineg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V outline.geom -o outlineg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V billboard.geom -o billboardg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V triangle.geom -o triangleg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V texturev.frag -o texturevf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V texturem.frag -o texturemf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V texture.frag -o texturef.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V cubemap.frag -o cubemapf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V cubemapreflect.frag -o cubemapreflectf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V skeleton.vert -o skeletonv.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V toon.frag -o toonf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.vert -o pbrv.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.geom -o pbrg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V pbr.frag -o pbrf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V postprocessing.geom -o postprocessingg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V b2d.geom -o b2dg.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V postprocessing.frag -o postprocessingf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V grayscale.frag -o grayscalef.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V bloom.frag -o bloomf.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V particle.comp -o particlec.spv
-%VULKAN_SDK%/Bin/glslangValidator.exe -V raytracing.comp -o raytracingc.spv
+@echo on
+
+set input=%1
+set output=%input%spv\
+echo %input%
+echo %output%
+
+%VULKAN_SDK%/Bin/glslangValidator.exe -h
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%base.vert -o %output%basev.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%base.tesc -o %output%basetc.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%base.tese -o %output%basete.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%base.geom -o %output%baseg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%basem.frag -o %output%basemf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%basev.frag -o %output%basevf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%point.vert -o %output%pointv.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%line.geom -o %output%lineg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%outline.geom -o %output%outlineg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%billboard.geom -o %output%billboardg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%triangle.geom -o %output%triangleg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%texturev.frag -o %output%texturevf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%texturem.frag -o %output%texturemf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%texture.frag -o %output%texturef.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%cubemap.frag -o %output%cubemapf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%cubemapreflect.frag -o %output%cubemapreflectf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%skeleton.vert -o %output%skeletonv.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%toon.frag -o %output%toonf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%pbr.vert -o %output%pbrv.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%pbr.geom -o %output%pbrg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%pbr.frag -o %output%pbrf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%postprocessing.geom -o %output%postprocessingg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%b2d.geom -o %output%b2dg.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%postprocessing.frag -o %output%postprocessingf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%grayscale.frag -o %output%grayscalef.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%bloom.frag -o %output%bloomf.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%particle.comp -o %output%particlec.spv
+%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%raytracing.comp -o %output%raytracingc.spv
 pause

@@ -6,75 +6,69 @@
 
 #define FLT_MAX 3.402823466e+38
 
-layout( local_size_x = 16, local_size_y = 16) in;
+layout(local_size_x = 16, local_size_y = 16) in;
 
 /*struct QeVertex {
-	vec4 pos;
-	vec4 color;
-	vec4 uv;
-	vec4 normal;
-	vec4 tangent;
-	vec4 joint;
-	vec4 weight;
+        vec4 pos;
+        vec4 color;
+        vec4 uv;
+        vec4 normal;
+        vec4 tangent;
+        vec4 joint;
+        vec4 weight;
 };
 
 layout( set = layoutSet_Raytracing, binding = 0 ) buffer QeModelVertex {
-	QeVertex vertics[];
+        QeVertex vertics[];
 } modelVertics[];*/
 
-
 struct QeModelData {
-	mat4 model;
-	mat4 joints[MAX_JOINT_NUM];
-	vec4 param1; // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3: bMetallicRoughnessMap
-	vec4 param2; // 0: outlineWidth,
-	QeDataMaterial mtl;
+    mat4 model;
+    mat4 joints[MAX_JOINT_NUM];
+    vec4 param1;  // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3: bMetallicRoughnessMap
+    vec4 param2;  // 0: outlineWidth,
+    QeDataMaterial mtl;
 };
 
-layout( set = layoutSet_Raytracing, binding = 0 ) buffer QeModel {
-	QeModelData modelDatas[];
-};
+layout(set = layoutSet_Raytracing, binding = 0) buffer QeModel { QeModelData modelDatas[]; };
 
-layout (set = layoutSet_Raytracing, binding = 10, rgba8) uniform writeonly image2D resultImage;
-
+layout(set = layoutSet_Raytracing, binding = 10, rgba8) uniform writeonly image2D resultImage;
 
 struct QeRay {
-	vec3 origin;
-	vec3 direction;
+    vec3 origin;
+    vec3 direction;
 };
 
 vec3 getRayPositionByTime(QeRay ray, float t) { return ray.origin + ray.direction * t; }
 
 struct QeRayHitRecord {
-	float t;
-	vec3 position;
-	vec3 normal;
-	int modelIndex;
+    float t;
+    vec3 position;
+    vec3 normal;
+    int modelIndex;
 };
 
-float random(){return 0.0;}
+float random() { return 0.0; }
 
 float schlick(float cosine, float ref_idx) {
-    float r0 = (1-ref_idx) / (1+ref_idx);
-    r0 = r0*r0;
-    return r0 + (1-r0)*pow((1 - cosine),5);
+    float r0 = (1 - ref_idx) / (1 + ref_idx);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
-vec3 reflect1(vec3 v, vec3 n) {
-     return v - 2*dot(v,n)*n;
-}
+vec3 reflect1(vec3 v, vec3 n) { return v - 2 * dot(v, n) * n; }
 
 vec3 random_in_unit_sphere() {
-    vec3 p=vec3(0,0,0);
-    //do {
+    vec3 p = vec3(0, 0, 0);
+    // do {
     //    p = 2.0*vec3(random(),random(),random()) - vec3(1,1,1);
     //} while (dot(p,p) >= 1.0);
     return p;
 }
 
 vec3 random_in_unit_disk() {
-    vec3 p=vec3(0,0,0);
-    //do {
+    vec3 p = vec3(0, 0, 0);
+    // do {
     //    p = 2.0*vec3(random(),random(),0) - vec3(1,1,0);
     //} while (dot(p,p) >= 1.0);
     return p;
@@ -83,175 +77,168 @@ vec3 random_in_unit_disk() {
 bool refract(vec3 v, vec3 n, float ni_over_nt, vec3 refracted) {
     vec3 uv = normalize(v);
     float dt = dot(uv, n);
-    float discriminant = 1.0 - ni_over_nt*ni_over_nt*(1-dt*dt);
+    float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
     if (discriminant > 0) {
-        refracted = ni_over_nt*(uv - n*dt) - n*sqrt(discriminant);
+        refracted = ni_over_nt * (uv - n * dt) - n * sqrt(discriminant);
         return true;
-    }
-    else 
+    } else
         return false;
 }
 
-bool material_scatter(QeRay ray, QeRayHitRecord rec, inout vec3 attenuation, inout QeRay scattered ) {
-	
-	QeDataMaterial mtl = modelDatas[rec.modelIndex].mtl;
+bool material_scatter(QeRay ray, QeRayHitRecord rec, inout vec3 attenuation, inout QeRay scattered) {
+    QeDataMaterial mtl = modelDatas[rec.modelIndex].mtl;
 
-// metal
-	if( mtl.metallicRoughnessEmissive.x>0 ){
-		vec3 reflected = reflect1(ray.direction, rec.normal);
-		scattered.origin = rec.position;
-		scattered.direction = normalize(reflected + mtl.metallicRoughnessEmissive.x*random_in_unit_sphere());
-		attenuation = mtl.baseColor.xyz;
-		return (dot(scattered.direction, rec.normal) > 0);
-	}
+    // metal
+    if (mtl.metallicRoughnessEmissive.x > 0) {
+        vec3 reflected = reflect1(ray.direction, rec.normal);
+        scattered.origin = rec.position;
+        scattered.direction = normalize(reflected + mtl.metallicRoughnessEmissive.x * random_in_unit_sphere());
+        attenuation = mtl.baseColor.xyz;
+        return (dot(scattered.direction, rec.normal) > 0);
+    }
 
-// dielectric
-	if( mtl.metallicRoughnessEmissive.y>0 ){
-		vec3 outward_normal;
-		vec3 reflected = reflect1(ray.direction, rec.normal);
-		float ni_over_nt;
-		attenuation = vec3(1.0, 1.0, 1.0); 
-		vec3 refracted;
-		float reflect_prob;
-		float cosine;
-		if (dot(ray.direction, rec.normal) > 0) {
-			outward_normal = -rec.normal;
-			ni_over_nt = mtl.metallicRoughnessEmissive.y;
-			cosine = dot(ray.direction, rec.normal) / length(ray.direction);
-			cosine = sqrt(1 - mtl.metallicRoughnessEmissive.y*mtl.metallicRoughnessEmissive.y*(1-cosine*cosine));
-		}
-		else {
-			outward_normal = rec.normal;
-			ni_over_nt = 1.0 / mtl.metallicRoughnessEmissive.y;
-			cosine = -dot(ray.direction, rec.normal) / length(ray.direction);
-		}
+    // dielectric
+    if (mtl.metallicRoughnessEmissive.y > 0) {
+        vec3 outward_normal;
+        vec3 reflected = reflect1(ray.direction, rec.normal);
+        float ni_over_nt;
+        attenuation = vec3(1.0, 1.0, 1.0);
+        vec3 refracted;
+        float reflect_prob;
+        float cosine;
+        if (dot(ray.direction, rec.normal) > 0) {
+            outward_normal = -rec.normal;
+            ni_over_nt = mtl.metallicRoughnessEmissive.y;
+            cosine = dot(ray.direction, rec.normal) / length(ray.direction);
+            cosine = sqrt(1 - mtl.metallicRoughnessEmissive.y * mtl.metallicRoughnessEmissive.y * (1 - cosine * cosine));
+        } else {
+            outward_normal = rec.normal;
+            ni_over_nt = 1.0 / mtl.metallicRoughnessEmissive.y;
+            cosine = -dot(ray.direction, rec.normal) / length(ray.direction);
+        }
 
-		if (refract(ray.direction, outward_normal, ni_over_nt, refracted)) 
-			reflect_prob = schlick(cosine, mtl.metallicRoughnessEmissive.y);
-		else 
-			reflect_prob = 1.0;
-		/*if (random() < reflect_prob){
-			scattered.origin = rec.position;
-			scattered.direction = reflected;
-		}
-		else {*/
-			scattered.origin = rec.position;
-			scattered.direction = refracted;
-		//}
-		return true;
-	}
+        if (refract(ray.direction, outward_normal, ni_over_nt, refracted))
+            reflect_prob = schlick(cosine, mtl.metallicRoughnessEmissive.y);
+        else
+            reflect_prob = 1.0;
+        /*if (random() < reflect_prob){
+                scattered.origin = rec.position;
+                scattered.direction = reflected;
+        }
+        else {*/
+        scattered.origin = rec.position;
+        scattered.direction = refracted;
+        //}
+        return true;
+    }
 
-// lambertian
-	vec3 target = rec.position + rec.normal + random_in_unit_sphere();
-	scattered.origin = rec.position;
-	scattered.direction = normalize(target-rec.position);
-	attenuation = mtl.baseColor.xyz;
-	return true;
+    // lambertian
+    vec3 target = rec.position + rec.normal + random_in_unit_sphere();
+    scattered.origin = rec.position;
+    scattered.direction = normalize(target - rec.position);
+    attenuation = mtl.baseColor.xyz;
+    return true;
 }
 
 bool sphere_hit(QeRay ray, float t_min, float t_max, inout QeRayHitRecord rec, int modelIndex) {
-	
-	vec3 center = modelDatas[modelIndex].model[3].xyz;
-	float radius =  modelDatas[modelIndex].model[0].x;
+    vec3 center = modelDatas[modelIndex].model[3].xyz;
+    float radius = modelDatas[modelIndex].model[0].x;
 
-	vec3 oc = ray.origin - center;
-	float a = dot(ray.direction, ray.direction);
-	float b = dot(oc, ray.direction);
-	float c = dot(oc, oc) - radius*radius;
-	float discriminant = b*b - a*c;
-	if (discriminant > 0) {
-		float temp = (-b - sqrt(discriminant))/a;
-		if (temp < t_max && temp > t_min) {
-			rec.t = temp;
-			rec.position = getRayPositionByTime( ray, rec.t);
-			rec.normal = (rec.position - center) / radius;
-			rec.modelIndex = modelIndex;
-			return true;
-		}
-		temp = (-b + sqrt(discriminant)) / a;
-		if (temp < t_max && temp > t_min) {
+    vec3 oc = ray.origin - center;
+    float a = dot(ray.direction, ray.direction);
+    float b = dot(oc, ray.direction);
+    float c = dot(oc, oc) - radius * radius;
+    float discriminant = b * b - a * c;
+    if (discriminant > 0) {
+        float temp = (-b - sqrt(discriminant)) / a;
+        if (temp < t_max && temp > t_min) {
             rec.t = temp;
-            rec.position = getRayPositionByTime( ray, rec.t);
+            rec.position = getRayPositionByTime(ray, rec.t);
             rec.normal = (rec.position - center) / radius;
-			rec.modelIndex = modelIndex;
+            rec.modelIndex = modelIndex;
+            return true;
+        }
+        temp = (-b + sqrt(discriminant)) / a;
+        if (temp < t_max && temp > t_min) {
+            rec.t = temp;
+            rec.position = getRayPositionByTime(ray, rec.t);
+            rec.normal = (rec.position - center) / radius;
+            rec.modelIndex = modelIndex;
             return true;
         }
     }
     return false;
 }
 
-bool hit( QeRay ray, float t_min, float t_max, inout QeRayHitRecord rec ) {
-	QeRayHitRecord temp_rec;
-	bool b = false;
-	float closest_so_far = t_max;
+bool hit(QeRay ray, float t_min, float t_max, inout QeRayHitRecord rec) {
+    QeRayHitRecord temp_rec;
+    bool b = false;
+    float closest_so_far = t_max;
 
-	int size = modelDatas.length();
+    int size = modelDatas.length();
 
-	for (int i = 0; i < size; i++) {
-		if (sphere_hit(ray, t_min, closest_so_far, temp_rec, i)) {
-			if(closest_so_far > temp_rec.t){
-				b = true;
-				closest_so_far = temp_rec.t;
-				rec = temp_rec;
-			}
-		}
-	}
-	return b;
+    for (int i = 0; i < size; i++) {
+        if (sphere_hit(ray, t_min, closest_so_far, temp_rec, i)) {
+            if (closest_so_far > temp_rec.t) {
+                b = true;
+                closest_so_far = temp_rec.t;
+                rec = temp_rec;
+            }
+        }
+    }
+    return b;
 }
 
 // only sphere, scale x = radius, baseColor = lambertian, metalic = metal, roughness = dielectric
 vec3 color(QeRay ray) {
-	
-	QeRayHitRecord rec;
-	int depth=0;
-	vec3 color=vec3(1.0, 1.0, 1.0);
+    QeRayHitRecord rec;
+    int depth = 0;
+    vec3 color = vec3(1.0, 1.0, 1.0);
 
-	while(true){
-		if (hit(ray, 0.001, FLT_MAX, rec)) { 
-			QeRay scattered;
-			vec3 attenuation;
+    while (true) {
+        if (hit(ray, 0.001, FLT_MAX, rec)) {
+            QeRay scattered;
+            vec3 attenuation;
 
-			if (depth < environmentData.camera.pos_rayTracingDepth.w && material_scatter(ray, rec, attenuation, scattered)) {
-				ray = scattered;		
-				color *= attenuation;
-			}
-			else {
-				color = vec3(0.0, 0.0, 0.0);
-				break;
-			}
-		}
-		else {
-			float t = 0.5*(ray.direction.y + 1.0);
-			color *= ((1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0));
-			break;
-		}
-		depth++;
-	}
-	return color;
+            if (depth < environmentData.camera.pos_rayTracingDepth.w && material_scatter(ray, rec, attenuation, scattered)) {
+                ray = scattered;
+                color *= attenuation;
+            } else {
+                color = vec3(0.0, 0.0, 0.0);
+                break;
+            }
+        } else {
+            float t = 0.5 * (ray.direction.y + 1.0);
+            color *= ((1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0));
+            break;
+        }
+        depth++;
+    }
+    return color;
 }
 
-
 void main() {
-	ivec2 dim = imageSize(resultImage);
-	vec2 uv = vec2(gl_GlobalInvocationID.xy) / dim;
+    ivec2 dim = imageSize(resultImage);
+    vec2 uv = vec2(gl_GlobalInvocationID.xy) / dim;
 
-	QeDataCamera cam = environmentData.camera;
+    QeDataCamera cam = environmentData.camera;
 
-	vec3 rd = cam.vertical_lensRadius.w*random_in_unit_disk();
+    vec3 rd = cam.vertical_lensRadius.w * random_in_unit_disk();
 
-	vec3 u = vec3(cam.view[0][0], cam.view[1][0], cam.view[2][0]); // cross(vup, w);
-	vec3 v = vec3(cam.view[0][1], cam.view[1][1], cam.view[2][1]); // cross(w, u);
+    vec3 u = vec3(cam.view[0][0], cam.view[1][0], cam.view[2][0]);  // cross(vup, w);
+    vec3 v = vec3(cam.view[0][1], cam.view[1][1], cam.view[2][1]);  // cross(w, u);
 
-	vec3 offset = u * rd.x + v * rd.y;
-    //offset = vec3(0,0,0);
+    vec3 offset = u * rd.x + v * rd.y;
+    // offset = vec3(0,0,0);
 
-	QeRay ray;
-	//ray.origin = cam.pos_rayTracingDepth.xyz;
-	//ray.direction = normalize(vec3( -1.0, (-1.0 + 2.0 * uv) * vec2(cam.horizontal_aspect.w, 1.0)));
-	ray.origin = cam.pos_rayTracingDepth.xyz + offset;
-	ray.direction = normalize(cam.lowerLeftCorner.xyz + uv.x*cam.horizontal_aspect.xyz + uv.y*cam.vertical_lensRadius.xyz - ray.origin - offset);
+    QeRay ray;
+    // ray.origin = cam.pos_rayTracingDepth.xyz;
+    // ray.direction = normalize(vec3( -1.0, (-1.0 + 2.0 * uv) * vec2(cam.horizontal_aspect.w, 1.0)));
+    ray.origin = cam.pos_rayTracingDepth.xyz + offset;
+    ray.direction = normalize(cam.lowerLeftCorner.xyz + uv.x * cam.horizontal_aspect.xyz + uv.y * cam.vertical_lensRadius.xyz -
+                              ray.origin - offset);
 
-	vec3 finalColor = color(ray);
+    vec3 finalColor = color(ray);
 
-	imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(finalColor, 1.0));
+    imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(finalColor, 1.0));
 }

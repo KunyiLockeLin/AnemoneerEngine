@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{4B409B1D-46A5-48F5-BBE0-4C99160BA25F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>QueenEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>QueenEngine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\</OutDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)..\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\data\shaders\compile.bat ..\data\shaders\</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>
+      </StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
+      <HeapReserveSize>
+      </HeapReserveSize>
+      <HeapCommitSize>
+      </HeapCommitSize>
+    </Link>
+    <PostBuildEvent>
+      <Command>..\data\shaders\compile.bat ..\data\shaders\</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\qeanimation.cpp" />
+    <ClCompile Include="..\src\qeaxis.cpp" />
+    <ClCompile Include="..\src\qeplane.cpp" />
+    <ClCompile Include="..\src\qecubemap.cpp" />
+    <ClCompile Include="..\src\qegrid.cpp" />
+    <ClCompile Include="..\src\qeinputcontrol.cpp" />
+    <ClCompile Include="..\src\qelight.cpp" />
+    <ClCompile Include="..\src\qeline.cpp" />
+    <ClCompile Include="..\src\qematerial.cpp" />
+    <ClCompile Include="..\src\qemodel.cpp" />
+    <ClCompile Include="..\src\qeparticle.cpp" />
+    <ClCompile Include="..\src\qepostprocessing.cpp" />
+    <ClCompile Include="..\src\qescene.cpp" />
+    <ClCompile Include="..\src\qeasset.cpp" />
+    <ClCompile Include="..\src\qecomponent.cpp" />
+    <ClCompile Include="..\src\qeobject.cpp" />
+    <ClCompile Include="..\src\qecamera.cpp" />
+    <ClCompile Include="..\src\qecommand.cpp" />
+    <ClCompile Include="..\src\qelog.cpp" />
+    <ClCompile Include="..\src\qeobjectmanger.cpp" />
+    <ClCompile Include="..\src\qetimer.cpp" />
+    <ClCompile Include="..\src\qetransform.cpp" />
+    <ClCompile Include="..\src\qevulkan.cpp" />
+    <ClCompile Include="..\src\qeencode.cpp" />
+    <ClCompile Include="..\src\queenengine.cpp" />
+    <ClCompile Include="..\src\qemath.cpp" />
+    <ClCompile Include="..\src\qeglobal.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\qegraphics.cpp" />
+    <ClCompile Include="..\src\qewindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\qeanimation.h" />
+    <ClInclude Include="..\src\qeaxis.h" />
+    <ClInclude Include="..\src\qeplane.h" />
+    <ClInclude Include="..\src\qecubemap.h" />
+    <ClInclude Include="..\src\qegrid.h" />
+    <ClInclude Include="..\src\qeinputcontrol.h" />
+    <ClInclude Include="..\src\qelight.h" />
+    <ClInclude Include="..\src\qeline.h" />
+    <ClInclude Include="..\src\qematerial.h" />
+    <ClInclude Include="..\src\qemodel.h" />
+    <ClInclude Include="..\src\qeparticle.h" />
+    <ClInclude Include="..\src\qepostprocessing.h" />
+    <ClInclude Include="..\src\qescene.h" />
+    <ClInclude Include="..\src\qeasset.h" />
+    <ClInclude Include="..\src\qecomponent.h" />
+    <ClInclude Include="..\src\qeobject.h" />
+    <ClInclude Include="..\src\qecamera.h" />
+    <ClInclude Include="..\src\qecommand.h" />
+    <ClInclude Include="..\src\qelog.h" />
+    <ClInclude Include="..\src\qeobjectmanger.h" />
+    <ClInclude Include="..\src\qetimer.h" />
+    <ClInclude Include="..\src\qetransform.h" />
+    <ClInclude Include="..\src\qevulkan.h" />
+    <ClInclude Include="..\src\qeencode.h" />
+    <ClInclude Include="..\src\queenengine.h" />
+    <ClInclude Include="..\src\qeheader.h" />
+    <ClInclude Include="..\src\qemath.h" />
+    <ClInclude Include="..\src\qeglobal.h" />
+    <ClInclude Include="..\src\qegraphics.h" />
+    <ClInclude Include="..\src\qewindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\data\config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\data\models\animation.gltf" />
+    <None Include="..\data\models\box.gltf" />
+    <None Include="..\data\models\sphere.gltf" />
+    <None Include="..\data\models\sphere2.gltf" />
+    <None Include="..\data\shaders\b2d.geom" />
+    <None Include="..\data\shaders\base.geom" />
+    <None Include="..\data\shaders\base.tesc" />
+    <None Include="..\data\shaders\base.tese" />
+    <None Include="..\data\shaders\base.vert" />
+    <None Include="..\data\shaders\basem.frag" />
+    <None Include="..\data\shaders\basev.frag" />
+    <None Include="..\data\shaders\billboard.geom" />
+    <None Include="..\data\shaders\bloom.frag" />
+    <None Include="..\data\shaders\compile.bat" />
+    <None Include="..\data\shaders\cubemap.frag" />
+    <None Include="..\data\shaders\cubemapreflect.frag" />
+    <None Include="..\data\shaders\grayscale.frag" />
+    <None Include="..\data\shaders\header.comp" />
+    <None Include="..\data\shaders\header.frag" />
+    <None Include="..\data\shaders\header.geom" />
+    <None Include="..\data\shaders\header.glsl" />
+    <None Include="..\data\shaders\header.tesc" />
+    <None Include="..\data\shaders\header.tese" />
+    <None Include="..\data\shaders\headerIn.vert" />
+    <None Include="..\data\shaders\headerOut.vert" />
+    <None Include="..\data\shaders\line.geom" />
+    <None Include="..\data\shaders\outline.geom" />
+    <None Include="..\data\shaders\particle.comp" />
+    <None Include="..\data\shaders\pbr.frag" />
+    <None Include="..\data\shaders\pbr.geom" />
+    <None Include="..\data\shaders\pbr.vert" />
+    <None Include="..\data\shaders\pbr1.frag" />
+    <None Include="..\data\shaders\phong.frag" />
+    <None Include="..\data\shaders\phong.geom" />
+    <None Include="..\data\shaders\point.vert" />
+    <None Include="..\data\shaders\postprocessing.frag" />
+    <None Include="..\data\shaders\postprocessing.geom" />
+    <None Include="..\data\shaders\raytracing.comp" />
+    <None Include="..\data\shaders\skeleton.vert" />
+    <None Include="..\data\shaders\texture.frag" />
+    <None Include="..\data\shaders\texturem.frag" />
+    <None Include="..\data\shaders\texturev.frag" />
+    <None Include="..\data\shaders\toon.frag" />
+    <None Include="..\data\shaders\triangle.geom" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
