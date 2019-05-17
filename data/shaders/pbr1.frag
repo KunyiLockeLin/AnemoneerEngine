@@ -63,7 +63,7 @@ void main() {
         if (lightToSurfaceAngle > lightConeAngle) attenuation = 0;
     }
 
-    vec3 v = normalize(environmentData.camera.pos.xyz - inPostion);
+    vec3 v = normalize(environmentData.camera.pos_rayTracingDepth.xyz - inPostion);
     vec3 l = normalize(lightDirection);
     vec3 h = normalize(l + v);
     vec3 reflection = -normalize(reflect(v, n));
