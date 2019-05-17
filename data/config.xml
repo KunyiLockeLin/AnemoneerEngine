@@ -1684,7 +1684,7 @@
 		</compute>
 	</shaders>
 	<setting>
-		<application applicationName="Demo" applicationVersion="0.2.0" engineName="QueenEngine" engineVersion="0.2.0" VulkanAPIVersion="1.1.97">
+		<application applicationName="Demo" applicationVersion="0.2.0" engineName="AngryEngine" engineVersion="0.2.0" VulkanAPIVersion="1.1.97">
 		</application>
 		<environment debug="2" FPS="30" width="1152" height="648" editWidth="1024" editHeight="768">
 		</environment>

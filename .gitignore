@@ -1,7 +1,7 @@
-vs/.vs*
-vs/x64*
-vs/Release*
-vs/Debug*
+vc/.vs*
+vc/x64*
+vc/Release*
+vc/Debug*
 .vs/*
 *.iobj
 *.exe

@@ -1,0 +1,363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="vulkan">
+      <UniqueIdentifier>{abe7bf94-84d7-4bfd-8e7f-906706a5672e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject">
+      <UniqueIdentifier>{84266fcc-57c8-4e06-9410-66836c55f884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manager">
+      <UniqueIdentifier>{3863facd-5ea9-47b4-a6b3-a4f5464d2a9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{6a6f1512-3d98-4d13-b180-ede684d05f34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{c2a5ab2e-fe2b-4276-b5fd-9f364317f461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\header">
+      <UniqueIdentifier>{50671337-0312-4af2-b44a-dbd75aa65906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="manager\header">
+      <UniqueIdentifier>{c0095d0d-af85-48c5-b7b4-feac2333c836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\header">
+      <UniqueIdentifier>{bbf7e572-800a-4e92-bf4c-fb0067f9a7a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\header">
+      <UniqueIdentifier>{c43dbda8-e701-424d-a9a5-1138938dc4f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vulkan\header">
+      <UniqueIdentifier>{d8b8e07b-c25e-4504-be69-cb926a8c52ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{32a63205-38ae-4ccd-9bda-b441ccab511e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\header">
+      <UniqueIdentifier>{8da4acd8-0d36-4d37-936a-ae8a926dcc61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{7f992250-cdeb-4100-b073-782524cb8ff2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\animation.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\axis.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\camera.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\command.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\component.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cubemap.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\encode.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\global.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\graphics.cpp">
+      <Filter>vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\grid.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inputcontrol.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\light.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\line.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\log.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\object.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\model.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\material.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objectmanger.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\particle.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plane.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\postprocessing.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\scene.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\timer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transform.cpp">
+      <Filter>gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\vulkan.cpp">
+      <Filter>vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\window.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\asset.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\axis.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\camera.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\component.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cubemap.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\grid.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\inputcontrol.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\light.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\line.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\material.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\model.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\object.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\particle.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plane.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\postprocessing.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\transform.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\animation.h">
+      <Filter>gameobject\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\asset.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\command.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\global.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\header.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objectmanger.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\scene.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\encode.h">
+      <Filter>common\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\log.h">
+      <Filter>common\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\math.h">
+      <Filter>common\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\timer.h">
+      <Filter>common\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\window.h">
+      <Filter>ui\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics.h">
+      <Filter>vulkan\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan.h">
+      <Filter>vulkan\header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\data\config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\data\shaders\b2d.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\base.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\base.tesc">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\base.tese">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\base.vert">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\basem.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\basev.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\billboard.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\bloom.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\cubemap.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\cubemapreflect.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\grayscale.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\line.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\outline.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\particle.comp">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\pbr.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\pbr.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\pbr.vert">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\pbr1.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\phong.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\phong.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\point.vert">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\postprocessing.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\postprocessing.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\raytracing.comp">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\skeleton.vert">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\texture.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\texturem.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\texturev.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\toon.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\triangle.geom">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shaders\header.comp">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\header.frag">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\header.geom">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\header.glsl">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\header.tesc">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\header.tese">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\headerIn.vert">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\shaders\headerOut.vert">
+      <Filter>shader\header</Filter>
+    </None>
+    <None Include="..\data\models\animation.gltf">
+      <Filter>model</Filter>
+    </None>
+    <None Include="..\data\models\box.gltf">
+      <Filter>model</Filter>
+    </None>
+    <None Include="..\data\models\sphere.gltf">
+      <Filter>model</Filter>
+    </None>
+    <None Include="..\data\models\sphere2.gltf">
+      <Filter>model</Filter>
+    </None>
+    <None Include="..\data\shader_compile.bat" />
+  </ItemGroup>
+</Project>
