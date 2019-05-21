@@ -10,9 +10,6 @@
     <Filter Include="manager">
       <UniqueIdentifier>{3863facd-5ea9-47b4-a6b3-a4f5464d2a9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common">
-      <UniqueIdentifier>{6a6f1512-3d98-4d13-b180-ede684d05f34}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ui">
       <UniqueIdentifier>{c2a5ab2e-fe2b-4276-b5fd-9f364317f461}</UniqueIdentifier>
     </Filter>
@@ -21,9 +18,6 @@
     </Filter>
     <Filter Include="manager\header">
       <UniqueIdentifier>{c0095d0d-af85-48c5-b7b4-feac2333c836}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common\header">
-      <UniqueIdentifier>{bbf7e572-800a-4e92-bf4c-fb0067f9a7a5}</UniqueIdentifier>
     </Filter>
     <Filter Include="ui\header">
       <UniqueIdentifier>{c43dbda8-e701-424d-a9a5-1138938dc4f9}</UniqueIdentifier>
@@ -39,6 +33,12 @@
     </Filter>
     <Filter Include="model">
       <UniqueIdentifier>{7f992250-cdeb-4100-b073-782524cb8ff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="algorithm">
+      <UniqueIdentifier>{6a6f1512-3d98-4d13-b180-ede684d05f34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="algorithm\header">
+      <UniqueIdentifier>{bbf7e572-800a-4e92-bf4c-fb0067f9a7a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +61,7 @@
       <Filter>gameobject</Filter>
     </ClCompile>
     <ClCompile Include="..\src\encode.cpp">
-      <Filter>common</Filter>
+      <Filter>algorithm</Filter>
     </ClCompile>
     <ClCompile Include="..\src\global.cpp">
       <Filter>manager</Filter>
@@ -81,11 +81,8 @@
     <ClCompile Include="..\src\line.cpp">
       <Filter>gameobject</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\log.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\math.cpp">
-      <Filter>common</Filter>
+      <Filter>algorithm</Filter>
     </ClCompile>
     <ClCompile Include="..\src\object.cpp">
       <Filter>gameobject</Filter>
@@ -111,9 +108,6 @@
     <ClCompile Include="..\src\scene.cpp">
       <Filter>manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\timer.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\transform.cpp">
       <Filter>gameobject</Filter>
     </ClCompile>
@@ -127,6 +121,12 @@
       <Filter>manager</Filter>
     </ClCompile>
     <ClCompile Include="..\src\asset.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\log.cpp">
+      <Filter>manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\timer.cpp">
       <Filter>manager</Filter>
     </ClCompile>
   </ItemGroup>
@@ -201,16 +201,10 @@
       <Filter>manager\header</Filter>
     </ClInclude>
     <ClInclude Include="..\src\encode.h">
-      <Filter>common\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\log.h">
-      <Filter>common\header</Filter>
+      <Filter>algorithm\header</Filter>
     </ClInclude>
     <ClInclude Include="..\src\math.h">
-      <Filter>common\header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\timer.h">
-      <Filter>common\header</Filter>
+      <Filter>algorithm\header</Filter>
     </ClInclude>
     <ClInclude Include="..\src\window.h">
       <Filter>ui\header</Filter>
@@ -220,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="..\src\vulkan.h">
       <Filter>vulkan\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\timer.h">
+      <Filter>manager\header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\log.h">
+      <Filter>manager\header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
