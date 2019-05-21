@@ -207,7 +207,6 @@
     <ClCompile Include="..\src\engine.cpp" />
     <ClCompile Include="..\src\math.cpp" />
     <ClCompile Include="..\src\global.cpp" />
-    <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\graphics.cpp" />
     <ClCompile Include="..\src\window.cpp" />
   </ItemGroup>

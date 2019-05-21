@@ -42,9 +42,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\main.cpp">
-      <Filter>manager</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\animation.cpp">
       <Filter>gameobject</Filter>
     </ClCompile>
