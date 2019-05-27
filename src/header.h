@@ -178,10 +178,9 @@ enum QeLightType {
 };
 
 enum QeDebugMode {
-    eModeNoDebug = 0,
-    eModeConsole = 1,
-    eModeOutput = 2,
-    eModeConsoleOutput = 3,
+    eModeNoDebug_bit = 0x00000000,
+    eModeLogPanel_bit = 0x00000001,
+    eModeOutput_bit = 0x00000002,
 };
 
 enum QePlaneType {

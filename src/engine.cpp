@@ -45,7 +45,7 @@ void QueenEngine::mainLoop() {
     vkDeviceWaitIdle(VK->device);
 }
 
-int main() {
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     try {
         QE->run();
     } catch (const std::runtime_error &e) {

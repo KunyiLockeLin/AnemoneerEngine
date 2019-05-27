@@ -1684,9 +1684,9 @@
 		</compute>
 	</shaders>
 	<setting>
-		<application applicationName="Demo" applicationVersion="0.2.0" engineName="AngryEngine" engineVersion="0.2.0" VulkanAPIVersion="1.1.97">
+		<application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.97">
 		</application>
-		<environment debug="2" FPS="30" width="1152" height="648" editWidth="1024" editHeight="768">
+		<environment debug="3" FPS="30" width="1280" height="720" editWidth="1024" editHeight="768">
 		</environment>
 		<path log="data\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\">
 		</path>

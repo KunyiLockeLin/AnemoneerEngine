@@ -14,6 +14,6 @@ class QeLog {
 
     QeDebugMode mode();
     bool isDebug();
-    bool isConsole();
+    bool isLogPanel();
     bool isOutput();
 };

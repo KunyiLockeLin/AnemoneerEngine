@@ -36,7 +36,7 @@ void QeWindow::sendCommand() {
 }
 
 void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if (hWnd == editWindow) {
+    if (hWnd == editPanel) {
         switch (uMsg) {
             case WM_NOTIFY:
                 switch (((LPNMHDR)lParam)->code) {
@@ -334,7 +334,8 @@ void QeWindow::getWindowSize(HWND &window, int &width, int &height) {
 }
 
 void QeWindow::resizeAll() {
-    resize(editWindow);
+    if (DEBUG->isLogPanel()) resize(logPanel);
+    resize(editPanel);
     resize(mainWindow);
 }
 
@@ -346,20 +347,26 @@ void QeWindow::resize(HWND &window) {
     if (window == mainWindow) {
         windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "width"));
         windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "height"));
-    } else if (window == editWindow) {
+    } else if (window == editPanel || window == logPanel) {
         windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editWidth"));
         windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editHeight"));
     }
+
     DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
     DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
 
     int x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right + windowRect.left) / 2;
-    int y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom + windowRect.top) / 2 - 10;
+    int y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom + windowRect.top) / 2;
     if (window == mainWindow) {
-        x -= 150;
-    } else if (window == editWindow) {
-        x += 150;
+        x -= 50;
+        y += 10;
+    } else if (window == editPanel) {
+        x += 200;
+        y -= 10;
+    } else if ( window == logPanel) {
+        x -= 100;
+        y -= 10;
     }
     windowRect.right += (x - windowRect.left);
     windowRect.bottom += (y - windowRect.top);
@@ -389,10 +396,9 @@ void QeWindow::openMainWindow() {
     wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
     RegisterClassEx(&wndClass);
-    DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
-    mainWindow = CreateWindowEx(0, title.c_str(), 0, dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL,
-                                windowInstance, NULL);
+    mainWindow = CreateWindowEx(0, title.c_str(), 0, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL,
+                                NULL, windowInstance, NULL);
 
     resize(mainWindow);
 
@@ -407,9 +413,9 @@ void QeWindow::openMainWindow() {
     WIN->DefEditProc = (WNDPROC)SetWindowLongPtr(WIN->commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
 }
 
-void QeWindow::openEditWindow() {
+void QeWindow::openEditPanel() {
     WNDCLASSEX wndClass;
-    std::wstring title = L"EditPanel";
+    std::wstring title = L"Edit Panel";
 
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -426,22 +432,22 @@ void QeWindow::openEditWindow() {
 
     RegisterClassEx(&wndClass);
 
-    editWindow = CreateWindowEx(0, title.c_str(), 0, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL,
+    editPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL,
                                 NULL, windowInstance, NULL);
 
-    resize(editWindow);
-    ShowWindow(editWindow, SW_SHOW);
-    SetWindowText(editWindow, title.c_str());
+    resize(editPanel);
+    ShowWindow(editPanel, SW_SHOW);
+    SetWindowText(editPanel, title.c_str());
 
     int width;
     int height;
-    getWindowSize(editWindow, width, height);
+    getWindowSize(editPanel, width, height);
 
     HFONT hFont = CreateFont(24, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                              DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 
     tabControlCategory = CreateWindow(WC_TABCONTROL, L"", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, 0, 0, width + 10, height + 10,
-                                      editWindow, NULL, windowInstance, NULL);
+                                      editPanel, NULL, windowInstance, NULL);
 
     QeAssetXML *node = AST->getXMLNode(1, AST->CONFIG);
 
@@ -454,7 +460,7 @@ void QeWindow::openEditWindow() {
         TabCtrl_InsertItem(tabControlCategory, i, &tie);
 
         treeViewLists[i] = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 25, width / 2 - 200,
-                                        height - 345, editWindow, NULL, windowInstance, NULL);
+                                        height - 30, editPanel, NULL, windowInstance, NULL);
         SendMessage(treeViewLists[i], WM_SETFONT, WPARAM(hFont), TRUE);
     }
     currentTabIndex = 0;
@@ -462,7 +468,7 @@ void QeWindow::openEditWindow() {
     listViewDetail = CreateWindow(WC_LISTVIEW, L"",
                                   WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_NOCOLUMNHEADER |
                                       LVS_EDITLABELS /*| LVS_EX_FULLROWSELECT*/,
-                                  width / 2 - 200, 25, width / 2 + 100, height - 345, editWindow, NULL, windowInstance, NULL);
+                                  width / 2 - 200, 25, width / 2 + 100, height - 30, editPanel, NULL, windowInstance, NULL);
     SendMessage(listViewDetail, WM_SETFONT, WPARAM(hFont), TRUE);
 
     LVCOLUMN lvc;
@@ -477,37 +483,73 @@ void QeWindow::openEditWindow() {
     // lvc.pszText = _T("Value");
     ListView_InsertColumn(listViewDetail, 1, &lvc);
 
-    listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 450, width - 100, 320,
-                              editWindow, NULL, windowInstance, NULL);
-
     btnPause = CreateWindow(WC_BUTTON, L"Pause", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100, 25, 100, 50,
-                            editWindow, (HMENU)eUIType_btnPause, windowInstance, NULL);
+                            editPanel, (HMENU)eUIType_btnPause, windowInstance, NULL);
     btnUpdateAll = CreateWindow(WC_BUTTON, L"Update All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                                25 + 55 * 1, 100, 50, editWindow, (HMENU)eUIType_btnUpdateAll, windowInstance, NULL);
+                                25 + 55 * 1, 100, 50, editPanel, (HMENU)eUIType_btnUpdateAll, windowInstance, NULL);
     btnLoadAll = CreateWindow(WC_BUTTON, L"Load All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                              25 + 55 * 2, 100, 50, editWindow, (HMENU)eUIType_btnLoadAll, windowInstance, NULL);
+                              25 + 55 * 2, 100, 50, editPanel, (HMENU)eUIType_btnLoadAll, windowInstance, NULL);
     btnSaveAll = CreateWindow(WC_BUTTON, L"Save All", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                              25 + 55 * 3, 100, 50, editWindow, (HMENU)eUIType_btnSaveAll, windowInstance, NULL);
+                              25 + 55 * 3, 100, 50, editPanel, (HMENU)eUIType_btnSaveAll, windowInstance, NULL);
     btnLoadScene = CreateWindow(WC_BUTTON, L"Load Scene", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                                25 + 55 * 4, 100, 50, editWindow, (HMENU)eUIType_btnLoadScene, windowInstance, NULL);
+                                25 + 55 * 4, 100, 50, editPanel, (HMENU)eUIType_btnLoadScene, windowInstance, NULL);
     btnSaveEID = CreateWindow(WC_BUTTON, L"Save eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                              25 + 55 * 5, 100, 50, editWindow, (HMENU)eUIType_btnSaveEID, windowInstance, NULL);
+                              25 + 55 * 5, 100, 50, editPanel, (HMENU)eUIType_btnSaveEID, windowInstance, NULL);
     btnLoadEID = CreateWindow(WC_BUTTON, L"Load eid", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                              25 + 55 * 6, 100, 50, editWindow, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
+                              25 + 55 * 6, 100, 50, editPanel, (HMENU)eUIType_btnLoadEID, windowInstance, NULL);
     btnCameraFocus = CreateWindow(WC_BUTTON, L"Camera Focus", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                                  25 + 55 * 7, 100, 50, editWindow, (HMENU)eUIType_btnCameraFocus, windowInstance, NULL);
+                                  25 + 55 * 7, 100, 50, editPanel, (HMENU)eUIType_btnCameraFocus, windowInstance, NULL);
     btnCameraControl = CreateWindow(WC_BUTTON, L"Camera Ctrl", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                                    25 + 55 * 8, 100, 50, editWindow, (HMENU)eUIType_btnCameraControl, windowInstance, NULL);
+                                    25 + 55 * 8, 100, 50, editPanel, (HMENU)eUIType_btnCameraControl, windowInstance, NULL);
     btnNewItem = CreateWindow(WC_BUTTON, L"New Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                              25 + 55 * 9, 100, 50, editWindow, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
+                              25 + 55 * 9, 100, 50, editPanel, (HMENU)eUIType_btnNewItem, windowInstance, NULL);
     btnDeleteItem = CreateWindow(WC_BUTTON, L"Delete Item", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, width - 100,
-                                 25 + 55 * 10, 100, 50, editWindow, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
+                                 25 + 55 * 10, 100, 50, editPanel, (HMENU)eUIType_btnDeleteItem, windowInstance, NULL);
 
     setAllTreeView();
     // updateTab();
 }
 
+void QeWindow::openLogPanel() {
+    WNDCLASSEX wndClass;
+    std::wstring title = L"Log Panel";
+
+    wndClass.cbSize = sizeof(WNDCLASSEX);
+    wndClass.style = CS_HREDRAW | CS_VREDRAW;
+    wndClass.lpfnWndProc = WndProc;
+    wndClass.cbClsExtra = 0;
+    wndClass.cbWndExtra = 0;
+    wndClass.hInstance = windowInstance;
+    wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    wndClass.lpszMenuName = NULL;
+    wndClass.lpszClassName = title.c_str();
+    wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
+
+    RegisterClassEx(&wndClass);
+
+    logPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL,
+                                NULL, windowInstance, NULL);
+
+    resize(logPanel);
+    ShowWindow(logPanel, SW_SHOW);
+    SetWindowText(logPanel, title.c_str());
+
+    int width;
+    int height;
+    getWindowSize(logPanel, width, height);
+
+    HFONT hFont = CreateFont(24, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                             DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
+
+    listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, width, height, logPanel,
+                              NULL, windowInstance, NULL);
+    SendMessage(listBoxLog, WM_SETFONT, WPARAM(hFont), TRUE);
+}
+
 void QeWindow::Log(std::string _log) {
+    if (!DEBUG->isLogPanel()) return;
     std::vector<std::string> vs = ENCODE->split(_log.c_str(), "\n");
 
     for (int i = 0; i < vs.size(); ++i) {
@@ -649,11 +691,10 @@ void QeWindow::initialize() {
     if (bInit) return;
     bInit = true;
 
-    if (!DEBUG->isConsole()) FreeConsole();
-
     windowInstance = GetModuleHandle(nullptr);
 
-    openEditWindow();
+    if (DEBUG->isLogPanel()) openLogPanel();
+    openEditPanel();
     openMainWindow();
 
     SetForegroundWindow(mainWindow);
@@ -696,12 +737,12 @@ void QeWindow::update1() {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    consoleInput();
+    //consoleInput();
 }
 
 void QeWindow::update2() {}
 
-void QeWindow::consoleInput() {
+/*void QeWindow::consoleInput() {
     if (!DEBUG->isConsole()) return;
 
     if (!_kbhit()) return;
@@ -728,7 +769,7 @@ void QeWindow::consoleInput() {
             inputData.consoleCommandInput += cur;
             std::cout << cur;
             break;
-    }
+    }*/
 
     // hout = GetStdHandle(STD_OUTPUT_HANDLE);
     // initializeConsole(hout);
@@ -753,7 +794,7 @@ void QeWindow::consoleInput() {
             if(str.length()>0)	CMD(str);
             break;
     }*/
-}
+//}
 
 std::wstring QeWindow::chartowchar(std::string s) {
     wchar_t rtn[4096];

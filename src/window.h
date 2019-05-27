@@ -15,7 +15,9 @@ class QeWindow {
     ~QeWindow() {}
 
     HINSTANCE windowInstance;
-    HWND mainWindow, commandBox, editWindow, tabControlCategory, treeViewLists[10], listViewDetail, listBoxLog, currentEditListView;
+    HWND mainWindow, commandBox;
+    HWND editPanel, tabControlCategory, treeViewLists[10], listViewDetail, currentEditListView;
+    HWND logPanel, listBoxLog;
     WNDPROC DefEditProc;
     HWND btnPause, btnUpdateAll, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnCameraFocus, btnCameraControl,
         btnNewItem, btnDeleteItem;
@@ -35,7 +37,8 @@ class QeWindow {
     bool bInit = false;
     void initialize();
     void openMainWindow();
-    void openEditWindow();
+    void openEditPanel();
+    void openLogPanel();
     void setAllTreeView();
     void updateTab();
     void updateListView();
@@ -53,6 +56,6 @@ class QeWindow {
     void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     void sendCommand();
     void closeCommand();
-    void consoleInput();
+    //void consoleInput();
     // bool isWindow();
 };

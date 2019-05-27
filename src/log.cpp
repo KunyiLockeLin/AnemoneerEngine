@@ -8,9 +8,9 @@ QeLog::~QeLog() {
 
 QeDebugMode QeLog::mode() { return QeDebugMode(atoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "debug"))); }
 
-bool QeLog::isDebug() { return mode() == eModeNoDebug ? false : true; }
-bool QeLog::isConsole() { return (mode() == eModeConsole || mode() == eModeConsoleOutput) ? true : false; }
-bool QeLog::isOutput() { return (mode() == eModeOutput || mode() == eModeConsoleOutput) ? true : false; }
+bool QeLog::isDebug() { return mode() != eModeNoDebug_bit; }
+bool QeLog::isLogPanel() { return mode() & eModeLogPanel_bit; }
+bool QeLog::isOutput() { return mode() & eModeOutput_bit; }
 
 std::string QeLog::stack(int from, int to) {
     std::string ret = "";
@@ -65,7 +65,7 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
     if (bShowStack) s += stack(2, stackLevel);
     WIN->Log(s);
-    if (isConsole()) std::cout << s.c_str() << std::endl;
+    if (isLogPanel()) std::cout << s.c_str() << std::endl;
     if (isOutput()) {
         if (!ofile.is_open()) {
             time_t rawtime;
