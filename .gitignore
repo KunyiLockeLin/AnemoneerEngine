@@ -1,12 +1,9 @@
-vc/.vs*
-vc/x64*
-vc/Release*
-vc/Debug*
 .vs/*
 *.iobj
 *.exe
 *.ipdb
 *.pdb
 *.ilk
+build*
 data/shaders/spv*
-*.txt
+data/*.txt

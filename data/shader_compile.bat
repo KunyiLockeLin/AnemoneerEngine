@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 
 %VULKAN_SDK%/Bin/glslangValidator.exe -h
 
-set input=shaders\
+set input=%~dp0shaders\
 set output=%input%spv\
 echo input:%input%
 echo output:%output%
@@ -12,9 +12,9 @@ rmdir %output% /s/q
 mkdir %output%
 
 for /f "tokens=*" %%i in ('dir /b %input%') do (
-	set checker=%%i
-	set checker=!checker:~0,6!
-	if !checker! NEQ header if !checker! NEQ spv (%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%%%i -o %output%%%i.spv)
+    set checker=%%i
+    set checker=!checker:~0,6!
+    if !checker! NEQ header if !checker! NEQ spv (%VULKAN_SDK%/Bin/glslangValidator.exe -V %input%%%i -o %output%%%i.spv)
 )
 
 pause
