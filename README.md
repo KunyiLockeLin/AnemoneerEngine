@@ -1,6 +1,6 @@
 # Angry Engine
 - Run "generator.bat" to generate the Visual Studio 2017 x64 project, compile shader and test program.
-  - Introduction video:
+- Introduction video:
 
 [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/lYOUqqthTN8/0.jpg)](https://youtu.be/lYOUqqthTN8)
   -  Even though, I call it a game engine, it is not just for game development. It is for my interest. I might do something that does not relate game development, also might not want to do something, even though it is really important for game development.
