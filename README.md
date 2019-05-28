@@ -1,5 +1,5 @@
 # Angry Engine
-
+- Run "generator.bat" to generate the Visual Studio 2017 x64 project, compile shader and test program.
   - Introduction video:
 
 [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/lYOUqqthTN8/0.jpg)](https://youtu.be/lYOUqqthTN8)
