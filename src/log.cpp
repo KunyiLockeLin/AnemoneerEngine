@@ -64,8 +64,8 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
     s += msg;
 
     if (bShowStack) s += stack(2, stackLevel);
-    WIN->Log(s);
-    if (isLogPanel()) std::cout << s.c_str() << std::endl;
+
+    if (isLogPanel()) WIN->Log(s);
     if (isOutput()) {
         if (!ofile.is_open()) {
             time_t rawtime;
@@ -83,8 +83,8 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
             ofile.open(outputPath);
         }
-        // ofile.seekp(ofile.beg);
+        //ofile.seekp(ofile.beg);
         ofile << s << std::endl;
-        // ofile.flush();
+        //ofile.flush();
     }
 }

@@ -153,7 +153,7 @@ class QeMath {
     QeMath(QeGlobalKey &_key) {}
     ~QeMath() {}
 
-    const float PI = 3.141592654f;
+    const float PI = 3.1415927f;
     const float RADIANS_TO_DEGREES = 180.0f / PI;
     const float DEGREES_TO_RADIANS = PI / 180;
 
@@ -165,15 +165,19 @@ class QeMath {
     QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
     QeMatrix4x4f translate(QeVector3f &_pos);
     QeVector3f move(QeVector3f &_position, QeVector3f &_addMove, QeVector3f &_face, QeVector3f &_up);
-    QeMatrix4x4f rotate(QeVector3f &_eulerAngles);  // roll, pitch, yaw
-    QeMatrix4x4f rotate(float _angle, QeVector3f &_axis);
+    QeMatrix4x4f rotate_quaternion(QeVector3f &_eulerAngles);
+    QeMatrix4x4f rotate_quaternion(QeVector4f &quaternion);
+    QeMatrix4x4f rotate_quaternion(float _angle, QeVector3f &_axis);
+    QeVector4f eulerAngles_to_quaternion(QeVector3f &_eulerAngles);
+    QeVector4f axis_to_quaternion(float _angle, QeVector3f &_axis);
+    QeMatrix4x4f rotate_eularAngles(QeVector3f &_eulerAngles);  // (roll, pitch, yaw) or (bank, attitude, heading)
+    QeMatrix4x4f rotate_axis(float _angle, QeVector3f &_axis);
     QeMatrix4x4f rotateX(float _angle);
     QeMatrix4x4f rotateY(float _angle);
     QeMatrix4x4f rotateZ(float _angle);
-    QeMatrix4x4f rotate(QeVector4f &vector);
-    // QeVector4f rotate(QeMatrix4x4f matrix);
+    QeVector4f matrix_to_quaternion(QeMatrix4x4f matrix);
     QeMatrix4x4f scale(QeVector3f &_size);
-    QeMatrix4x4f transform(QeVector3f &_tanslation, QeVector4f &_rotationVector, QeVector3f &_scale);
+    QeMatrix4x4f transform(QeVector3f &_tanslation, QeVector4f &_rotation_quaternion, QeVector3f &_scale);
     QeMatrix4x4f getTransformMatrix(QeVector3f &_translate, QeVector3f &_rotateEuler, QeVector3f &_scale, bool bRotate = true,
                                     bool bFixSize = false);
     QeVector3f normalize(QeVector3f &_vec);
@@ -195,13 +199,14 @@ class QeMath {
     QeVector4f interpolateDir(QeVector4f &a, QeVector4f &b, float blend);
     QeVector3f interpolatePos(QeVector3f &start, QeVector3f &end, float progression);
     float getAnglefromVectors(QeVector3f &v1, QeVector3f &v2);
-    QeVector3f revolute(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX = false,
+    QeVector3f revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX = false,
                         bool bFixY = false, bool bFixZ = false);
-    // void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float &
-    // outAzimuthalAngle); void rotatefromCenter(QeVector3f& center, QeVector3f&
-    // pos, float polarAngle, float azimuthalAngle); void
-    // rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis,
-    // float angle, bool bStopTop);
+    QeVector3f revolute_eularAngles(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX,
+                                    bool bFixY, bool bFixZ);
+
+    // void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
+    // void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
+    // void rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f & axis, float angle, bool bStopTop);
     bool hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere &sphere, float maxDistance = 0.f, QeRayHitRecord *hit = nullptr);
     void quicksort(float *data, int count);
 };

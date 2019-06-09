@@ -28,7 +28,7 @@ void QeTransform::initialize(QeAssetXML *_property, QeObject *_owner) {
 }
 
 void QeTransform::update1() {
-    if (rotateSpeed.x != 0.f || rotateSpeed.x != 0.f || rotateSpeed.z != 0.f) {
+    if (rotateSpeed.x != 0.f || rotateSpeed.y != 0.f || rotateSpeed.z != 0.f) {
         localFaceEular += (rotateSpeed * QE->deltaTime * 30.f);
     }
 
@@ -140,7 +140,7 @@ void QeTransform::move(QeVector3f &_addMove, QeVector3f &_face, QeVector3f &_up)
 }
 
 void QeTransform::revolute(QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
-    setWorldPosition(MATH->revolute(worldPosition(), _addRevolute, _centerPosition, bFixX, bFixY, bFixZ));
+    setWorldPosition(MATH->revolute_axis(worldPosition(), _addRevolute, _centerPosition, bFixX, bFixY, bFixZ));
 }
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {

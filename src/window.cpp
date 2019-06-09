@@ -360,13 +360,13 @@ void QeWindow::resize(HWND &window) {
     int y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom + windowRect.top) / 2;
     if (window == mainWindow) {
         x -= 50;
-        y += 10;
+        y += 20;
     } else if (window == editPanel) {
         x += 200;
         y -= 10;
     } else if ( window == logPanel) {
         x -= 100;
-        y -= 10;
+        y -= 40;
     }
     windowRect.right += (x - windowRect.left);
     windowRect.bottom += (y - windowRect.top);
@@ -554,7 +554,7 @@ void QeWindow::Log(std::string _log) {
 
     for (int i = 0; i < vs.size(); ++i) {
         std::wstring ws = chartowchar(vs[i]);
-        SendMessage(listBoxLog, LB_ADDSTRING, 0, (LPARAM)ws.c_str());
+        SendMessage(listBoxLog, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
     }
 }
 

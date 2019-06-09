@@ -8,7 +8,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (${PROJECT_NAME})
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
 
-set(SRC_NONE generator.bat data/shader_compile.bat)
+set(SRC_NONE generator.bat data/shader_compile.bat data/config.xml)
 set(SRC_ALGORITHM src/encode.cpp src/math.cpp)
 set(SRC_UI src/window.cpp)
 set(SRC_VULKAN src/graphics.cpp src/vulkan.cpp)

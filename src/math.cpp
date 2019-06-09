@@ -190,9 +190,75 @@ QeVector3f QeMath::move(QeVector3f &_position, QeVector3f &_addMove, QeVector3f 
     return (_position + _move);
 }
 
-QeMatrix4x4f QeMath::rotate(QeVector3f &_angles) {
+QeVector4f QeMath::eulerAngles_to_quaternion(QeVector3f &_eulerAngles) {
+    QeVector4f quat;
+    QeVector3f _half_radians = _eulerAngles * DEGREES_TO_RADIANS * 0.5f;
+    float c1 = cos(_half_radians.x);
+    float c2 = cos(_half_radians.y);
+    float c3 = cos(_half_radians.z);
+    float s1 = sin(_half_radians.x);
+    float s2 = sin(_half_radians.y);
+    float s3 = sin(_half_radians.z);
+
+    quat.w = c1 * c2 * c3 + s1 * s2 * s3;
+    quat.x = s1 * c2 * c3 - c1 * s2 * s3;
+    quat.y = c1 * s2 * c3 + s1 * c2 * s3;
+    quat.z = c1 * c2 * s3 - s1 * s2 * c3;
+    return quat;
+}
+
+QeMatrix4x4f QeMath::rotate_quaternion(QeVector3f &_eulerAngles) {
+    QeVector4f quat = eulerAngles_to_quaternion(_eulerAngles);
+    return rotate_quaternion(quat);
+}
+
+QeVector4f QeMath::axis_to_quaternion(float _angle, QeVector3f &_axis) {
+    QeVector4f quat;
+    float _radian = _angle * DEGREES_TO_RADIANS;
+    float s = sin(_radian / 2);
+    quat.x = _axis.x * s;
+    quat.y = _axis.y * s;
+    quat.z = _axis.z * s;
+    quat.w = cos(_radian / 2);
+    return quat;
+}
+
+QeMatrix4x4f QeMath::rotate_quaternion(float _angle, QeVector3f &_axis) {
+    QeVector4f quat = axis_to_quaternion(_angle, _axis);
+    return rotate_quaternion(quat);
+}
+
+QeMatrix4x4f QeMath::rotate_quaternion(QeVector4f &quaternion) {
     QeMatrix4x4f _rtn;
-    QeVector3f _radians = _angles * DEGREES_TO_RADIANS;
+
+    float xx = quaternion.x * quaternion.x;
+    float yy = quaternion.y * quaternion.y;
+    float zz = quaternion.z * quaternion.z;
+    float xz = quaternion.x * quaternion.z;
+    float xy = quaternion.x * quaternion.y;
+    float yz = quaternion.y * quaternion.z;
+    float wx = quaternion.w * quaternion.x;
+    float wy = quaternion.w * quaternion.y;
+    float wz = quaternion.w * quaternion.z;
+
+    _rtn._00 = 1.0f - 2.0f * (yy + zz);
+    _rtn._01 = 2.0f * (xy + wz);
+    _rtn._02 = 2.0f * (xz - wy);
+
+    _rtn._10 = 2.0f * (xy - wz);
+    _rtn._11 = 1.0f - 2.0f * (xx + zz);
+    _rtn._12 = 2.0f * (yz + wx);
+
+    _rtn._20 = 2.0f * (xz + wy);
+    _rtn._21 = 2.0f * (yz - wx);
+    _rtn._22 = 1.0f - 2.0f * (xx + yy);
+
+    return _rtn;
+}
+
+QeMatrix4x4f QeMath::rotate_eularAngles(QeVector3f &_eulerAngles) {
+    QeMatrix4x4f _rtn;
+    QeVector3f _radians = _eulerAngles * DEGREES_TO_RADIANS;
     QeVector3f _coss, _sins;
     _coss.x = cos(_radians.x);
     _coss.y = cos(_radians.y);
@@ -216,7 +282,7 @@ QeMatrix4x4f QeMath::rotate(QeVector3f &_angles) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotate(float _angle, QeVector3f &_axis) {
+QeMatrix4x4f QeMath::rotate_axis(float _angle, QeVector3f &_axis) {
     QeMatrix4x4f _rtn;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float _cosA = cos(_radian);
@@ -713,58 +779,36 @@ QeMatrix4x4f QeMath::transpose(QeMatrix4x4f &_mat) {
 int QeMath::clamp(int in, int low, int high) { return in < low ? low : in > high ? high : in; }
 float QeMath::clamp(float in, float low, float high) { return in < low ? low : in > high ? high : in; }
 
-QeMatrix4x4f QeMath::rotate(QeVector4f &vector) {
-    QeMatrix4x4f matrix;
-    float xx = vector.x * vector.x;
-    float xy = vector.x * vector.y;
-    float xz = vector.x * vector.z;
-    float xw = vector.x * vector.w;
-    float yy = vector.y * vector.y;
-    float yz = vector.y * vector.z;
-    float yw = vector.y * vector.w;
-    float zz = vector.z * vector.z;
-    float zw = vector.z * vector.w;
-
-    matrix._00 = 1 - 2 * (yy + zz);
-    matrix._01 = 2 * (xy + zw);
-    matrix._02 = 2 * (xz - yw);
-    matrix._10 = 2 * (xy - zw);
-    matrix._11 = 1 - 2 * (xx + zz);
-    matrix._12 = 2 * (yz + xw);
-    matrix._20 = 2 * (xz + yw);
-    matrix._21 = 2 * (yz - xw);
-    matrix._22 = 1 - 2 * (xx + yy);
-
-    return matrix;
+QeVector4f QeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
+    QeVector4f ret;
+    float trace = matrix._00 + matrix._11 + matrix._22;
+    if (trace > 0) {
+        float w4 = fastSqrt(trace + 1) * 2;
+        ret.w = w4 / 4;
+        ret.x = (matrix._21 - matrix._12) / w4;
+        ret.y = (matrix._02 - matrix._20) / w4;
+        ret.z = (matrix._10 - matrix._01) / w4;
+    } else if ((matrix._00 > matrix._11) && (matrix._00 > matrix._22)) {
+        float x4 = fastSqrt(1 + matrix._00 - matrix._11 - matrix._22) * 2;
+        ret.w = (matrix._21 - matrix._12) / x4;
+        ret.x = x4 / 4;
+        ret.y = (matrix._01 + matrix._10) / x4;
+        ret.z = (matrix._02 + matrix._20) / x4;
+    } else if (matrix._11 > matrix._22) {
+        float y4 = fastSqrt(1 + matrix._11 - matrix._00 - matrix._22) * 2;
+        ret.w = (matrix._02 - matrix._20) / y4;
+        ret.x = (matrix._01 + matrix._10) / y4;
+        ret.y = y4 / 4;
+        ret.z = (matrix._12 + matrix._21) / y4;
+    } else {
+        float z4 = fastSqrt(1 + matrix._22 - matrix._00 - matrix._11) * 2;
+        ret.w = (matrix._10 - matrix._01) / z4;
+        ret.x = (matrix._02 + matrix._20) / z4;
+        ret.y = (matrix._12 + matrix._21) / z4;
+        ret.z = z4 / 4;
+    }
+    return ret;
 }
-
-/*QeVector4f QeMath::rotate(QeMatrix4x4f matrix) {
-        QeVector4f ret;
-        float trace = matrix._00 + matrix._11 + matrix._22;
-        if (trace  > 0) {
-                float w4 = fastSqrt(trace + 1) * 2;
-                ret.w = w4 / 4;
-                ret.x = (matrix._21 - matrix._12) / w4;
-                ret.y = (matrix._02 - matrix._20) / w4;
-                ret.z = (matrix._10 - matrix._01) / w4;
-        }
-        else if ((matrix._00 > matrix._11) && (matrix._00 > matrix._22)) {
-                float x4 = fastSqrt(1 + matrix._00 - matrix._11 - matrix._22) *
-2; ret.w = (matrix._21 - matrix._12) / x4; ret.x = x4 / 4; ret.y = (matrix._01 +
-matrix._10) / x4; ret.z = (matrix._02 + matrix._20) / x4;
-        }
-        else if (matrix._11 > matrix._22) {
-                float y4 = fastSqrt(1 + matrix._11 - matrix._00 - matrix._22) *
-2; ret.w = (matrix._02 - matrix._20) / y4; ret.x = (matrix._01 + matrix._10) /
-y4; ret.y = y4 / 4; ret.z = (matrix._12 + matrix._21) / y4;
-        }
-        else {
-                float z4 =  fastSqrt(1 + matrix._22 - matrix._00 - matrix._11) *
-2; ret.w = (matrix._10 - matrix._01) / z4; ret.x = (matrix._02 + matrix._20) /
-z4; ret.y = (matrix._12 + matrix._21) / z4; ret.z = z4 / 4;
-        }
-        return ret;
-}*/
 
 QeVector4f QeMath::interpolateDir(QeVector4f &a, QeVector4f &b, float blend) {
     QeVector4f ret;
@@ -794,10 +838,10 @@ QeVector3f QeMath::interpolatePos(QeVector3f &start, QeVector3f &end, float prog
     return ret;
 }
 
-QeMatrix4x4f QeMath::transform(QeVector3f &_tanslation, QeVector4f &_rotationVector, QeVector3f &_scale) {
+QeMatrix4x4f QeMath::transform(QeVector3f &_tanslation, QeVector4f &_rotation_quaternion, QeVector3f &_scale) {
     QeMatrix4x4f ret;
     ret *= translate(_tanslation);
-    ret *= rotate(_rotationVector);
+    ret *= rotate_quaternion(_rotation_quaternion);
     ret *= scale(_scale);
     return ret;
 }
@@ -810,11 +854,21 @@ float QeMath::getAnglefromVectors(QeVector3f &v1, QeVector3f &v2) {
     return acos(d) * RADIANS_TO_DEGREES;
 }
 
-QeVector3f QeMath::revolute(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX, bool bFixY,
-                            bool bFixZ) {
-    QeVector3f ret = _position;
+// lock when y = 90 or -90
+QeVector3f QeMath::revolute_eularAngles(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX,
+                                        bool bFixY, bool bFixZ) {
+    QeVector3f vec = {_position - _centerPosition};
+    QeVector3f eularAngle = vectorToEulerAngles(vec) + _addRevolute;
+    QeVector3f origin = {MATH->length(vec), 0.f, 0.f};
+    QeMatrix4x4f mat;
+    mat *= translate(_centerPosition);
+    mat *= rotate_eularAngles(eularAngle);
+    return mat * QeVector4f(origin, 1.0f);
+}
 
-    QeVector3f vec = {ret - _centerPosition};
+QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX, bool bFixY,
+                            bool bFixZ) {
+    QeVector3f vec = {_position - _centerPosition};
     QeVector3f vecN = normalize(vec);
 
     QeMatrix4x4f mat;
@@ -823,82 +877,60 @@ QeVector3f QeMath::revolute(QeVector3f &_position, QeVector3f &_addRevolute, QeV
     if (_addRevolute.x) {
         if (bFixX) {
             QeVector3f _axis = {0.f, 0.f, 1.f};
-            mat *= rotate(_addRevolute.x, _axis);
+            mat *= rotate_axis(_addRevolute.x, _axis);
         } else {
             QeVector3f _axis = {0.f, 1.f, 0.f};
             QeVector3f _surface = normalize(cross(_axis, vecN));
-            if (vecN.x < 0) _surface *= -1;
-
-            mat *= rotate(_addRevolute.x, _surface);
+            if (vecN.z < 0) _surface *= -1;
+            mat *= rotate_axis(_addRevolute.x, _surface);
         }
     }
 
     if (_addRevolute.y) {
         if (bFixY) {
             QeVector3f _axis = {0.f, 1.f, 0.f};
-            mat *= rotate(_addRevolute.y, _axis);
+            mat *= rotate_axis(_addRevolute.y, _axis);
         } else {
             QeVector3f _axis = {0.f, 0.f, 1.f};
             QeVector3f _surface = normalize(cross(_axis, vecN));
             if (vecN.y < 0) _surface *= -1;
-            ;
-
-            mat *= rotate(_addRevolute.y, _surface);
+            mat *= rotate_axis(_addRevolute.y, _surface);
         }
     }
 
     if (_addRevolute.z) {
         if (bFixZ) {
             QeVector3f _axis = {0.f, 0.f, 1.f};
-            mat *= rotate(_addRevolute.z, _axis);
+            mat *= rotate_axis(_addRevolute.z, _axis);
         } else {
             QeVector3f _axis = {1.f, 0.f, 0.f};
             QeVector3f _surface = normalize(cross(_axis, vecN));
-            // LOG("revolute zzz vecN " + vecN.x + "  " + vecN.y + "  " + vecN.z + "
-            // _surface " + +_surface.x + "  " + _surface.y + "  " + _surface.z);
-
             if (vecN.z < 0) _surface *= -1;
             // if ((vecN.x == 0 && vecN.y < 0) || (vecN.x < 0 && vecN.y == 0) ||
-            // (vecN.x < 0 && vecN.y < 0)
-            //	|| (vecN.x < 0 && vecN.y > 0)) _surface *= -1;
-
-            mat *= rotate(_addRevolute.z, _surface);
+            // (vecN.x < 0 && vecN.y < 0)|| (vecN.x < 0 && vecN.y > 0)) _surface *= -1;
+            mat *= rotate_axis(_addRevolute.z, _surface);
         }
     }
 
-    QeVector4f vec4 = QeVector4f(vec, 1.0f);
-    vec4 = mat * vec4;
-    vec = vec4;
-    ret = vec;
-
-    return ret;
+    return mat * QeVector4f(vec, 1.0f);
 }
 
-/*void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float
-& outAzimuthalAngle) {
-        
-
-
+/*void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
         if (!inV.z) outPolarAngle = 90;
         else if(!inV.x && !inV.y) outPolarAngle = 0;
-        else		outPolarAngle = atan( (fastSqrt(inV.x*inV.x +
-inV.y*inV.y))/ inV.z )*RADIANS_TO_DEGREES;
-        
+        else outPolarAngle = atan( (fastSqrt(inV.x*inV.x + inV.y*inV.y))/ inV.z )*RADIANS_TO_DEGREES;
 
+        if (!inV.x) outAzimuthalAngle = 90;
+        else if (!inV.y) outAzimuthalAngle = 0;
+        else outAzimuthalAngle = atan(inV.y/inV.x)*RADIANS_TO_DEGREES;
 
-        if (!inV.x)	outAzimuthalAngle = 90;
-        else if (!inV.y)	outAzimuthalAngle = 0;
-        else		outAzimuthalAngle =
-atan(inV.y/inV.x)*RADIANS_TO_DEGREES;
+        if (inV.x < 0) outAzimuthalAngle = 180 + outAzimuthalAngle;
+        else if (inV.y < 0) outAzimuthalAngle = 360 + outAzimuthalAngle;
 
-        if (inV.x < 0)		outAzimuthalAngle = 180 + outAzimuthalAngle;
-        else if (inV.y < 0)	outAzimuthalAngle = 360 + outAzimuthalAngle;
-
-        if (inV.z < 0)		outPolarAngle = 180 + outPolarAngle;
+        if (inV.z < 0) outPolarAngle = 180 + outPolarAngle;
 }*/
 
-/*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float
-polarAngle, float azimuthalAngle) {
+/*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle) {
 
         QeVector3f vec = pos - center;
         float len = length(vec);
@@ -921,8 +953,8 @@ polarAngle, float azimuthalAngle) {
 }*/
 
 /*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f
-& axis, float angle, bool bStopTop ) { QeVector3f vec = MATH->normalize(pos -
-center);
+& axis, float angle, bool bStopTop ) {
+        QeVector3f vec = MATH->normalize(pos -center);
 
         float polarAngle, azimuthalAngle;
         MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
@@ -953,7 +985,7 @@ QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rot
     QeMatrix4x4f mat;
 
     mat *= translate(_translate);
-    if (bRotate) mat *= rotate(_rotateEuler);
+    if (bRotate) mat *= rotate_eularAngles(_rotateEuler);
     mat *= scale(_scale);
 
     float dis = 1.0f;
