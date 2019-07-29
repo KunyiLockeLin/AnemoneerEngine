@@ -136,7 +136,7 @@ class QeVulkan {
     QeVulkan(QeGlobalKey &_key) : emptyImage2D(eImage_2D), emptyImageCube(eImage_cube) {}
     ~QeVulkan();
 
-    const std::vector<const char *> validationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+    std::vector<const char *> validationLayers = {};
     const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     bool bInit = false;

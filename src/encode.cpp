@@ -61,13 +61,9 @@ int QeEncode::readBits(const unsigned char *stream, size_t *bitPointer, size_t r
 }
 
 std::string QeEncode::trim(std::string s) {
-    if (s.empty()) return s;
-    s.erase(0, s.find_first_not_of(" "));
-    s.erase(0, s.find_first_not_of("\n"));
-    s.erase(0, s.find_first_not_of(" "));
-    s.erase(s.find_last_not_of(" ") + 1);
-    s.erase(s.find_last_not_of("\n") + 1);
-    s.erase(s.find_last_not_of(" ") + 1);
+    if (!s.length()) return s;
+    s.erase(0, s.find_first_not_of(" \t\n\r\f\v"));
+    s.erase(s.find_last_not_of(" \t\n\r\f\v") + 1);
     return s;
 }
 
@@ -84,8 +80,6 @@ QeAssetJSON *QeEncode::decodeJSON(const char *buffer, int &index) {
     const char keys[] = "{}\":[],";
     QeAssetJSON *node = new QeAssetJSON();
     int lastIndex = index, currentIndex = index, lastKey = 0, currentKey;
-    char *newChar = nullptr;
-    std::vector<std::string> *vsBuffer = nullptr;
     bool bValue = false;
     int count = 0;
     std::string key;
@@ -173,74 +167,90 @@ QeAssetXML *QeEncode::decodeXML(const char *buffer, int &index, QeAssetXML *pare
     1: >
     2: /
     3: =
-    4: "
-    5: ?
-    6: !
-    7: -
     */
-    const char keys[] = "<>/=\"?";
-
+    const char keys[] = "<>/=";
+    int currentIndex = index, lastElemetIndex = 0;
     QeAssetXML *node = new QeAssetXML();
-    int lastIndex = index, currentIndex = index, lastKey = 0, currentKey = 0;
-    char *newChar = nullptr;
-    std::vector<std::string> *vsBuffer = nullptr;
-    bool bRoot = true;
     node->parent = parent;
 
-    while (1) {
-        currentIndex = int(strcspn(buffer + lastIndex, keys) + lastIndex);
-        currentKey = int(strchr(keys, buffer[currentIndex]) - keys);
-
-        if (currentKey == 5) {
-            lastIndex = currentIndex + 1;
-            currentIndex = int(strchr(buffer + lastIndex, '?') - buffer);
-            lastIndex = currentIndex + 1;
-            bRoot = true;
-        } else if (currentKey == 0) {
-            if (bRoot)
-                bRoot = false;
-
-            else if (buffer[currentIndex + 1] != '/')
-                node->nexts.push_back(decodeXML(buffer, currentIndex, node));
-
-            else if (lastKey == 1) {
-                std::string s(buffer + lastIndex, currentIndex - lastIndex);
-                s = trim(s);
-                node->value = s;
-            }
-        } else if (lastKey == 0) {
-            if (currentKey == 1) {
-                std::string s(buffer + lastIndex, currentIndex - lastIndex);
-                s = trim(s);
-                node->key = s;
-            } else if (currentKey == 3) {
-                int index = int(strchr(buffer + lastIndex, ' ') - buffer);
-                std::string s(buffer + lastIndex, index - lastIndex);
-                s = trim(s);
-                node->key = s;
-                std::string s1(buffer + index, currentIndex - index);
-                s1 = trim(s1);
-                node->eKeys.push_back(s1);
-            }
-        } else if (lastKey == 2 && currentKey == 1)
-            break;
-
-        else if (lastKey == 4) {
-            if (currentKey == 3) {
-                std::string s(buffer + lastIndex, currentIndex - lastIndex);
-                s = trim(s);
-                node->eKeys.push_back(s);
-            } else if (currentKey == lastKey) {
-                std::string s(buffer + lastIndex, currentIndex - lastIndex);
-                s = trim(s);
-                node->eValues.push_back(s);
-            }
+    while (true) {
+        currentIndex = int(strcspn(buffer + currentIndex, keys) + currentIndex);
+        switch (buffer[currentIndex]) {
+            case '<': {
+                if (buffer[currentIndex + 1] == '/') {
+                    index = int(strchr(buffer + currentIndex, '>') - buffer);
+                    return node;
+                } else if (node->key.length()) {
+                    node->nexts.push_back(decodeXML(buffer, currentIndex, node));
+                    ++currentIndex;
+                } else if (buffer[currentIndex + 1] == '?') {
+                    currentIndex += 2;
+                    int index = int(strchr(buffer + currentIndex, '?') - buffer);
+                    int length = index - currentIndex;
+                    std::string s(buffer + currentIndex, length);
+                    s = trim(s);
+                    node->version = s;
+                    currentIndex = index + 3;
+                } else if (buffer[currentIndex + 1] == '!') {
+                    currentIndex += 4;
+                    int index = int(strchr(buffer + currentIndex, '-') - buffer);
+                    int length = index - currentIndex;
+                    if (length > 0) {
+                        std::string s(buffer + currentIndex, length);
+                        s = trim(s);
+                        node->comments.emplace_back(s);
+                    }
+                    currentIndex = index + 3;
+                } else {
+                    currentIndex += 1;
+                    int index1 = int(strchr(buffer + currentIndex, '>') - buffer);
+                    int index2 = int(strchr(buffer + currentIndex, ' ') - buffer);
+                    int length = 0;
+                    if (index1 < index2) {
+                        length = index1 - currentIndex;
+                        int index3 = int(strchr(buffer + currentIndex, '/') - buffer);
+                        if (index3 < index1) --length;
+                    } else {
+                        length = index2 - currentIndex;
+                    }
+                    std::string s(buffer + currentIndex, length);
+                    s = trim(s);
+                    node->key = s;
+                    currentIndex += length;
+                    lastElemetIndex = currentIndex;
+                }
+            } break;
+            case '>': {
+                int index = int(strchr(buffer + currentIndex, '<') - buffer);
+                int length = index - currentIndex - 1;
+                if (length) {
+                    std::string s(buffer + currentIndex + 1, length);
+                    s = trim(s);
+                    if (s.length()) node->value = s;
+                }
+                ++currentIndex;
+            } break;
+            case '/': {
+                index = int(strchr(buffer + currentIndex, '>') - buffer);
+                return node;
+            } break;
+            case '=': {
+                QeNode node1;
+                node1.key = std::string(buffer + lastElemetIndex, currentIndex - lastElemetIndex);
+                node1.key = trim(node1.key);
+                int index = int(strchr(buffer + currentIndex, '"') - buffer);
+                int index1 = int(strchr(buffer + index + 1, '"') - buffer);
+                node1.value = std::string(buffer + index + 1, index1 - index - 1);
+                node1.value = trim(node1.value);
+                node->elements.emplace_back(node1);
+                currentIndex = index1 + 1;
+                lastElemetIndex = currentIndex;
+            } break;
+            default:
+                break;
         }
-        lastKey = currentKey;
-        lastIndex = currentIndex + 1;
     }
-    index = currentIndex;
-    return node;
+    return nullptr;
 }
 
 /*
@@ -528,8 +538,8 @@ QeAssetModel *QeEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
                         memcpy(model->jointsAnimation[k].rotationOutput.data(), binData + offset, length);
                     }
                     // else if (strncmp(path, "scale", 5) == 0) {
-                    //	model->jointsAnimation[k].scaleOutput.resize(count);
-                    //	memcpy(model->jointsAnimation[k].scaleOutput.data(), binData +
+                    // model->jointsAnimation[k].scaleOutput.resize(count);
+                    // memcpy(model->jointsAnimation[k].scaleOutput.data(), binData +
                     // offset, length);
                     //}
                     break;

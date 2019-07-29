@@ -548,22 +548,22 @@ const char *QeAsset::getXMLValue(QeAssetXML *source, const char *keys[], int len
             if (strcmp(keys[index - 1], source->key.c_str()) == 0) return source->value.c_str();
             break;
         } else if (index == (length - 2)) {
-            int size = int(source->eKeys.size());
-            for (int index1 = 0; index1 < size; ++index1)
-                if (strcmp(keys[index], source->eKeys[index1].c_str()) == 0) {
-                    return source->eValues[index1].c_str();
+            for (const auto &node : source->elements) {
+                if (node.key.compare(keys[index]) == 0) {
+                    return node.value.c_str();
                 }
+            }
         }
 
-        int size = int(source->nexts.size());
-        int index1 = 0;
-        for (; index1 < size; ++index1) {
-            if (strcmp(keys[index], source->nexts[index1]->key.c_str()) == 0) {
-                source = source->nexts[index1];
+        bool b = true;
+        for (const auto &node : source->nexts) {
+            if (node->key.compare(keys[index]) == 0) {
+                source = node;
+                b = false;
                 break;
             }
         }
-        if (index1 == size) break;
+        if (b) return nullptr;
     }
     return nullptr;
 }
@@ -630,13 +630,10 @@ QeAssetXML *QeAsset::copyXMLNode(QeAssetXML *source) {
 
 void QeAsset::copyXMLValue(QeAssetXML *from, QeAssetXML *to) {
     if (from == nullptr || to == nullptr) return;
-
+    to->comments = from->comments;
     to->key = from->key;
     to->value = from->value;
-    to->eKeys.clear();
-    to->eKeys = from->eKeys;
-    to->eValues.clear();
-    to->eValues = from->eValues;
+    to->elements = from->elements;
 }
 
 void QeAsset::copyXMLNode(QeAssetXML *from, QeAssetXML *to) {
@@ -644,11 +641,8 @@ void QeAsset::copyXMLNode(QeAssetXML *from, QeAssetXML *to) {
 
     copyXMLValue(from, to);
 
-    // to->~QeAssetXML();
-    std::vector<QeAssetXML *>::iterator it = to->nexts.begin();
-    while (it != to->nexts.end()) {
-        if ((*it) != nullptr) delete (*it);
-        ++it;
+    for (const auto &node : to->nexts) {
+        if (node) delete node;
     }
     to->nexts.clear();
 
@@ -660,20 +654,17 @@ void QeAsset::copyXMLNode(QeAssetXML *from, QeAssetXML *to) {
 }
 
 void QeAsset::addXMLNode(QeAssetXML *source, QeAssetXML *node) { source->nexts.push_back(node); }
-
 void QeAsset::setXMLKey(QeAssetXML *source, const char *key) { source->key = key; }
-
 void QeAsset::setXMLValue(QeAssetXML *source, const char *value) { source->value = value; }
-
 void QeAsset::setXMLValue(QeAssetXML *source, const char *key, const char *value) {
-    for (int i = 0; i < source->eKeys.size(); ++i) {
-        if (source->eKeys[i].compare(key) == 0) {
-            source->eValues[i] = value;
+    for (auto &node : source->elements) {
+        if (node.key.compare(key) == 0) {
+            node.value = value;
             return;
         }
     }
-    source->eKeys.push_back(key);
-    source->eValues.push_back(value);
+    QeNode node = {key, value};
+    source->elements.push_back(node);
 }
 
 void QeAsset::removeXMLNode(QeAssetXML *source, QeAssetXML *node) {
@@ -696,36 +687,53 @@ void QeAsset::outputXML(QeAssetXML *source, const char *path, int level, std::st
     if (!content) {
         content = &s;
     }
-
+    std::string space = "";
     for (int i = 0; i < level; ++i) {
-        *content += "\t";
+        space += "    ";
+    }
+    if (source->version.length()) {
+        *content += "<?";
+        *content += source->version;
+        *content += "?>\n";
+    }
+    for (const auto &s : source->comments) {
+        *content += space;
+        *content += "<!--";
+        *content += s;
+        *content += "-->\n";
     }
 
+    *content += space;
     *content += "<";
     *content += source->key;
-
-    for (int i = 0; i < source->eKeys.size(); ++i) {
+    for (const auto &node : source->elements) {
         *content += " ";
-        *content += source->eKeys[i];
+        *content += node.key;
         *content += "=\"";
-        *content += source->eValues[i];
+        *content += node.value;
         *content += "\"";
     }
+    if (!source->nexts.size()) {
+        if (source->value.length()) {
+            *content += ">";
+            *content += source->value;
+            *content += "</";
+            *content += source->key;
+            *content += ">\n";
+        } else {
+            *content += " />\n";
+        }
+    } else {
+        *content += ">\n";
+        for (const auto &node : source->nexts) {
+            outputXML(node, nullptr, level + 1, content);
+        }
 
-    *content += ">\n";
-
-    for (int i = 0; i < source->nexts.size(); ++i) {
-        outputXML(source->nexts[i], nullptr, level + 1, content);
+        *content += space;
+        *content += "</";
+        *content += source->key;
+        *content += ">\n";
     }
-
-    for (int i = 0; i < level; ++i) {
-        *content += "\t";
-    }
-
-    *content += "</";
-    *content += source->key;
-    *content += ">\n";
-
     if (path) {
         std::ofstream ofile;
         ofile.open(path);

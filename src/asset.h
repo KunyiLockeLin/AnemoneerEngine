@@ -126,11 +126,17 @@ struct QeAssetParticleRule {
     QeVector3f color_range;
 };
 
-struct QeAssetXML {
+struct QeNode {
     std::string key;
     std::string value;
-    std::vector<std::string> eKeys;
-    std::vector<std::string> eValues;
+};
+
+struct QeAssetXML {
+    std::string version;
+    std::vector<std::string> comments;
+    std::string key;
+    std::string value;
+    std::vector<QeNode> elements;
     std::vector<QeAssetXML *> nexts;
     QeAssetXML *parent = nullptr;
 

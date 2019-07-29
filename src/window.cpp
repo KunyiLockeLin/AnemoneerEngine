@@ -286,43 +286,22 @@ void QeWindow::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
 void QeWindow::adjustComponetData(QeAssetXML *node) {
     int _type = 0;
     AST->getXMLiValue(&_type, node, 1, "type");
-    if (_type != 0) {
+    if (_type) {
         QeAssetXML *source = AST->getXMLEditNode((QeComponentType)_type, 0);
-
         if (source->parent != node) {
-            for (int i = 0; i < node->eKeys.size(); ++i) {
-                bool b = false;
-                for (int j = 0; j < source->eKeys.size(); ++j) {
-                    if (node->eKeys[i].compare(source->eKeys[j]) == 0) {
-                        b = true;
-                        break;
+            auto elements = source->elements;
+            for (auto &e : elements) {
+                for (auto &e1 : node->elements) {
+                    if (e.key.compare(e1.key) == 0) {
+                        e.value = e1.value;
                     }
                 }
-                if (!b) {
-                    node->eKeys.erase(node->eKeys.begin() + i);
-                    node->eValues.erase(node->eValues.begin() + i);
-                    --i;
-                }
             }
-
-            for (int i = 0; i < source->eKeys.size(); ++i) {
-                bool b = false;
-                for (int j = 0; j < node->eKeys.size(); ++j) {
-                    if (node->eKeys[j].compare(source->eKeys[i]) == 0) {
-                        b = true;
-                        break;
-                    }
-                }
-                if (!b) {
-                    node->eKeys.insert(node->eKeys.begin() + i, source->eKeys[i]);
-                    node->eValues.insert(node->eValues.begin() + i, source->eValues[i]);
-                }
-            }
+            node->elements = elements;
         }
     }
-
-    for (int i = 0; i < node->nexts.size(); ++i) {
-        adjustComponetData(node->nexts[i]);
+    for (const auto &n : node->nexts) {
+        adjustComponetData(n);
     }
 }
 
@@ -364,7 +343,7 @@ void QeWindow::resize(HWND &window) {
     } else if (window == editPanel) {
         x += 200;
         y -= 10;
-    } else if ( window == logPanel) {
+    } else if (window == logPanel) {
         x -= 100;
         y -= 40;
     }
@@ -432,8 +411,7 @@ void QeWindow::openEditPanel() {
 
     RegisterClassEx(&wndClass);
 
-    editPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL,
-                                NULL, windowInstance, NULL);
+    editPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
 
     resize(editPanel);
     ShowWindow(editPanel, SW_SHOW);
@@ -529,8 +507,7 @@ void QeWindow::openLogPanel() {
 
     RegisterClassEx(&wndClass);
 
-    logPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL,
-                                NULL, windowInstance, NULL);
+    logPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
 
     resize(logPanel);
     ShowWindow(logPanel, SW_SHOW);
@@ -543,8 +520,8 @@ void QeWindow::openLogPanel() {
     HFONT hFont = CreateFont(24, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                              DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 
-    listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, width, height, logPanel,
-                              NULL, windowInstance, NULL);
+    listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, width, height, logPanel, NULL,
+                              windowInstance, NULL);
     SendMessage(listBoxLog, WM_SETFONT, WPARAM(hFont), TRUE);
 }
 
@@ -600,11 +577,13 @@ void QeWindow::updateListView() {
     ListView_InsertItem(listViewDetail, &lvi);
     std::wstring ws;
 
-    for (int i = 0; i < currentTreeViewNode->eKeys.size(); ++i) {
+    uint32_t i = 0;
+    for (const auto &node : currentTreeViewNode->elements) {
         lvi.iItem = i + 1;
-        ws = chartowchar(currentTreeViewNode->eKeys[i]);
+        ws = chartowchar(node.key);
         lvi.pszText = const_cast<LPWSTR>(ws.c_str());
         ListView_InsertItem(listViewDetail, &lvi);
+        ++i;
     }
 
     lvi.iItem = 0;
@@ -613,11 +592,13 @@ void QeWindow::updateListView() {
     lvi.pszText = const_cast<LPWSTR>(ws.c_str());
     ListView_SetItem(listViewDetail, &lvi);
 
-    for (int i = 0; i < currentTreeViewNode->eKeys.size(); ++i) {
+    i = 0;
+    for (const auto &node : currentTreeViewNode->elements) {
         lvi.iItem = i + 1;
-        ws = chartowchar(currentTreeViewNode->eValues[i]);
+        ws = chartowchar(node.value);
         lvi.pszText = const_cast<LPWSTR>(ws.c_str());
         ListView_SetItem(listViewDetail, &lvi);
+        ++i;
     }
 }
 
@@ -737,7 +718,7 @@ void QeWindow::update1() {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    //consoleInput();
+    // consoleInput();
 }
 
 void QeWindow::update2() {}
@@ -771,29 +752,29 @@ void QeWindow::update2() {}
             break;
     }*/
 
-    // hout = GetStdHandle(STD_OUTPUT_HANDLE);
-    // initializeConsole(hout);
-    /*HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
-    INPUT_RECORD input_record;
-    DWORD input_size = 1;
-    DWORD events = 0;
-    PeekConsoleInput(input_handle, &input_record, input_size, &events);
-    if (events <= 0) return;
+// hout = GetStdHandle(STD_OUTPUT_HANDLE);
+// initializeConsole(hout);
+/*HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
+INPUT_RECORD input_record;
+DWORD input_size = 1;
+DWORD events = 0;
+PeekConsoleInput(input_handle, &input_record, input_size, &events);
+if (events <= 0) return;
 
-    ReadConsoleInput(input_handle, &input_record, input_size, &events);
-    if (input_record.EventType != KEY_EVENT ||
-    !input_record.Event.KeyEvent.bKeyDown) return;
+ReadConsoleInput(input_handle, &input_record, input_size, &events);
+if (input_record.EventType != KEY_EVENT ||
+!input_record.Event.KeyEvent.bKeyDown) return;
 
-    switch (input_record.Event.KeyEvent.wVirtualKeyCode) {
-    case VK_ESCAPE:
-            QE->bClosed = true;
-            break;
-    case VK_RETURN:
-            std::string str;
-            //std::getline(std::cin, str);
-            if(str.length()>0)	CMD(str);
-            break;
-    }*/
+switch (input_record.Event.KeyEvent.wVirtualKeyCode) {
+case VK_ESCAPE:
+        QE->bClosed = true;
+        break;
+case VK_RETURN:
+        std::string str;
+        //std::getline(std::cin, str);
+        if(str.length()>0)	CMD(str);
+        break;
+}*/
 //}
 
 std::wstring QeWindow::chartowchar(std::string s) {

@@ -107,12 +107,20 @@ void QeVulkan::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportC
 }
 
 void QeVulkan::createInstance() {
-    if (DEBUG->isDebug() && !checkValidationLayerSupport()) LOG("validation layers requested, but not available!");
+    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "Vulkan_Validation_Layers");
+    validationLayers.clear();
+    for (const auto &it : node->elements) {
+        if (!it.value.compare("1")) {
+            validationLayers.emplace_back(it.key.c_str());
+        }
+    }
+
+    if (!checkValidationLayerSupport()) LOG("validation layers requested, but not available!");
 
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
-    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "application");
+    node = AST->getXMLNode(3, AST->CONFIG, "setting", "application");
     appInfo.pApplicationName = AST->getXMLValue(node, 1, "applicationName");
 
     std::vector<std::string> vs = ENCODE->split(AST->getXMLValue(node, 1, "applicationVersion"), ".");
@@ -130,26 +138,18 @@ void QeVulkan::createInstance() {
     createInfo.pNext = nullptr;
     createInfo.flags = 0;
     createInfo.pApplicationInfo = &appInfo;
-    createInfo.enabledLayerCount = 0;
-    createInfo.ppEnabledLayerNames = nullptr;
-    // createInfo.enabledExtensionCount = 0;
-    // createInfo.ppEnabledExtensionNames = 0;
 
     auto extensions = getRequiredExtensions();
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
-
-    if (DEBUG->isDebug()) {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
-    } else
-        createInfo.enabledLayerCount = 0;
+    createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+    createInfo.ppEnabledLayerNames = validationLayers.data();
 
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) LOG("failed to create instance!");
 }
 
 void QeVulkan::setupDebugCallback() {
-    if (!DEBUG->isDebug()) return;
+    if (!validationLayers.size()) return;
 
     VkDebugReportCallbackCreateInfoEXT createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
@@ -961,7 +961,7 @@ QueueFamilyIndices QeVulkan::findQueueFamilies(VkPhysicalDevice &device, VkSurfa
 std::vector<const char *> QeVulkan::getRequiredExtensions() {
     std::vector<const char *> extensions = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME};
 
-    if (DEBUG->isDebug()) {
+    if (validationLayers.size()) {
         extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     }
 
