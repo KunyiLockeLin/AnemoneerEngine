@@ -76,3 +76,7 @@
 - http://www.kevs3d.co.uk/dev/lsystems/
 - https://youtu.be/PxopE6Lwz3g
 - https://www.stephenmerendino.com/
+- https://en.wikipedia.org/wiki/S3_Texture_Compression
+- https://en.wikipedia.org/wiki/Ericsson_Texture_Compression
+- https://en.wikipedia.org/wiki/Adaptive_Scalable_Texture_Compression
+- https://developer.nvidia.com/astc-texture-compression-for-game-assets
