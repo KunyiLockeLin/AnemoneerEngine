@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--test test test 0000-->
 <confing>
-    <!--test test test-->
+    <!--test test test 1111-->
     <scenes type="2000">
+      <!--test test test 2222-->
+      <!--eid: test 2000-->
+      <!--type: test 20001-->
         <default eid="0" type="2000">
+            <!--test test test 33333-->
             <MainCamera oid="100" eid="100" type="1000">
                 <components>
+                    <!--test test test 4444-->
                     <Transform oid="100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
+                    <!--test test test 5555-->
                     <Axis oid="100" eid="1" type="13" />
                 </components>
                 <children>
@@ -1143,8 +1150,8 @@
         </compute>
     </shaders>
     <setting>
-        <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.97" />
-        <environment debug="3" FPS="30" width="1280" height="720" editWidth="1024" editHeight="768" />
+        <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.104" />
+        <environment debug="3" FPS="30" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
         <path log="data\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\" />
         <render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5" />
         <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />

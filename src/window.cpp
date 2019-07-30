@@ -126,9 +126,8 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
                                     AST->copyXMLNode(node, currentTreeViewNode);
                                     // updateTab();
                                     setTreeViewText(hSelectedItem, currentTreeViewNode);
-
-                                    for (int i = 0; i < currentTreeViewNode->nexts.size(); ++i) {
-                                        addToTreeView(currentTreeViewNode->nexts[i], hSelectedItem);
+                                    for (const auto n : currentTreeViewNode->nexts) {
+                                        addToTreeView(n, hSelectedItem);
                                     }
                                     updateListView();
                                 }
@@ -278,8 +277,6 @@ void QeWindow::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
     item.mask = TVIF_TEXT;
     item.cchTextMax = 512;
     item.pszText = const_cast<LPWSTR>(ws.c_str());
-    ;
-
     TreeView_SetItem(treeViewLists[currentTabIndex], &item);
 }
 
@@ -322,31 +319,33 @@ void QeWindow::resize(HWND &window) {
     RECT windowRect;
     windowRect.left = 0;
     windowRect.top = 0;
-
+    int offsetX = 0;
+    int offsetY = 0;
+    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "environment");
+    std::string type = "";
     if (window == mainWindow) {
-        windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "width"));
-        windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "height"));
-    } else if (window == editPanel || window == logPanel) {
-        windowRect.right = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editWidth"));
-        windowRect.bottom = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editHeight"));
+        windowRect.right = std::stoi(AST->getXMLValue(node, 1, "mainWidth"));
+        windowRect.bottom = std::stoi(AST->getXMLValue(node, 1, "mainHeight"));
+        offsetX = std::stoi(AST->getXMLValue(node, 1, "mainOffsetX"));
+        offsetY = std::stoi(AST->getXMLValue(node, 1, "mainOffsetY"));
+    } else if (window == editPanel) {
+        windowRect.right = std::stoi(AST->getXMLValue(node, 1, "editWidth"));
+        windowRect.bottom = std::stoi(AST->getXMLValue(node, 1, "editHeight"));
+        offsetX = std::stoi(AST->getXMLValue(node, 1, "editOffsetX"));
+        offsetY = std::stoi(AST->getXMLValue(node, 1, "editOffsetY"));
+    } else if (window == logPanel) {
+        windowRect.right = std::stoi(AST->getXMLValue(node, 1, "logWidth"));
+        windowRect.bottom = std::stoi(AST->getXMLValue(node, 1, "logHeight"));
+        offsetX = std::stoi(AST->getXMLValue(node, 1, "logOffsetX"));
+        offsetY = std::stoi(AST->getXMLValue(node, 1, "logOffsetY"));
     }
 
     DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
     DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
 
-    int x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right + windowRect.left) / 2;
-    int y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom + windowRect.top) / 2;
-    if (window == mainWindow) {
-        x -= 50;
-        y += 20;
-    } else if (window == editPanel) {
-        x += 200;
-        y -= 10;
-    } else if (window == logPanel) {
-        x -= 100;
-        y -= 40;
-    }
+    int x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right + windowRect.left) / 2 + offsetX;
+    int y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom + windowRect.top) / 2 + offsetY;
     windowRect.right += (x - windowRect.left);
     windowRect.bottom += (y - windowRect.top);
     windowRect.left = x;
@@ -393,9 +392,8 @@ void QeWindow::openMainWindow() {
 }
 
 void QeWindow::openEditPanel() {
-    WNDCLASSEX wndClass;
     std::wstring title = L"Edit Panel";
-
+    WNDCLASSEX wndClass;
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;
@@ -408,11 +406,9 @@ void QeWindow::openEditPanel() {
     wndClass.lpszMenuName = NULL;
     wndClass.lpszClassName = title.c_str();
     wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
-
     RegisterClassEx(&wndClass);
 
     editPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
-
     resize(editPanel);
     ShowWindow(editPanel, SW_SHOW);
     SetWindowText(editPanel, title.c_str());
@@ -420,26 +416,26 @@ void QeWindow::openEditPanel() {
     int width;
     int height;
     getWindowSize(editPanel, width, height);
-
-    HFONT hFont = CreateFont(24, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-                             DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
+    int fontSize = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "editFontSize"));
+    HFONT hFont = CreateFont(fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+                             CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 
     tabControlCategory = CreateWindow(WC_TABCONTROL, L"", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, 0, 0, width + 10, height + 10,
                                       editPanel, NULL, windowInstance, NULL);
-
     QeAssetXML *node = AST->getXMLNode(1, AST->CONFIG);
 
     TCITEM tie;
     tie.mask = TCIF_TEXT;
-
-    for (int i = 0; i < node->nexts.size(); ++i) {
-        std::wstring ws = chartowchar(node->nexts[i]->key);
+    treeViewLists.clear();
+    int i = 0;
+    for (const auto &it : node->nexts) {
+        std::wstring ws = chartowchar(it->key);
         tie.pszText = const_cast<LPWSTR>(ws.c_str());
         TabCtrl_InsertItem(tabControlCategory, i, &tie);
-
-        treeViewLists[i] = CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 25, width / 2 - 200,
-                                        height - 30, editPanel, NULL, windowInstance, NULL);
+        treeViewLists.emplace_back(CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 25,
+                                                width / 2 - 200, height - 30, editPanel, NULL, windowInstance, NULL));
         SendMessage(treeViewLists[i], WM_SETFONT, WPARAM(hFont), TRUE);
+        ++i;
     }
     currentTabIndex = 0;
 
@@ -489,9 +485,9 @@ void QeWindow::openEditPanel() {
 }
 
 void QeWindow::openLogPanel() {
-    WNDCLASSEX wndClass;
     std::wstring title = L"Log Panel";
 
+    WNDCLASSEX wndClass;
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_HREDRAW | CS_VREDRAW;
     wndClass.lpfnWndProc = WndProc;
@@ -507,7 +503,7 @@ void QeWindow::openLogPanel() {
 
     RegisterClassEx(&wndClass);
 
-    logPanel = CreateWindowEx(0, title.c_str(), 0, WS_CAPTION, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
+    logPanel = CreateWindow(WC_LISTBOX, title.c_str(), WS_CAPTION, 0, 0, 0, 0, NULL, NULL, windowInstance, NULL);
 
     resize(logPanel);
     ShowWindow(logPanel, SW_SHOW);
@@ -516,23 +512,39 @@ void QeWindow::openLogPanel() {
     int width;
     int height;
     getWindowSize(logPanel, width, height);
+    int fontSize = std::stoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "logFontSize"));
+    HFONT hFont = CreateFont(fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+                             CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 
-    HFONT hFont = CreateFont(24, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-                             DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
-
-    listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, width, height, logPanel, NULL,
-                              windowInstance, NULL);
+    listBoxLog = CreateWindow(WC_LISTBOX, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, width, height + 6, logPanel,
+                              NULL, windowInstance, NULL);
     SendMessage(listBoxLog, WM_SETFONT, WPARAM(hFont), TRUE);
+    logHDC = GetDC(listBoxLog);
+    SelectObject(logHDC, hFont);
+    logMaxWidth = 0;
 }
 
 void QeWindow::Log(std::string _log) {
     if (!DEBUG->isLogPanel()) return;
-    std::vector<std::string> vs = ENCODE->split(_log.c_str(), "\n");
+    std::wstring ws = chartowchar(_log);
+    SendMessage(listBoxLog, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
+    SIZE textWidth;
+    GetTextExtentPoint32(logHDC, ws.c_str(), int(ws.length()), &textWidth);
+    if (textWidth.cx > logMaxWidth) {
+        logMaxWidth = textWidth.cx;
+        SendMessage(listBoxLog, LB_SETHORIZONTALEXTENT, logMaxWidth + 30, 0);
+    }
+    /*std::vector<std::string> vs = ENCODE->split(_log.c_str(), "\n");
 
     for (int i = 0; i < vs.size(); ++i) {
+        LPSTR s = const_cast<char *>(vs[i].c_str());
         std::wstring ws = chartowchar(vs[i]);
         SendMessage(listBoxLog, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
+        SIZE textWidth;
+        GetTextExtentPoint32A(GetDC(listBoxLog), s, int(vs[i].length()), &textWidth);
+        if (textWidth.cx > logMaxWidth) logMaxWidth = textWidth.cx;
     }
+    SendMessage(listBoxLog, LB_SETHORIZONTALEXTENT, logMaxWidth, 0);*/
 }
 
 void QeWindow::updateListViewItem() {
@@ -605,14 +617,14 @@ void QeWindow::updateListView() {
 void QeWindow::setAllTreeView() {
     QeAssetXML *node = AST->getXMLNode(1, AST->CONFIG);
     bAddTreeView = true;
-    for (int i = 0; i < node->nexts.size(); ++i) {
+    int i = 0;
+    for (const auto &it : node->nexts) {
         currentTabIndex = i;
         TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
-        QeAssetXML *node2 = node->nexts[currentTabIndex];
-
-        for (int j = 0; j < node2->nexts.size(); ++j) {
-            addToTreeView(node2->nexts[j], TVI_FIRST);
+        for (const auto &it1 : it->nexts) {
+            addToTreeView(it1, TVI_FIRST);
         }
+        ++i;
     }
     bAddTreeView = false;
 
@@ -629,8 +641,8 @@ void QeWindow::updateTab() {
     QeAssetXML *node = AST->getXMLNode(1, AST->CONFIG);
     // TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
     ListView_DeleteAllItems(listViewDetail);
-    for (int i = 0; i < node->nexts.size(); ++i) {
-        ShowWindow(treeViewLists[i], SW_HIDE);
+    for (const auto &view : treeViewLists) {
+        ShowWindow(view, SW_HIDE);
     }
     ShowWindow(treeViewLists[currentTabIndex], SW_SHOW);
     updateListView();
@@ -662,9 +674,8 @@ void QeWindow::addToTreeView(QeAssetXML *node, HTREEITEM parent) {
         tvins.hParent = parent;
 
     HTREEITEM item = TreeView_InsertItem(treeViewLists[currentTabIndex], &tvins);
-
-    for (int i = 0; i < node->nexts.size(); ++i) {
-        addToTreeView(node->nexts[i], item);
+    for (const auto &it : node->nexts) {
+        addToTreeView(it, item);
     }
 }
 

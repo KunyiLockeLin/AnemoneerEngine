@@ -16,8 +16,11 @@ class QeWindow {
 
     HINSTANCE windowInstance;
     HWND mainWindow, commandBox;
-    HWND editPanel, tabControlCategory, treeViewLists[10], listViewDetail, currentEditListView;
+    HWND editPanel, tabControlCategory, listViewDetail, currentEditListView;
+    std::vector<HWND> treeViewLists;
     HWND logPanel, listBoxLog;
+    HDC logHDC;
+    LONG logMaxWidth;
     WNDPROC DefEditProc;
     HWND btnPause, btnUpdateAll, btnLoadAll, btnSaveAll, btnLoadScene, btnSaveEID, btnLoadEID, btnCameraFocus, btnCameraControl,
         btnNewItem, btnDeleteItem;
@@ -56,6 +59,6 @@ class QeWindow {
     void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     void sendCommand();
     void closeCommand();
-    //void consoleInput();
+    // void consoleInput();
     // bool isWindow();
 };
