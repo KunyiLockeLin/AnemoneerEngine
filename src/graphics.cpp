@@ -761,7 +761,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
             size_t size2 = clearValues.size();
             for (size_t k = 1; k < size2; ++k) {
-                clearValues[k].color = {clearColor.x, clearColor.y, clearColor.z, 0.0f};
+                clearValues[k].color = {clearColor.x, clearColor.y, clearColor.z, 1.0f};
             }
         }
         renderPassInfo.renderPass = render->renderPass;
