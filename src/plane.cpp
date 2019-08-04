@@ -57,10 +57,11 @@ QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {
             descriptorSetData.modelBuffer = modelBuffer.buffer;
             QeDataRender *render = GRAP->getRender(eRender_color, targetCameraOID);
 
-            if (render->subpass.size() > 0)
-                descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            else
-                descriptorSet.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+            //if (render->subpass.size() > 0)
+            //    descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            //else
+            //    descriptorSet.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+            descriptorSet.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             bufferData.param1 = {0, 0, 0, 0};
             descriptorSetData.normalMapImageView = VK->emptyImage2D.view;
             descriptorSetData.normalMapSampler = VK->emptyImage2D.sampler;
