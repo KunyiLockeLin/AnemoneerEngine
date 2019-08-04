@@ -31,6 +31,7 @@
 #include <set>
 #include <map>
 #include <unordered_map>
+#include <direct.h>
 
 #define VK_USE_PLATFORM_WIN32_KHR
 #include <vulkan/vulkan.hpp>

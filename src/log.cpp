@@ -77,6 +77,7 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
             strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
             std::string outputPath = AST->getXMLValue(4, AST->CONFIG, "setting", "path", "log");
+            _mkdir(outputPath.c_str());
             outputPath += "log";
             outputPath += buffer;
             outputPath += ".txt";

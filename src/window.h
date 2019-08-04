@@ -2,6 +2,12 @@
 
 #include "header.h"
 
+class AeUIEditControl {};
+class AeUIGridProperty {};
+class AeUIWindow {};
+class AeUIListBox {};
+class AeUITreeView {};
+
 struct QeInputData {
     int inputType;
     int inputKey;

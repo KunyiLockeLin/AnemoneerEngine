@@ -6,4 +6,4 @@
 *.ilk
 build*
 data/shaders/spv*
-data/*.txt
+data/log/*
