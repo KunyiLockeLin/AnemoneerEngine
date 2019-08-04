@@ -864,7 +864,7 @@
         <path log="data\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\" />
         <render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5" />
         <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />
-        <startScene eid="0" />
+        <startScene eid="6" />
     </setting>
 </confing>
 

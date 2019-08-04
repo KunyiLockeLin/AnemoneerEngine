@@ -206,6 +206,7 @@ enum QeVKImageType {
     eImage_2D = 3,
     eImage_cube = 4,
     eImage_render = 5,
+    eImage_storage = 6,
 };
 
 enum QeDescriptorSetLayoutType {

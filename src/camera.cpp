@@ -87,6 +87,8 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
     }
 }
 
+bool QeCamera::isRaytracing() { return bufferData.pos_rayTracingDepth.w > 0 ? true : false; }
+
 QeVector3f QeCamera::face() {
     if (renderType == eRender_ui) return {0, 0, 1};
     return MATH->normalize(lookAt() - owner->transform->worldPosition());

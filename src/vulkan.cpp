@@ -658,21 +658,25 @@ VkFormat QeVulkan::findDepthStencilFormat() {
 VK_FORMAT_D24_UNORM_S8_UINT || format == VK_FORMAT_D16_UNORM_S8_UINT;
 }*/
 
-void QeVulkan::transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, int imageCount,
+void QeVulkan::transitionImageLayout(VkCommandBuffer cmdBuf, QeVKImage &image, VkImageLayout newLayout, int imageCount,
                                      uint32_t mipLevels) {
-    VkCommandBuffer commandBuffer = beginSingleTimeCommands();
-
+    if (image.layout == newLayout) return;
+    VkCommandBuffer commandBuffer;
+    if (cmdBuf!= VK_NULL_HANDLE) {
+        commandBuffer = cmdBuf;
+    } else {
+        commandBuffer = beginSingleTimeCommands();
+    }
     VkImageMemoryBarrier barrier = {};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrier.oldLayout = oldLayout;
+    barrier.oldLayout = image.layout;
     barrier.newLayout = newLayout;
     barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    barrier.image = image;
+    barrier.image = image.image;
 
     if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
         barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-
         // if (hasStencilComponent(format))	barrier.subresourceRange.aspectMask |=
         // VK_IMAGE_ASPECT_STENCIL_BIT;
     } else
@@ -685,33 +689,55 @@ void QeVulkan::transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkI
     VkPipelineStageFlags sourceStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
     VkPipelineStageFlags destinationStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 
-    if (oldLayout == VK_IMAGE_LAYOUT_PREINITIALIZED) {
-        barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
-        sourceStage = VK_PIPELINE_STAGE_HOST_BIT;
-    } else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED) {
-        barrier.srcAccessMask = 0;
-        sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    } else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-    } else
-        LOG("unsupported layout transition!");
-
-    if (newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-        barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-    } else if (newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-        destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-    } else if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
-        barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-        destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-    } else
-        LOG("unsupported layout transition!");
-
+    switch (image.layout) {
+        case VK_IMAGE_LAYOUT_PREINITIALIZED:
+            barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+            sourceStage = VK_PIPELINE_STAGE_HOST_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_UNDEFINED:
+            barrier.srcAccessMask = 0;
+            sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+            barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+            barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_GENERAL:
+            barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            sourceStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+            break;
+        default:
+            LOG("unsupported src layout transition!");
+            break;
+    }
+    switch (newLayout) {
+        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+            barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+            destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+            barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+            break;
+        case VK_IMAGE_LAYOUT_GENERAL:
+            barrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            sourceStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+            break;
+        default:
+            LOG("unsupported dst layout transition!");
+            break;
+    }
     vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
-
-    endSingleTimeCommands(commandBuffer);
+    image.layout = newLayout;
+    if (cmdBuf== VK_NULL_HANDLE) endSingleTimeCommands(commandBuffer);
 }
 
 void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, VkDeviceSize dataSize, int imageCount, VkExtent2D &imageSize) {
@@ -1786,6 +1812,16 @@ void QeVulkan::createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCou
                     VK_IMAGE_USAGE_STORAGE_BIT;
             bSampler = true;
             layout_dst = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            //layout_dst = VK_IMAGE_LAYOUT_GENERAL;
+            bLayout = true;
+            break;
+
+        case eImage_storage:
+            usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+                    VK_IMAGE_USAGE_STORAGE_BIT;
+            bSampler = true;
+            //layout_dst = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            layout_dst = VK_IMAGE_LAYOUT_GENERAL;
             bLayout = true;
             break;
 
@@ -1825,26 +1861,26 @@ void QeVulkan::createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCou
         imageInfo.arrayLayers = arrayLayers;
         imageInfo.format = format;
         imageInfo.tiling = tiling;
-        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;  // VK_IMAGE_LAYOUT_PREINITIALIZED;
+        imageInfo.initialLayout = layout_src;  // VK_IMAGE_LAYOUT_PREINITIALIZED;
         imageInfo.usage = usage;
         imageInfo.samples = sampleCount;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         if (vkCreateImage(device, &imageInfo, nullptr, &image.image) != VK_SUCCESS) LOG("failed to create image!");
     }
-
+    image.layout = layout_src;
     // memory
     if (bMemory) {
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(device, image.image, &memRequirements);
+        if (image.memory == VK_NULL_HANDLE) {
+            VkMemoryAllocateInfo allocInfo = {};
+            allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            allocInfo.allocationSize = memRequirements.size;
+            allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-        VkMemoryAllocateInfo allocInfo = {};
-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
-
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &image.memory) != VK_SUCCESS) LOG("failed to allocate image memory!");
-
+            if (vkAllocateMemory(device, &allocInfo, nullptr, &image.memory) != VK_SUCCESS) LOG("failed to allocate image memory!");
+        }
         vkBindImageMemory(device, image.image, image.memory, 0);
     }
 
@@ -1895,7 +1931,7 @@ void QeVulkan::createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCou
     }
 
     if (data) {
-        transitionImageLayout(image.image, layout_src, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, imageCount /*, mipLevels*/);
+        transitionImageLayout(VK_NULL_HANDLE, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, imageCount /*, mipLevels*/);
         if (dataSize == 0) dataSize = imageSize.width * imageSize.height * 4;
 
         // uint32_t mipLevels = 1;
@@ -1907,6 +1943,6 @@ void QeVulkan::createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCou
         copyBufferToImage(staging.buffer, image.image, dataSize, imageCount, imageSize /*, layer*/);
         layout_src = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     }
-    if (bLayout)    transitionImageLayout(image.image, layout_src, layout_dst, imageCount /*, mipLevels*/);
+    if (bLayout) transitionImageLayout(VK_NULL_HANDLE, image, layout_dst, imageCount /*, mipLevels*/);
     // generateMipmaps(image, width, height, mipLevels);
 }

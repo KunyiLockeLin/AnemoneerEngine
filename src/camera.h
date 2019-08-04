@@ -40,6 +40,7 @@ class QeCamera : public QeComponent {
     void setMousePos(QeVector2i mousePos);
     void zoomInOut(QeVector2i mousePos);
     void move(QeVector3f _dir, bool bMoveCenter = true);
+    bool isRaytracing();
     QeVector3f face();
     QeVector3f lookAt();
 };

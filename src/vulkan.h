@@ -17,7 +17,7 @@ struct SwapChainSupportDetails {
 };
 
 struct QeVKBuffer {
-    const QeVKBufferType type;
+    QeVKBufferType type;
     VkBuffer buffer = VK_NULL_HANDLE;
     VkDeviceMemory memory = VK_NULL_HANDLE;
     VkBufferView view = VK_NULL_HANDLE;
@@ -28,7 +28,8 @@ struct QeVKBuffer {
 };
 
 struct QeVKImage {
-    const QeVKImageType type;
+    QeVKImageType type;
+    VkImageLayout layout;
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory memory = VK_NULL_HANDLE;
     VkImageView view = VK_NULL_HANDLE;
@@ -248,8 +249,7 @@ class QeVulkan {
     void setMemoryBuffer(QeVKBuffer &buffer, VkDeviceSize size, void *data);
     void createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCount, VkExtent2D &imageSize, VkFormat format, void *data,
                      VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT);
-    void transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, int imageCount,
+    void transitionImageLayout(VkCommandBuffer cmdBuf, QeVKImage &image, VkImageLayout newLayout, int imageCount,
                                uint32_t mipLevels = 1);
-    void copyBufferToImage(VkBuffer buffer, VkImage image, VkDeviceSize dataSize, int imageCount,
-                           VkExtent2D &imageSize);
+    void copyBufferToImage(VkBuffer buffer, VkImage image, VkDeviceSize dataSize, int imageCount, VkExtent2D &imageSize);
 };
