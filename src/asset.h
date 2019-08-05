@@ -141,6 +141,21 @@ struct QeAssetXML {
     QeAssetXML *parent = nullptr;
 
     ~QeAssetXML();
+
+    const char *getXMLValue(int length, ...);
+    QeAssetXML *getXMLNode(int length, ...);
+    QeAssetXML *copyXMLNode();
+    void copyXMLValue(QeAssetXML *to);
+    void copyXMLNode(QeAssetXML *to);
+    void addXMLNode(QeAssetXML *node);
+    void setXMLKey(const char *key);
+    void setXMLValue(const char *value);
+    void setXMLValue(const char *key, const char *value);
+    void removeXMLNode(QeAssetXML *node);
+    void outputXML(const char *path, int level = 0, std::string *content = nullptr);
+    bool getXMLbValue(bool *output, int length, ...);
+    bool getXMLiValue(int *output, int length, ...);
+    bool getXMLfValue(float *output, int length, ...);
 };
 
 struct QeAssetJSON {
@@ -208,8 +223,11 @@ class QeAsset {
 
     QeAssetXML *getXMLEditNode(QeComponentType _type, int eid);
     bool getXMLbValue(bool *output, QeAssetXML *source, int length, ...);
+    bool getXMLbValue(bool *output, QeAssetXML *source, const char *keys[], int length);
     bool getXMLiValue(int *output, QeAssetXML *source, int length, ...);
+    bool getXMLiValue(int *output, QeAssetXML *source, const char *keys[], int length);
     bool getXMLfValue(float *output, QeAssetXML *source, int length, ...);
+    bool getXMLfValue(float *output, QeAssetXML *source, const char *keys[], int length);
 
     QeAssetModel *getModel(const char *_filename, bool bCubeMap = false, float *param = nullptr);
     // QeAssetMaterial* getMaterial(const char* _filename);

@@ -11,6 +11,83 @@ QeAssetXML::~QeAssetXML() {
     nexts.clear();
 }
 
+const char *QeAssetXML::getXMLValue(int length, ...) {
+    va_list keys;
+    va_start(keys, length);
+
+    const char **keys1 = new const char *[length];
+    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+
+    const char *ret = AST->getXMLValue(this, keys1, length + 1);
+    va_end(keys);
+    delete[] keys1;
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLNode(int length, ...) {
+    va_list keys;
+    va_start(keys, length);
+
+    const char **keys1 = new const char *[length];
+    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+
+    QeAssetXML *ret = AST->getXMLNode(this, keys1, length + 1);
+    va_end(keys);
+    delete[] keys1;
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::copyXMLNode() { return AST->copyXMLNode(this); }
+void QeAssetXML::copyXMLValue(QeAssetXML *to) { AST->copyXMLValue(this, to); }
+void QeAssetXML::copyXMLNode(QeAssetXML *to) { AST->copyXMLNode(this, to); }
+void QeAssetXML::addXMLNode(QeAssetXML *node) { AST->addXMLNode(this, node); }
+void QeAssetXML::setXMLKey(const char *key) { AST->setXMLKey(this, key); }
+void QeAssetXML::setXMLValue(const char *value) { AST->setXMLValue(this, value); }
+void QeAssetXML::setXMLValue(const char *key, const char *value) { AST->setXMLValue(this, key, value); }
+void QeAssetXML::removeXMLNode(QeAssetXML *node) { AST->removeXMLNode(this, node); }
+void QeAssetXML::outputXML(const char *path, int level, std::string *content) { AST->outputXML(this, path, level, content); }
+bool QeAssetXML::getXMLbValue(bool *output, int length, ...) {
+    va_list keys;
+    va_start(keys, length);
+
+    const char **keys1 = new const char *[length];
+    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+
+    bool ret = AST->getXMLbValue(output, this, keys1, length + 1);
+    va_end(keys);
+    delete[] keys1;
+
+    return ret;
+}
+
+bool QeAssetXML::getXMLiValue(int *output, int length, ...) {
+    va_list keys;
+    va_start(keys, length);
+
+    const char **keys1 = new const char *[length];
+    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+
+    bool ret = AST->getXMLiValue(output, this, keys1, length + 1);
+    va_end(keys);
+    delete[] keys1;
+
+    return ret;
+}
+
+bool QeAssetXML::getXMLfValue(float *output, int length, ...) {
+    va_list keys;
+    va_start(keys, length);
+
+    const char **keys1 = new const char *[length];
+    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+
+    bool ret = AST->getXMLfValue(output, this, keys1, length + 1);
+    va_end(keys);
+    delete[] keys1;
+
+    return ret;
+}
+
 QeAssetJSON::~QeAssetJSON() {
     std::vector<QeAssetJSON *>::iterator it = eNodes.begin();
     while (it != eNodes.end()) {
@@ -793,12 +870,16 @@ bool QeAsset::getXMLbValue(bool *output, QeAssetXML *source, int length, ...) {
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getXMLValue(source, keys1, length + 1);
+    bool ret = getXMLbValue(output, source, keys1, length + 1);
     va_end(keys);
     delete[] keys1;
 
-    if (ret) *output = atoi(ret);
+    return ret;
+}
 
+bool QeAsset::getXMLbValue(bool *output, QeAssetXML *source, const char *keys[], int length) {
+    const char *ret = getXMLValue(source, keys, length);
+    if (ret) *output = atoi(ret);
     return ret;
 }
 
@@ -809,12 +890,16 @@ bool QeAsset::getXMLiValue(int *output, QeAssetXML *source, int length, ...) {
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getXMLValue(source, keys1, length + 1);
+    bool ret = getXMLiValue(output, source, keys1, length + 1);
     va_end(keys);
     delete[] keys1;
 
-    if (ret) *output = atoi(ret);
+    return ret;
+}
 
+bool QeAsset::getXMLiValue(int *output, QeAssetXML *source, const char *keys[], int length) {
+    const char *ret = getXMLValue(source, keys, length);
+    if (ret) *output = atoi(ret);
     return ret;
 }
 
@@ -825,12 +910,16 @@ bool QeAsset::getXMLfValue(float *output, QeAssetXML *source, int length, ...) {
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getXMLValue(source, keys1, length + 1);
+    bool ret = getXMLfValue(output, source, keys1, length + 1);
     va_end(keys);
     delete[] keys1;
 
-    if (ret) *output = float(atof(ret));
+    return ret;
+}
 
+bool QeAsset::getXMLfValue(float *output, QeAssetXML *source, const char *keys[], int length) {
+    const char *ret = getXMLValue(source, keys, length);
+    if (ret) *output = float(atof(ret));
     return ret;
 }
 
