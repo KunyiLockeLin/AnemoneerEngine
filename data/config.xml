@@ -38,13 +38,13 @@
                 </components>
                 <children />
             </grid>
-            <sphere oid="1100" eid="1100" type="1000">
+            <sphere2 oid="1100" eid="1100" type="1000">
                 <components>
                     <Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="3" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model oid="1100" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="" />
                 </components>
                 <children />
-            </sphere>
+            </sphere2>
             <light1 oid="400" eid="400" type="1000">
                 <components>
                     <Transform oid="400" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
@@ -114,20 +114,14 @@
                 </components>
                 <children />
             </cubemap>
-            <box oid="500" eid="500" type="1000">
+            <sphere2 oid="500" eid="500" type="1000">
                 <components>
                     <Transform oid="500" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
-                    <Model oid="500" eid="1" type="6" obj="box.gltf" outlineWidth="0" materialOID="1100" />
+                    <Model oid="500" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
                     <MaterialReflect oid="1100" eid="3" type="11" vert="" tesc="" tese="" geom="" frag="cubemapreflect.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
-            </box>
-            <postprocessing oid="1200" eid="1200" type="1000">
-                <components>
-                    <bloom oid="1201" eid="2" type="3" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param0="3" param1="0.01" param2="3" param3="0" />
-                </components>
-                <children />
-            </postprocessing>
+            </sphere2>
         </cubemap>
         <pbr eid="2" type="2000">
             <MainCamera oid="100" eid="100" type="1000">
@@ -561,7 +555,7 @@
                     <camera oid="101" eid="101" type="1000">
                         <components>
                             <Transform oid="101" eid="1" type="1" localPositionX="20" localPositionY="0" localPositionZ="1" localScaleX="1" localScaleY="1" localScaleZ="1" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                            <Camera oid="101" eid="1" type="2" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
                         </components>
                         <children />
                     </camera>
@@ -624,16 +618,17 @@
                 </components>
                 <children />
             </camera_2D>
-            <sphere oid="1100" eid="1100" type="1000">
+            <box oid="1100" eid="1100" type="1000">
                 <components>
-                    <Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.5" localScaleY="1.5" localScaleZ="1.5" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="3" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
-                    <Model oid="1100" eid="1" type="6" obj="sphere2.gltf" outlineWidth="0.3" materialOID="" />
+                    <Transform oid="1100" eid="1" type="1" localPositionX="0" localPositionY="0" localPositionZ="0" localScaleX="1.2" localScaleY="1.2" localScaleZ="1.2" localFaceEularX="0" localFaceEularY="0" localFaceEularZ="0" rotateSpeedX="3" rotateSpeedY="3" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
+                    <Model oid="1100" eid="1" type="6" obj="box.gltf" outlineWidth="0.3" materialOID="" />
                 </components>
                 <children />
-            </sphere>
+            </box>
             <postprocessing oid="1200" eid="1200" type="1000">
                 <components>
                     <grayscale oid="1200" eid="1" type="3" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param0="0" param1="0" param2="0" param3="0" />
+                    <bloom oid="1201" eid="2" type="3" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param0="3" param1="0.01" param2="3" param3="0" />
                 </components>
                 <children />
             </postprocessing>
@@ -864,7 +859,7 @@
         <path log="data\log\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\" />
         <render normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="2" clearColorR="0" clearColorG="0.5" clearColorB="0.5" />
         <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />
-        <startScene eid="0" />
+        <startScene eid="1" />
     </setting>
 </confing>
 
