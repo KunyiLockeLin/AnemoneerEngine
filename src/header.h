@@ -119,6 +119,7 @@ class QeTimer;
 class QeLine;
 class QeAxis;
 class QeGrid;
+class QeRenderSetting;
 
 enum QeActionType {
     eActionTypeOnce = 0,
@@ -166,6 +167,7 @@ enum QeComponentType {
     eComponent_inputControl = 12,
     eComponent_axis = 13,
     eComponent_grid = 14,
+    eComponent_rendersetting = 15,
     eObject = 1000,
     eScene = 2000,
 };
@@ -267,5 +269,6 @@ enum QeUIType {
 #include "scene.h"
 #include "log.h"
 #include "command.h"
+#include "rendersetting.h"
 
 using namespace QeLib;

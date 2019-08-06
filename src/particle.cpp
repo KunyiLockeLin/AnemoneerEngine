@@ -161,7 +161,7 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand *command) {
 
     graphicsPipeline.subpass = 0;
     graphicsPipeline.componentType = componentType;
-    graphicsPipeline.sampleCount = GRAP->sampleCount;
+    graphicsPipeline.sampleCount = GRAP->renderSetting->sampleCount;
     graphicsPipeline.renderPass = command->renderPass;
     graphicsPipeline.minorType = eGraphicsPipeLine_none;
     graphicsPipeline.shader = &graphicsShader;

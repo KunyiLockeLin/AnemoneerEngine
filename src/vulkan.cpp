@@ -317,23 +317,6 @@ void QeVulkan::createSwapchain(QeDataSwapchain *swapchain) {
     }
 }
 
-VkSampleCountFlagBits QeVulkan::getMaxUsableSampleCount() {
-    VkSampleCountFlags counts;
-    AST->getXMLiValue((int *)&counts, AST->getXMLNode(3, AST->CONFIG, "setting", "render"), 1, "msaa");
-    VkSampleCountFlags counts2 =
-        std::min(deviceProperties.limits.framebufferColorSampleCounts, deviceProperties.limits.framebufferDepthSampleCounts);
-
-    if (counts > counts2) counts = counts2;
-
-    if (counts >= VK_SAMPLE_COUNT_64_BIT) return VK_SAMPLE_COUNT_64_BIT;
-    if (counts >= VK_SAMPLE_COUNT_32_BIT) return VK_SAMPLE_COUNT_32_BIT;
-    if (counts >= VK_SAMPLE_COUNT_16_BIT) return VK_SAMPLE_COUNT_16_BIT;
-    if (counts >= VK_SAMPLE_COUNT_8_BIT) return VK_SAMPLE_COUNT_8_BIT;
-    if (counts >= VK_SAMPLE_COUNT_4_BIT) return VK_SAMPLE_COUNT_4_BIT;
-    if (counts >= VK_SAMPLE_COUNT_2_BIT) return VK_SAMPLE_COUNT_2_BIT;
-    return VK_SAMPLE_COUNT_1_BIT;
-}
-
 VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat> &formats) {
     std::vector<VkAttachmentDescription> attachments;
     std::vector<VkSubpassDescription> subpasses;
@@ -391,7 +374,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
         dependencies.resize(subpassNum + 2);
 
         // attachments[0].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
-        if (GRAP->sampleCount == VK_SAMPLE_COUNT_1_BIT)
+        if (GRAP->renderSetting->sampleCount == VK_SAMPLE_COUNT_1_BIT)
             attachments.resize(subpassNum + 2);
         else
             attachments.resize(subpassNum + 3);
@@ -399,7 +382,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
         // depth
         attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
         attachments[index].format = formats[index];
-        attachments[index].samples = GRAP->sampleCount;
+        attachments[index].samples = GRAP->renderSetting->sampleCount;
         attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -411,11 +394,11 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
         depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
         ++index;
 
-        if (GRAP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+        if (GRAP->renderSetting->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
             // msaa
             attachments[index].flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
             attachments[index].format = formats[index];
-            attachments[index].samples = GRAP->sampleCount;
+            attachments[index].samples = GRAP->renderSetting->sampleCount;
             attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
             attachments[index].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
             attachments[index].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -454,7 +437,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
             subpasses[i].pColorAttachments = &colorAttachmentRef[i];
 
             if (i == 0) {
-                if (GRAP->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+                if (GRAP->renderSetting->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
                     attachments[index].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
                     colorAttachmentRef[i].attachment = 1;
                 }

@@ -56,10 +56,9 @@ void QeGraphics::clear() {
 
 void QeGraphics::initialize() {
     clear();
-    sampleCount = VK->getMaxUsableSampleCount();
 
     renders.resize(eRender_MAX);
-
+    renderSetting = nullptr;
     bRecreateRender = true;
     createRender(eRender_KHR, 0, {0, 0});
 }
@@ -238,12 +237,8 @@ void QeGraphics::updateBuffer() {
         VK->setMemoryBuffer(modelDatasBuffer, sizeof(QeDataModel) * size, modelsData.data());
     }
 
-    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "render");
-    AST->getXMLbValue(&VK->bShowMesh, node, 1, "mesh");
-    AST->getXMLbValue(&VK->bShowNormal, node, 1, "normal");
-    AST->getXMLfValue(&clearColor.x, node, 1, "clearColorR");
-    AST->getXMLfValue(&clearColor.y, node, 1, "clearColorG");
-    AST->getXMLfValue(&clearColor.z, node, 1, "clearColorB");
+    VK->bShowMesh = renderSetting->bMesh;
+    VK->bShowNormal = renderSetting->bNormal;
 
     size_t size = renders.size();
     for (size_t i = 1; i < size; ++i) {
@@ -255,9 +250,8 @@ void QeGraphics::updateBuffer() {
         for (size_t j = 0; j < size1; ++j) {
             QeDataViewport *viewport = render->viewports[j];
             viewport->environmentData.camera = viewport->camera->bufferData;
-
-            AST->getXMLfValue(&viewport->environmentData.param.x, node, 1, "gamma");
-            AST->getXMLfValue(&viewport->environmentData.param.y, node, 1, "exposure");
+            viewport->environmentData.param.x = renderSetting->gamma;
+            viewport->environmentData.param.y = renderSetting->exposure;
 
             VK->setMemoryBuffer(viewport->environmentBuffer, sizeof(viewport->environmentData), &viewport->environmentData);
 
@@ -493,15 +487,15 @@ void QeGraphics::refreshRender() {
                     if (i == eRender_main) render->depthStencilImage.~QeVKImage();
                     if (!render->depthStencilImage.view)
                         VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(),
-                                        nullptr, sampleCount);
+                                        nullptr, renderSetting->sampleCount);
                     formats.push_back(VK->findDepthStencilFormat());
                     views.push_back(render->depthStencilImage.view);
 
-                    if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+                    if (renderSetting->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
                         if (i == eRender_main) render->multiSampleColorImage.~QeVKImage();
                         if (!render->multiSampleColorImage.view)
                             VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr,
-                                            sampleCount);
+                                            renderSetting->sampleCount);
                         formats.push_back(format);
                         views.push_back(render->multiSampleColorImage.view);
                     }
@@ -761,9 +755,10 @@ void QeGraphics::updateDrawCommandBuffers() {
 
         if (i == eRender_KHR) {
             clearValues.resize(1);
-            clearValues[0].color = {clearColor.x, clearColor.y, clearColor.z, 1.0f};
+            clearValues[0].color = {renderSetting->clearColor.x, renderSetting->clearColor.y, renderSetting->clearColor.z,
+                                    renderSetting->clearColor.w};
         } else {
-            if (sampleCount == VK_SAMPLE_COUNT_1_BIT)
+            if (renderSetting->sampleCount == VK_SAMPLE_COUNT_1_BIT)
                 clearValues.resize(render->subpass.size() + 2);
             else
                 clearValues.resize(render->subpass.size() + 3);
@@ -772,7 +767,8 @@ void QeGraphics::updateDrawCommandBuffers() {
 
             size_t size2 = clearValues.size();
             for (size_t k = 1; k < size2; ++k) {
-                clearValues[k].color = {clearColor.x, clearColor.y, clearColor.z, 1.0f};
+                clearValues[k].color = {renderSetting->clearColor.x, renderSetting->clearColor.y, renderSetting->clearColor.z,
+                                        renderSetting->clearColor.w};
             }
         }
         renderPassInfo.renderPass = render->renderPass;
@@ -892,9 +888,7 @@ void QeGraphics::updateDrawCommandBuffers() {
                         }
                     }
                 } else {
-                    float lineWidth = 1.f;
-                    AST->getXMLfValue(&lineWidth, AST->getXMLNode(2, AST->CONFIG, "setting"), 1, "lineWidth");
-                    vkCmdSetLineWidth(render->commandBuffers[j], lineWidth);
+                    vkCmdSetLineWidth(render->commandBuffers[j], renderSetting->lineWidth);
 
                     size_t size2 = render->viewports.size();
                     for (size_t k = 0; k < size2; ++k) {

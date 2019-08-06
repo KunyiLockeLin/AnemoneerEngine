@@ -18,7 +18,7 @@ set(SRC_GAMEOBJECT  src/animation.cpp   src/axis.cpp    src/camera.cpp
                     src/inputcontrol.cpp src/light.cpp  src/line.cpp
                     src/material.cpp    src/model.cpp   src/object.cpp
                     src/particle.cpp    src/plane.cpp   src/postprocessing.cpp
-                    src/transform.cpp)
+                    src/transform.cpp   src/rendersetting.cpp)
 
 set(SRC_MANAGER src/asset.cpp   src/command.cpp src/engine.cpp
                 src/global.cpp  src/log.cpp     src/objectmanger.cpp

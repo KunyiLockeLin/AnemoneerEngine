@@ -91,14 +91,13 @@ class QeGraphics {
     ~QeGraphics();
 
     std::vector<QeDataRender *> renders;
-    QeVector3f clearColor;
     QeDataSwapchain swapchain;
+    QeRenderSetting *renderSetting = nullptr;
 
     // int currentTargetViewport = 0;
     QeCamera *currentCamera = nullptr;
     VkSemaphore renderCompleteSemaphore = VK_NULL_HANDLE;
     std::vector<VkFence> fences;
-    VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT;
 
     std::vector<QeModel *> models;
     std::vector<QeModel *> alphaModels;

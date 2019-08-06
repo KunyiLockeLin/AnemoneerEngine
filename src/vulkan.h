@@ -195,7 +195,6 @@ class QeVulkan {
     void createLogicalDevice();
     int getSwapchainSize();
     void createSwapchain(QeDataSwapchain *swapchain);
-    VkSampleCountFlagBits getMaxUsableSampleCount();
     VkRenderPass createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat> &formats);
     VkFramebuffer createFramebuffer(VkRenderPass renderPass, VkExtent2D size, std::vector<VkImageView> &views);
     VkCommandBuffer createCommandBuffer();

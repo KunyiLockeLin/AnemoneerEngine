@@ -153,6 +153,9 @@ QeComponent *QeObjectManger::spwanComponent(QeAssetXML *_property, QeObject *_ow
             case eComponent_inputControl:
                 _component = new QeInputControl(key);
                 break;
+            case eComponent_rendersetting:
+                _component = new QeRenderSetting(key);
+                break;
         }
     }
     it = components.find(_type);
