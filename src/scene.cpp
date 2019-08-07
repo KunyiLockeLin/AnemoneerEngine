@@ -34,5 +34,7 @@ void QeScene::loadScene(int _eid) {
     OBJMGR->clear();
     clear();
     GRAP->initialize();
+    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "currentScene");
+    node->setXMLValue("eid", std::to_string(_eid).c_str());
     initialize(AST->getXMLEditNode(eScene, _eid));
 }

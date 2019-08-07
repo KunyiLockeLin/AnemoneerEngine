@@ -16,7 +16,7 @@ void QueenEngine::initialize() {
     FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "environment", "FPS")));
 
     int sceneEID = 0;
-    AST->getXMLiValue(&sceneEID, node, 2, "startScene", "eid");
+    AST->getXMLiValue(&sceneEID, node, 2, "currentScene", "eid");
     SCENE->loadScene(sceneEID);
 }
 
