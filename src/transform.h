@@ -7,7 +7,7 @@ class QeTransform : public QeComponent {
     ~QeTransform() {}
 
     // Face is Euler angles, (roll, pitch, yaw) or (bank, attitude, heading).
-    QeVector3f localPosition, localScale, localFaceEular;
+    QeVector3f position, scale, faceEular;
     QeVector3f rotateSpeed, revoluteSpeed;
     bool revoluteFixAxisX = false, revoluteFixAxisY = false, revoluteFixAxisZ = false;
     int targetAnimationOID;

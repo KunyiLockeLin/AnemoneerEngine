@@ -124,7 +124,7 @@ void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
     if (!lookAtTransform2) return;
 
     lookAtTransform2->setWorldPosition(lookAtTransform1->worldPosition());
-    owner->transform->localPosition = {20.f, 0.f, 1.f};
+    owner->transform->position = {20.f, 0.f, 1.f};
 }
 
 void QeCamera::update1() {

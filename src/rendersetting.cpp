@@ -17,7 +17,7 @@ void QeRenderSetting::initialize(QeAssetXML *_property, QeObject *_owner) {
     VkSampleCountFlags counts = std::min(VK->deviceProperties.limits.framebufferColorSampleCounts,
                                           VK->deviceProperties.limits.framebufferDepthSampleCounts);
 
-    if (counts > msaa) counts = msaa;
+    if (counts > uint32_t(msaa)) counts = msaa;
     if (counts >= VK_SAMPLE_COUNT_64_BIT)
         sampleCount = VK_SAMPLE_COUNT_64_BIT;
     else if (counts >= VK_SAMPLE_COUNT_32_BIT)
