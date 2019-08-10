@@ -51,14 +51,13 @@ class QeGlobal {
     QueenEngine *engine = nullptr;
     QeVulkan *vulkan = nullptr;
     QeWindow *window = nullptr;
-    QeScene *scene = nullptr;
     QeGraphics *graphics = nullptr;
     QeMath *math = nullptr;
     QeAsset *asset = nullptr;
-    QeObjectManger *objMgr = nullptr;
     QeEncode *encode = nullptr;
     QeLog *log = nullptr;
     QeCommand *command = nullptr;
+    QeSceneManager *scene = nullptr;
 };
 
 #define GLB QeGlobal::getInstance()
@@ -69,7 +68,6 @@ class QeGlobal {
 #define SCENE GLB.scene
 #define MATH GLB.math
 #define AST GLB.asset
-#define OBJMGR GLB.objMgr
 #define ENCODE GLB.encode
 #define DEBUG GLB.log
 #define CMD(msg) GLB.command->inputCommand(msg)

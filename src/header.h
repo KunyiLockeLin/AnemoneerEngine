@@ -109,9 +109,8 @@ class QeGlobal;
 class QeWindow;
 class QeViewport;
 class QueenEngine;
-class QeObjectMangerKey;
-class QeObjectManger;
-class QeScene;
+class QeSceneManagerKey;
+class QeSceneManager;
 class QeVulkan;
 class QeLog;
 class QeCommand;
@@ -244,7 +243,6 @@ enum QeUIType {
 #include "math.h"
 #include "timer.h"
 #include "vulkan.h"
-#include "objectmanger.h"
 #include "asset.h"
 #include "object.h"
 #include "component.h"

@@ -13,7 +13,7 @@ struct QeDataModel {
 
 class QeModel : public QeComponent {
    public:
-    QeModel(QeObjectMangerKey &_key) : QeComponent(_key), modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
+    QeModel(QeSceneManagerKey &_key) : QeComponent(_key), modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
     //~QeModel(){}
 
     virtual void initialize(QeAssetXML *_property, QeObject *_owner);

@@ -3,7 +3,7 @@
 
 class QeCubemap : public QeModel {
    public:
-    QeCubemap(QeObjectMangerKey &_key) : QeModel(_key) {}
+    QeCubemap(QeSceneManagerKey &_key) : QeModel(_key) {}
     //~QeCubemap() {}
 
     virtual void initialize(QeAssetXML *_property, QeObject *_owner);

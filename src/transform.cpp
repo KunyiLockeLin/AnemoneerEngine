@@ -41,7 +41,7 @@ void QeTransform::update1() {
 
 QeVector3f QeTransform::worldPosition() {
     if (targetAnimationOID) {
-        QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
+        QeAnimation *animation = (QeAnimation *)SCENE->findComponent(eComponent_animation, targetAnimationOID);
         if (animation) {
             QeVector4f vec = {position, 1};
             return animation->getBoneTransfrom(targetBoneName) * vec;
@@ -145,7 +145,7 @@ void QeTransform::revolute(QeVector3f &_addRevolute, QeVector3f &_centerPosition
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {
     if (targetAnimationOID) {
-        QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
+        QeAnimation *animation = (QeAnimation *)SCENE->findComponent(eComponent_animation, targetAnimationOID);
         if (animation) {
             return animation->getBoneTransfrom(targetBoneName) *
                    MATH->getTransformMatrix(position, faceEular, scale, bRotate, bFixSize);

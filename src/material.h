@@ -3,7 +3,7 @@
 
 class QeMaterial : public QeComponent {
    public:
-    QeMaterial(QeObjectMangerKey &_key) : QeComponent(_key) {}
+    QeMaterial(QeSceneManagerKey &_key) : QeComponent(_key) {}
     ~QeMaterial() {}
 
     virtual void initialize(QeAssetXML *_property, QeObject *_owner);

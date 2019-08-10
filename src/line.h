@@ -3,7 +3,7 @@
 
 class QeLine : public QeModel {
    public:
-    QeLine(QeObjectMangerKey &_key) : QeModel(_key) {}
+    QeLine(QeSceneManagerKey &_key) : QeModel(_key) {}
 
     int targetTransformOID;
     QeVector3f color;

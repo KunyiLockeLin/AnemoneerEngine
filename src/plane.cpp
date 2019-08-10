@@ -50,7 +50,7 @@ void QePlane::clear() {
 
 QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {
     if (targetCameraOID) {
-        QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, targetCameraOID);
+        QeCamera *camera = (QeCamera *)SCENE->findComponent(eComponent_camera, targetCameraOID);
 
         if (camera) {
             QeDataDescriptorSetModel descriptorSetData;
@@ -88,7 +88,7 @@ void QePlane::update1() {
     }
 
     if (targetCameraOID) {
-        QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, targetCameraOID);
+        QeCamera *camera = (QeCamera *)SCENE->findComponent(eComponent_camera, targetCameraOID);
 
         if (camera) {
             QeVector3f scale = owner->transform->worldScale();

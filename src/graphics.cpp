@@ -179,7 +179,7 @@ void QeGraphics::addNewViewport(QeRenderType type) {
 
     QeDataDescriptorSetCommon data;
 
-    vp->camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, renders[type]->cameraOID);
+    vp->camera = (QeCamera *)SCENE->findComponent(eComponent_camera, renders[type]->cameraOID);
 
     VK->createBuffer(vp->environmentBuffer, sizeof(vp->environmentData), nullptr);
     data.environmentBuffer = vp->environmentBuffer.buffer;
@@ -193,7 +193,7 @@ void QeGraphics::setTargetCamera(int cameraOID) {
     // currentTargetViewport ) { 	currentTargetViewport = index;
     // getTargetCamera()->updateAxis();
     //}
-    currentCamera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, cameraOID);
+    currentCamera = (QeCamera *)SCENE->findComponent(eComponent_camera, cameraOID);
 }
 
 QeCamera *QeGraphics::getTargetCamera() {
@@ -474,7 +474,7 @@ void QeGraphics::refreshRender() {
             VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
             render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
         } else if (i == eRender_color || i == eRender_main || i == eRender_ui) {
-            QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, render->cameraOID);
+            QeCamera *camera = (QeCamera *)SCENE->findComponent(eComponent_camera, render->cameraOID);
             if (camera->isRaytracing()) {
                 render->colorImage.~QeVKImage();
                 VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
@@ -570,7 +570,7 @@ void QeGraphics::refreshRender() {
 
 bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int postprocessingOID) {
     if (renders[renderType]->cameraOID != cameraOID) return false;
-    QePostProcessing *postprocessing = (QePostProcessing *)OBJMGR->findComponent(eComponent_postprocessing, postprocessingOID);
+    QePostProcessing *postprocessing = (QePostProcessing *)SCENE->findComponent(eComponent_postprocessing, postprocessingOID);
     if (!postprocessing) return false;
 
     bRecreateRender = true;

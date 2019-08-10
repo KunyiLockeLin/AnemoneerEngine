@@ -3,7 +3,7 @@
 
 class QePostProcessing : public QeComponent {
    public:
-    QePostProcessing(QeObjectMangerKey &_key) : QeComponent(_key) {}
+    QePostProcessing(QeSceneManagerKey &_key) : QeComponent(_key) {}
     //~QePostProcessing();
 
     QeVector4f param1;

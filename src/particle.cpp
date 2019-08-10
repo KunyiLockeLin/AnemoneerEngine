@@ -202,7 +202,7 @@ void QeParticle::update1() {
                 QeVertex particle = createParticleData();
 
                 if (bornTargetTranformOID) {
-                    QeTransform *target = (QeTransform *)OBJMGR->findComponent(eComponent_transform, bornTargetTranformOID);
+                    QeTransform *target = (QeTransform *)SCENE->findComponent(eComponent_transform, bornTargetTranformOID);
                     particle.pos.x += target->worldPosition().x;
                     particle.pos.y += target->worldPosition().y;
                     particle.pos.z += target->worldPosition().z;

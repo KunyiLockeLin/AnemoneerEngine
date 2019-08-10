@@ -3,7 +3,7 @@
 
 class QeTransform : public QeComponent {
    public:
-    QeTransform(QeObjectMangerKey &_key) : QeComponent(_key) {}
+    QeTransform(QeSceneManagerKey &_key) : QeComponent(_key) {}
     ~QeTransform() {}
 
     // Face is Euler angles, (roll, pitch, yaw) or (bank, attitude, heading).

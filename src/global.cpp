@@ -61,11 +61,10 @@ std::string operator+=(std::string const &a, const double &b) {
 QeGlobal::QeGlobal() {
     if (engine == nullptr) engine = new QueenEngine(key);
     if (window == nullptr) window = new QeWindow(key);
-    if (scene == nullptr) scene = new QeScene(key);
+    if (scene == nullptr) scene = new QeSceneManager(key);
     if (graphics == nullptr) graphics = new QeGraphics(key);
     if (math == nullptr) math = new QeMath(key);
     if (asset == nullptr) asset = new QeAsset(key);
-    if (objMgr == nullptr) objMgr = new QeObjectManger(key);
     if (encode == nullptr) encode = new QeEncode(key);
     if (vulkan == nullptr) vulkan = new QeVulkan(key);
     if (log == nullptr) log = new QeLog(key);
@@ -84,10 +83,6 @@ QeGlobal::~QeGlobal() {
     if (asset != nullptr) {
         delete asset;
         asset = nullptr;
-    }
-    if (objMgr != nullptr) {
-        delete objMgr;
-        objMgr = nullptr;
     }
     if (log != nullptr) {
         delete log;

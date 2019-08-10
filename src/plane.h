@@ -5,7 +5,7 @@ class QePlane : public QeModel {
    public:
     // face: (0,0,1)
 
-    QePlane(QeObjectMangerKey &_key) : QeModel(_key) {}
+    QePlane(QeSceneManagerKey &_key) : QeModel(_key) {}
     //~QePlane() {}
     QePlaneType planeType;
     int targetCameraOID;

@@ -10,14 +10,14 @@ void QeObject::initialize(QeAssetXML *_property, QeObject *_parent) {
     QeAssetXML *node = AST->getXMLNode(initProperty, 1, "components");
     if (node != nullptr && node->nexts.size() > 0) {
         for (int index = 0; index < node->nexts.size(); ++index) {
-            components.push_back(OBJMGR->spwanComponent(node->nexts[index], this));
+            components.push_back(SCENE->spwanComponent(node->nexts[index], this));
         }
     }
 
     node = AST->getXMLNode(initProperty, 1, "children");
     if (node != nullptr && node->nexts.size() > 0) {
         for (int index = 0; index < node->nexts.size(); ++index) {
-            children.push_back(OBJMGR->spwanObject(node->nexts[index], this));
+            children.push_back(SCENE->spwanObject(node->nexts[index], this));
         }
     }
 }
@@ -25,14 +25,14 @@ void QeObject::initialize(QeAssetXML *_property, QeObject *_parent) {
 void QeObject::clear() {
     std::vector<QeComponent *>::iterator it = components.begin();
     while (it != components.end()) {
-        OBJMGR->removeComponent(*it);
+        SCENE->removeComponent(*it);
         ++it;
     }
     components.clear();
 
     std::vector<QeObject *>::iterator it1 = children.begin();
     while (it1 != children.end()) {
-        OBJMGR->removeObject(*it1);
+        SCENE->removeObject(*it1);
         ++it1;
     }
     children.clear();

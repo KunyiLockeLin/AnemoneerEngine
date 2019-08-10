@@ -4,7 +4,7 @@
 
 class QeObject {
    public:
-    QeObject(QeObjectMangerKey &_key) {}
+    QeObject(QeSceneManagerKey &_key) {}
     ~QeObject() {}
 
     int oid, eid;

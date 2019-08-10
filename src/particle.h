@@ -3,7 +3,7 @@
 
 class QeParticle : public QeModel {
    public:
-    QeParticle(QeObjectMangerKey &_key)
+    QeParticle(QeSceneManagerKey &_key)
         : QeModel(_key),
           vertexBuffer(eBuffer_vertex_texel),
           outBuffer(eBuffer_storage_compute_shader_return),

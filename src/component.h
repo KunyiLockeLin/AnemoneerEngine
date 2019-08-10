@@ -4,7 +4,7 @@
 
 class QeComponent {
    public:
-    QeComponent(QeObjectMangerKey &_key) {}
+    QeComponent(QeSceneManagerKey &_key) {}
     ~QeComponent() {}
 
     QeComponentType componentType;
