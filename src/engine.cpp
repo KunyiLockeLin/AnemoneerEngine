@@ -12,11 +12,7 @@ void QueenEngine::run() {
 
 void QueenEngine::initialize() {
     WIN->resizeAll();
-    QeAssetXML *node = CONFIG->getXMLNode("setting");
-    FPSTimer.setTimer(1000 /node->getXMLValuei("environment.FPS"));
-
-    int sceneEID = node->getXMLValuei("currentScene.eid");
-    SCENE->loadScene(sceneEID);
+    SCENE->loadScene(CONFIG->getXMLValuei("setting.environment.currentSceneEID"));
 }
 
 void QueenEngine::mainLoop() {

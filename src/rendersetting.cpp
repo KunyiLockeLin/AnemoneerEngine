@@ -29,4 +29,6 @@ void QeRenderSetting::initialize(QeAssetXML *_property, QeObject *_owner) {
         sampleCount = VK_SAMPLE_COUNT_2_BIT;
     else
         sampleCount = VK_SAMPLE_COUNT_1_BIT;
+    QE->FPS = initProperty->getXMLValuei("FPS");
+    QE->FPSTimer.setTimer(1000 / QE->FPS);
 }

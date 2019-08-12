@@ -297,7 +297,7 @@ void QeWindow::getWindowSize(HWND &window, int &width, int &height) {
 }
 
 void QeWindow::resizeAll() {
-    if (DEBUG->isLogPanel()) resize(logPanel);
+    resize(logPanel);
     resize(editPanel);
     resize(mainWindow);
 }
@@ -510,7 +510,6 @@ void QeWindow::openLogPanel() {
 }
 
 void QeWindow::Log(std::string _log) {
-    if (!DEBUG->isLogPanel()) return;
     std::wstring ws = chartowchar(_log);
     SendMessage(listBoxLog, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
     SIZE textWidth;
@@ -668,7 +667,7 @@ void QeWindow::initialize() {
 
     windowInstance = GetModuleHandle(nullptr);
 
-    if (DEBUG->isLogPanel()) openLogPanel();
+    openLogPanel();
     openEditPanel();
     openMainWindow();
 
@@ -694,7 +693,7 @@ std::string QeWindow::getWindowTitle() {
     windowTitle.append(" - ");
     windowTitle.append(std::to_string(QE->currentFPS));
     windowTitle.append("/");
-    windowTitle.append(CONFIG->getXMLValue("setting.environment.FPS"));
+    windowTitle.append(std::to_string(QE->FPS));
     windowTitle.append(" FPS - ");
     windowTitle.append(SCENE->name);
     windowTitle.append(" ");

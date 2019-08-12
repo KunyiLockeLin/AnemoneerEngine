@@ -8,7 +8,7 @@
         <!--type: test 20001-->
         <default eid="0" type="2000">
             <!--test test test 33333-->
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <!--test test test 4444-->
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
@@ -16,7 +16,7 @@
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
@@ -25,33 +25,33 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <grid oid="300" eid="300" type="1000">
+            <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
                 </components>
                 <children />
             </grid>
-            <sphere2 oid="1100" eid="1100" type="1000">
+            <sphere2 type="1000" oid="1100" eid="1100">
                 <components>
                     <Transform type="1" oid="1100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="3" rotateSpeedY="3" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="" />
                 </components>
                 <children />
             </sphere2>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="0" positionY="5" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="1.5" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -64,13 +64,13 @@
             </light1>
         </default>
         <cubemap eid="1" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
@@ -79,26 +79,26 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="3.0" exposure="3.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="3.0" exposure="3.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <grid oid="300" eid="300" type="1000">
+            <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
                 </components>
                 <children />
             </grid>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="0" positionY="5" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="1.5" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -109,14 +109,14 @@
                     </light1>
                 </children>
             </light1>
-            <cubemap oid="600" eid="600" type="1000">
+            <cubemap type="1000" oid="600" eid="600">
                 <components>
                     <Transform type="1" oid="600" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="5" scaleY="5" scaleZ="5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Cubemap type="9" oid="600" eid="1" image="cubemap1.png" />
                 </components>
                 <children />
             </cubemap>
-            <sphere2 oid="500" eid="500" type="1000">
+            <sphere2 type="1000" oid="500" eid="500">
                 <components>
                     <Transform type="1" oid="500" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="500" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
@@ -126,13 +126,13 @@
             </sphere2>
         </cubemap>
         <pbr eid="2" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="10" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
@@ -141,19 +141,19 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="3" positionY="3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="0" colorB="0" intensity="100" coneAngle="90" />
@@ -164,7 +164,7 @@
                     </light1>
                 </children>
             </light1>
-            <sphere00 oid="1100" eid="1100" type="1000">
+            <sphere00 type="1000" oid="1100" eid="1100">
                 <components>
                     <Transform type="1" oid="1100" eid="1" positionX="0" positionY="-3" positionZ="-3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
@@ -172,7 +172,7 @@
                 </components>
                 <children />
             </sphere00>
-            <sphere10 oid="1101" eid="1100" type="1000">
+            <sphere10 type="1000" oid="1101" eid="1100">
                 <components>
                     <Transform type="1" oid="1101" eid="1" positionX="0" positionY="0" positionZ="-3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1101" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1101" />
@@ -180,7 +180,7 @@
                 </components>
                 <children />
             </sphere10>
-            <sphere20 oid="1102" eid="1100" type="1000">
+            <sphere20 type="1000" oid="1102" eid="1100">
                 <components>
                     <Transform type="1" oid="1102" eid="1" positionX="0" positionY="3" positionZ="-3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1102" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1102" />
@@ -188,7 +188,7 @@
                 </components>
                 <children />
             </sphere20>
-            <sphere01 oid="1103" eid="1100" type="1000">
+            <sphere01 type="1000" oid="1103" eid="1100">
                 <components>
                     <Transform type="1" oid="1103" eid="1" positionX="0" positionY="-3" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1103" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1103" />
@@ -196,7 +196,7 @@
                 </components>
                 <children />
             </sphere01>
-            <sphere11 oid="1104" eid="1100" type="1000">
+            <sphere11 type="1000" oid="1104" eid="1100">
                 <components>
                     <Transform type="1" oid="1104" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1104" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1104" />
@@ -204,7 +204,7 @@
                 </components>
                 <children />
             </sphere11>
-            <sphere21 oid="1105" eid="1100" type="1000">
+            <sphere21 type="1000" oid="1105" eid="1100">
                 <components>
                     <Transform type="1" oid="1105" eid="1" positionX="0" positionY="3" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1105" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1105" />
@@ -212,7 +212,7 @@
                 </components>
                 <children />
             </sphere21>
-            <sphere02 oid="1106" eid="1100" type="1000">
+            <sphere02 type="1000" oid="1106" eid="1100">
                 <components>
                     <Transform type="1" oid="1106" eid="1" positionX="0" positionY="-3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1106" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1106" />
@@ -220,7 +220,7 @@
                 </components>
                 <children />
             </sphere02>
-            <sphere12 oid="1107" eid="1100" type="1000">
+            <sphere12 type="1000" oid="1107" eid="1100">
                 <components>
                     <Transform type="1" oid="1107" eid="1" positionX="0" positionY="0" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1107" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1107" />
@@ -228,7 +228,7 @@
                 </components>
                 <children />
             </sphere12>
-            <sphere22 oid="1108" eid="1100" type="1000">
+            <sphere22 type="1000" oid="1108" eid="1100">
                 <components>
                     <Transform type="1" oid="1108" eid="1" positionX="0" positionY="3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1108" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1108" />
@@ -236,12 +236,12 @@
                 </components>
                 <children />
             </sphere22>
-            <light1 oid="401" eid="400" type="1000">
+            <light1 type="1000" oid="401" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="3" positionY="-3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="0" colorB="0" intensity="100" coneAngle="90" />
@@ -252,7 +252,7 @@
                     </light1>
                 </children>
             </light1>
-            <light2 oid="410" eid="410" type="1000">
+            <light2 type="1000" oid="410" eid="410">
                 <components>
                     <Transform type="1" oid="410" eid="1" positionX="3" positionY="3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="410" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -261,7 +261,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="411" eid="410" type="1000">
+            <light2 type="1000" oid="411" eid="410">
                 <components>
                     <Transform type="1" oid="411" eid="1" positionX="3" positionY="0" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="411" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -270,7 +270,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="412" eid="410" type="1000">
+            <light2 type="1000" oid="412" eid="410">
                 <components>
                     <Transform type="1" oid="412" eid="1" positionX="3" positionY="-3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="412" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -279,7 +279,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="413" eid="410" type="1000">
+            <light2 type="1000" oid="413" eid="410">
                 <components>
                     <Transform type="1" oid="413" eid="1" positionX="3" positionY="3" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="413" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -288,7 +288,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="414" eid="410" type="1000">
+            <light2 type="1000" oid="414" eid="410">
                 <components>
                     <Transform type="1" oid="414" eid="1" positionX="3" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="414" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -297,7 +297,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="415" eid="410" type="1000">
+            <light2 type="1000" oid="415" eid="410">
                 <components>
                     <Transform type="1" oid="415" eid="1" positionX="3" positionY="-3" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="415" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -306,7 +306,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="416" eid="410" type="1000">
+            <light2 type="1000" oid="416" eid="410">
                 <components>
                     <Transform type="1" oid="416" eid="1" positionX="3" positionY="3" positionZ="-3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="416" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -315,7 +315,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="417" eid="410" type="1000">
+            <light2 type="1000" oid="417" eid="410">
                 <components>
                     <Transform type="1" oid="417" eid="1" positionX="3" positionY="0" positionZ="-3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="417" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -324,7 +324,7 @@
                 </components>
                 <children />
             </light2>
-            <light2 oid="418" eid="410" type="1000">
+            <light2 type="1000" oid="418" eid="410">
                 <components>
                     <Transform type="1" oid="418" eid="1" positionX="3" positionY="-3" positionZ="-3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="418" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
@@ -335,12 +335,12 @@
             </light2>
         </pbr>
         <raytracing_cs eid="3" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="15" positionY="5" positionZ="-5" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="5" postProcessingOID="0" />
@@ -349,14 +349,14 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <sphere oid="1100" eid="1100" type="1000">
+            <sphere type="1000" oid="1100" eid="1100">
                 <components>
                     <Transform type="1" oid="1100" eid="1" positionX="0" positionY="0" positionZ="104" scaleX="10" scaleY="10" scaleZ="10" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
@@ -364,7 +364,7 @@
                 </components>
                 <children />
             </sphere>
-            <sphere1 oid="1101" eid="1101" type="1000">
+            <sphere1 type="1000" oid="1101" eid="1101">
                 <components>
                     <Transform type="1" oid="1101" eid="1" positionX="5" positionY="0" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1101" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1101" />
@@ -372,7 +372,7 @@
                 </components>
                 <children />
             </sphere1>
-            <sphere2 oid="1102" eid="1101" type="1000">
+            <sphere2 type="1000" oid="1102" eid="1101">
                 <components>
                     <Transform type="1" oid="1102" eid="1" positionX="0" positionY="0" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1102" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1102" />
@@ -380,7 +380,7 @@
                 </components>
                 <children />
             </sphere2>
-            <sphere3 oid="1103" eid="1101" type="1000">
+            <sphere3 type="1000" oid="1103" eid="1101">
                 <components>
                     <Transform type="1" oid="1103" eid="1" positionX="-5" positionY="0" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1103" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1103" />
@@ -388,7 +388,7 @@
                 </components>
                 <children />
             </sphere3>
-            <sphereM oid="1104" eid="1101" type="1000">
+            <sphereM type="1000" oid="1104" eid="1101">
                 <components>
                     <Transform type="1" oid="1104" eid="1" positionX="0" positionY="-5" positionZ="2" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1104" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1104" />
@@ -396,7 +396,7 @@
                 </components>
                 <children />
             </sphereM>
-            <sphereM1 oid="1105" eid="1101" type="1000">
+            <sphereM1 type="1000" oid="1105" eid="1101">
                 <components>
                     <Transform type="1" oid="1105" eid="1" positionX="0" positionY="5" positionZ="2" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1105" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1105" />
@@ -406,13 +406,13 @@
             </sphereM1>
         </raytracing_cs>
         <animation eid="4" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
@@ -421,34 +421,34 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="3" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="3" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <grid oid="300" eid="300" type="1000">
+            <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
                 </components>
                 <children />
             </grid>
-            <attach_sphere oid="1100" eid="1100" type="1000">
+            <attach_sphere type="1000" oid="1100" eid="1100">
                 <components>
                     <Transform type="1" oid="1100" eid="1" positionX="2" positionY="2" positionZ="-1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="10" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="700" targetBoneName="Armature_Bone_002" />
                     <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="0" />
                 </components>
                 <children />
             </attach_sphere>
-            <line_animation oid="901" eid="901" type="1000">
+            <line_animation type="1000" oid="901" eid="901">
                 <components>
                     <Transform type="1" oid="900" eid="1" positionX="0" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Line type="5" oid="900" eid="1" targetTransformOID="700" colorR="1" colorG="1" colorB="0" />
                 </components>
                 <children>
-                    <animation oid="700" eid="700" type="1000">
+                    <animation type="1000" oid="700" eid="700">
                         <components>
                             <Transform type="1" oid="700" eid="1" positionX="10" positionY="0" positionZ="-4" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="-1" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="1" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
@@ -457,12 +457,12 @@
                     </animation>
                 </children>
             </line_animation>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="-3" positionY="3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -475,13 +475,13 @@
             </light1>
         </animation>
         <particle eid="5" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
@@ -490,26 +490,26 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <grid oid="300" eid="300" type="1000">
+            <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
                 </components>
                 <children />
             </grid>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="0" positionY="5" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="1.5" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -520,7 +520,7 @@
                     </light1>
                 </children>
             </light1>
-            <particle oid="800" eid="800" type="1000">
+            <particle type="1000" oid="800" eid="800">
                 <components>
                     <Transform type="1" oid="800" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Partical type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="401">
@@ -535,7 +535,7 @@
                 </components>
                 <children />
             </particle>
-            <particle1 oid="801" eid="801" type="1000">
+            <particle1 type="1000" oid="801" eid="801">
                 <components>
                     <Transform type="1" oid="800" eid="1" positionX="0" positionY="-10" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Partical type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="0">
@@ -552,13 +552,13 @@
             </particle1>
         </particle>
         <render2 eid="6" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
@@ -567,26 +567,26 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <grid oid="300" eid="300" type="1000">
+            <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
                 </components>
                 <children />
             </grid>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="0" positionY="5" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="1.5" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -597,12 +597,12 @@
                     </light1>
                 </children>
             </light1>
-            <camera_render oid="2000" eid="1" type="1000">
+            <camera_render type="1000" oid="2000" eid="1">
                 <components>
                     <Transform type="1" oid="2000" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <camera oid="2001" eid="1" type="1000">
+                    <camera type="1000" oid="2001" eid="1">
                         <components>
                             <Transform type="1" oid="2001" eid="1" positionX="0.1" positionY="0" positionZ="20" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="2002" eid="1" renderType="3" width="800" height="600" lookAtTransformOID="2000" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1200" />
@@ -611,28 +611,28 @@
                     </camera>
                 </children>
             </camera_render>
-            <render oid="1000" eid="1000" type="1000">
+            <render type="1000" oid="1000" eid="1000">
                 <components>
                     <Transform type="1" oid="1000" eid="1" positionX="0.3" positionY="-0.9" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <plane type="8" oid="1000" eid="1000" planeType="2" materialOID="" targetCameraOID="2002" />
                 </components>
                 <children />
             </render>
-            <camera_2D oid="2300" eid="2300" type="1000">
+            <camera_2D type="1000" oid="2300" eid="2300">
                 <components>
                     <Transform type="1" oid="2300" eid="1" positionX="0" positionY="0" positionZ="2" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Camera type="2" oid="2300" eid="1" renderType="1" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                 </components>
                 <children />
             </camera_2D>
-            <box oid="1100" eid="1100" type="1000">
+            <box type="1000" oid="1100" eid="1100">
                 <components>
                     <Transform type="1" oid="1100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1.2" scaleY="1.2" scaleZ="1.2" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="3" rotateSpeedY="3" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="box.gltf" outlineWidth="0.3" materialOID="" />
                 </components>
                 <children />
             </box>
-            <postprocessing oid="1200" eid="1200" type="1000">
+            <postprocessing type="1000" oid="1200" eid="1200">
                 <components>
                     <grayscale type="3" oid="1200" eid="1" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param0="0" param1="0" param2="0" param3="0" />
                     <bloom type="3" oid="1201" eid="2" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param0="3" param1="0.01" param2="3" param3="0" />
@@ -641,13 +641,13 @@
             </postprocessing>
         </render2>
         <tessellation eid="7" type="2000">
-            <MainCamera oid="100" eid="100" type="1000">
+            <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Axis type="13" oid="100" eid="1" />
                 </components>
                 <children>
-                    <camera oid="101" eid="101" type="1000">
+                    <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
@@ -656,21 +656,21 @@
                     </camera>
                 </children>
             </MainCamera>
-            <setting oid="200" eid="200" type="1000">
+            <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" normal="1" mesh="1" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="1" mesh="1" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
                 </components>
                 <children />
             </setting>
-            <grid oid="300" eid="300" type="1000">
+            <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
                 </components>
                 <children />
             </grid>
-            <box oid="1100" eid="1100" type="1000">
+            <box type="1000" oid="1100" eid="1100">
                 <components>
                     <Transform type="1" oid="1100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="box.gltf" outlineWidth="0" materialOID="1101" />
@@ -678,12 +678,12 @@
                 </components>
                 <children />
             </box>
-            <light1 oid="400" eid="400" type="1000">
+            <light1 type="1000" oid="400" eid="400">
                 <components>
                     <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 </components>
                 <children>
-                    <light1 oid="401" eid="1" type="1000">
+                    <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" positionX="0" positionY="5" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="1.5" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -697,17 +697,17 @@
         </tessellation>
     </scenes>
     <objects type="1000">
-        <default oid="0" eid="0" type="1000">
+        <default type="1000" oid="0" eid="0">
             <components />
             <children />
         </default>
-        <MainCamera oid="100" eid="100" type="1000">
+        <MainCamera type="1000" oid="100" eid="100">
             <components>
                 <Transform type="1" oid="100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Axis type="13" oid="100" eid="1" />
             </components>
             <children>
-                <camera oid="101" eid="101" type="1000">
+                <camera type="1000" oid="101" eid="101">
                     <components>
                         <Transform type="1" oid="101" eid="1" positionX="20" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                         <Camera type="2" oid="101" eid="1" renderType="1" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
@@ -716,25 +716,25 @@
                 </camera>
             </children>
         </MainCamera>
-        <setting oid="200" eid="200" type="1000">
+        <setting type="1000" oid="200" eid="200">
             <components>
                 <InputControl type="12" oid="200" eid="1" />
             </components>
             <children />
         </setting>
-        <grid oid="300" eid="300" type="1000">
+        <grid type="1000" oid="300" eid="300">
             <components>
                 <Transform type="1" oid="300" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
             </components>
             <children />
         </grid>
-        <light1 oid="400" eid="400" type="1000">
+        <light1 type="1000" oid="400" eid="400">
             <components>
                 <Transform type="1" oid="400" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
             </components>
             <children>
-                <light1 oid="401" eid="1" type="1000">
+                <light1 type="1000" oid="401" eid="1">
                     <components>
                         <Transform type="1" oid="401" eid="1" positionX="-3" positionY="3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                         <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -745,28 +745,28 @@
                 </light1>
             </children>
         </light1>
-        <box oid="500" eid="500" type="1000">
+        <box type="1000" oid="500" eid="500">
             <components>
                 <Transform type="1" oid="500" eid="1" positionX="2" positionY="2" positionZ="-1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="10" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Model type="6" oid="500" eid="1" obj="box.gltf" outlineWidth="0" materialOID="" />
             </components>
             <children />
         </box>
-        <cubemap oid="600" eid="600" type="1000">
+        <cubemap type="1000" oid="600" eid="600">
             <components>
                 <Transform type="1" oid="600" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="10" scaleY="10" scaleZ="10" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Cubemap type="9" oid="600" eid="1" image="cubemap1.png" />
             </components>
             <children />
         </cubemap>
-        <animation oid="700" eid="700" type="1000">
+        <animation type="1000" oid="700" eid="700">
             <components>
                 <Transform type="1" oid="700" eid="1" positionX="5" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="1" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
             </components>
             <children />
         </animation>
-        <particle oid="800" eid="800" type="1000">
+        <particle type="1000" oid="800" eid="800">
             <components>
                 <Transform type="1" oid="800" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Partical type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="80">
@@ -781,20 +781,20 @@
             </components>
             <children />
         </particle>
-        <render oid="1000" eid="1000" type="1000">
+        <render type="1000" oid="1000" eid="1000">
             <components>
                 <Transform type="1" oid="1000" eid="1" positionX="0" positionY="5" positionZ="7" scaleX="2.5" scaleY="2.5" scaleZ="2.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Render type="8" oid="1000" eid="1000" planeType="1" materialOID="" targetCameraOID="100" />
             </components>
             <children />
         </render>
-        <line oid="900" eid="900" type="1000">
+        <line type="1000" oid="900" eid="900">
             <components>
                 <Transform type="1" oid="900" eid="1" positionX="0" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="1" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Line type="5" oid="900" eid="1" targetTransformOID="0" colorR="1" colorG="1" colorB="0" />
             </components>
             <children>
-                <animation oid="700" eid="700" type="1000">
+                <animation oid="700" eid="700">
                     <components>
                         <Transform type="1" oid="700" eid="1" positionX="5" positionY="0" positionZ="0" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="1" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                         <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
@@ -803,14 +803,14 @@
                 </animation>
             </children>
         </line>
-        <sphere oid="1100" eid="1100" type="1000">
+        <sphere type="1000" oid="1100" eid="1100">
             <components>
                 <Transform type="1" oid="1100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="3" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="0" />
             </components>
             <children />
         </sphere>
-        <light2 oid="410" eid="410" type="1000">
+        <light2 type="1000" oid="410" eid="410">
             <components>
                 <Transform type="1" oid="401" eid="1" positionX="2" positionY="3" positionZ="3" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="2" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
@@ -819,13 +819,13 @@
             </components>
             <children />
         </light2>
-        <line oid="901" eid="901" type="1000">
+        <line type="1000" oid="901" eid="901">
             <components>
                 <Transform type="1" oid="900" eid="1" positionX="0" positionY="0" positionZ="1" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                 <Line type="5" oid="900" eid="1" targetTransformOID="700" colorR="1" colorG="1" colorB="0" />
             </components>
             <children>
-                <animation oid="700" eid="700" type="1000">
+                <animation type="1000" oid="700" eid="700">
                     <components>
                         <Transform type="1" oid="700" eid="1" positionX="3" positionY="0" positionZ="-4" scaleX="1" scaleY="1" scaleZ="1" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="-1" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="1" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
                         <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
@@ -896,7 +896,7 @@
             <default type="14" oid="0" eid="0" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
         </Grid>
         <RenderSetting type="15">
-            <default type="15" oid="0" eid="0" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+            <default type="15" oid="0" eid="0" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
         </RenderSetting>
     </components>
     <shaders>
@@ -921,10 +921,9 @@
     </shaders>
     <setting>
         <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.104" />
-        <environment debug="3" FPS="30" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
+        <environment currentSceneEID="1" outputLog="1" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
         <path log="data\log\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\" />
         <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />
-        <currentScene eid="1" />
     </setting>
 </config>
 

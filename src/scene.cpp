@@ -34,8 +34,8 @@ void QeSceneManager::loadScene(int _eid) {
     clear();
     clearScene();
     GRAP->initialize();
-    QeAssetXML *node = CONFIG->getXMLNode("setting.currentScene");
-    node->setXMLValue("eid", std::to_string(_eid).c_str());
+    QeAssetXML *node = CONFIG->getXMLNode("setting.environment");
+    node->setXMLValue("currentSceneEID", std::to_string(_eid).c_str());
     initialize(AST->getXMLEditNode(eScene, _eid));
 }
 

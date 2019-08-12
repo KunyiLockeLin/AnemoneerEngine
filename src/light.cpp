@@ -3,7 +3,7 @@
 void QeLight::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    bufferData.color = initProperty->getXMLValueRGB("colorR");
+    bufferData.color = initProperty->getXMLValueRGB("color");
     bufferData.param.x = initProperty->getXMLValuef("lightType");
     bufferData.param.y = initProperty->getXMLValuef("intensity");
     bufferData.param.z = initProperty->getXMLValuef("coneAngle");

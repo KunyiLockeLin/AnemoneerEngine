@@ -23,6 +23,7 @@ class QueenEngine {
     bool bClosed = false;
     float deltaTime;
     int currentFPS = 0;
+    int FPS = 0;
     QeTimer FPSTimer;
 
     void mainLoop();

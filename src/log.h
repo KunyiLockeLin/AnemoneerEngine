@@ -12,8 +12,5 @@ class QeLog {
     std::string stack(int from, int to);
     void print(std::string &msg, bool bShowStack = false, int stackLevel = 4);
 
-    QeDebugMode mode();
-    bool isDebug();
-    bool isLogPanel();
     bool isOutput();
 };
