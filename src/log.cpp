@@ -6,7 +6,7 @@ QeLog::~QeLog() {
     }
 }
 
-QeDebugMode QeLog::mode() { return QeDebugMode(atoi(AST->getXMLValue(4, AST->CONFIG, "setting", "environment", "debug"))); }
+QeDebugMode QeLog::mode() { return QeDebugMode(CONFIG->getXMLValuei("setting.environment.debug")); }
 
 bool QeLog::isDebug() { return mode() != eModeNoDebug_bit; }
 bool QeLog::isLogPanel() { return mode() & eModeLogPanel_bit; }
@@ -76,7 +76,7 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
             localtime_s(&timeinfo, &rawtime);
 
             strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
-            std::string outputPath = AST->getXMLValue(4, AST->CONFIG, "setting", "path", "log");
+            std::string outputPath = CONFIG->getXMLValue("setting.path.log");
             _mkdir(outputPath.c_str());
             outputPath += "log";
             outputPath += buffer;
@@ -84,8 +84,8 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
             ofile.open(outputPath);
         }
-        //ofile.seekp(ofile.beg);
+        // ofile.seekp(ofile.beg);
         ofile << s << std::endl;
-        //ofile.flush();
+        // ofile.flush();
     }
 }

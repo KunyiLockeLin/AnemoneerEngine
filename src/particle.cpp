@@ -9,7 +9,7 @@ void QeParticle::initialize(QeAssetXML *_property, QeObject *_owner) {
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    computePipeline.shader = AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "particle", "comp"));
+    computePipeline.shader = AST->getShader(CONFIG->getXMLValue("shaders.compute.particle.comp"));
 
     shaderKey = "particle";
     AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
@@ -34,7 +34,7 @@ void QeParticle::initialize(QeAssetXML *_property, QeObject *_owner) {
     size.y = MATH->fRandom(particleRule->size.y, particleRule->size_range.y);
     size.z = 1;
 
-    AST->getXMLiValue(&bornTargetTranformOID, initProperty, 1, "bornTargetTranformOID");
+    bornTargetTranformOID = initProperty->getXMLValuei("bornTargetTranformOID");
 
     bufferData.material = materialData->value;
     // bufferData.param2.y = (float)bornTargetTranformOID;

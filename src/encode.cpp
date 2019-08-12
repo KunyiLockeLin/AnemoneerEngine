@@ -191,9 +191,9 @@ QeAssetXML *QeEncode::decodeXML(const char *buffer, int &index, QeAssetXML *pare
                     s = trim(s);
                     node->version = s;
                     currentIndex = index + 3;
-                } else if (buffer[currentIndex + 1] == '!') {
+                } else if (strncmp(buffer + currentIndex + 1, "!--", 3) == 0) {
                     currentIndex += 4;
-                    int index = int(strchr(buffer + currentIndex, '-') - buffer);
+                    int index = int(strstr(buffer + currentIndex, "--") - buffer);
                     int length = index - currentIndex;
                     if (length > 0) {
                         std::string s(buffer + currentIndex, length);
@@ -740,47 +740,33 @@ QeAssetParticleRule *QeEncode::decodeParticle(QeAssetXML *node) {
 
     // const char* c = AST->getXMLValue(node, 1, "image");
     // if (c != nullptr) particle->image = AST->getImage(c);
-    particle->image = AST->getXMLValue(node, 1, "image");
-    AST->getXMLbValue(&particle->bAlpha, node, 1, "alpha");
-    AST->getXMLbValue(&particle->bReborn, node, 1, "reborn");
-    AST->getXMLiValue(&particle->count_once, node, 2, "count", "once");
-    AST->getXMLiValue(&particle->count_period, node, 2, "count", "period");
-    AST->getXMLiValue(&particle->count_total, node, 2, "count", "total");
-    AST->getXMLiValue(&particle->count_range, node, 2, "count", "range");
-    AST->getXMLiValue(&particle->life_scend, node, 2, "life", "second");
-    AST->getXMLiValue(&particle->life_range, node, 2, "life", "range");
-    AST->getXMLfValue(&particle->init_pos_square.x, node, 2, "init_pos", "length");
-    AST->getXMLfValue(&particle->init_pos_square_range.x, node, 2, "init_pos", "length_range");
-    AST->getXMLfValue(&particle->init_pos_square.y, node, 2, "init_pos", "width");
-    AST->getXMLfValue(&particle->init_pos_square_range.y, node, 2, "init_pos", "width_range");
-    AST->getXMLfValue(&particle->init_pos_square.z, node, 2, "init_pos", "height");
-    AST->getXMLfValue(&particle->init_pos_square_range.z, node, 2, "init_pos", "height_range");
-    AST->getXMLfValue(&particle->init_pos_cycle.x, node, 2, "init_pos", "radius");
-    AST->getXMLfValue(&particle->init_pos_cycle_range.x, node, 2, "init_pos", "radius_range");
-    AST->getXMLfValue(&particle->init_pos_cycle.y, node, 2, "init_pos", "degree");
-    AST->getXMLfValue(&particle->init_pos_cycle_range.y, node, 2, "init_pos", "degree_range");
-    AST->getXMLfValue(&particle->init_speed.x, node, 2, "init_speed", "x");
-    AST->getXMLfValue(&particle->init_speed_range.x, node, 2, "init_speed", "x_range");
-    AST->getXMLfValue(&particle->init_speed.y, node, 2, "init_speed", "y");
-    AST->getXMLfValue(&particle->init_speed_range.y, node, 2, "init_speed", "y_range");
-    AST->getXMLfValue(&particle->init_speed.z, node, 2, "init_speed", "z");
-    AST->getXMLfValue(&particle->init_speed_range.z, node, 2, "init_speed", "z_range");
-    AST->getXMLfValue(&particle->force.x, node, 2, "force", "x");
-    AST->getXMLfValue(&particle->force_range.x, node, 2, "force", "x_range");
-    AST->getXMLfValue(&particle->force.y, node, 2, "force", "y");
-    AST->getXMLfValue(&particle->force_range.y, node, 2, "force", "y_range");
-    AST->getXMLfValue(&particle->force.z, node, 2, "force", "z");
-    AST->getXMLfValue(&particle->force_range.z, node, 2, "force", "z_range");
-    AST->getXMLfValue(&particle->color.x, node, 2, "color", "r");
-    AST->getXMLfValue(&particle->color_range.x, node, 2, "color", "r_range");
-    AST->getXMLfValue(&particle->color.y, node, 2, "color", "g");
-    AST->getXMLfValue(&particle->color_range.y, node, 2, "color", "g_range");
-    AST->getXMLfValue(&particle->color.z, node, 2, "color", "b");
-    AST->getXMLfValue(&particle->color_range.z, node, 2, "color", "b_range");
-    AST->getXMLfValue(&particle->size.x, node, 2, "size", "x");
-    AST->getXMLfValue(&particle->size_range.x, node, 2, "size", "x_range");
-    AST->getXMLfValue(&particle->size.y, node, 2, "size", "y");
-    AST->getXMLfValue(&particle->size_range.y, node, 2, "size", "y_range");
+    particle->image = node->getXMLValue("image");
+    particle->bAlpha = node->getXMLValueb("alpha");
+    particle->bReborn = node->getXMLValueb("reborn");
+    particle->count_once = node->getXMLValuei("count.once");
+    particle->count_period = node->getXMLValuei("count.period");
+    particle->count_total = node->getXMLValuei("count.total");
+    particle->count_range = node->getXMLValuei("count.range");
+    particle->life_scend = node->getXMLValuei("life.second");
+    particle->life_range = node->getXMLValuei("life.range");
+    particle->init_pos_square.x = node->getXMLValuef("init_pos.length");
+    particle->init_pos_square_range.x = node->getXMLValuef("init_pos.length_range");
+    particle->init_pos_square.y = node->getXMLValuef("init_pos.width");
+    particle->init_pos_square_range.y = node->getXMLValuef("init_pos.width_range");
+    particle->init_pos_square.z = node->getXMLValuef("init_pos.height");
+    particle->init_pos_square_range.z = node->getXMLValuef("init_pos.height_range");
+    particle->init_pos_cycle.x = node->getXMLValuef("init_pos.radius");
+    particle->init_pos_cycle_range.x = node->getXMLValuef("init_pos.radius_range");
+    particle->init_pos_cycle.y = node->getXMLValuef("init_pos.degree");
+    particle->init_pos_cycle_range.y = node->getXMLValuef("init_pos.degree_range");
+    particle->init_speed = node->getXMLValuefXYZ("init_speed.");
+    particle->init_speed_range = node->getXMLValuefXYZ("init_speed.range");
+    particle->force = node->getXMLValuefXYZ("force.");
+    particle->force_range = node->getXMLValuefXYZ("force.range");
+    particle->color = node->getXMLValueRGB("color");
+    particle->color_range = node->getXMLValueRGB("color.range");
+    particle->size = node->getXMLValuefXY("size.");
+    particle->size_range = node->getXMLValuefXY("size.range");
 
     return particle;
 }
@@ -1530,15 +1516,22 @@ void QeEncode::decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree *t
     }
 }
 
-std::vector<std::string> QeEncode::split(const char *s, const char *delim) {
+std::vector<std::string> QeEncode::split(std::string s, std::string delim) {
     std::vector<std::string> tokens;
-    char dup[4096];
+    /*char dup[4096];
     strncpy_s(dup, s, 4096);
     char *context = NULL;
     char *token = strtok_s(dup, delim, &context);
     while (token != NULL) {
         tokens.push_back(std::string(token));
         token = strtok_s(NULL, delim, &context);
+    }*/
+
+    size_t pos = 0;
+    while ((pos = s.find(delim)) != std::string::npos) {
+        tokens.push_back(s.substr(0, pos));
+        s.erase(0, pos + delim.length());
     }
+    tokens.push_back(s);
     return tokens;
 }

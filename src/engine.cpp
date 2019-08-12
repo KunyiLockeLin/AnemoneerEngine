@@ -12,11 +12,10 @@ void QueenEngine::run() {
 
 void QueenEngine::initialize() {
     WIN->resizeAll();
-    QeAssetXML *node = AST->getXMLNode(2, AST->CONFIG, "setting");
-    FPSTimer.setTimer(1000 / std::stoi(AST->getXMLValue(node, 2, "environment", "FPS")));
+    QeAssetXML *node = CONFIG->getXMLNode("setting");
+    FPSTimer.setTimer(1000 /node->getXMLValuei("environment.FPS"));
 
-    int sceneEID = 0;
-    AST->getXMLiValue(&sceneEID, node, 2, "currentScene", "eid");
+    int sceneEID = node->getXMLValuei("currentScene.eid");
     SCENE->loadScene(sceneEID);
 }
 

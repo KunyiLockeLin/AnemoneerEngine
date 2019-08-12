@@ -3,26 +3,26 @@
 void QeCamera::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
     // type = eCameraThirdPerson;
-    AST->getXMLfValue(&bufferData.pos_rayTracingDepth.w, initProperty, 1, "raytracingDepth");
-    AST->getXMLiValue(&lookAtTransformOID, initProperty, 1, "lookAtTransformOID");
-    AST->getXMLfValue(&up.x, initProperty, 1, "upX");
-    AST->getXMLfValue(&up.y, initProperty, 1, "upY");
-    AST->getXMLfValue(&up.z, initProperty, 1, "upZ");
-    AST->getXMLfValue(&aperture, initProperty, 1, "aperture");
+    bufferData.pos_rayTracingDepth.w = initProperty->getXMLValuef("raytracingDepth");
+    lookAtTransformOID = initProperty->getXMLValuei("lookAtTransformOID");
+    up.x = initProperty->getXMLValuef("upX");
+    up.y = initProperty->getXMLValuef("upY");
+    up.z = initProperty->getXMLValuef("upZ");
+    aperture = initProperty->getXMLValuef("aperture");
     bufferData.vertical_lensRadius.w = aperture / 2;
 
-    AST->getXMLfValue(&speed, initProperty, 1, "speed");
-    AST->getXMLiValue(&cullingDistance, initProperty, 1, "cullingDistance");
-    AST->getXMLfValue(&fov, initProperty, 1, "fov");
-    AST->getXMLfValue(&fnear, initProperty, 1, "near");
-    AST->getXMLfValue(&ffar, initProperty, 1, "far");
-    AST->getXMLiValue(&postProcessingOID, initProperty, 1, "postProcessingOID");
+    speed = initProperty->getXMLValuef("speed");
+    cullingDistance = initProperty->getXMLValuei("cullingDistance");
+    fov = initProperty->getXMLValuef("fov");
+    fnear = initProperty->getXMLValuef("near");
+    ffar = initProperty->getXMLValuef("far");
+    postProcessingOID = initProperty->getXMLValuei("postProcessingOID");
     bUpdatePostProcessingOID = false;
     if (postProcessingOID) bUpdatePostProcessingOID = true;
 
-    AST->getXMLiValue((int *)&renderType, initProperty, 1, "renderType");
-    AST->getXMLiValue((int *)&renderSize.width, initProperty, 1, "width");
-    AST->getXMLiValue((int *)&renderSize.height, initProperty, 1, "height");
+    renderType = (QeRenderType)initProperty->getXMLValuei("renderType");
+    renderSize.width = initProperty->getXMLValuei("width");
+    renderSize.height = initProperty->getXMLValuei("height");
     GRAP->createRender(renderType, oid, renderSize);
 }
 

@@ -4,27 +4,16 @@ void QeTransform::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
     _owner->transform = this;
 
-    AST->getXMLfValue(&position.x, initProperty, 1, "positionX");
-    AST->getXMLfValue(&position.y, initProperty, 1, "positionY");
-    AST->getXMLfValue(&position.z, initProperty, 1, "positionZ");
-    AST->getXMLfValue(&scale.x, initProperty, 1, "scaleX");
-    AST->getXMLfValue(&scale.y, initProperty, 1, "scaleY");
-    AST->getXMLfValue(&scale.z, initProperty, 1, "scaleZ");
-    AST->getXMLfValue(&faceEular.x, initProperty, 1, "faceEularX");
-    AST->getXMLfValue(&faceEular.y, initProperty, 1, "faceEularY");
-    AST->getXMLfValue(&faceEular.z, initProperty, 1, "faceEularZ");
-    AST->getXMLfValue(&rotateSpeed.x, initProperty, 1, "rotateSpeedX");
-    AST->getXMLfValue(&rotateSpeed.y, initProperty, 1, "rotateSpeedY");
-    AST->getXMLfValue(&rotateSpeed.z, initProperty, 1, "rotateSpeedZ");
-    AST->getXMLfValue(&revoluteSpeed.x, initProperty, 1, "revoluteSpeedX");
-    AST->getXMLfValue(&revoluteSpeed.y, initProperty, 1, "revoluteSpeedY");
-    AST->getXMLfValue(&revoluteSpeed.z, initProperty, 1, "revoluteSpeedZ");
-    AST->getXMLbValue(&revoluteFixAxisX, initProperty, 1, "revoluteFixAxisX");
-    AST->getXMLbValue(&revoluteFixAxisY, initProperty, 1, "revoluteFixAxisY");
-    AST->getXMLbValue(&revoluteFixAxisZ, initProperty, 1, "revoluteFixAxisZ");
-    targetAnimationOID = 0;
-    AST->getXMLiValue(&targetAnimationOID, initProperty, 1, "targetAnimationOID");
-    targetBoneName = AST->getXMLValue(initProperty, 1, "targetBoneName");
+    position = initProperty->getXMLValuefXYZ("position");
+    scale = initProperty->getXMLValuefXYZ("scale");
+    faceEular = initProperty->getXMLValuefXYZ("faceEular");
+    rotateSpeed = initProperty->getXMLValuefXYZ("rotateSpeed");
+    revoluteSpeed = initProperty->getXMLValuefXYZ("revoluteSpeed");
+    revoluteFixAxisX = initProperty->getXMLValueb("revoluteFixAxisX");
+    revoluteFixAxisY = initProperty->getXMLValueb("revoluteFixAxisY");
+    revoluteFixAxisZ = initProperty->getXMLValueb("revoluteFixAxisZ");
+    targetAnimationOID = initProperty->getXMLValuei("targetAnimationOID");
+    targetBoneName = initProperty->getXMLValue("targetBoneName");
 }
 
 void QeTransform::update1() {

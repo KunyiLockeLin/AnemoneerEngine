@@ -3,12 +3,10 @@
 void QeLight::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    AST->getXMLfValue(&bufferData.color.x, initProperty, 1, "colorR");
-    AST->getXMLfValue(&bufferData.color.y, initProperty, 1, "colorG");
-    AST->getXMLfValue(&bufferData.color.z, initProperty, 1, "colorB");
-    AST->getXMLfValue(&bufferData.param.x, initProperty, 1, "lightType");
-    AST->getXMLfValue(&bufferData.param.y, initProperty, 1, "intensity");
-    AST->getXMLfValue(&bufferData.param.z, initProperty, 1, "coneAngle");
+    bufferData.color = initProperty->getXMLValueRGB("colorR");
+    bufferData.param.x = initProperty->getXMLValuef("lightType");
+    bufferData.param.y = initProperty->getXMLValuef("intensity");
+    bufferData.param.z = initProperty->getXMLValuef("coneAngle");
     GRAP->addLight(this);
 }
 

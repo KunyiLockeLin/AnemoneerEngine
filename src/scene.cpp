@@ -3,7 +3,7 @@
 void QeSceneManager::initialize(QeAssetXML *_property) {
     initProperty = _property;
 
-    AST->getXMLiValue(&eid, initProperty, 1, "eid");
+    eid = initProperty->getXMLValuei("eid");
     name = initProperty->key;
 
     for (int index = 0; index < initProperty->nexts.size(); ++index) {
@@ -34,7 +34,7 @@ void QeSceneManager::loadScene(int _eid) {
     clear();
     clearScene();
     GRAP->initialize();
-    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "currentScene");
+    QeAssetXML *node = CONFIG->getXMLNode("setting.currentScene");
     node->setXMLValue("eid", std::to_string(_eid).c_str());
     initialize(AST->getXMLEditNode(eScene, _eid));
 }
@@ -140,8 +140,7 @@ QeObject *QeSceneManager::spwanObject(QeAssetXML *_property, QeObject *_parent) 
 QeComponent *QeSceneManager::spwanComponent(QeAssetXML *_property, QeObject *_owner) {
     QeComponent *_component = nullptr;
 
-    QeComponentType _type;
-    AST->getXMLiValue((int *)&_type, _property, 1, "type");
+    QeComponentType _type = (QeComponentType)_property->getXMLValuei("type");
 
     std::map<QeComponentType, std::vector<QeComponent *>>::iterator it = unActiveComponents.find(_type);
     if (it != unActiveComponents.end() && it->second.size() > 0) {

@@ -107,7 +107,7 @@ void QeVulkan::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportC
 }
 
 void QeVulkan::createInstance() {
-    QeAssetXML *node = AST->getXMLNode(3, AST->CONFIG, "setting", "Vulkan_Validation_Layers");
+    QeAssetXML *node = CONFIG->getXMLNode("setting.Vulkan_Validation_Layers");
     validationLayers.clear();
     for (const auto &it : node->elements) {
         if (!it.value.compare("1")) {
@@ -120,17 +120,17 @@ void QeVulkan::createInstance() {
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
-    node = AST->getXMLNode(3, AST->CONFIG, "setting", "application");
-    appInfo.pApplicationName = AST->getXMLValue(node, 1, "applicationName");
+    node = CONFIG->getXMLNode("setting.application");
+    appInfo.pApplicationName = node->getXMLValue("applicationName");
 
-    std::vector<std::string> vs = ENCODE->split(AST->getXMLValue(node, 1, "applicationVersion"), ".");
+    std::vector<std::string> vs = ENCODE->split(node->getXMLValue("applicationVersion"), ".");
     appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    appInfo.pEngineName = AST->getXMLValue(node, 1, "engineName");
-    vs = ENCODE->split(AST->getXMLValue(node, 1, "engineVersion"), ".");
+    appInfo.pEngineName = node->getXMLValue("engineName");
+    vs = ENCODE->split(node->getXMLValue("engineVersion"), ".");
     appInfo.engineVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    vs = ENCODE->split(AST->getXMLValue(node, 1, "VulkanAPIVersion"), ".");
+    vs = ENCODE->split(node->getXMLValue("VulkanAPIVersion"), ".");
     appInfo.apiVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
     VkInstanceCreateInfo createInfo = {};

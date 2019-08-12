@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--test test test 0000-->
-<confing>
+<config>
     <!--test test test 1111-->
     <scenes type="2000">
         <!--test test test 2222-->
@@ -527,10 +527,10 @@
                         <count once="5" period="10" total="100" range="0" />
                         <life second="2" range="5" />
                         <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0" />
-                        <init_speed x="-0.3" x_range="0.6" y="-0.3" y_range="0.6" z="1.0" z_range="2.0" />
-                        <force x="0" x_range="0" y="0" y_range="0" z="-2.0" z_range="1.0" />
-                        <size x="0.6" x_range="0" y="0.6" y_range="0" />
-                        <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1" />
+                        <init_speed X="-0.3" rangeX="0.6" Y="-0.3" rangeY="0.6" Z="1.0" rangeZ="2.0" />
+                        <force X="0" rangeX="0" Y="0" rangeY="0" Z="-2.0" rangeZ="1.0" />
+                        <size X="0.6" rangeX="0" Y="0.6" rangeY="0" />
+                        <color R="0" rangeR="1" G="0" rangeG="1" B="0" rangeB="1" />
                     </Partical>
                 </components>
                 <children />
@@ -542,10 +542,10 @@
                         <count once="5" period="10" total="100" range="0" />
                         <life second="2" range="5" />
                         <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0" />
-                        <init_speed x="-0.3" x_range="0.6" y="-0.3" y_range="0.6" z="1.0" z_range="2.0" />
-                        <force x="0" x_range="0" y="0" y_range="0" z="-2.0" z_range="1.0" />
-                        <size x="0.6" x_range="0" y="0.6" y_range="0" />
-                        <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1" />
+                        <init_speed X="-0.3" rangeX="0.6" Y="-0.3" rangeY="0.6" Z="1.0" rangeZ="2.0" />
+                        <force X="0" rangeX="0" Y="0" rangeY="0" Z="-2.0" rangeZ="1.0" />
+                        <size X="0.6" rangeX="0" Y="0.6" rangeY="0" />
+                        <color R="0" rangeR="1" G="0" rangeG="1" B="0" rangeB="1" />
                     </Partical>
                 </components>
                 <children />
@@ -773,10 +773,10 @@
                     <count once="5" period="10" total="100" range="0" />
                     <life second="2" range="5" />
                     <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0" />
-                    <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.5" z_range="1" />
-                    <force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5" />
-                    <size x="0.5" x_range="0" y="0.5" y_range="0" />
-                    <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1" />
+                    <init_speed X="-0.3" rangeX="0.6" Y="-0.3" rangeY="0.6" Z="1.0" rangeZ="2.0" />
+                    <force X="0" rangeX="0" Y="0" rangeY="0" Z="-2.0" rangeZ="1.0" />
+                    <size X="0.6" rangeX="0" Y="0.6" rangeY="0" />
+                    <color R="0" rangeR="1" G="0" rangeG="1" B="0" rangeB="1" />
                 </Partical>
             </components>
             <children />
@@ -872,10 +872,10 @@
                 <count once="5" period="10" total="100" range="0" />
                 <life second="2" range="5" />
                 <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0" />
-                <init_speed x="-0.2" x_range="0.4" y="-0.2" y_range="0.4" z="0.5" z_range="1" />
-                <force x="0" x_range="0" y="0" y_range="0" z="-1.0" z_range="0.5" />
-                <size x="0.5" x_range="0" y="0.5" y_range="0" />
-                <color r="0" r_range="1" g="0" g_range="1" b="0" b_range="1" />
+                <init_speed X="-0.3" rangeX="0.6" Y="-0.3" rangeY="0.6" Z="1.0" rangeZ="2.0" />
+                <force X="0" rangeX="0" Y="0" rangeY="0" Z="-2.0" rangeZ="1.0" />
+                <size X="0.6" rangeX="0" Y="0.6" rangeY="0" />
+                <color R="0" rangeR="1" G="0" rangeG="1" B="0" rangeB="1" />
             </default>
         </Partical>
         <Material type="11">
@@ -926,5 +926,5 @@
         <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />
         <currentScene eid="1" />
     </setting>
-</confing>
+</config>
 

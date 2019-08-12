@@ -3,10 +3,10 @@
 void QeAnimation::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeModel::initialize(_property, _owner);
 
-    AST->getXMLiValue((int *)&actionState, initProperty, 1, "actionState");
-    AST->getXMLfValue(&actionSpeed, initProperty, 1, "actionSpeed");
-    AST->getXMLiValue(&currentActionID, initProperty, 1, "actionID");
-    AST->getXMLiValue((int *)&actionType, initProperty, 1, "actionType");
+    actionState = (QeActionState)initProperty->getXMLValuei("actionState");
+    actionSpeed = initProperty->getXMLValuef("actionSpeed");
+    currentActionID = initProperty->getXMLValuei("actionID");
+    actionType = (QeActionType)initProperty->getXMLValuei("actionType");
 
     graphicsShader.geom = nullptr;
     graphicsShader.tesc = nullptr;

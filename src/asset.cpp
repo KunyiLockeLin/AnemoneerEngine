@@ -11,81 +11,462 @@ QeAssetXML::~QeAssetXML() {
     nexts.clear();
 }
 
-const char *QeAssetXML::getXMLValue(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
+QeAssetXML *QeAssetXML::getXMLNode(const char *keys) { return getXMLNode(ENCODE->split(keys, ".")); }
 
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+QeAssetXML *QeAssetXML::getXMLNode(std::vector<std::string> &keys) {
+    QeAssetXML *current = this;
+    for (const auto &key : keys) {
+        bool b = true;
+        for (const auto &node : current->nexts) {
+            if (key.compare(node->key) == 0) {
+                current = node;
+                b = false;
+                break;
+            }
+        }
+        if (b) return nullptr;
+    }
+    return current;
+}
 
-    const char *ret = AST->getXMLValue(this, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
+const char *QeAssetXML::getXMLValue(const char *keys) {
+    const char *ret = nullptr;
+    getXMLValue(ret, keys);
     return ret;
 }
 
-QeAssetXML *QeAssetXML::getXMLNode(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
+QeAssetXML *QeAssetXML::getXMLValue(const char *&value, const char *keys) { return getXMLValue(value, ENCODE->split(keys, ".")); }
 
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
+QeAssetXML *QeAssetXML::getXMLValue(const char *&value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *current = getXMLNode(keys1);
+    if (!current) return nullptr;
 
-    QeAssetXML *ret = AST->getXMLNode(this, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+    keys1[0] = keys[final_index];
+
+    for (const auto &node : current->elements) {
+        if (keys1[0].compare(node.key) == 0) {
+            value = node.value.c_str();
+            return current;
+        }
+    }
+
+    current = getXMLNode(keys1);
+    if (!current) return nullptr;
+    if (keys1[0].compare(current->key.c_str()) == 0) {
+        value = current->value.c_str();
+        return current;
+    }
+
+    value = nullptr;
+    return nullptr;
+}
+
+bool QeAssetXML::getXMLValueb(const char *keys) {
+    bool ret = false;
+    getXMLValueb(ret, keys);
     return ret;
 }
 
-QeAssetXML *QeAssetXML::copyXMLNode() { return AST->copyXMLNode(this); }
-void QeAssetXML::copyXMLValue(QeAssetXML *to) { AST->copyXMLValue(this, to); }
-void QeAssetXML::copyXMLNode(QeAssetXML *to) { AST->copyXMLNode(this, to); }
-void QeAssetXML::addXMLNode(QeAssetXML *node) { AST->addXMLNode(this, node); }
-void QeAssetXML::setXMLKey(const char *key) { AST->setXMLKey(this, key); }
-void QeAssetXML::setXMLValue(const char *value) { AST->setXMLValue(this, value); }
-void QeAssetXML::setXMLValue(const char *key, const char *value) { AST->setXMLValue(this, key, value); }
-void QeAssetXML::removeXMLNode(QeAssetXML *node) { AST->removeXMLNode(this, node); }
-void QeAssetXML::outputXML(const char *path, int level, std::string *content) { AST->outputXML(this, path, level, content); }
-bool QeAssetXML::getXMLbValue(bool *output, int length, ...) {
-    va_list keys;
-    va_start(keys, length);
+QeAssetXML *QeAssetXML::getXMLValueb(bool &value, const char *keys) { return getXMLValueb(value, ENCODE->split(keys, ".")); }
 
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    bool ret = AST->getXMLbValue(output, this, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-
+QeAssetXML *QeAssetXML::getXMLValueb(bool &value, std::vector<std::string> &keys) {
+    const char *value_c = nullptr;
+    QeAssetXML *ret = getXMLValue(value_c, keys);
+    if (ret) value = atoi(value_c);
     return ret;
 }
 
-bool QeAssetXML::getXMLiValue(int *output, int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    bool ret = AST->getXMLiValue(output, this, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-
+int QeAssetXML::getXMLValuei(const char *keys) {
+    int ret = 0;
+    getXMLValuei(ret, keys);
     return ret;
 }
 
-bool QeAssetXML::getXMLfValue(float *output, int length, ...) {
-    va_list keys;
-    va_start(keys, length);
+QeAssetXML *QeAssetXML::getXMLValuei(int &value, const char *keys) { return getXMLValuei(value, ENCODE->split(keys, ".")); }
 
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    bool ret = AST->getXMLfValue(output, this, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-
+QeAssetXML *QeAssetXML::getXMLValuei(int &value, std::vector<std::string> &keys) {
+    const char *value_c = nullptr;
+    QeAssetXML *ret = getXMLValue(value_c, keys);
+    if (ret) value = atoi(value_c);
     return ret;
+}
+
+float QeAssetXML::getXMLValuef(const char *keys) {
+    float ret = 0.f;
+    getXMLValuef(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValuef(float &value, const char *keys) { return getXMLValuef(value, ENCODE->split(keys, ".")); }
+
+QeAssetXML *QeAssetXML::getXMLValuef(float &value, std::vector<std::string> &keys) {
+    const char *value_c = nullptr;
+    QeAssetXML *ret = getXMLValue(value_c, keys);
+    if (ret) value = float(atof(value_c));
+    return ret;
+}
+
+QeVector2i QeAssetXML::getXMLValueiXY(const char *keys) {
+    QeVector2i ret = {};
+    getXMLValueiXY(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValueiXY(QeVector2i &value, const char *keys) {
+    return getXMLValueiXY(value, ENCODE->split(keys, "."));
+}
+QeAssetXML *QeAssetXML::getXMLValueiXY(QeVector2i &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "X";
+    QeAssetXML *ret = node->getXMLValuei(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "Y";
+    ret = node->getXMLValuei(value.y, keys1);
+    return ret;
+}
+
+QeVector3i QeAssetXML::getXMLValueiXYZ(const char *keys) {
+    QeVector3i ret = {};
+    getXMLValueiXYZ(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValueiXYZ(QeVector3i &value, const char *keys) {
+    return getXMLValueiXYZ(value, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLValueiXYZ(QeVector3i &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "X";
+    QeAssetXML *ret = node->getXMLValuei(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "Y";
+    ret = node->getXMLValuei(value.y, keys1);
+
+    keys1[0] = keys[final_index] + "Z";
+    ret = node->getXMLValuei(value.z, keys1);
+    return ret;
+}
+
+QeVector4i QeAssetXML::getXMLValueiXYZW(const char *keys) {
+    QeVector4i ret = {};
+    getXMLValueiXYZW(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValueiXYZW(QeVector4i &value, const char *keys) {
+    return getXMLValueiXYZW(value, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLValueiXYZW(QeVector4i &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "X";
+    QeAssetXML *ret = node->getXMLValuei(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "Y";
+    ret = node->getXMLValuei(value.y, keys1);
+
+    keys1[0] = keys[final_index] + "Z";
+    ret = node->getXMLValuei(value.z, keys1);
+
+    keys1[0] = keys[final_index] + "W";
+    ret = node->getXMLValuei(value.w, keys1);
+    return ret;
+}
+
+QeVector2f QeAssetXML::getXMLValuefXY(const char *keys) {
+    QeVector2f ret = {};
+    getXMLValuefXY(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValuefXY(QeVector2f &value, const char *keys) {
+    return getXMLValuefXY(value, ENCODE->split(keys, "."));
+}
+QeAssetXML *QeAssetXML::getXMLValuefXY(QeVector2f &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "X";
+    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "Y";
+    ret = node->getXMLValuef(value.y, keys1);
+    return ret;
+}
+
+QeVector3f QeAssetXML::getXMLValuefXYZ(const char *keys) {
+    QeVector3f ret = {};
+    getXMLValuefXYZ(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValuefXYZ(QeVector3f &value, const char *keys) {
+    return getXMLValuefXYZ(value, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLValuefXYZ(QeVector3f &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "X";
+    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "Y";
+    ret = node->getXMLValuef(value.y, keys1);
+
+    keys1[0] = keys[final_index] + "Z";
+    ret = node->getXMLValuef(value.z, keys1);
+    return ret;
+}
+
+QeVector4f QeAssetXML::getXMLValuefXYZW(const char *keys) {
+    QeVector4f ret = {};
+    getXMLValuefXYZW(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValuefXYZW(QeVector4f &value, const char *keys) {
+    return getXMLValuefXYZW(value, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLValuefXYZW(QeVector4f &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "X";
+    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "Y";
+    ret = node->getXMLValuef(value.y, keys1);
+
+    keys1[0] = keys[final_index] + "Z";
+    ret = node->getXMLValuef(value.z, keys1);
+
+    keys1[0] = keys[final_index] + "W";
+    ret = node->getXMLValuef(value.w, keys1);
+    return ret;
+}
+
+QeVector3f QeAssetXML::getXMLValueRGB(const char *keys) {
+    QeVector3f ret = {};
+    getXMLValueRGB(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValueRGB(QeVector3f &value, const char *keys) {
+    return getXMLValueRGB(value, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLValueRGB(QeVector3f &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "R";
+    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "G";
+    ret = node->getXMLValuef(value.y, keys1);
+
+    keys1[0] = keys[final_index] + "B";
+    ret = node->getXMLValuef(value.z, keys1);
+    return ret;
+}
+
+QeVector4f QeAssetXML::getXMLValueRGBA(const char *keys) {
+    QeVector4f ret = {};
+    getXMLValueRGBA(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLValueRGBA(QeVector4f &value, const char *keys) {
+    return getXMLValueRGBA(value, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLValueRGBA(QeVector4f &value, std::vector<std::string> &keys) {
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *node = getXMLNode(keys1);
+    if (!node) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+
+    keys1[0] = keys[final_index] + "R";
+    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
+
+    keys1[0] = keys[final_index] + "G";
+    ret = node->getXMLValuef(value.y, keys1);
+
+    keys1[0] = keys[final_index] + "B";
+    ret = node->getXMLValuef(value.z, keys1);
+
+    keys1[0] = keys[final_index] + "A";
+    ret = node->getXMLValuef(value.w, keys1);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::copyXMLNode() {
+    QeAssetXML *node = new QeAssetXML();
+    copyXMLNode(node);
+    return node;
+}
+
+void QeAssetXML::copyXMLNode(QeAssetXML *to) {
+    copyXMLValue(to);
+
+    for (const auto &node : to->nexts) {
+        if (node) delete node;
+    }
+    to->nexts.clear();
+
+    for (const auto &node : nexts) {
+        QeAssetXML *new_node = new QeAssetXML();
+        to->nexts.push_back(new_node);
+        node->copyXMLNode(new_node);
+    }
+}
+
+void QeAssetXML::copyXMLValue(QeAssetXML *to) {
+    to->comments = comments;
+    to->key = key;
+    to->value = value;
+    to->elements = elements;
+}
+
+void QeAssetXML::addXMLNode(QeAssetXML *node) { nexts.push_back(node); }
+
+void QeAssetXML::setXMLKey(const char *key) { this->key = key; }
+void QeAssetXML::setXMLValue(const char *value) { this->value = value; }
+
+void QeAssetXML::setXMLValue(const char *key, const char *value) {
+    for (auto &node : elements) {
+        if (node.key.compare(key) == 0) {
+            node.value = value;
+            return;
+        }
+    }
+    QeNode node = {key, value};
+    elements.push_back(node);
+}
+
+void QeAssetXML::removeXMLNode(QeAssetXML *node) {
+    for (int i = 0; i < nexts.size(); ++i) {
+        if (nexts[i] == node) {
+            nexts.erase(nexts.begin() + i);
+            delete node;
+            return;
+        }
+    }
+    for (const auto &node1 : nexts) {
+        node1->removeXMLNode(node);
+    }
+}
+void QeAssetXML::outputXML(const char *path, int level, std::string *content) {
+    std::string s;
+
+    if (!content) {
+        content = &s;
+    }
+    std::string space = "";
+    for (int i = 0; i < level; ++i) {
+        space += "    ";
+    }
+    if (version.length()) {
+        *content += "<?";
+        *content += version;
+        *content += "?>\n";
+    }
+    for (const auto &s : comments) {
+        *content += space;
+        *content += "<!--";
+        *content += s;
+        *content += "-->\n";
+    }
+
+    *content += space;
+    *content += "<";
+    *content += key;
+    for (const auto &node : elements) {
+        *content += " ";
+        *content += node.key;
+        *content += "=\"";
+        *content += node.value;
+        *content += "\"";
+    }
+    if (!nexts.size()) {
+        if (value.length()) {
+            *content += ">";
+            *content += value;
+            *content += "</";
+            *content += key;
+            *content += ">\n";
+        } else {
+            *content += " />\n";
+        }
+    } else {
+        *content += ">\n";
+        for (const auto &node : nexts) {
+            node->outputXML(nullptr, level + 1, content);
+        }
+
+        *content += space;
+        *content += "</";
+        *content += key;
+        *content += ">\n";
+    }
+    if (path) {
+        std::ofstream ofile;
+        ofile.open(path);
+
+        ofile << s << std::endl;
+        ofile.close();
+    }
 }
 
 QeAssetJSON::~QeAssetJSON() {
@@ -213,6 +594,7 @@ void QeAsset::removeXML(std::string path) {
         delete it->second;
         astXMLs.erase(it);
     }
+    GLB.configXML = nullptr;
 }
 
 std::vector<char> QeAsset::loadFile(const char *_filePath) {
@@ -583,243 +965,6 @@ QeAssetXML *QeAsset::getXML(const char *_filePath) {
     return head;
 }
 
-const char *QeAsset::getXMLValue(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char *key = va_arg(keys, const char *);
-    QeAssetXML *source = getXML(key);
-    if (source == nullptr) {
-        va_end(keys);
-        return nullptr;
-    }
-    const char **keys1 = new const char *[length - 1];
-    for (int i = 0; i < (length - 1); ++i) keys1[i] = va_arg(keys, const char *);
-
-    const char *ret = getXMLValue(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return ret;
-}
-
-const char *QeAsset::getXMLValue(QeAssetXML *source, int length, ...) {
-    if (source == nullptr) return nullptr;
-
-    va_list keys;
-    va_start(keys, length);
-
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    const char *ret = getXMLValue(source, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-    return ret;
-}
-
-const char *QeAsset::getXMLValue(QeAssetXML *source, const char *keys[], int length) {
-    if (source == nullptr) return nullptr;
-
-    for (int index = 0; index < length; ++index) {
-        if (index == (length - 1)) {
-            if (strcmp(keys[index - 1], source->key.c_str()) == 0) return source->value.c_str();
-            break;
-        } else if (index == (length - 2)) {
-            for (const auto &node : source->elements) {
-                if (node.key.compare(keys[index]) == 0) {
-                    return node.value.c_str();
-                }
-            }
-        }
-
-        bool b = true;
-        for (const auto &node : source->nexts) {
-            if (node->key.compare(keys[index]) == 0) {
-                source = node;
-                b = false;
-                break;
-            }
-        }
-        if (b) return nullptr;
-    }
-    return nullptr;
-}
-
-QeAssetXML *QeAsset::getXMLNode(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char *key = va_arg(keys, const char *);
-    QeAssetXML *source = getXML(key);
-    if (source == nullptr) {
-        va_end(keys);
-        return nullptr;
-    }
-    length--;
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    source = getXMLNode(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return source;
-}
-
-QeAssetXML *QeAsset::getXMLNode(QeAssetXML *source, int length, ...) {
-    if (source == nullptr) return nullptr;
-
-    va_list keys;
-    va_start(keys, length);
-
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    source = getXMLNode(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return source;
-}
-
-QeAssetXML *QeAsset::getXMLNode(QeAssetXML *source, const char *keys[], int length) {
-    if (source == nullptr) return nullptr;
-
-    for (int index = 0; index < length; ++index) {
-        int size = int(source->nexts.size());
-        int index1 = 0;
-        for (; index1 < size; ++index1) {
-            if (strcmp(keys[index], source->nexts[index1]->key.c_str()) == 0) {
-                source = source->nexts[index1];
-                break;
-            }
-        }
-        if (index1 == size) return nullptr;
-    }
-    return source;
-}
-
-QeAssetXML *QeAsset::copyXMLNode(QeAssetXML *source) {
-    if (source == nullptr) return nullptr;
-
-    QeAssetXML *node = new QeAssetXML();
-    copyXMLNode(source, node);
-    return node;
-}
-
-void QeAsset::copyXMLValue(QeAssetXML *from, QeAssetXML *to) {
-    if (from == nullptr || to == nullptr) return;
-    to->comments = from->comments;
-    to->key = from->key;
-    to->value = from->value;
-    to->elements = from->elements;
-}
-
-void QeAsset::copyXMLNode(QeAssetXML *from, QeAssetXML *to) {
-    if (from == nullptr || to == nullptr) return;
-
-    copyXMLValue(from, to);
-
-    for (const auto &node : to->nexts) {
-        if (node) delete node;
-    }
-    to->nexts.clear();
-
-    for (int i = 0; i < from->nexts.size(); ++i) {
-        QeAssetXML *node = new QeAssetXML();
-        to->nexts.push_back(node);
-        copyXMLNode(from->nexts[i], node);
-    }
-}
-
-void QeAsset::addXMLNode(QeAssetXML *source, QeAssetXML *node) { source->nexts.push_back(node); }
-void QeAsset::setXMLKey(QeAssetXML *source, const char *key) { source->key = key; }
-void QeAsset::setXMLValue(QeAssetXML *source, const char *value) { source->value = value; }
-void QeAsset::setXMLValue(QeAssetXML *source, const char *key, const char *value) {
-    for (auto &node : source->elements) {
-        if (node.key.compare(key) == 0) {
-            node.value = value;
-            return;
-        }
-    }
-    QeNode node = {key, value};
-    source->elements.push_back(node);
-}
-
-void QeAsset::removeXMLNode(QeAssetXML *source, QeAssetXML *node) {
-    for (int i = 0; i < source->nexts.size(); ++i) {
-        if (source->nexts[i] == node) {
-            source->nexts.erase(source->nexts.begin() + i);
-            delete node;
-            return;
-        }
-    }
-
-    for (int i = 0; i < source->nexts.size(); ++i) {
-        removeXMLNode(source->nexts[i], node);
-    }
-}
-
-void QeAsset::outputXML(QeAssetXML *source, const char *path, int level, std::string *content) {
-    std::string s;
-
-    if (!content) {
-        content = &s;
-    }
-    std::string space = "";
-    for (int i = 0; i < level; ++i) {
-        space += "    ";
-    }
-    if (source->version.length()) {
-        *content += "<?";
-        *content += source->version;
-        *content += "?>\n";
-    }
-    for (const auto &s : source->comments) {
-        *content += space;
-        *content += "<!--";
-        *content += s;
-        *content += "-->\n";
-    }
-
-    *content += space;
-    *content += "<";
-    *content += source->key;
-    for (const auto &node : source->elements) {
-        *content += " ";
-        *content += node.key;
-        *content += "=\"";
-        *content += node.value;
-        *content += "\"";
-    }
-    if (!source->nexts.size()) {
-        if (source->value.length()) {
-            *content += ">";
-            *content += source->value;
-            *content += "</";
-            *content += source->key;
-            *content += ">\n";
-        } else {
-            *content += " />\n";
-        }
-    } else {
-        *content += ">\n";
-        for (const auto &node : source->nexts) {
-            outputXML(node, nullptr, level + 1, content);
-        }
-
-        *content += space;
-        *content += "</";
-        *content += source->key;
-        *content += ">\n";
-    }
-    if (path) {
-        std::ofstream ofile;
-        ofile.open(path);
-
-        ofile << s << std::endl;
-        ofile.close();
-    }
-}
-
 QeAssetXML *QeAsset::getXMLEditNode(QeComponentType _type, int eid) {
     std::string s = "";
     int type2 = 0;
@@ -837,14 +982,13 @@ QeAssetXML *QeAsset::getXMLEditNode(QeComponentType _type, int eid) {
             break;
     }
 
-    QeAssetXML *node = getXMLNode(2, CONFIG, s.c_str());
+    QeAssetXML *node = CONFIG->getXMLNode(s.c_str());
 
     if (node != nullptr && node->nexts.size() > 0) {
         if (type2 != 0) {
             bool b = false;
             for (int index = 0; index < node->nexts.size(); ++index) {
-                int _type = 0;
-                AST->getXMLiValue(&_type, node->nexts[index], 1, "type");
+                int _type = node->nexts[index]->getXMLValuei("type");
                 if (_type == type2) {
                     b = true;
                     node = node->nexts[index];
@@ -855,72 +999,11 @@ QeAssetXML *QeAsset::getXMLEditNode(QeComponentType _type, int eid) {
         }
 
         for (int index = 0; index < node->nexts.size(); ++index) {
-            int _eid = 0;
-            AST->getXMLiValue(&_eid, node->nexts[index], 1, "eid");
+            int _eid = node->nexts[index]->getXMLValuei("eid");
             if (_eid == eid) return node->nexts[index];
         }
     }
     return nullptr;
-}
-
-bool QeAsset::getXMLbValue(bool *output, QeAssetXML *source, int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    bool ret = getXMLbValue(output, source, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-
-    return ret;
-}
-
-bool QeAsset::getXMLbValue(bool *output, QeAssetXML *source, const char *keys[], int length) {
-    const char *ret = getXMLValue(source, keys, length);
-    if (ret) *output = atoi(ret);
-    return ret;
-}
-
-bool QeAsset::getXMLiValue(int *output, QeAssetXML *source, int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    bool ret = getXMLiValue(output, source, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-
-    return ret;
-}
-
-bool QeAsset::getXMLiValue(int *output, QeAssetXML *source, const char *keys[], int length) {
-    const char *ret = getXMLValue(source, keys, length);
-    if (ret) *output = atoi(ret);
-    return ret;
-}
-
-bool QeAsset::getXMLfValue(float *output, QeAssetXML *source, int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char **keys1 = new const char *[length];
-    for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
-
-    bool ret = getXMLfValue(output, source, keys1, length + 1);
-    va_end(keys);
-    delete[] keys1;
-
-    return ret;
-}
-
-bool QeAsset::getXMLfValue(float *output, QeAssetXML *source, const char *keys[], int length) {
-    const char *ret = getXMLValue(source, keys, length);
-    if (ret) *output = float(atof(ret));
-    return ret;
 }
 
 QeAssetModel *QeAsset::getModel(const char *_filename, bool bCubeMap, float *param) {
@@ -1456,19 +1539,19 @@ std::string QeAsset::combinePath(const char *_filename, QeAssetType dataType) {
     std::string rtn;
     switch (dataType) {
         case eAssetModel:
-            rtn = getXMLValue(4, CONFIG, "setting", "path", "model");
+            rtn = CONFIG->getXMLValue("setting.path.model");
             break;
         case eAssetMaterial:
-            rtn = getXMLValue(4, CONFIG, "setting", "path", "material");
+            rtn = CONFIG->getXMLValue("setting.path.material");
             break;
         case eAssetBin:
-            rtn = getXMLValue(4, CONFIG, "setting", "path", "bin");
+            rtn = CONFIG->getXMLValue("setting.path.bin");
             break;
         case eAssetShader:
-            rtn = getXMLValue(4, CONFIG, "setting", "path", "sharder");
+            rtn = CONFIG->getXMLValue("setting.path.sharder");
             break;
         case eAssetTexture:
-            rtn = getXMLValue(4, CONFIG, "setting", "path", "texture");
+            rtn = CONFIG->getXMLValue("setting.path.texture");
             break;
     }
     return rtn.append(_filename);
@@ -1478,38 +1561,40 @@ void QeAsset::setGraphicsShader(QeAssetGraphicsShader &shader, QeAssetXML *shade
     const char *c = nullptr;
 
     if (shaderData) {
-        c = getXMLValue(shaderData, 1, "vert");
+        c = shaderData->getXMLValue("vert");
         if (c != nullptr && strlen(c)) shader.vert = getShader(c);
-        c = getXMLValue(shaderData, 1, "tesc");
+        c = shaderData->getXMLValue("tesc");
         if (c != nullptr && strlen(c)) shader.tesc = getShader(c);
-        c = getXMLValue(shaderData, 1, "tese");
+        c = shaderData->getXMLValue("tese");
         if (c != nullptr && strlen(c)) shader.tese = getShader(c);
-        c = getXMLValue(shaderData, 1, "geom");
+        c = shaderData->getXMLValue("geom");
         if (c != nullptr && strlen(c)) shader.geom = getShader(c);
-        c = getXMLValue(shaderData, 1, "frag");
+        c = shaderData->getXMLValue("frag");
         if (c != nullptr && strlen(c)) shader.frag = getShader(c);
     }
 
     if (defaultShaderType && strlen(defaultShaderType)) {
-        QeAssetXML *node = getXMLNode(4, CONFIG, "shaders", "graphics", defaultShaderType);
+        std::string keys = "shaders.graphics.";
+        keys += defaultShaderType;
+        QeAssetXML *node = CONFIG->getXMLNode(keys.c_str());
         if (shader.vert == nullptr) {
-            c = getXMLValue(node, 1, "vert");
+            c = node->getXMLValue("vert");
             if (c != nullptr && strlen(c)) shader.vert = getShader(c);
         }
         if (shader.tesc == nullptr) {
-            c = getXMLValue(node, 1, "tesc");
+            c = node->getXMLValue("tesc");
             if (c != nullptr && strlen(c)) shader.tesc = getShader(c);
         }
         if (shader.tese == nullptr) {
-            c = getXMLValue(node, 1, "tese");
+            c = node->getXMLValue("tese");
             if (c != nullptr && strlen(c)) shader.tese = getShader(c);
         }
         if (shader.geom == nullptr) {
-            c = getXMLValue(node, 1, "geom");
+            c = node->getXMLValue("geom");
             if (c != nullptr && strlen(c)) shader.geom = getShader(c);
         }
         if (shader.frag == nullptr) {
-            c = getXMLValue(node, 1, "frag");
+            c = node->getXMLValue("frag");
             if (c != nullptr && strlen(c)) shader.frag = getShader(c);
         }
     }

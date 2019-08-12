@@ -58,6 +58,9 @@ class QeGlobal {
     QeLog *log = nullptr;
     QeCommand *command = nullptr;
     QeSceneManager *scene = nullptr;
+    QeAssetXML *configXML = nullptr;
+
+    QeAssetXML *getConfigXML();
 };
 
 #define GLB QeGlobal::getInstance()
@@ -70,6 +73,7 @@ class QeGlobal {
 #define AST GLB.asset
 #define ENCODE GLB.encode
 #define DEBUG GLB.log
+#define CONFIG GLB.getConfigXML()
 #define CMD(msg) GLB.command->inputCommand(msg)
 
 #define LOG(msg) GLB.log->print(std::string("") + msg)

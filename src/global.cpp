@@ -71,6 +71,11 @@ QeGlobal::QeGlobal() {
     if (command == nullptr) command = new QeCommand(key);
 }
 
+QeAssetXML *QeGlobal::getConfigXML() {
+    if (configXML) return configXML;
+    return configXML = asset->getXML(asset->CONFIG_PATH);
+}
+
 QeGlobal::~QeGlobal() {
     if (math != nullptr) {
         delete math;
@@ -112,6 +117,7 @@ QeGlobal::~QeGlobal() {
         delete engine;
         engine = nullptr;
     }
+    configXML = nullptr;
 }
 
 QeGlobal &QeGlobal::getInstance() {

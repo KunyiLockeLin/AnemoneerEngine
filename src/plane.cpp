@@ -7,10 +7,9 @@ void QePlane::initialize(QeAssetXML *_property, QeObject *_owner) {
     materialData = nullptr;
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    AST->getXMLiValue((int *)&planeType, initProperty, 1, "planeType");
-    AST->getXMLiValue(&materialOID, initProperty, 1, "materialOID");
-    targetCameraOID = 0;
-    AST->getXMLiValue(&targetCameraOID, initProperty, 1, "targetCameraOID");
+    planeType = (QePlaneType)initProperty->getXMLValuei("planeType");
+    materialOID = initProperty->getXMLValuei("materialOID");
+    targetCameraOID = initProperty->getXMLValuei("targetCameraOID");
 
     bUpdateTargetCameraOID = false;
     if (targetCameraOID) bUpdateTargetCameraOID = true;
@@ -83,7 +82,7 @@ void QePlane::update1() {
         VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
         bUpdateTargetCameraOID = true;
 
-        QeAssetXML *node = AST->getXMLNode(4, AST->CONFIG, "shaders", "graphics", "render");
+        QeAssetXML *node = CONFIG->getXMLNode("shaders.graphics.render");
         AST->setGraphicsShader(graphicsShader, node, shaderKey);
     }
 

@@ -3,11 +3,8 @@
 void QeLine::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    AST->getXMLiValue(&targetTransformOID, initProperty, 1, "targetTransformOID");
-
-    AST->getXMLfValue(&color.x, initProperty, 1, "colorR");
-    AST->getXMLfValue(&color.y, initProperty, 1, "colorG");
-    AST->getXMLfValue(&color.z, initProperty, 1, "colorB");
+    targetTransformOID = initProperty->getXMLValuei("targetTransformOID");
+    color = initProperty->getXMLValueRGB("color");
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 

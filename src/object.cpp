@@ -3,18 +3,18 @@
 void QeObject::initialize(QeAssetXML *_property, QeObject *_parent) {
     initProperty = _property;
     parent = _parent;
-    AST->getXMLiValue(&oid, initProperty, 1, "oid");
-    AST->getXMLiValue(&eid, initProperty, 1, "eid");
+    oid = initProperty->getXMLValuei("oid");
+    eid = initProperty->getXMLValuei("eid");
     name = initProperty->key;
 
-    QeAssetXML *node = AST->getXMLNode(initProperty, 1, "components");
+    QeAssetXML *node = initProperty->getXMLNode("components");
     if (node != nullptr && node->nexts.size() > 0) {
         for (int index = 0; index < node->nexts.size(); ++index) {
             components.push_back(SCENE->spwanComponent(node->nexts[index], this));
         }
     }
 
-    node = AST->getXMLNode(initProperty, 1, "children");
+    node = initProperty->getXMLNode("children");
     if (node != nullptr && node->nexts.size() > 0) {
         for (int index = 0; index < node->nexts.size(); ++index) {
             children.push_back(SCENE->spwanObject(node->nexts[index], this));

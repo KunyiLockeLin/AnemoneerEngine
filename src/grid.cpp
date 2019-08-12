@@ -5,11 +5,9 @@ void QeGrid::initialize(QeAssetXML *_property, QeObject *_owner) {
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    AST->getXMLfValue(&color.x, initProperty, 1, "colorR");
-    AST->getXMLfValue(&color.y, initProperty, 1, "colorG");
-    AST->getXMLfValue(&color.z, initProperty, 1, "colorB");
-    AST->getXMLiValue(&column, initProperty, 1, "column");
-    AST->getXMLiValue(&row, initProperty, 1, "row");
+    color = initProperty->getXMLValueRGB("color");
+    column = initProperty->getXMLValuei("column");
+    row = initProperty->getXMLValuei("row");
 
     float param[5];
     param[0] = color.x;

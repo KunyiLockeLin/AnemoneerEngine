@@ -4,7 +4,7 @@ void QeCubemap::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     modelData = AST->getModel("cube", true);
-    const char *image = AST->getXMLValue(initProperty, 1, "image");
+    const char *image = initProperty->getXMLValue("image");
     materialData = AST->getMaterialImage(image, true);
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);

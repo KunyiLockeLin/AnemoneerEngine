@@ -3,12 +3,12 @@
 void QeModel::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    AST->getXMLbValue(&graphicsPipeline.bAlpha, initProperty, 1, "alpha");
-    AST->getXMLfValue(&bufferData.param2.x, initProperty, 1, "outlineWidth");
+    graphicsPipeline.bAlpha = initProperty->getXMLValueb("alpha");
+    bufferData.param2.x = initProperty->getXMLValuef("outlineWidth");
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    const char *c = AST->getXMLValue(initProperty, 1, "obj");
+    const char *c = initProperty->getXMLValue("obj");
     modelData = AST->getModel(c);
     materialData = modelData->pMaterial;
     if (materialData) bufferData.material = materialData->value;
@@ -20,7 +20,7 @@ void QeModel::initialize(QeAssetXML *_property, QeObject *_owner) {
     AST->setGraphicsShader(normalShader, nullptr, "normal");
     AST->setGraphicsShader(outlineShader, nullptr, "outline");
 
-    AST->getXMLiValue(&materialOID, initProperty, 1, "materialOID");
+    materialOID = initProperty->getXMLValuei("materialOID");
 
     bUpdateMaterialOID = false;
     if (materialOID) bUpdateMaterialOID = true;

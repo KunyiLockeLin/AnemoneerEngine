@@ -120,7 +120,7 @@ void QeGraphics::updateViewport() {
             viewport->scissor.offset.x = int(viewport->viewport.x);
             viewport->scissor.offset.y = int(viewport->viewport.y);
             viewport->computePipelineRayTracing.shader =
-                AST->getShader(AST->getXMLValue(5, AST->CONFIG, "shaders", "compute", "raytracing", "comp"));
+                AST->getShader(CONFIG->getXMLValue("shaders.compute.raytracing.comp"));
             VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
             viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             // viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -578,7 +578,7 @@ bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int po
     int count = 1;
     int type = 0;  // 1: bloom
 
-    if (strcmp(AST->getXMLValue(postprocessing->initProperty, 1, "frag"), "bloomf.spv") == 0) {
+    if (strcmp(postprocessing->initProperty->getXMLValue("frag"), "bloomf.spv") == 0) {
         if (postprocessing->param1.x > 1.f) count = int(postprocessing->param1.x);
         type = 1;
     }
