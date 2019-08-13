@@ -3,7 +3,7 @@
 void AngryEngine::run() {
     bClosed = false;
 
-    WIN->initialize();
+    UI->initialize();
     VK->initialize();
 
     initialize();
@@ -11,7 +11,7 @@ void AngryEngine::run() {
 }
 
 void AngryEngine::initialize() {
-    WIN->resizeAll();
+    UI->resizeAll();
     OBJMGR->loadScene(CONFIG->getXMLValuei("setting.environment.currentSceneEID"));
 }
 
@@ -22,7 +22,7 @@ void AngryEngine::mainLoop() {
             currentFPS = 1000 / passMilliSecond;
             deltaTime = float(passMilliSecond) / 1000;
 
-            WIN->update1();
+            UI->update1();
             if (!bPause) {
                 VK->update1();
                 GRAP->update1();
@@ -33,7 +33,7 @@ void AngryEngine::mainLoop() {
                 GRAP->update2();
                 VK->update2();
 
-                WIN->update2();
+                UI->update2();
             }
         }
     }

@@ -10,7 +10,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
 
 set(SRC_NONE generator.bat data/shader_compile.bat data/config.xml)
 set(SRC_ALGORITHM src/encode.h src/math.h src/encode.cpp src/math.cpp)
-set(SRC_UI src/window.h src/window.cpp)
+set(SRC_UI src/ui.h src/ui.cpp)
 set(SRC_VULKAN src/graphics.h src/vulkan.h src/graphics.cpp src/vulkan.cpp)
 
 set(SRC_GAMEOBJECT  src/animation.h   src/axis.h    src/camera.h

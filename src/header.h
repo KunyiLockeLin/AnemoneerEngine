@@ -106,7 +106,7 @@ class QeCamera;
 class QeLight;
 class AeGlobalKey;
 class AeGlobal;
-class QeWindow;
+class AeUI;
 class QeViewport;
 class AngryEngine;
 class AeObjectManagerKey;
@@ -255,7 +255,7 @@ enum QeUIType {
 #include "light.h"
 #include "axis.h"
 #include "grid.h"
-#include "window.h"
+#include "ui.h"
 #include "camera.h"
 #include "graphics.h"
 #include "engine.h"

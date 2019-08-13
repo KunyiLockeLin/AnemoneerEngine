@@ -5,37 +5,37 @@ LRESULT EditProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_CHAR:
             switch (wParam) {
                 case KEY_FSLASH:
-                    WIN->closeCommand();
+                    UI->closeCommand();
                     break;
                 case VK_RETURN:
-                    WIN->sendCommand();
-                    WIN->closeCommand();
+                    UI->sendCommand();
+                    UI->closeCommand();
                     return true;
                     break;
             }
         default:
-            return CallWindowProc(WIN->DefEditProc, hwnd, uMsg, wParam, lParam);
+            return CallWindowProc(UI->DefEditProc, hwnd, uMsg, wParam, lParam);
     }
     return FALSE;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    WIN->handleMessages(hWnd, uMsg, wParam, lParam);
+    UI->handleMessages(hWnd, uMsg, wParam, lParam);
     return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
 
-void QeWindow::closeCommand() {
+void AeUI::closeCommand() {
     ShowWindow(commandBox, SW_HIDE);
     SetFocus(mainWindow);
 }
 
-void QeWindow::sendCommand() {
+void AeUI::sendCommand() {
     wchar_t lpString[256];
     GetWindowText(commandBox, lpString, 256);
     CMD(wchartochar(lpString));
 }
 
-void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if (hWnd == editPanel) {
         switch (uMsg) {
             case WM_NOTIFY:
@@ -254,7 +254,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     }
 }
 
-void QeWindow::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
+void AeUI::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
     std::string s = node->key;
     s += " ";
     s += std::to_string(node->nexts.size());
@@ -268,7 +268,7 @@ void QeWindow::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
     TreeView_SetItem(treeViewLists[currentTabIndex], &item);
 }
 
-void QeWindow::adjustComponetData(QeAssetXML *node) {
+void AeUI::adjustComponetData(QeAssetXML *node) {
     int _type = node->getXMLValuei("type");
     if (_type) {
         QeAssetXML *source = AST->getXMLEditNode((QeComponentType)_type, 0);
@@ -289,20 +289,20 @@ void QeWindow::adjustComponetData(QeAssetXML *node) {
     }
 }
 
-void QeWindow::getWindowSize(HWND &window, int &width, int &height) {
+void AeUI::getWindowSize(HWND &window, int &width, int &height) {
     RECT rect;
     GetClientRect(window, &rect);
     width = rect.right - rect.left;
     height = rect.bottom - rect.top;
 }
 
-void QeWindow::resizeAll() {
+void AeUI::resizeAll() {
     resize(logPanel);
     resize(editPanel);
     resize(mainWindow);
 }
 
-void QeWindow::resize(HWND &window) {
+void AeUI::resize(HWND &window) {
     RECT windowRect;
     windowRect.left = 0;
     windowRect.top = 0;
@@ -343,7 +343,7 @@ void QeWindow::resize(HWND &window) {
     GRAP->bRecreateRender = true;
 }
 
-void QeWindow::openMainWindow() {
+void AeUI::openMainWindow() {
     WNDCLASSEX wndClass;
     std::wstring title = L"MainWindow";
 
@@ -375,10 +375,10 @@ void QeWindow::openMainWindow() {
     commandBox = CreateWindow(WC_EDITW, L"", WS_CHILD, 0, 0, width, 20, mainWindow, (HMENU)1, NULL, NULL);
 
     ShowWindow(commandBox, SW_HIDE);
-    WIN->DefEditProc = (WNDPROC)SetWindowLongPtr(WIN->commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
+    UI->DefEditProc = (WNDPROC)SetWindowLongPtr(UI->commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
 }
 
-void QeWindow::openEditPanel() {
+void AeUI::openEditPanel() {
     std::wstring title = L"Edit Panel";
     WNDCLASSEX wndClass;
     wndClass.cbSize = sizeof(WNDCLASSEX);
@@ -469,7 +469,7 @@ void QeWindow::openEditPanel() {
     // updateTab();
 }
 
-void QeWindow::openLogPanel() {
+void AeUI::openLogPanel() {
     std::wstring title = L"Log Panel";
 
     WNDCLASSEX wndClass;
@@ -509,7 +509,7 @@ void QeWindow::openLogPanel() {
     logMaxWidth = 0;
 }
 
-void QeWindow::Log(std::string _log) {
+void AeUI::Log(std::string _log) {
     std::wstring ws = chartowchar(_log);
     SendMessage(listBoxLog, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
     SIZE textWidth;
@@ -531,7 +531,7 @@ void QeWindow::Log(std::string _log) {
     SendMessage(listBoxLog, LB_SETHORIZONTALEXTENT, logMaxWidth, 0);*/
 }
 
-void QeWindow::updateListViewItem() {
+void AeUI::updateListViewItem() {
     TCHAR text[512] = L"";
     GetWindowText(currentEditListView, text, sizeof(text));
 
@@ -547,7 +547,7 @@ void QeWindow::updateListViewItem() {
         currentTreeViewNode->setXMLValue(currentEditListViewKey.c_str(), wchartochar(text).c_str());
 }
 
-void QeWindow::updateListView() {
+void AeUI::updateListView() {
     if (bAddTreeView) return;
     HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
     if (!hSelectedItem) return;
@@ -598,7 +598,7 @@ void QeWindow::updateListView() {
     }
 }
 
-void QeWindow::setAllTreeView() {
+void AeUI::setAllTreeView() {
     bAddTreeView = true;
     int i = 0;
     for (const auto &it : CONFIG->nexts) {
@@ -618,7 +618,7 @@ void QeWindow::setAllTreeView() {
     updateTab();
 }
 
-void QeWindow::updateTab() {
+void AeUI::updateTab() {
     currentTabIndex = TabCtrl_GetCurSel(tabControlCategory);
 
     // TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
@@ -631,7 +631,7 @@ void QeWindow::updateTab() {
     // currentTreeViewNode = nullptr;
 }
 
-void QeWindow::addToTreeView(QeAssetXML *node, HTREEITEM parent) {
+void AeUI::addToTreeView(QeAssetXML *node, HTREEITEM parent) {
     TVITEM tvi;
     TVINSERTSTRUCT tvins;
 
@@ -661,7 +661,7 @@ void QeWindow::addToTreeView(QeAssetXML *node, HTREEITEM parent) {
     }
 }
 
-void QeWindow::initialize() {
+void AeUI::initialize() {
     if (bInit) return;
     bInit = true;
 
@@ -675,7 +675,7 @@ void QeWindow::initialize() {
     SetFocus(mainWindow);
 }
 
-std::string QeWindow::getWindowTitle() {
+std::string AeUI::getWindowTitle() {
     std::string device(VK->deviceProperties.deviceName);
     std::string windowTitle;
     QeAssetXML *node = CONFIG->getXMLNode("setting.application");
@@ -701,7 +701,7 @@ std::string QeWindow::getWindowTitle() {
     return windowTitle;
 }
 
-void QeWindow::update1() {
+void AeUI::update1() {
     std::string windowTitle = getWindowTitle();
     std::wstring ws = chartowchar(windowTitle);
     SetWindowText(mainWindow, ws.c_str());
@@ -714,7 +714,7 @@ void QeWindow::update1() {
     // consoleInput();
 }
 
-void QeWindow::update2() {}
+void AeUI::update2() {}
 
 /*void QeWindow::consoleInput() {
     if (!DEBUG->isConsole()) return;
@@ -770,14 +770,14 @@ case VK_RETURN:
 }*/
 //}
 
-std::wstring QeWindow::chartowchar(std::string s) {
+std::wstring AeUI::chartowchar(std::string s) {
     wchar_t rtn[4096];
     size_t outSize;
     mbstowcs_s(&outSize, rtn, 4096, s.c_str(), s.length());
     return rtn;
 }
 
-std::string QeWindow::wchartochar(std::wstring s) {
+std::string AeUI::wchartochar(std::wstring s) {
     char rtn[4096];
     size_t outSize;
     wcstombs_s(&outSize, rtn, 4096, s.c_str(), s.length());

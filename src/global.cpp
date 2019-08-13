@@ -60,7 +60,7 @@ std::string operator+=(std::string const &a, const double &b) {
 
 AeGlobal::AeGlobal() {
     if (engine == nullptr) engine = new AngryEngine(key);
-    if (window == nullptr) window = new QeWindow(key);
+    if (ui == nullptr) ui = new AeUI(key);
     if (objectmanager == nullptr) objectmanager = new AeObjectManager(key);
     if (graphics == nullptr) graphics = new QeGraphics(key);
     if (math == nullptr) math = new QeMath(key);
@@ -109,9 +109,9 @@ AeGlobal::~AeGlobal() {
         delete scene;
         scene = nullptr;
     }
-    if (window != nullptr) {
-        delete window;
-        window = nullptr;
+    if (ui != nullptr) {
+        delete ui;
+        ui = nullptr;
     }
     if (engine != nullptr) {
         delete engine;

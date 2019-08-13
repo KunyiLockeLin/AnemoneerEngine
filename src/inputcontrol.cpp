@@ -2,15 +2,15 @@
 
 void QeInputControl::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
-    WIN->inputControls.push_back(this);
+    UI->inputControls.push_back(this);
 }
 
-void QeInputControl::clear() { eraseElementFromVector(WIN->inputControls, this); }
+void QeInputControl::clear() { eraseElementFromVector(UI->inputControls, this); }
 
 void QeInputControl::updateInput() {
-    switch (WIN->inputData.inputType) {
+    switch (UI->inputData.inputType) {
         case WM_KEYDOWN:
-            switch (WIN->inputData.inputKey) {
+            switch (UI->inputData.inputKey) {
                     // viewport
 
                     /*case VK_NUMPAD1:
@@ -22,7 +22,7 @@ void QeInputControl::updateInput() {
                     case VK_NUMPAD7:
                     case VK_NUMPAD8:
                     case VK_NUMPAD9:
-                            GRAP->setTargetCamera(WIN->inputData.inputKey - VK_NUMPAD1);
+                            GRAP->setTargetCamera(UI->inputData.inputKey - VK_NUMPAD1);
                             break;
                     case VK_ADD:
                             GRAP->addNewViewport(eRender_main);
@@ -80,17 +80,17 @@ void QeInputControl::updateInput() {
 
         case WM_LBUTTONDOWN:
         case WM_RBUTTONDOWN:
-            GRAP->getTargetCamera()->setMousePos(WIN->inputData.mousePos);
+            GRAP->getTargetCamera()->setMousePos(UI->inputData.mousePos);
             break;
         case WM_MOUSEMOVE:
 
-            switch (WIN->inputData.inputKey) {
+            switch (UI->inputData.inputKey) {
                 case MK_LBUTTON:
-                    GRAP->getTargetCamera()->rotateTargetByMouse(WIN->inputData.mousePos);
+                    GRAP->getTargetCamera()->rotateTargetByMouse(UI->inputData.mousePos);
                     break;
                 case MK_RBUTTON:
                     // rotatePos(inputData.mousePos);
-                    GRAP->getTargetCamera()->zoomInOut(WIN->inputData.mousePos);
+                    GRAP->getTargetCamera()->zoomInOut(UI->inputData.mousePos);
                     break;
             }
             break;

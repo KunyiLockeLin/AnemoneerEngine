@@ -61,7 +61,7 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
     if (bShowStack) s += stack(2, stackLevel);
 
-    WIN->Log(s);
+    UI->Log(s);
     if (isOutput()) {
         if (!ofile.is_open()) {
             time_t rawtime;

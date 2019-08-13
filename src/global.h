@@ -50,7 +50,7 @@ class AeGlobal {
     static AeGlobal &getInstance();
     AngryEngine *engine = nullptr;
     QeVulkan *vulkan = nullptr;
-    QeWindow *window = nullptr;
+    AeUI *ui = nullptr;
     QeGraphics *graphics = nullptr;
     QeMath *math = nullptr;
     QeAsset *asset = nullptr;
@@ -67,7 +67,7 @@ class AeGlobal {
 #define GLB AeGlobal::getInstance()
 #define ENGINE GLB.engine
 #define VK GLB.vulkan
-#define WIN GLB.window
+#define UI GLB.ui
 #define GRAP GLB.graphics
 #define SCENE GLB.scene
 #define MATH GLB.math

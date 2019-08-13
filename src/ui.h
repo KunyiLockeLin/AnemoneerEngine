@@ -2,17 +2,17 @@
 
 #include "header.h"
 
-struct QeInputData {
+struct AeInputData {
     int inputType;
     int inputKey;
     QeVector2i mousePos;
     std::string consoleCommandInput;
 };
 
-class QeWindow {
+class AeUI {
    public:
-    QeWindow(AeGlobalKey &_key) {}
-    ~QeWindow() {}
+    AeUI(AeGlobalKey &_key) {}
+    ~AeUI() {}
 
     HINSTANCE windowInstance;
     HWND mainWindow, commandBox;
@@ -31,7 +31,7 @@ class QeWindow {
     bool bAddTreeView = false;
     // std::vector<QeAssetXML*> currentTreeViewNodes;
     QeAssetXML *currentTreeViewNode;
-    QeInputData inputData;
+    AeInputData inputData;
     std::vector<QeInputControl *> inputControls;
 
     void getWindowSize(HWND &window, int &width, int &height);
