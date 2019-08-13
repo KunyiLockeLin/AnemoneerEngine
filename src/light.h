@@ -10,7 +10,7 @@ struct QeDataLight {
 
 class QeLight : public QeComponent {
    public:
-    QeLight(QeSceneManagerKey &_key) : QeComponent(_key) {}
+    QeLight(AeObjectManagerKey &_key) : QeComponent(_key) {}
     //~QeLight() {}
 
     QeDataLight bufferData;

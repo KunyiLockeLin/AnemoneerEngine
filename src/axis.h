@@ -3,7 +3,7 @@
 
 class QeAxis : public QeLine {
    public:
-    QeAxis(QeSceneManagerKey &_key) : QeLine(_key) {}
+    QeAxis(AeObjectManagerKey &_key) : QeLine(_key) {}
 
     virtual void initialize(QeAssetXML *_property, QeObject *_owner);
     virtual void update1();

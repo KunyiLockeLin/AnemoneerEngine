@@ -87,7 +87,7 @@ struct QeDataDrawCommand {
 
 class QeGraphics {
    public:
-    QeGraphics(QeGlobalKey &_key) : lightsBuffer(eBuffer_storage), modelDatasBuffer(eBuffer_storage) {}
+    QeGraphics(AeGlobalKey &_key) : lightsBuffer(eBuffer_storage), modelDatasBuffer(eBuffer_storage) {}
     ~QeGraphics();
 
     std::vector<QeDataRender *> renders;

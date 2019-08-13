@@ -9,20 +9,29 @@ project (${PROJECT_NAME})
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
 
 set(SRC_NONE generator.bat data/shader_compile.bat data/config.xml)
-set(SRC_ALGORITHM src/encode.cpp src/math.cpp)
-set(SRC_UI src/window.cpp)
-set(SRC_VULKAN src/graphics.cpp src/vulkan.cpp)
+set(SRC_ALGORITHM src/encode.h src/math.h src/encode.cpp src/math.cpp)
+set(SRC_UI src/window.h src/window.cpp)
+set(SRC_VULKAN src/graphics.h src/vulkan.h src/graphics.cpp src/vulkan.cpp)
 
-set(SRC_GAMEOBJECT  src/animation.cpp   src/axis.cpp    src/camera.cpp
+set(SRC_GAMEOBJECT  src/animation.h   src/axis.h    src/camera.h
+                    src/component.h   src/cubemap.h src/grid.h
+                    src/inputcontrol.h src/light.h  src/line.h
+                    src/material.h    src/model.h   src/object.h
+                    src/particle.h    src/plane.h   src/postprocessing.h
+                    src/transform.h   src/rendersetting.h src/scene.h
+                    src/animation.cpp   src/axis.cpp    src/camera.cpp
                     src/component.cpp   src/cubemap.cpp src/grid.cpp
                     src/inputcontrol.cpp src/light.cpp  src/line.cpp
                     src/material.cpp    src/model.cpp   src/object.cpp
                     src/particle.cpp    src/plane.cpp   src/postprocessing.cpp
-                    src/transform.cpp   src/rendersetting.cpp)
+                    src/transform.cpp   src/rendersetting.cpp src/scene.cpp)
 
-set(SRC_MANAGER src/asset.cpp   src/command.cpp src/engine.cpp
+set(SRC_MANAGER src/header.h src/asset.h   src/command.h src/engine.h
+                src/global.h  src/log.h
+                src/objectmanager.h   src/timer.h
+                src/asset.cpp   src/command.cpp src/engine.cpp
                 src/global.cpp  src/log.cpp
-                src/scene.cpp   src/timer.cpp)
+                src/objectmanager.cpp   src/timer.cpp)
 
 file(GLOB_RECURSE  SRC_SHADER data/shaders/*)
 file(GLOB_RECURSE  SRC_SHADER_SPV data/shaders/spv/*)

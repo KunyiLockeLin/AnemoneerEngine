@@ -3,7 +3,7 @@
 
 class QeCommand {
    public:
-    QeCommand(QeGlobalKey &_key) {}
+    QeCommand(AeGlobalKey &_key) {}
     ~QeCommand() {}
 
     void inputCommand(std::string &command);

@@ -46,7 +46,7 @@ void QeModel::clear() {
 
 void QeModel::update1() {
     if (bUpdateMaterialOID && materialOID) {
-        QeMaterial *material = (QeMaterial *)SCENE->findComponent(eComponent_material, materialOID);
+        QeMaterial *material = (QeMaterial *)OBJMGR->findComponent(eComponent_material, materialOID);
         if (material) {
             bUpdateMaterialOID = false;
 

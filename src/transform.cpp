@@ -18,19 +18,19 @@ void QeTransform::initialize(QeAssetXML *_property, QeObject *_owner) {
 
 void QeTransform::update1() {
     if (rotateSpeed.x != 0.f || rotateSpeed.y != 0.f || rotateSpeed.z != 0.f) {
-        faceEular += (rotateSpeed * QE->deltaTime * 30.f);
+        faceEular += (rotateSpeed * ENGINE->deltaTime * 30.f);
     }
 
-    if ((owner && owner->parent && owner->parent->transform) &&
+    if ((owner && owner->owner && owner->owner->transform) &&
         (revoluteSpeed.x != 0.f || revoluteSpeed.y != 0.f || revoluteSpeed.z != 0.f)) {
-        revolute((revoluteSpeed * QE->deltaTime * 30.f), owner->parent->transform->worldPosition(), revoluteFixAxisX,
+        revolute((revoluteSpeed * ENGINE->deltaTime * 30.f), owner->owner->transform->worldPosition(), revoluteFixAxisX,
                  revoluteFixAxisY, revoluteFixAxisZ);
     }
 }
 
 QeVector3f QeTransform::worldPosition() {
     if (targetAnimationOID) {
-        QeAnimation *animation = (QeAnimation *)SCENE->findComponent(eComponent_animation, targetAnimationOID);
+        QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
         if (animation) {
             QeVector4f vec = {position, 1};
             return animation->getBoneTransfrom(targetBoneName) * vec;
@@ -38,11 +38,11 @@ QeVector3f QeTransform::worldPosition() {
     }
 
     QeVector3f _ret = position;
-    QeObject *_parent = owner->parent;
+    QeObject *_parent = owner->owner;
 
     while (_parent) {
         if (_parent->transform) _ret += _parent->transform->position;
-        _parent = _parent->parent;
+        _parent = _parent->owner;
     }
     return _ret;
 }
@@ -57,11 +57,11 @@ QeVector3f QeTransform::worldScale() {
     }*/
 
     QeVector3f _ret = scale;
-    QeObject *_parent = owner->parent;
+    QeObject *_parent = owner->owner;
 
     while (_parent) {
         if (_parent->transform) _ret *= _parent->transform->scale;
-        _parent = _parent->parent;
+        _parent = _parent->owner;
     }
     return _ret;
 }
@@ -77,11 +77,11 @@ QeVector3f QeTransform::worldFaceEular() {
     }*/
 
     QeVector3f _ret = faceEular;
-    QeObject *_parent = owner->parent;
+    QeObject *_parent = owner->owner;
 
     while (_parent) {
         if (_parent->transform) _ret += _parent->transform->faceEular;
-        _parent = _parent->parent;
+        _parent = _parent->owner;
     }
     return _ret;
 }
@@ -92,31 +92,31 @@ QeVector3f QeTransform::localFaceVector() { return MATH->eulerAnglesToVector(fac
 
 void QeTransform::setWorldPosition(QeVector3f &_worldPosition) {
     position = _worldPosition;
-    QeObject *_parent = owner->parent;
+    QeObject *_parent = owner->owner;
 
     while (_parent) {
         if (_parent->transform) position -= _parent->transform->position;
-        _parent = _parent->parent;
+        _parent = _parent->owner;
     }
 }
 
 void QeTransform::setWorldScale(QeVector3f &_worldScale) {
     scale = _worldScale;
-    QeObject *_parent = owner->parent;
+    QeObject *_parent = owner->owner;
 
     while (_parent) {
         if (_parent->transform) scale /= _parent->transform->scale;
-        _parent = _parent->parent;
+        _parent = _parent->owner;
     }
 }
 
 void QeTransform::setWorldFaceByEular(QeVector3f &_worldFace) {
     faceEular = _worldFace;
-    QeObject *_parent = owner->parent;
+    QeObject *_parent = owner->owner;
 
     while (_parent) {
         if (_parent->transform) faceEular -= _parent->transform->faceEular;
-        _parent = _parent->parent;
+        _parent = _parent->owner;
     }
 }
 
@@ -134,7 +134,7 @@ void QeTransform::revolute(QeVector3f &_addRevolute, QeVector3f &_centerPosition
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {
     if (targetAnimationOID) {
-        QeAnimation *animation = (QeAnimation *)SCENE->findComponent(eComponent_animation, targetAnimationOID);
+        QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
         if (animation) {
             return animation->getBoneTransfrom(targetBoneName) *
                    MATH->getTransformMatrix(position, faceEular, scale, bRotate, bFixSize);

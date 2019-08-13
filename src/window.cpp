@@ -62,28 +62,28 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
             case WM_COMMAND:
                 switch (wParam) {
                     case eUIType_btnPause:
-                        QE->bPause = !QE->bPause;
+                        ENGINE->bPause = !ENGINE->bPause;
                         break;
                     case eUIType_btnUpdateAll:
-                        QE->initialize();
+                        ENGINE->initialize();
                         break;
                     case eUIType_btnLoadAll:
                         AST->removeXML(AST->CONFIG_PATH);
-                        QE->initialize();
+                        ENGINE->initialize();
                         // updateTab();
                         setAllTreeView();
                         break;
                     case eUIType_btnSaveAll: {
                         adjustComponetData(CONFIG);
                         CONFIG->outputXML(AST->CONFIG_PATH);
-                        QE->initialize();
+                        ENGINE->initialize();
                     } break;
                     case eUIType_btnLoadScene:
                         if (currentTreeViewNode) {
                             int type = currentTreeViewNode->getXMLValuei("type");
                             if (type == eScene) {
                                 int eid = currentTreeViewNode->getXMLValuei("eid");
-                                SCENE->loadScene(eid);
+                                OBJMGR->loadScene(eid);
                             }
                         }
                         break;
@@ -225,7 +225,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
         switch (inputData.inputType) {
             case WM_CLOSE:
-                QE->bClosed = true;
+                ENGINE->bClosed = true;
                 break;
             case WM_EXITSIZEMOVE:
                 GRAP->bRecreateRender = true;
@@ -235,7 +235,7 @@ void QeWindow::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
                 switch (inputData.inputKey) {
                     case VK_ESCAPE:
-                        if (uMsg != WM_IME_COMPOSITION) QE->bClosed = true;
+                        if (uMsg != WM_IME_COMPOSITION) ENGINE->bClosed = true;
                         break;
                     case KEY_FSLASH:
                         SetWindowText(commandBox, L"");
@@ -691,9 +691,9 @@ std::string QeWindow::getWindowTitle() {
     windowTitle.append(" - ");
     windowTitle.append(device);
     windowTitle.append(" - ");
-    windowTitle.append(std::to_string(QE->currentFPS));
+    windowTitle.append(std::to_string(ENGINE->currentFPS));
     windowTitle.append("/");
-    windowTitle.append(std::to_string(QE->FPS));
+    windowTitle.append(std::to_string(ENGINE->FPS));
     windowTitle.append(" FPS - ");
     windowTitle.append(SCENE->name);
     windowTitle.append(" ");
@@ -724,7 +724,7 @@ void QeWindow::update2() {}
 
     switch (cur) {
         case VK_ESCAPE:
-            QE->bClosed = true;
+            EbClosed = true;
             break;
         case VK_RETURN:
             std::cout << std::endl;
@@ -760,7 +760,7 @@ if (input_record.EventType != KEY_EVENT ||
 
 switch (input_record.Event.KeyEvent.wVirtualKeyCode) {
 case VK_ESCAPE:
-        QE->bClosed = true;
+        ENGINE->bClosed = true;
         break;
 case VK_RETURN:
         std::string str;

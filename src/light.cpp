@@ -61,7 +61,7 @@ void QeLight::update1() {
 
                 QeMatrix4x4f mat;
                 mat *= MATH->translate(center);
-                mat *= MATH->rotate(QE->deltaTime * speed, up);
+                mat *= MATH->rotate(ENGINE->deltaTime * speed, up);
                 QeVector4f vec4 = QeVector4f({ pos - center }, 1.0f);
                 pos = mat * vec4;
 

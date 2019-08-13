@@ -58,10 +58,10 @@ std::string operator+=(std::string const &a, const double &b) {
 }
 };  // namespace QeLib
 
-QeGlobal::QeGlobal() {
-    if (engine == nullptr) engine = new QueenEngine(key);
+AeGlobal::AeGlobal() {
+    if (engine == nullptr) engine = new AngryEngine(key);
     if (window == nullptr) window = new QeWindow(key);
-    if (scene == nullptr) scene = new QeSceneManager(key);
+    if (objectmanager == nullptr) objectmanager = new AeObjectManager(key);
     if (graphics == nullptr) graphics = new QeGraphics(key);
     if (math == nullptr) math = new QeMath(key);
     if (asset == nullptr) asset = new QeAsset(key);
@@ -71,12 +71,12 @@ QeGlobal::QeGlobal() {
     if (command == nullptr) command = new QeCommand(key);
 }
 
-QeAssetXML *QeGlobal::getConfigXML() {
+QeAssetXML *AeGlobal::getConfigXML() {
     if (configXML) return configXML;
     return configXML = asset->getXML(asset->CONFIG_PATH);
 }
 
-QeGlobal::~QeGlobal() {
+AeGlobal::~AeGlobal() {
     if (math != nullptr) {
         delete math;
         math = nullptr;
@@ -120,7 +120,7 @@ QeGlobal::~QeGlobal() {
     configXML = nullptr;
 }
 
-QeGlobal &QeGlobal::getInstance() {
-    static QeGlobal _s;
+AeGlobal &AeGlobal::getInstance() {
+    static AeGlobal _s;
     return _s;
 }

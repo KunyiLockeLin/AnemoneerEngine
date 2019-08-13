@@ -9,7 +9,7 @@ void QeCommand::inputCommand(std::string &command) {
     while (input >> result) res.push_back(result);
 
     if (res[0].compare("scene") == 0) {
-        SCENE->loadScene(atoi(res[1].c_str()));
+        OBJMGR->loadScene(atoi(res[1].c_str()));
     } else if (res[0].compare("resetcamera") == 0) {
         GRAP->getTargetCamera()->reset();
         // if(res.size() >1)	VP->getTargetCamera()->type =

@@ -32,23 +32,23 @@ bool eraseElementFromVector(std::vector<T> &vec, T element) {
 }
 };  // namespace QeLib
 
-class QeGlobalKey {
-    friend class QeGlobal;
+class AeGlobalKey {
+    friend class AeGlobal;
 
    private:
-    QeGlobalKey() {}
+    AeGlobalKey() {}
 };
 
-class QeGlobal {
+class AeGlobal {
    private:
-    QeGlobal();
-    QeGlobalKey key;
+    AeGlobal();
+    AeGlobalKey key;
 
    public:
-    ~QeGlobal();
+    ~AeGlobal();
 
-    static QeGlobal &getInstance();
-    QueenEngine *engine = nullptr;
+    static AeGlobal &getInstance();
+    AngryEngine *engine = nullptr;
     QeVulkan *vulkan = nullptr;
     QeWindow *window = nullptr;
     QeGraphics *graphics = nullptr;
@@ -57,14 +57,15 @@ class QeGlobal {
     QeEncode *encode = nullptr;
     QeLog *log = nullptr;
     QeCommand *command = nullptr;
-    QeSceneManager *scene = nullptr;
+    AeObjectManager *objectmanager = nullptr;
+    QeScene *scene = nullptr;
     QeAssetXML *configXML = nullptr;
 
     QeAssetXML *getConfigXML();
 };
 
-#define GLB QeGlobal::getInstance()
-#define QE GLB.engine
+#define GLB AeGlobal::getInstance()
+#define ENGINE GLB.engine
 #define VK GLB.vulkan
 #define WIN GLB.window
 #define GRAP GLB.graphics
@@ -73,6 +74,7 @@ class QeGlobal {
 #define AST GLB.asset
 #define ENCODE GLB.encode
 #define DEBUG GLB.log
+#define OBJMGR GLB.objectmanager
 #define CONFIG GLB.getConfigXML()
 #define CMD(msg) GLB.command->inputCommand(msg)
 

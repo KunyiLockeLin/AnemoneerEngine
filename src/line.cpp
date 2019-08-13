@@ -23,7 +23,7 @@ void QeLine::initialize(QeAssetXML *_property, QeObject *_owner) {
 void QeLine::update1() {
     if (targetTransformOID == 0) return;
 
-    QeTransform *targetTransform = (QeTransform *)SCENE->findComponent(eComponent_transform, targetTransformOID);
+    QeTransform *targetTransform = (QeTransform *)OBJMGR->findComponent(eComponent_transform, targetTransformOID);
     if (targetTransform == 0) return;
 
     QeVector3f targetPos = targetTransform->worldPosition();

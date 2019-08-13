@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QueenEngine::run() {
+void AngryEngine::run() {
     bClosed = false;
 
     WIN->initialize();
@@ -10,12 +10,12 @@ void QueenEngine::run() {
     mainLoop();
 }
 
-void QueenEngine::initialize() {
+void AngryEngine::initialize() {
     WIN->resizeAll();
-    SCENE->loadScene(CONFIG->getXMLValuei("setting.environment.currentSceneEID"));
+    OBJMGR->loadScene(CONFIG->getXMLValuei("setting.environment.currentSceneEID"));
 }
 
-void QueenEngine::mainLoop() {
+void AngryEngine::mainLoop() {
     while (!bClosed) {
         int passMilliSecond;
         if (FPSTimer.checkTimer(passMilliSecond)) {
@@ -42,7 +42,7 @@ void QueenEngine::mainLoop() {
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     try {
-        QE->run();
+        ENGINE->run();
     } catch (const std::runtime_error &e) {
         LOG(e.what());
         return EXIT_FAILURE;

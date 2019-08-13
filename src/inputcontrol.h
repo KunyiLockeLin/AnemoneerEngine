@@ -3,7 +3,7 @@
 
 class QeInputControl : public QeComponent {
    public:
-    QeInputControl(QeSceneManagerKey &_key) : QeComponent(_key) {}
+    QeInputControl(AeObjectManagerKey &_key) : QeComponent(_key) {}
     ~QeInputControl() {}
 
     virtual void initialize(QeAssetXML *_property, QeObject *_owner);

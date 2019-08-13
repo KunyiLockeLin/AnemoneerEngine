@@ -81,7 +81,7 @@ void QeCamera::move(QeVector3f _dir, bool bMoveCenter) {
     pos = owner->transform->worldPosition();
 
     if (bMoveCenter) {
-        QeTransform *lookAtTransform = (QeTransform *)SCENE->findComponent(eComponent_transform, lookAtTransformOID);
+        QeTransform *lookAtTransform = (QeTransform *)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
         lookAtTransform->move(_dir, face, up);
         owner->transform->setWorldPosition(pos);
     }
@@ -100,7 +100,7 @@ QeVector3f QeCamera::lookAt() {
         return {pos.x, pos.y, pos.z + 1};
     }
     if (lookAtTransformOID > 0) {
-        QeTransform *lookAtTransform = (QeTransform *)SCENE->findComponent(eComponent_transform, lookAtTransformOID);
+        QeTransform *lookAtTransform = (QeTransform *)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
         return lookAtTransform->worldPosition();
     }
     return {0.f, 0.f, 0.f};
@@ -108,7 +108,7 @@ QeVector3f QeCamera::lookAt() {
 
 void QeCamera::reset() {
     if (lookAtTransformOID > 0) {
-        QeTransform *lookAtTransform = (QeTransform *)SCENE->findComponent(eComponent_transform, lookAtTransformOID);
+        QeTransform *lookAtTransform = (QeTransform *)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
         lookAtTransform->initialize(lookAtTransform->owner->transform->initProperty, lookAtTransform->owner);
     }
     owner->transform->initialize(owner->transform->initProperty, owner);
@@ -118,9 +118,9 @@ void QeCamera::reset() {
 void QeCamera::setLookAtTransformOID(int _lookAtransformOID) {
     if (!_lookAtransformOID) return;
 
-    QeTransform *lookAtTransform1 = (QeTransform *)SCENE->findComponent(eComponent_transform, _lookAtransformOID);
+    QeTransform *lookAtTransform1 = (QeTransform *)OBJMGR->findComponent(eComponent_transform, _lookAtransformOID);
     if (!lookAtTransform1) return;
-    QeTransform *lookAtTransform2 = (QeTransform *)SCENE->findComponent(eComponent_transform, lookAtTransformOID);
+    QeTransform *lookAtTransform2 = (QeTransform *)OBJMGR->findComponent(eComponent_transform, lookAtTransformOID);
     if (!lookAtTransform2) return;
 
     lookAtTransform2->setWorldPosition(lookAtTransform1->worldPosition());

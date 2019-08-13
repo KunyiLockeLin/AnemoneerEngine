@@ -2,24 +2,18 @@
 
 #include "header.h"
 
-class QeObject {
+class QeObject : public QeComponent {
    public:
-    QeObject(QeSceneManagerKey &_key) {}
+    QeObject(AeObjectManagerKey &_key) : QeComponent(_key) {}
     ~QeObject() {}
-
-    int oid, eid;
-    QeObject *parent = nullptr;
-    QeAssetXML *initProperty;
-    std::string name;
 
     QeTransform *transform;
 
     std::vector<QeComponent *> components;
-    std::vector<QeObject *> children;
+    std::vector<QeComponent *> children;
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
+    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
     virtual void clear();
-
     virtual void update1();
     virtual void update2();
 };

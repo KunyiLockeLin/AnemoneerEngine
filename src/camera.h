@@ -13,7 +13,7 @@ struct QeDataCamera {
 
 class QeCamera : public QeComponent {
    public:
-    QeCamera(QeSceneManagerKey &_key) : QeComponent(_key) {}
+    QeCamera(AeObjectManagerKey &_key) : QeComponent(_key) {}
     ~QeCamera() {}
 
     QeRenderType renderType;

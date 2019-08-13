@@ -232,7 +232,7 @@ class QeAsset {
     std::map<std::string, QeVKImage *> astTextures;
     std::map<int, QeAssetParticleRule *> astParticles;
 
-    QeAsset(QeGlobalKey &_key) {}
+    QeAsset(AeGlobalKey &_key) {}
     ~QeAsset();
 
     QeAssetJSON *getJSON(const char *_filePath);

@@ -2,12 +2,6 @@
 
 #include "header.h"
 
-class AeUIEditControl {};
-class AeUIGridProperty {};
-class AeUIWindow {};
-class AeUIListBox {};
-class AeUITreeView {};
-
 struct QeInputData {
     int inputType;
     int inputKey;
@@ -17,7 +11,7 @@ struct QeInputData {
 
 class QeWindow {
    public:
-    QeWindow(QeGlobalKey &_key) {}
+    QeWindow(AeGlobalKey &_key) {}
     ~QeWindow() {}
 
     HINSTANCE windowInstance;

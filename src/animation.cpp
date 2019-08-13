@@ -44,7 +44,7 @@ void QeAnimation::actionPause() { actionState = eActionStatePause; }
 void QeAnimation::actionStop() { actionState = eActionStateStop; }
 
 void QeAnimation::updateAction() {
-    if (!modelData || !modelData->rootJoint || (actionState != eActionStatePlay && QE->deltaTime)) return;
+    if (!modelData || !modelData->rootJoint || (actionState != eActionStatePlay && ENGINE->deltaTime)) return;
 
     float previousActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
     float nextActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame + 1];
@@ -75,7 +75,7 @@ void QeAnimation::updateAction() {
     QeMatrix4x4f transform;
     setChildrenJointTransform(*modelData->rootJoint, transform);
 
-    currentActionTime += QE->deltaTime * actionSpeed;
+    currentActionTime += ENGINE->deltaTime * actionSpeed;
     if (currentActionTime > nextActionFrameTime) {
         if (bFinalFrame) {
             if (actionType == eActionTypeOnce)

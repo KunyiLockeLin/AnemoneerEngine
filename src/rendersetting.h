@@ -3,7 +3,7 @@
 
 class QeRenderSetting : public QeComponent {
    public:
-    QeRenderSetting(QeSceneManagerKey &_key) : QeComponent(_key) {}
+    QeRenderSetting(AeObjectManagerKey &_key) : QeComponent(_key) {}
     ~QeRenderSetting() {}
 
     bool bNormal = false;

@@ -33,7 +33,7 @@ class QeEncode {
                                            41, 43, 9,  11, 18, 24, 31, 40, 44, 53, 10, 19, 23, 32, 39, 45, 52, 54, 20, 22, 33, 38,
                                            46, 51, 55, 60, 21, 34, 37, 47, 50, 56, 59, 61, 35, 36, 48, 49, 57, 58, 62, 63};
 
-    QeEncode(QeGlobalKey &_key) {}
+    QeEncode(AeGlobalKey &_key) {}
     ~QeEncode() {}
     int readBits(const unsigned char *stream, size_t *bitPointer, size_t readCount, bool bLeft = false, bool bNegative = false);
     std::string trim(std::string s);

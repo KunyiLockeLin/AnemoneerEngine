@@ -3,7 +3,7 @@
 
 class QeAnimation : public QeModel {
    public:
-    QeAnimation(QeSceneManagerKey &_key) : QeModel(_key) {}
+    QeAnimation(AeObjectManagerKey &_key) : QeModel(_key) {}
     ~QeAnimation() {}
 
     QeActionState actionState;

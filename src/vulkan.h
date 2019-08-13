@@ -134,7 +134,7 @@ struct QeDataComputePipeline {
 
 class QeVulkan {
    public:
-    QeVulkan(QeGlobalKey &_key) : emptyImage2D(eImage_2D), emptyImageCube(eImage_cube) {}
+    QeVulkan(AeGlobalKey &_key) : emptyImage2D(eImage_2D), emptyImageCube(eImage_cube) {}
     ~QeVulkan();
 
     std::vector<const char *> validationLayers = {};

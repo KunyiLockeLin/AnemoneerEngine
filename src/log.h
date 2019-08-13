@@ -4,7 +4,7 @@
 
 class QeLog {
    public:
-    QeLog(QeGlobalKey &_key) {}
+    QeLog(AeGlobalKey &_key) {}
     ~QeLog();
 
     std::ofstream ofile;

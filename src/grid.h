@@ -3,7 +3,7 @@
 
 class QeGrid : public QeLine {
    public:
-    QeGrid(QeSceneManagerKey &_key) : QeLine(_key) {}
+    QeGrid(AeObjectManagerKey &_key) : QeLine(_key) {}
 
     int column, row;
     QeVector3f color;

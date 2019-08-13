@@ -150,7 +150,7 @@ class QeBinaryTree {
 
 class QeMath {
    public:
-    QeMath(QeGlobalKey &_key) {}
+    QeMath(AeGlobalKey &_key) {}
     ~QeMath() {}
 
     const float PI = 3.1415927f;

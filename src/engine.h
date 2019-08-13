@@ -2,20 +2,10 @@
 
 #include "header.h"
 
-class QeQueenEngineKey {
-    friend class QueenEngine;
-
-   private:
-    QeQueenEngineKey() {}
-};
-
-class QueenEngine {
-   private:
-    QeQueenEngineKey key;
-
+class AngryEngine {
    public:
-    QueenEngine(QeGlobalKey &_key) {}
-    //~QueenEngine() {}
+    AngryEngine(AeGlobalKey &_key) {}
+    //~AngryEngine() {}
     void initialize();
     void run();
 

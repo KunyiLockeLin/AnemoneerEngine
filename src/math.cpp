@@ -176,14 +176,14 @@ QeVector3f QeMath::move(QeVector3f &_position, QeVector3f &_addMove, QeVector3f 
     if (_addMove.z) {
         _move = _face * _addMove.z;
     } else {
-        QeVector3f _surface = MATH->normalize(MATH->cross(_face, _up));
+        QeVector3f _surface = normalize(cross(_face, _up));
         // left
         if (_addMove.x) {
             _move = _surface * _addMove.x;
         }
         // up
         if (_addMove.y) {
-            QeVector3f _up1 = MATH->cross(_surface, _face);
+            QeVector3f _up1 = cross(_surface, _face);
             _move = _up1 * _addMove.y;
         }
     }
@@ -859,7 +859,7 @@ QeVector3f QeMath::revolute_eularAngles(QeVector3f &_position, QeVector3f &_addR
                                         bool bFixY, bool bFixZ) {
     QeVector3f vec = {_position - _centerPosition};
     QeVector3f eularAngle = vectorToEulerAngles(vec) + _addRevolute;
-    QeVector3f origin = {MATH->length(vec), 0.f, 0.f};
+    QeVector3f origin = {length(vec), 0.f, 0.f};
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
     mat *= rotate_eularAngles(eularAngle);
@@ -954,10 +954,10 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
 
 /*void QeMath::rotatefromCenter(QeVector3f& center, QeVector3f& pos, QeVector2f
 & axis, float angle, bool bStopTop ) {
-        QeVector3f vec = MATH->normalize(pos -center);
+        QeVector3f vec = normalize(pos -center);
 
         float polarAngle, azimuthalAngle;
-        MATH->getAnglefromVector(vec, polarAngle, azimuthalAngle);
+        getAnglefromVector(vec, polarAngle, azimuthalAngle);
 
         if (bStopTop) {
                 if (polarAngle < 0.1f && angle < 0) return;
@@ -977,7 +977,7 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
         }
         else if (axis.y)	azimuthalAngle += angle;
 
-        MATH->rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
+        rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
 }*/
 
 QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rotateEuler, QeVector3f &_scale, bool bRotate,
