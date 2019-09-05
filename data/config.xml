@@ -670,10 +670,17 @@
                 </components>
                 <children />
             </grid>
-            <box type="1000" oid="1100" eid="1100">
+          <box0 type="1000" oid="1100" eid="1100">
+            <components>
+              <Transform type="1" oid="1100" eid="1" positionX="0" positionY="5" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
+              <Model type="6" oid="1100" eid="1" obj="box.gltf" outlineWidth="0" materialOID="" />
+            </components>
+            <children />
+          </box0>
+            <box type="1000" oid="1101" eid="1100">
                 <components>
-                    <Transform type="1" oid="1100" eid="1" positionX="0" positionY="0" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
-                    <Model type="6" oid="1100" eid="1" obj="box.gltf" outlineWidth="0" materialOID="1101" />
+                    <Transform type="1" oid="1101" eid="1" positionX="0" positionY="-5" positionZ="0" scaleX="1.5" scaleY="1.5" scaleZ="1.5" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
+                    <Model type="6" oid="1101" eid="1" obj="box.gltf" outlineWidth="0" materialOID="1101" />
                     <MaterialTess type="11" oid="1101" eid="5" vert="" tesc="base.tesc.spv" tese="base.tese.spv" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
