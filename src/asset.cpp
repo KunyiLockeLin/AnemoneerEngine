@@ -24,9 +24,44 @@ QeAssetXML *QeAssetXML::getXMLNode(std::vector<std::string> &keys) {
                 break;
             }
         }
-        if (b) return nullptr;
+        if (b) {
+            auto inc_nodes = getXMLArrayNodes("include");
+            for (const auto &inc_node : inc_nodes) {
+                for (const auto &nodes : inc_node->nexts) {
+                    for (const auto &node : nodes->nexts) {
+                        if (key.compare(node->key) == 0) {
+                            current = node;
+                            b = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (b) return nullptr;
+        }
     }
     return current;
+}
+
+std::vector<QeAssetXML *> QeAssetXML::getXMLArrayNodes(const char *keys) { return getXMLArrayNodes(ENCODE->split(keys, ".")); }
+
+std::vector<QeAssetXML *> QeAssetXML::getXMLArrayNodes(std::vector<std::string> &keys) {
+    std::vector<QeAssetXML *> ret;
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *current = getXMLNode(keys1);
+    if (!current) return ret;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+    keys1[0] = keys[final_index];
+
+    for (const auto &node : current->nexts) {
+        if (keys1[0].compare(node->key) == 0) {
+            ret.push_back(node);
+        }
+    }
+    return ret;
 }
 
 const char *QeAssetXML::getXMLValue(const char *keys) {
@@ -63,6 +98,40 @@ QeAssetXML *QeAssetXML::getXMLValue(const char *&value, std::vector<std::string>
 
     value = nullptr;
     return nullptr;
+}
+
+std::vector<std::string> QeAssetXML::getXMLArrayValues(const char *keys) {
+    std::vector<std::string> ret;
+    getXMLArrayValues(ret, keys);
+    return ret;
+}
+
+QeAssetXML *QeAssetXML::getXMLArrayValues(std::vector<std::string> &values, const char *keys) {
+    return getXMLArrayValues(values, ENCODE->split(keys, "."));
+}
+
+QeAssetXML *QeAssetXML::getXMLArrayValues(std::vector<std::string> &values, std::vector<std::string> &keys) {
+    values.clear();
+    std::vector<std::string> keys1 = keys;
+    keys1.pop_back();
+    QeAssetXML *current = getXMLNode(keys1);
+    if (!current) return nullptr;
+
+    auto final_index = keys.size() - 1;
+    keys1.resize(1);
+    keys1[0] = keys[final_index];
+
+    for (const auto &node : current->elements) {
+        if (keys1[0].compare(node.key) == 0) {
+            values.push_back(node.value);
+        }
+    }
+    for (const auto &node : current->nexts) {
+        if (keys1[0].compare(node->key) == 0) {
+            values.push_back(node->value);
+        }
+    }
+    return current;
 }
 
 bool QeAssetXML::getXMLValueb(const char *keys) {
@@ -948,7 +1017,13 @@ bool QeAsset::getJSONfValue(float *output, QeAssetJSON *source, int length, ...)
     return ret;
 }
 
-QeAssetXML *QeAsset::getXML(const char *_filePath) {
+QeAssetXML *QeAsset::getXML(const char *_filename) {
+    std::string _filePath;
+    if (strcmp(_filename, AST->CONFIG_PATH) == 0) {
+        _filePath = _filename;
+    } else {
+        _filePath = combinePath(_filename, eAssetXML);
+    }
     std::map<std::string, QeAssetXML *>::iterator it = astXMLs.find(_filePath);
 
     if (it != astXMLs.end()) return it->second;
@@ -956,12 +1031,21 @@ QeAssetXML *QeAsset::getXML(const char *_filePath) {
     // std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
     // if (!file.is_open()) return nullptr;
 
-    std::vector<char> buffer = loadFile(_filePath);
+    std::vector<char> buffer = loadFile(_filePath.c_str());
 
     int index = 0;
     QeAssetXML *head = ENCODE->decodeXML(buffer.data(), index);
     astXMLs[_filePath] = head;
 
+    auto nodes = head->getXMLArrayNodes("include");
+    for (auto &node : nodes) {
+        const auto *path = node->getXMLValue("path");
+        if (!path || strlen(path) == 0) continue;
+        auto child = getXML(path);
+        if (child) {
+            node->addXMLNode(child);
+        }
+    }
     return head;
 }
 
@@ -1552,6 +1636,9 @@ std::string QeAsset::combinePath(const char *_filename, QeAssetType dataType) {
             break;
         case eAssetTexture:
             rtn = CONFIG->getXMLValue("setting.path.texture");
+            break;
+        case eAssetXML:
+            rtn = CONFIG->getXMLValue("setting.path.xml");
             break;
     }
     return rtn.append(_filename);

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--test test test 0000-->
+<config>
+    <components>
+        <Transform type="1">
+            <default type="1" oid="0" eid="0" positionX="0" positionY="0" positionZ="0" scaleX="0" scaleY="0" scaleZ="0" faceEularX="0" faceEularY="0" faceEularZ="0" rotateSpeedX="0" rotateSpeedY="0" rotateSpeedZ="0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
+        </Transform>
+        <Camera type="2">
+            <default type="2" oid="0" eid="0" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+        </Camera>
+        <PostProcessing type="3">
+            <default type="3" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" param0="0" param1="0" param2="0" param3="0" />
+            <grayscale type="3" oid="0" eid="1" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param0="0" param1="0" param2="0" param3="0" />
+            <bloom type="3" oid="0" eid="2" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param0="2" param1="0.003" param2="1.0" param3="0" />
+        </PostProcessing>
+        <Light type="4">
+            <default type="4" oid="0" eid="0" lightType="0" colorR="0" colorG="0" colorB="0" intensity="1000" coneAngle="90" />
+        </Light>
+        <Line type="5">
+            <default type="5" oid="0" eid="0" targetTransformOID="0" colorR="0" colorG="0" colorB="0" />
+        </Line>
+        <Model type="6">
+            <default type="6" oid="0" eid="0" obj="box.gltf" outlineWidth="0" materialOID="" />
+            <sphere type="6" oid="0" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="" />
+        </Model>
+        <Animation type="7">
+            <default type="7" oid="0" eid="0" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
+        </Animation>
+        <Plane type="8">
+            <default type="8" oid="0" eid="0" planeType="0" materialOID="" targetCameraOID="" />
+            <billboard type="8" oid="0" eid="1" planeType="1" materialOID="" targetCameraOID="" />
+        </Plane>
+        <Cubemap type="9">
+            <default type="9" oid="0" eid="0" image="" />
+        </Cubemap>
+        <Partical type="10">
+            <default type="10" oid="0" eid="0" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="80">
+                <count once="5" period="10" total="100" range="0" />
+                <life second="2" range="5" />
+                <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0" />
+                <init_speed X="-0.3" rangeX="0.6" Y="-0.3" rangeY="0.6" Z="1.0" rangeZ="2.0" />
+                <force X="0" rangeX="0" Y="0" rangeY="0" Z="-2.0" rangeZ="1.0" />
+                <size X="0.6" rangeX="0" Y="0.6" rangeY="0" />
+                <color R="0" rangeR="1" G="0" rangeG="1" B="0" rangeB="1" />
+            </default>
+        </Partical>
+        <Material type="11">
+            <default type="11" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <MaterialBase_Texture type="11" oid="0" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <MaterialPBR type="11" oid="0" eid="2" vert="" tesc="" tese="" geom="pbr.geom.spv" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png" metallicRoughnessMap="" />
+            <MaterialReflect type="11" oid="0" eid="3" vert="" tesc="" tese="" geom="" frag="cubemapreflect.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="" metallicRoughnessMap="" />
+            <MaterialBase type="11" oid="0" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <MaterialTess type="11" oid="0" eid="5" vert="" tesc="base.tesc.spv" tese="base.tese.spv" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+        </Material>
+        <InputControl type="12">
+            <default type="12" oid="0" eid="0" />
+        </InputControl>
+        <Axis type="13">
+            <default type="13" oid="0" eid="0" />
+        </Axis>
+        <Grid type="14">
+            <default type="14" oid="0" eid="0" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+        </Grid>
+        <RenderSetting type="15">
+            <default type="15" oid="0" eid="0" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+        </RenderSetting>
+    </components>
+   <include/>
+</config>
+

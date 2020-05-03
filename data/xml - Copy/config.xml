@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--test test test 0000-->
+<config>
+  <includes>
+    <path>game_scenes.xml</path>
+    <path>game_objects.xml</path>
+    <path>game_components.xml</path>
+    <path>settings.xml</path>
+  </includes>
+  <shaders>
+    <graphics vert="" tesc="" tese="" geom="" frag="">
+      <line vert="base.vert.spv" tesc="" tese="" geom="line.geom.spv" frag="basev.frag.spv" />
+      <normal vert="base.vert.spv" tesc="" tese="" geom="line.geom.spv" frag="basev.frag.spv" />
+      <render vert="" tesc="" tese="" geom="" frag="texture.frag.spv" />
+      <b2d vert="point.vert.spv" tesc="" tese="" geom="b2d.geom.spv" frag="basev.frag.spv" />
+      <plane vert="point.vert.spv" tesc="" tese="" geom="triangle.geom.spv" frag="basev.frag.spv" />
+      <billboard vert="point.vert.spv" tesc="" tese="" geom="billboard.geom.spv" frag="basev.frag.spv" />
+      <particle vert="base.vert.spv" tesc="" tese="" geom="billboard.geom.spv" frag="texturev.frag.spv" />
+      <cubemap vert="base.vert.spv" tesc="" tese="" geom="base.geom.spv" frag="cubemap.frag.spv" />
+      <animation vert="skeleton.vert.spv" tesc="" tese="" geom="pbr.geom.spv" frag="pbr.frag.spv" />
+      <model vert="pbr.vert.spv" tesc="" tese="" geom="" frag="pbr.frag.spv" />
+      <outline vert="base.vert.spv" tesc="" tese="" geom="outline.geom.spv" frag="basem.frag.spv" />
+      <postprocessing vert="point.vert.spv" tesc="" tese="" geom="postprocessing.geom.spv" frag="postprocessing.frag.spv" />
+    </graphics>
+    <compute comp="">
+      <particle comp="particle.comp.spv" />
+      <raytracing comp="raytracing.comp.spv" />
+    </compute>
+  </shaders>
+  <setting>
+    <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.104" />
+    <environment currentSceneEID="2" outputLog="1" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
+    <path log="data\log\" xml="data\xml\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\" />
+    <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />
+  </setting>
+</config>
+

@@ -145,9 +145,16 @@ struct QeAssetXML {
     QeAssetXML *getXMLNode(const char *keys);
     QeAssetXML *getXMLNode(std::vector<std::string> &keys);
 
+    std::vector<QeAssetXML*> getXMLArrayNodes(const char *keys);
+    std::vector<QeAssetXML*> getXMLArrayNodes(std::vector<std::string> &keys);
+
     const char *getXMLValue(const char *keys);
     QeAssetXML *getXMLValue(const char *&value, const char *keys);
     QeAssetXML *getXMLValue(const char *&value, std::vector<std::string> &keys);
+
+    std::vector<std::string> getXMLArrayValues(const char *keys);
+    QeAssetXML *getXMLArrayValues(std::vector<std::string> &values, const char *keys);
+    QeAssetXML *getXMLArrayValues(std::vector<std::string> &values, std::vector<std::string> &keys);
 
     bool getXMLValueb(const char *keys);
     QeAssetXML *getXMLValueb(bool &value, const char *keys);
@@ -222,7 +229,7 @@ struct QeAssetJSON {
 
 class QeAsset {
    public:
-    const char *CONFIG_PATH = "data/config.xml";
+    const char *CONFIG_PATH = "data/xml/config.xml";
 
     std::map<std::string, QeAssetXML *> astXMLs;
     std::map<std::string, QeAssetJSON *> astJSONs;
@@ -252,7 +259,7 @@ class QeAsset {
     bool getJSONiValue(int *output, QeAssetJSON *source, int length, ...);
     bool getJSONfValue(float *output, QeAssetJSON *source, int length, ...);
 
-    QeAssetXML *getXML(const char *_filePath);
+    QeAssetXML *getXML(const char *_filename);
     void removeXML(std::string path);
     QeAssetXML *getXMLEditNode(QeComponentType _type, int eid);
 
