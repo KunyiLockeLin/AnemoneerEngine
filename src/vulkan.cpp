@@ -1,4 +1,6 @@
 #include "header.h"
+#include <list>
+#include <set>
 
 QeVKBuffer::~QeVKBuffer() {
     if (buffer != VK_NULL_HANDLE) {
@@ -109,7 +111,7 @@ void QeVulkan::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportC
 void QeVulkan::createInstance() {
     QeAssetXML *node = CONFIG->getXMLNode("setting.Vulkan_Validation_Layers");
     validationLayers.clear();
-    for (const auto &it : node->elements) {
+    for (const auto &it : node->data->elements) {
         if (!it.value.compare("1")) {
             validationLayers.emplace_back(it.key.c_str());
         }

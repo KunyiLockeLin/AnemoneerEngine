@@ -119,8 +119,7 @@ void QeGraphics::updateViewport() {
             viewport->scissor.extent.height = int(viewport->viewport.height);
             viewport->scissor.offset.x = int(viewport->viewport.x);
             viewport->scissor.offset.y = int(viewport->viewport.y);
-            viewport->computePipelineRayTracing.shader =
-                AST->getShader(CONFIG->getXMLValue("shaders.compute.raytracing.comp"));
+            viewport->computePipelineRayTracing.shader = G_AST->getShader(CONFIG->getXMLValue("shaders.compute.raytracing.comp"));
             VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
             viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             // viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -591,7 +590,7 @@ bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int po
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = i + 1;
 
-        AST->setGraphicsShader(data->graphicsShader, postprocessing->initProperty, "postprocessing");
+        G_AST->setGraphicsShader(data->graphicsShader, postprocessing->initProperty, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
 
@@ -634,7 +633,7 @@ QeDataRender *QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = 0;
 
-        AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
+        G_AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
         // data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -650,7 +649,7 @@ QeDataRender *QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = 0;
 
-        AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
+        G_AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
         // data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;

@@ -1,4 +1,5 @@
 #include "header.h"
+#include <sstream>
 
 void QeCommand::inputCommand(std::string &command) {
     if (command.empty()) return;

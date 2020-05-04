@@ -137,9 +137,11 @@ QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {
         QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
         if (animation) {
             return animation->getBoneTransfrom(targetBoneName) *
-                   MATH->getTransformMatrix(position, faceEular, scale, bRotate, bFixSize);
+                   MATH->getTransformMatrix(position, faceEular, scale,
+                                            GRAP->getTargetCamera()->owner->transform->worldPosition(), bRotate, bFixSize);
         }
     }
 
-    return MATH->getTransformMatrix(worldPosition(), worldFaceEular(), worldScale(), bRotate, bFixSize);
+    return MATH->getTransformMatrix(worldPosition(), worldFaceEular(), worldScale(),
+                                    GRAP->getTargetCamera()->owner->transform->worldPosition(), bRotate, bFixSize);
 }

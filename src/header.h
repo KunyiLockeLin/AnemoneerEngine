@@ -4,34 +4,17 @@
 
 #include <windows.h>
 #include <process.h>
-#include "dbghelp.h"
 #include <tchar.h>
 #include <cstdlib>
-#include <string>
-#include <random>
-#include <iostream>
-#include <sstream>
-#include <fstream>
 #include <stdexcept>
 #include <algorithm>
 #include <functional>
 #include <thread>
 #include <memory>
 #include <commctrl.h>
-#include <cmath>
-#include <chrono>
-#include <ctime>
-#include <forward_list>
 #include <utility>
 #include <conio.h>
-#include <iomanip>
-#include <vector>
 #include <algorithm>
-#include <array>
-#include <set>
-#include <map>
-#include <unordered_map>
-#include <direct.h>
 
 #define VK_USE_PLATFORM_WIN32_KHR
 #include <vulkan/vulkan.hpp>
@@ -52,7 +35,6 @@
 
 // VkPhysicalDeviceLimits::maxViewports
 // VK->deviceProperties.limits.maxViewports;
-const char INDEX_NONE = -1;
 const int MAX_JOINT_NUM = 20;
 const char BONE_ROOT_NAME[] = "Armature_root";
 const int MAX_DESCRIPTOR_UNIFORM_NUM = UINT8_MAX;
@@ -66,12 +48,6 @@ const int PUSH_CONSTANTS_SIZE = 4;
 
 struct QeVKBuffer;
 struct QeVKImageBuffer;
-struct QeVector2i;
-struct QeVector2f;
-struct QeVector3i;
-struct QeVector3f;
-struct QeVector4f;
-struct QeMatrix4x4f;
 struct QeVertex;
 struct QeAssetModel;
 struct QeAssetMaterial;
@@ -82,9 +58,6 @@ struct QeAssetImage;
 struct QeAssetGraphicsShader;
 struct QeUniformBufferObject;
 struct QeDataLight;
-struct QeHuffmanTree;
-struct QeAssetXML;
-struct QeAssetJSON;
 struct QeSkeleton;
 struct QeInputData;
 struct QeDataSwapchain;
@@ -94,9 +67,7 @@ class QeComponent;
 class QeTransform;
 class QeInputControl;
 class QePostProcessing;
-class QeEncode;
-class QeMath;
-class QeAsset;
+class QeGameAsset;
 class QeModel;
 class QePlane;
 class QeCubemap;
@@ -112,9 +83,7 @@ class AngryEngine;
 class AeObjectManagerKey;
 class AeObjectManager;
 class QeVulkan;
-class QeLog;
 class QeCommand;
-class QeTimer;
 class QeLine;
 class QeAxis;
 class QeGrid;
@@ -141,14 +110,12 @@ enum QeModelDataType {
     eModelData_gltf = 5,
 };
 
-enum QeAssetType {
+enum QeGameAssetType {
     eAssetModel = 0,
     eAssetMaterial = 1,
     eAssetBin = 2,
     eAssetShader = 3,
     eAssetTexture = 4,
-    eAssetXML = 5,
-    eAssetJSON = 6,
 };
 
 enum QeComponentType {
@@ -233,11 +200,10 @@ enum QeUIType {
     eUIType_btnCameraControl = 11,
 };
 
-#include "encode.h"
-#include "math.h"
-#include "timer.h"
+#include "common/common.h"
 #include "vulkan.h"
-#include "asset.h"
+#include "game_encode.h"
+#include "game_asset.h"
 #include "objectmanager.h"
 #include "component.h"
 #include "object.h"
@@ -261,7 +227,6 @@ enum QeUIType {
 #include "engine.h"
 #include "global.h"
 #include "scene.h"
-#include "log.h"
 #include "command.h"
 #include "rendersetting.h"
 

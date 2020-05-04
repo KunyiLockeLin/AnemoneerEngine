@@ -16,9 +16,9 @@ void QeGrid::initialize(QeAssetXML *_property, QeObject *_owner) {
     param[3] = float(column);
     param[4] = float(row);
 
-    modelData = AST->getModel("grid", false, param);
+    modelData = G_AST->getModel("grid", false, param);
 
-    AST->setGraphicsShader(graphicsShader, nullptr, "line");
+    G_AST->setGraphicsShader(graphicsShader, nullptr, "line");
 
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);

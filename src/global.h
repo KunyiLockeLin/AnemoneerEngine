@@ -52,16 +52,9 @@ class AeGlobal {
     QeVulkan *vulkan = nullptr;
     AeUI *ui = nullptr;
     QeGraphics *graphics = nullptr;
-    QeMath *math = nullptr;
-    QeAsset *asset = nullptr;
-    QeEncode *encode = nullptr;
-    QeLog *log = nullptr;
     QeCommand *command = nullptr;
     AeObjectManager *objectmanager = nullptr;
     QeScene *scene = nullptr;
-    QeAssetXML *configXML = nullptr;
-
-    QeAssetXML *getConfigXML();
 };
 
 #define GLB AeGlobal::getInstance()
@@ -70,13 +63,5 @@ class AeGlobal {
 #define UI GLB.ui
 #define GRAP GLB.graphics
 #define SCENE GLB.scene
-#define MATH GLB.math
-#define AST GLB.asset
-#define ENCODE GLB.encode
-#define DEBUG GLB.log
 #define OBJMGR GLB.objectmanager
-#define CONFIG GLB.getConfigXML()
 #define CMD(msg) GLB.command->inputCommand(msg)
-
-#define LOG(msg) GLB.log->print(std::string("") + msg)
-#define STACK(msg) GLB.log->print(std::string("") + msg, true)

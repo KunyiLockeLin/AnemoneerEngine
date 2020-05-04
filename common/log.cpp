@@ -1,9 +1,18 @@
-#include "header.h"
+#include "common.h"
+#include <ctime>
+#include <windows.h>
+#include <direct.h>
+#include "dbghelp.h"
+#include <sstream>
+
+QeLog::QeLog() : ofile(new std::ofstream()) {}
 
 QeLog::~QeLog() {
-    if (ofile.is_open()) {
-        ofile.close();
+    if (ofile->is_open()) {
+        ofile->close();
     }
+    delete ofile;
+    ofile = nullptr;
 }
 
 bool QeLog::isOutput() { return CONFIG->getXMLValuei("setting.environment.outputLog"); }
@@ -61,9 +70,8 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
     if (bShowStack) s += stack(2, stackLevel);
 
-    UI->Log(s);
-    if (isOutput()) {
-        if (!ofile.is_open()) {
+    if (ofile && isOutput()) {
+        if (!ofile->is_open()) {
             time_t rawtime;
             struct tm timeinfo;
             char buffer[128];
@@ -78,10 +86,10 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
             outputPath += buffer;
             outputPath += ".txt";
 
-            ofile.open(outputPath);
+            ofile->open(outputPath);
         }
         // ofile.seekp(ofile.beg);
-        ofile << s << std::endl;
+        *ofile << s << std::endl;
         // ofile.flush();
     }
 }

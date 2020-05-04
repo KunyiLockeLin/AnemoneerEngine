@@ -3,7 +3,7 @@
 void QeComponent::initialize(QeAssetXML *_property, QeObject *_owner) {
     owner = _owner;
     initProperty = _property;
-    name = initProperty->key;
+    name = initProperty->data->key;
 
     oid = initProperty->getXMLValuei("oid");
     eid = initProperty->getXMLValuei("eid");

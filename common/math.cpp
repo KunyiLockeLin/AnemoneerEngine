@@ -1,7 +1,11 @@
-﻿#include "header.h"
+﻿#include <cmath>
+#include <random>
+#include "common.h"
 
 QeVector3f QeRay::positionByTime(float t) { return origin + direction * t; }
 
+QeMath::QeMath() {}
+QeMath::~QeMath() {}
 float QeMath::dot(QeVector2f &_vec1, QeVector2f &_vec2) { return _vec1.x * _vec2.x + _vec1.y * _vec2.y; }
 float QeMath::dot(QeVector3f &_vec1, QeVector3f &_vec2) { return _vec1.x * _vec2.x + _vec1.y * _vec2.y + _vec1.z * _vec2.z; }
 float QeMath::dot(QeVector4f &_vec1, QeVector4f &_vec2) {
@@ -866,8 +870,8 @@ QeVector3f QeMath::revolute_eularAngles(QeVector3f &_position, QeVector3f &_addR
     return mat * QeVector4f(origin, 1.0f);
 }
 
-QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX, bool bFixY,
-                            bool bFixZ) {
+QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX,
+                                 bool bFixY, bool bFixZ) {
     QeVector3f vec = {_position - _centerPosition};
     QeVector3f vecN = normalize(vec);
 
@@ -980,8 +984,8 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
         rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
 }*/
 
-QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rotateEuler, QeVector3f &_scale, bool bRotate,
-                                        bool bFixSize) {
+QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rotateEuler, QeVector3f &_scale,
+                                        QeVector3f &camera_world_position, bool bRotate, bool bFixSize) {
     QeMatrix4x4f mat;
 
     mat *= translate(_translate);
@@ -990,7 +994,7 @@ QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rot
 
     float dis = 1.0f;
     if (bFixSize) {
-        dis = length(GRAP->getTargetCamera()->owner->transform->worldPosition() - _translate);
+        dis = length(camera_world_position - _translate);
         dis = dis < 0.1f ? 0.01f : dis / 10;
     }
     mat *= scale(_scale * dis);

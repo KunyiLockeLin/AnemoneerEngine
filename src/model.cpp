@@ -9,16 +9,16 @@ void QeModel::initialize(QeAssetXML *_property, QeObject *_owner) {
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
     const char *c = initProperty->getXMLValue("obj");
-    modelData = AST->getModel(c);
+    modelData = G_AST->getModel(c);
     materialData = modelData->pMaterial;
     if (materialData) bufferData.material = materialData->value;
 
     bufferData.param2.y = (float)modelData->vertices.size();
 
     shaderKey = "model";
-    AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
-    AST->setGraphicsShader(normalShader, nullptr, "normal");
-    AST->setGraphicsShader(outlineShader, nullptr, "outline");
+    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST->setGraphicsShader(normalShader, nullptr, "normal");
+    G_AST->setGraphicsShader(outlineShader, nullptr, "outline");
 
     materialOID = initProperty->getXMLValuei("materialOID");
 
@@ -61,7 +61,7 @@ void QeModel::update1() {
                 }
             }
             materialData = &material->materialData;
-            AST->setGraphicsShader(graphicsShader, material->initProperty, shaderKey);
+            G_AST->setGraphicsShader(graphicsShader, material->initProperty, shaderKey);
             bufferData.material = materialData->value;
             VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
         }

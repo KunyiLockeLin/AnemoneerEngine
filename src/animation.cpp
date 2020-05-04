@@ -15,7 +15,7 @@ void QeAnimation::initialize(QeAssetXML *_property, QeObject *_owner) {
     graphicsShader.frag = nullptr;
     shaderKey = "animation";
 
-    AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
     currentActionFrame = 0;
     currentActionTime = 0;
 }

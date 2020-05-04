@@ -4,15 +4,15 @@ void QeParticle::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     bRotate = false;
-    particleRule = ENCODE->decodeParticle(initProperty);
-    materialData = AST->getMaterialImage(particleRule->image);
+    particleRule = G_ENCODE->decodeParticle(initProperty);
+    materialData = G_AST->getMaterialImage(particleRule->image);
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    computePipeline.shader = AST->getShader(CONFIG->getXMLValue("shaders.compute.particle.comp"));
+    computePipeline.shader = G_AST->getShader(CONFIG->getXMLValue("shaders.compute.particle.comp"));
 
     shaderKey = "particle";
-    AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     // count
     totalParticlesSize = MATH->iRandom(particleRule->count_total, particleRule->count_range);
@@ -225,7 +225,8 @@ void QeParticle::update1() {
     scale.x *= size.x;
     scale.y *= size.y;
 
-    bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale);
+    bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale,
+                                                GRAP->getTargetCamera()->owner->transform->worldPosition());
 
     VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }

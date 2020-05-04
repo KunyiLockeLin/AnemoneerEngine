@@ -36,7 +36,7 @@ void QePlane::initialize(QeAssetXML *_property, QeObject *_owner) {
             break;
     }
 
-    AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     VK->createDescriptorSet(descriptorSet);
     VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
@@ -83,7 +83,7 @@ void QePlane::update1() {
         bUpdateTargetCameraOID = true;
 
         QeAssetXML *node = CONFIG->getXMLNode("shaders.graphics.render");
-        AST->setGraphicsShader(graphicsShader, node, shaderKey);
+        G_AST->setGraphicsShader(graphicsShader, node, shaderKey);
     }
 
     if (targetCameraOID) {
@@ -92,8 +92,8 @@ void QePlane::update1() {
         if (camera) {
             QeVector3f scale = owner->transform->worldScale();
             scale.x *= MATH->fastSqrt((float(camera->renderSize.width) / camera->renderSize.height));
-            bufferData.model =
-                MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale);
+            bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(),
+                                                        scale, GRAP->getTargetCamera()->owner->transform->worldPosition());
             VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
         }
     } else {

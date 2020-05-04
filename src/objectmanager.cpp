@@ -1,7 +1,7 @@
 #include "header.h"
 
 void AeObjectManager::loadScene(int _eid) {
-    QeAssetXML *node = AST->getXMLEditNode(eScene, _eid);
+    QeAssetXML *node = G_AST->getXMLEditNode(eScene, _eid);
 
     if (SCENE)
         SCENE->initialize(node, nullptr);

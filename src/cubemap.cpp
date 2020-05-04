@@ -3,14 +3,14 @@
 void QeCubemap::initialize(QeAssetXML *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    modelData = AST->getModel("cube", true);
+    modelData = G_AST->getModel("cube", true);
     const char *image = initProperty->getXMLValue("image");
-    materialData = AST->getMaterialImage(image, true);
+    materialData = G_AST->getMaterialImage(image, true);
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
     bufferData.material = materialData->value;
     shaderKey = "cubemap";
-    AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);
 

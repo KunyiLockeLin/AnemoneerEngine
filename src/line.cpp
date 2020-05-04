@@ -8,10 +8,10 @@ void QeLine::initialize(QeAssetXML *_property, QeObject *_owner) {
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    modelData = AST->getModel("line", false, (float *)&color);
+    modelData = G_AST->getModel("line", false, (float *)&color);
 
     shaderKey = "line";
-    AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);
@@ -34,7 +34,8 @@ void QeLine::update1() {
     QeVector3f scale = {size, size, size};
 
     // LOG("line x: " + vec.x + "  y: " + vec.y + "  z: " + vec.z);
-    bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), MATH->vectorToEulerAngles(vec), scale);
+    bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), MATH->vectorToEulerAngles(vec), scale,
+                                                GRAP->getTargetCamera()->owner->transform->worldPosition());
 
     VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }

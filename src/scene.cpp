@@ -7,8 +7,8 @@ void QeScene::initialize(QeAssetXML * _property, QeObject * _owner) {
     QeAssetXML *node = CONFIG->getXMLNode("setting.environment");
     node->setXMLValue("currentSceneEID", std::to_string(eid).c_str());
 
-    for (int index = 0; index < initProperty->nexts.size(); ++index) {
-        children.push_back(OBJMGR->spwanComponent(initProperty->nexts[index], nullptr));
+    for (int index = 0; index < initProperty->data->nexts.size(); ++index) {
+        children.push_back(OBJMGR->spwanComponent(initProperty->data->nexts[index], nullptr));
     }
     LOG("current Scene: " + name + " " + eid);
 }

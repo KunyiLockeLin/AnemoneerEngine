@@ -7,3 +7,5 @@
 build*
 data/shaders/spv*
 data/log/*
+*.dll
+*.lib

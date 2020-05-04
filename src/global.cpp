@@ -1,4 +1,5 @@
 #include "header.h"
+#include <sstream>
 
 namespace QeLib {
 std::string toString(const int &i) {
@@ -63,36 +64,11 @@ AeGlobal::AeGlobal() {
     if (ui == nullptr) ui = new AeUI(key);
     if (objectmanager == nullptr) objectmanager = new AeObjectManager(key);
     if (graphics == nullptr) graphics = new QeGraphics(key);
-    if (math == nullptr) math = new QeMath(key);
-    if (asset == nullptr) asset = new QeAsset(key);
-    if (encode == nullptr) encode = new QeEncode(key);
     if (vulkan == nullptr) vulkan = new QeVulkan(key);
-    if (log == nullptr) log = new QeLog(key);
     if (command == nullptr) command = new QeCommand(key);
 }
 
-QeAssetXML *AeGlobal::getConfigXML() {
-    if (configXML) return configXML;
-    return configXML = asset->getXML(asset->CONFIG_PATH);
-}
-
 AeGlobal::~AeGlobal() {
-    if (math != nullptr) {
-        delete math;
-        math = nullptr;
-    }
-    if (encode != nullptr) {
-        delete encode;
-        encode = nullptr;
-    }
-    if (asset != nullptr) {
-        delete asset;
-        asset = nullptr;
-    }
-    if (log != nullptr) {
-        delete log;
-        log = nullptr;
-    }
     if (command != nullptr) {
         delete command;
         command = nullptr;
@@ -117,7 +93,6 @@ AeGlobal::~AeGlobal() {
         delete engine;
         engine = nullptr;
     }
-    configXML = nullptr;
 }
 
 AeGlobal &AeGlobal::getInstance() {
