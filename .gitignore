@@ -4,8 +4,8 @@
 *.ipdb
 *.pdb
 *.ilk
-build*
-data/shaders/spv*
-data/log/*
 *.dll
 *.lib
+build*
+output/data/shaders/spv*
+output/data/log/*

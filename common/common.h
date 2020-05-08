@@ -8,7 +8,6 @@
 #include <map>
 #include <chrono>
 #include <fstream>
-#include <memory>
 
 #define SINGLETON_CLASS(class_name)           \
    private:                                   \
@@ -415,17 +414,73 @@ class DllExport QeTimer {
     bool checkTimer(int &passMilliSecond);
 };
 
-class DllExport QeLog {
-    SINGLETON_CLASS(QeLog)
+namespace AeLib {
+std::string DllExport toString(const int &i);
+std::string DllExport operator + (std::string const &a, const int &b);
+std::string DllExport operator + (std::string const &a, const size_t &b);
+std::string DllExport operator + (std::string const &a, const float &b);
+std::string DllExport operator+(std::string const &a, const double &b);
+std::string DllExport operator+(std::string const &a, const char *b);
+std::string DllExport operator+=(std::string const &a, const int &b);
+std::string DllExport operator+=(std::string const &a, const size_t &b);
+std::string DllExport operator+=(std::string const &a, const float &b);
+std::string DllExport operator+=(std::string const &a, const double &b);
+std::string DllExport operator+=(std::string const &a, const char *b);
+
+template <class T>
+int DllExport findElementFromVector(std::vector<T> &vec, T element) {
+    std::vector<T>::iterator it = std::find(vec.begin(), vec.end(), element);
+    if (it == vec.end()) return INDEX_NONE;
+    return int(it - vec.begin());
+}
+
+template <class T>
+bool DllExport eraseElementFromVector(std::vector<T> &vec, T element) {
+    int index = findElementFromVector(vec, element);
+    if (index == INDEX_NONE) return false;
+    vec.erase(vec.begin() + index);
+    return true;
+}
+};  // namespace AeLib
+using namespace AeLib;
+
+class DllExport AeFile {
    public:
-    ~QeLog();
+    AeFile();
+    ~AeFile();
 
+    bool bFirstLine;
     std::ofstream *ofile;
+    std::string *output_path;
 
+    void open(const char *output_path);
+    bool isOpen();
+    bool add(const char *s);
+    bool addNewLine(const char *s);
+    void close();
+};
+
+class DllExport AeLogListener {
+   public:
+    virtual void updateLog(const char* msg) {}
+};
+
+class DllExport AeLog {
+    SINGLETON_CLASS(AeLog)
+   public:
+    ~AeLog();
+
+    AeFile *file;
+    std::vector<AeLogListener *> *listeners;
+
+    void addListener(AeLogListener & listener);
+    void removeListener(AeLogListener &listener);
+    void switchOutput(bool turn_on, const char *output_file_name = nullptr);
     std::string stack(int from, int to);
     void print(std::string &msg, bool bShowStack = false, int stackLevel = 4);
 
     bool isOutput();
 };
-#define LOG(msg) QeLog::getInstance()->print(std::string("") + msg)
-#define STACK(msg) QeLog::getInstance()->print(std::string("") + msg, true)
+#define LOGOBJ AeLog::getInstance()
+#define LOG(msg) LOGOBJ->print(std::string("") + msg)
+#define STACK(msg) LOGOBJ->print(std::string("") + msg, true)

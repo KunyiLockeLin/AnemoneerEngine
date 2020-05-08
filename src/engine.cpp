@@ -5,7 +5,9 @@ void AngryEngine::run() {
 
     UI->initialize();
     VK->initialize();
-
+    if (CONFIG->getXMLValueb("setting.environment.outputLog")) {
+        LOGOBJ->switchOutput(true, "Ae");
+    }
     initialize();
     mainLoop();
 }

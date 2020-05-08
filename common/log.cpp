@@ -5,19 +5,146 @@
 #include "dbghelp.h"
 #include <sstream>
 
-QeLog::QeLog() : ofile(new std::ofstream()) {}
+namespace AeLib {
+std::string toString(const int &i) {
+    std::ostringstream oss;
+    oss << i;
+    return oss.str();
+}
+std::string operator+(std::string const &a, const int &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+(std::string const &a, const size_t &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+(std::string const &a, const float &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+(std::string const &a, const double &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+(std::string const &a, const char *b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+=(std::string const &a, const char *b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+=(std::string const &a, const int &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+=(std::string const &a, const size_t &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+=(std::string const &a, const float &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+=(std::string const &a, const double &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+};  // namespace AeLib
 
-QeLog::~QeLog() {
-    if (ofile->is_open()) {
-        ofile->close();
-    }
+AeFile::AeFile() : ofile(new std::ofstream()), output_path(new std::string()) {}
+AeFile::~AeFile() {
+    ofile->close();
     delete ofile;
     ofile = nullptr;
+    delete output_path;
+    output_path = nullptr;
 }
 
-bool QeLog::isOutput() { return CONFIG->getXMLValuei("setting.environment.outputLog"); }
+void AeFile::open(const char *output_path_) {
+    *output_path = output_path_;
+    ofile->open(output_path->c_str());
+    bFirstLine = true;
+}
 
-std::string QeLog::stack(int from, int to) {
+bool AeFile::isOpen() { return ofile->is_open(); }
+
+bool AeFile::add(const char *s) {
+    if (!isOpen()) return false;
+    *ofile << s;
+    bFirstLine = false;
+    return true;
+}
+
+bool AeFile::addNewLine(const char *s) {
+    if (!isOpen()) return false;
+    if (!bFirstLine) *ofile << std::endl;
+    *ofile << s;
+    bFirstLine = false;
+    return true;
+}
+
+void AeFile::close() { ofile->close(); }
+
+AeLog::AeLog() : listeners(new std::vector<AeLogListener *>()), file(nullptr) {}
+
+AeLog::~AeLog() {
+    if (file) {
+        file->close();
+        delete file;
+        file = nullptr;
+    }
+    listeners->clear();
+    delete listeners;
+    listeners = nullptr;
+}
+
+// bool QeLog::isOutput() { return CONFIG->getXMLValuei("setting.environment.outputLog"); }
+bool AeLog::isOutput() { return (file && file->isOpen()) ? true : false; }
+
+void AeLog::switchOutput(bool turn_on, const char *output_file_name ) {
+    if (turn_on) {
+        if (!file) {
+            file = new AeFile();
+        }
+        if (file->isOpen()) {
+            file->close();
+        }
+        time_t rawtime;
+        struct tm timeinfo;
+        char buffer[128];
+
+        time(&rawtime);
+        localtime_s(&timeinfo, &rawtime);
+
+        strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
+        std::string outputPath = CONFIG->getXMLValue("setting.path.log");
+        _mkdir(outputPath.c_str());
+        outputPath += output_file_name;
+        outputPath += buffer;
+        outputPath += ".txt";
+
+        file->open(outputPath.c_str());
+    } else {
+        file->close();
+    }
+}
+
+void AeLog::addListener(AeLogListener &listener) { listeners->emplace_back(&listener); }
+void AeLog::removeListener(AeLogListener &listener) { eraseElementFromVector(*listeners, &listener); }
+
+std::string AeLog::stack(int from, int to) {
     std::string ret = "";
 
     void **backTrace = new void *[to];
@@ -54,7 +181,7 @@ std::string QeLog::stack(int from, int to) {
     return ret;
 }
 
-void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
+void AeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
     if (this == nullptr) return;
 
     time_t rawtime;
@@ -70,26 +197,13 @@ void QeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
 
     if (bShowStack) s += stack(2, stackLevel);
 
-    if (ofile && isOutput()) {
-        if (!ofile->is_open()) {
-            time_t rawtime;
-            struct tm timeinfo;
-            char buffer[128];
-
-            time(&rawtime);
-            localtime_s(&timeinfo, &rawtime);
-
-            strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
-            std::string outputPath = CONFIG->getXMLValue("setting.path.log");
-            _mkdir(outputPath.c_str());
-            outputPath += "log";
-            outputPath += buffer;
-            outputPath += ".txt";
-
-            ofile->open(outputPath);
-        }
+    if (file && file->isOpen()) {
         // ofile.seekp(ofile.beg);
-        *ofile << s << std::endl;
+        file->addNewLine(s.c_str());
         // ofile.flush();
+    }
+
+    for (auto *listener : *listeners) {
+        listener->updateLog(s.c_str());
     }
 }

@@ -229,5 +229,3 @@ enum QeUIType {
 #include "scene.h"
 #include "command.h"
 #include "rendersetting.h"
-
-using namespace QeLib;

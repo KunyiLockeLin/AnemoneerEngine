@@ -8,17 +8,14 @@ add_library(libCommon SHARED common/common.h common/encode.cpp common/math.cpp c
 
 set_target_properties(libCommon PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(libCommon PROPERTIES OUTPUT_NAME_DEBUG libCommon_debug)
-set_target_properties(libCommon PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(libCommon PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(libCommon PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(libCommon Dbghelp)
-set(DEBUG_LIBCOMMON ${CMAKE_CURRENT_SOURCE_DIR}/build/debug/libCommon_debug.lib)
-set(RELEASE_LIBCOMMON ${CMAKE_CURRENT_SOURCE_DIR}/build/release/libCommon.lib)
-add_custom_command(TARGET libCommon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_LIBCOMMON}>$<$<CONFIG:release>:${RELEASE_LIBCOMMON}>" ${CMAKE_CURRENT_SOURCE_DIR} COMMENT "copy libCommon")
+set(DEBUG_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/libCommon_debug.dll)
+set(RELEASE_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/libCommon.dll)
+add_custom_command(TARGET libCommon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_libCommon}>$<$<CONFIG:release>:${RELEASE_libCommon}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy libCommon")
 
 # AngryEngine
-set(SRC_NONE generator.bat data/shader_compile.bat data/config.xml)
+set(SRC_NONE generator.bat output/data/shader_compile.bat output/data/config.xml)
 set(SRC_ALGORITHM src/game_encode.cpp)
 set(SRC_ALGORITHM_HEADER src/game_encode.h)
 set(SRC_UI src/ui.cpp)
@@ -41,20 +38,19 @@ set(SRC_GAMEOBJECT_HEADER src/animation.h   src/axis.h    src/camera.h
                           src/transform.h   src/rendersetting.h src/scene.h)
 
 set(SRC_MANAGER src/game_asset.cpp  src/command.cpp src/engine.cpp
-                src/global.cpp
-                src/objectmanager.cpp)
+                src/global.cpp  src/objectmanager.cpp)
 
 set(SRC_MANAGER_HEADER src/header.h        src/game_asset.h src/command.h
                        src/global.h         src/engine.h
                        src/objectmanager.h)
 
-file(GLOB_RECURSE  SRC_SHADER data/shaders/*)
-file(GLOB_RECURSE  SRC_SHADER_SPV data/shaders/spv/*)
-file(GLOB_RECURSE  SRC_SHADER_HEADER data/shaders/header*)
-file(GLOB_RECURSE  SRC_MODEL data/models/*.gltf)
+file(GLOB_RECURSE  SRC_SHADER output/data/shaders/*)
+file(GLOB_RECURSE  SRC_SHADER_SPV output/data/shaders/spv/*)
+file(GLOB_RECURSE  SRC_SHADER_HEADER output/data/shaders/header*)
+file(GLOB_RECURSE  SRC_MODEL output/data/models/*.gltf)
 
-list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_SPV})
-list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_HEADER})
+list(REMOVE_ITEM ${SRC_SHADER} ${SRC_SHADER_SPV})
+list(REMOVE_ITEM ${SRC_SHADER} ${SRC_SHADER_HEADER})
 
 source_group(algorithm FILES ${SRC_ALGORITHM})
 source_group(algorithm\\header FILES ${SRC_ALGORITHM_HEADER})
@@ -77,12 +73,14 @@ add_executable(AngryEngine  ${SRC_ALGORITHM} ${SRC_ALGORITHM_HEADER} ${SRC_GAMEO
 
 set_target_properties(AngryEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(AngryEngine PROPERTIES OUTPUT_NAME_DEBUG AngryEngine_debug)
-set_target_properties(AngryEngine PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(AngryEngine PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(AngryEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(AngryEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
 
 target_include_directories(AngryEngine PUBLIC $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(AngryEngine PUBLIC $ENV{VULKAN_SDK}/Lib ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(AngryEngine PUBLIC $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
 target_link_libraries(AngryEngine vulkan-1 debug libCommon_debug optimized libCommon)
+
+set(DEBUG_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/AngryEngine_debug.exe)
+set(RELEASE_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/AngryEngine.exe)
+add_custom_command(TARGET AngryEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_AngryEngine}>$<$<CONFIG:release>:${RELEASE_AngryEngine}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy AngryEngine")
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT AngryEngine)

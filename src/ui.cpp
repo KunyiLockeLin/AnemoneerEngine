@@ -24,6 +24,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
 
+AeUI::~AeUI() { LOGOBJ->removeListener(*this); }
+
 void AeUI::closeCommand() {
     ShowWindow(commandBox, SW_HIDE);
     SetFocus(mainWindow);
@@ -507,6 +509,7 @@ void AeUI::openLogPanel() {
     logHDC = GetDC(listBoxLog);
     SelectObject(logHDC, hFont);
     logMaxWidth = 0;
+    LOGOBJ->addListener(*this);
 }
 
 void AeUI::Log(std::string _log) {

@@ -9,10 +9,10 @@ struct AeInputData {
     std::string consoleCommandInput;
 };
 
-class AeUI {
+class AeUI : public AeLogListener {
    public:
     AeUI(AeGlobalKey &_key) {}
-    ~AeUI() {}
+    ~AeUI();
 
     HINSTANCE windowInstance;
     HWND mainWindow, commandBox;
@@ -59,6 +59,7 @@ class AeUI {
     void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     void sendCommand();
     void closeCommand();
+    virtual void updateLog(const char *msg) { Log(msg);}
     // void consoleInput();
     // bool isWindow();
 };
