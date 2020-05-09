@@ -14,6 +14,17 @@ set(DEBUG_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/libCommon_debug.dll)
 set(RELEASE_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/libCommon.dll)
 add_custom_command(TARGET libCommon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_libCommon}>$<$<CONFIG:release>:${RELEASE_libCommon}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy libCommon")
 
+# CodeGenerator
+add_executable(CodeGenerator code_generator.bat code_generator/code_generator.cpp)
+
+set_target_properties(CodeGenerator PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+set_target_properties(CodeGenerator PROPERTIES OUTPUT_NAME_DEBUG CodeGenerator_debug)
+set_target_properties(CodeGenerator PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY $(SolutionDir)$(Configuration))
+
+target_include_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(CodeGenerator PUBLIC debug libCommon_debug optimized libCommon)
+
 # AngryEngine
 set(SRC_NONE generator.bat output/data/shader_compile.bat output/data/config.xml)
 set(SRC_ALGORITHM src/game_encode.cpp)

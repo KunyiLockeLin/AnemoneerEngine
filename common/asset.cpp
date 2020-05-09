@@ -2,8 +2,6 @@
 #include <sstream>
 #include <stdarg.h>
 
-QeAssetXML *configXML = nullptr;
-
 std::map<std::string, QeAssetXML *> astXMLs;
 std::map<std::string, QeAssetJSON *> astJSONs;
 
@@ -842,7 +840,6 @@ QeAsset::~QeAsset() {
         ++it1;
     }
     astJSONs.clear();
-    configXML = nullptr;
 }
 
 void QeAsset::removeXML(std::string path) {
@@ -897,9 +894,4 @@ QeAssetXML *QeAsset::getXML(const char *_filePath) {
     astXMLs[_filePath] = head;
 
     return head;
-}
-
-QeAssetXML *QeAsset::getConfigXML() {
-    if (configXML) return configXML;
-    return configXML = getXML(CONFIG_PATH);
 }

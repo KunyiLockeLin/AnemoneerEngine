@@ -7,5 +7,6 @@
 *.dll
 *.lib
 build*
+generated_*
 output/data/shaders/spv*
 output/data/log/*

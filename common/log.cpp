@@ -4,6 +4,7 @@
 #include <direct.h>
 #include "dbghelp.h"
 #include <sstream>
+#include <iostream>
 
 namespace AeLib {
 std::string toString(const int &i) {
@@ -72,26 +73,22 @@ AeFile::~AeFile() {
     output_path = nullptr;
 }
 
-void AeFile::open(const char *output_path_) {
+#include <cerrno>
+bool AeFile::open(const char *output_path_) {
     *output_path = output_path_;
-    ofile->open(output_path->c_str());
-    bFirstLine = true;
+    ofile->open(output_path_);
+    if (ofile->fail()) {
+        std::cout << "open failure as expected: " << strerror(errno) << '\n';
+        return false;
+    }
+    return true;
 }
 
 bool AeFile::isOpen() { return ofile->is_open(); }
 
-bool AeFile::add(const char *s) {
-    if (!isOpen()) return false;
-    *ofile << s;
-    bFirstLine = false;
-    return true;
-}
-
 bool AeFile::addNewLine(const char *s) {
     if (!isOpen()) return false;
-    if (!bFirstLine) *ofile << std::endl;
-    *ofile << s;
-    bFirstLine = false;
+    *ofile << s << std::endl;
     return true;
 }
 
@@ -113,7 +110,7 @@ AeLog::~AeLog() {
 // bool QeLog::isOutput() { return CONFIG->getXMLValuei("setting.environment.outputLog"); }
 bool AeLog::isOutput() { return (file && file->isOpen()) ? true : false; }
 
-void AeLog::switchOutput(bool turn_on, const char *output_file_name ) {
+void AeLog::switchOutput(bool turn_on, const char *output_path ) {
     if (turn_on) {
         if (!file) {
             file = new AeFile();
@@ -129,9 +126,7 @@ void AeLog::switchOutput(bool turn_on, const char *output_file_name ) {
         localtime_s(&timeinfo, &rawtime);
 
         strftime(buffer, sizeof(buffer), "%y%m%d%H%M%S", &timeinfo);
-        std::string outputPath = CONFIG->getXMLValue("setting.path.log");
-        _mkdir(outputPath.c_str());
-        outputPath += output_file_name;
+        std::string outputPath = output_path;
         outputPath += buffer;
         outputPath += ".txt";
 
@@ -202,7 +197,7 @@ void AeLog::print(std::string &msg, bool bShowStack, int stackLevel) {
         file->addNewLine(s.c_str());
         // ofile.flush();
     }
-
+    std::cout << s << std::endl;
     for (auto *listener : *listeners) {
         listener->updateLog(s.c_str());
     }

@@ -1,4 +1,3 @@
-@echo off
 setlocal EnableDelayedExpansion
 
 %VULKAN_SDK%/Bin/glslangValidator.exe -h

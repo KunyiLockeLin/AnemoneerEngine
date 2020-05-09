@@ -355,7 +355,6 @@ class DllExport QeAsset {
     QeAssetJSON *getJSON(const char *_filePath);
     QeAssetXML *getXML(const char *_filePath);
     void removeXML(std::string path);
-    QeAssetXML *getConfigXML();
 
     std::vector<char> loadFile(const char *_filePath);
 
@@ -376,8 +375,6 @@ class DllExport QeAsset {
     bool getJSONfValue(float *output, QeAssetJSON *source, int length, ...);
 };
 #define AST QeAsset::getInstance()
-const char CONFIG_PATH[] = "data/config.xml";
-#define CONFIG AST->getConfigXML()
 
 class DllExport QeEncode {
     SINGLETON_CLASS(QeEncode)
@@ -414,11 +411,50 @@ class DllExport QeTimer {
     bool checkTimer(int &passMilliSecond);
 };
 
+class DllExport AeFile {
+   public:
+    AeFile();
+    ~AeFile();
+
+    std::ofstream *ofile;
+    std::string *output_path;
+
+    bool open(const char *output_path);
+    bool isOpen();
+    bool addNewLine(const char *s);
+    void close();
+};
+
+class DllExport AeLogListener {
+   public:
+    virtual void updateLog(const char* msg) {}
+};
+
+class DllExport AeLog {
+    SINGLETON_CLASS(AeLog)
+   public:
+    ~AeLog();
+
+    AeFile *file;
+    std::vector<AeLogListener *> *listeners;
+
+    void addListener(AeLogListener & listener);
+    void removeListener(AeLogListener &listener);
+    void switchOutput(bool turn_on, const char *output_path = nullptr);
+    std::string stack(int from, int to);
+    void print(std::string &msg, bool bShowStack = false, int stackLevel = 4);
+
+    bool isOutput();
+};
+#define LOGOBJ AeLog::getInstance()
+#define LOG(msg) LOGOBJ->print(std::string("") + msg)
+#define STACK(msg) LOGOBJ->print(std::string("") + msg, true)
+
 namespace AeLib {
 std::string DllExport toString(const int &i);
-std::string DllExport operator + (std::string const &a, const int &b);
-std::string DllExport operator + (std::string const &a, const size_t &b);
-std::string DllExport operator + (std::string const &a, const float &b);
+std::string DllExport operator+(std::string const &a, const int &b);
+std::string DllExport operator+(std::string const &a, const size_t &b);
+std::string DllExport operator+(std::string const &a, const float &b);
 std::string DllExport operator+(std::string const &a, const double &b);
 std::string DllExport operator+(std::string const &a, const char *b);
 std::string DllExport operator+=(std::string const &a, const int &b);
@@ -443,44 +479,3 @@ bool DllExport eraseElementFromVector(std::vector<T> &vec, T element) {
 }
 };  // namespace AeLib
 using namespace AeLib;
-
-class DllExport AeFile {
-   public:
-    AeFile();
-    ~AeFile();
-
-    bool bFirstLine;
-    std::ofstream *ofile;
-    std::string *output_path;
-
-    void open(const char *output_path);
-    bool isOpen();
-    bool add(const char *s);
-    bool addNewLine(const char *s);
-    void close();
-};
-
-class DllExport AeLogListener {
-   public:
-    virtual void updateLog(const char* msg) {}
-};
-
-class DllExport AeLog {
-    SINGLETON_CLASS(AeLog)
-   public:
-    ~AeLog();
-
-    AeFile *file;
-    std::vector<AeLogListener *> *listeners;
-
-    void addListener(AeLogListener & listener);
-    void removeListener(AeLogListener &listener);
-    void switchOutput(bool turn_on, const char *output_file_name = nullptr);
-    std::string stack(int from, int to);
-    void print(std::string &msg, bool bShowStack = false, int stackLevel = 4);
-
-    bool isOutput();
-};
-#define LOGOBJ AeLog::getInstance()
-#define LOG(msg) LOGOBJ->print(std::string("") + msg)
-#define STACK(msg) LOGOBJ->print(std::string("") + msg, true)

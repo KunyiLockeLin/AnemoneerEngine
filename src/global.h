@@ -35,3 +35,6 @@ class AeGlobal {
 #define SCENE GLB.scene
 #define OBJMGR GLB.objectmanager
 #define CMD(msg) GLB.command->inputCommand(msg)
+
+const char CONFIG_PATH[] = "data\\config.xml";
+#define CONFIG AST->getXML(CONFIG_PATH)
