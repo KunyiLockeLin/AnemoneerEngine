@@ -500,42 +500,21 @@ QeAssetJSON::~QeAssetJSON() {
     data = nullptr;
 }
 
-const char *QeAsset::getJSONValue(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char *key = va_arg(keys, const char *);
-    QeAssetJSON *source = AST->getJSON(key);
-    if (source == nullptr) {
-        va_end(keys);
-        return nullptr;
-    }
-    const char **keys1 = new const char *[length - 1];
-    for (int i = 0; i < (length - 1); ++i) keys1[i] = va_arg(keys, const char *);
-
-    const char *ret = getJSONValue(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return ret;
-}
-
-const char *QeAsset::getJSONValue(QeAssetJSON *source, int length, ...) {
-    if (source == nullptr) return nullptr;
-
+const char *QeAssetJSON::getJSONValue(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getJSONValue(source, keys1, length);
+    const char *ret = getJSONValue(keys1, length);
     va_end(keys);
     delete[] keys1;
     return ret;
 }
 
-const char *QeAsset::getJSONValue(QeAssetJSON *source, const char *keys[], int length) {
-    if (source == nullptr) return nullptr;
+const char *QeAssetJSON::getJSONValue(const char *keys[], int length) {
+    QeAssetJSON *source = this;
 
     for (int index = 0; index < length; ++index) {
         if (index == (length - 1)) {
@@ -564,7 +543,7 @@ const char *QeAsset::getJSONValue(QeAssetJSON *source, const char *keys[], int l
                 int size2 = int(source->data->eArrayNodes[index1].size());
                 int index2 = 0;
                 for (; index2 < size2; ++index2) {
-                    const char *ret = getJSONValue(source->data->eArrayNodes[index1][index2], &keys[index + 1], length - index - 1);
+                    const char *ret = source->data->eArrayNodes[index1][index2]->getJSONValue(&keys[index + 1], length - index - 1);
                     if (ret != nullptr) return ret;
                 }
                 break;
@@ -575,61 +554,38 @@ const char *QeAsset::getJSONValue(QeAssetJSON *source, const char *keys[], int l
     return nullptr;
 }
 
-QeAssetJSON *QeAsset::getJSONNode(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char *key = va_arg(keys, const char *);
-    QeAssetJSON *source = AST->getJSON(key);
-    if (source == nullptr) {
-        va_end(keys);
-        return nullptr;
-    }
-    const char **keys1 = new const char *[length - 1];
-    for (int i = 0; i < (length - 1); ++i) keys1[i] = va_arg(keys, const char *);
-
-    source = getJSONNode(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return source;
-}
-
-QeAssetJSON *QeAsset::getJSONNode(QeAssetJSON *source, int length, ...) {
-    if (source == nullptr) return nullptr;
-
+QeAssetJSON *QeAssetJSON::getJSONNode(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    source = getJSONNode(source, keys1, length);
+    QeAssetJSON* source = getJSONNode(keys1, length);
     va_end(keys);
     delete[] keys1;
     return source;
 }
 
-QeAssetJSON *QeAsset::getJSONNode(QeAssetJSON *source, const char *keys[], int length) {
-    if (source == nullptr) return nullptr;
-
-    int size = int(source->data->eKeysforNodes.size());
+QeAssetJSON *QeAssetJSON::getJSONNode(const char *keys[], int length) {
+    int size = int(data->eKeysforNodes.size());
     for (int index = 0; index < size; ++index) {
-        if (strcmp(keys[0], source->data->eKeysforNodes[index].c_str()) == 0) {
-            if (length == 1) return source->data->eNodes[index];
+        if (strcmp(keys[0], data->eKeysforNodes[index].c_str()) == 0) {
+            if (length == 1) return data->eNodes[index];
 
-            return getJSONNode(source->data->eNodes[index], &keys[1], length - 1);
+            return data->eNodes[index]->getJSONNode(&keys[1], length - 1);
         }
     }
 
-    size = int(source->data->eKeysforArrayNodes.size());
+    size = int(data->eKeysforArrayNodes.size());
     for (int index = 0; index < size; ++index) {
-        if (strcmp(keys[0], source->data->eKeysforArrayNodes[index].c_str()) == 0) {
-            if (length == 1) return source->data->eArrayNodes[index][0];
+        if (strcmp(keys[0], data->eKeysforArrayNodes[index].c_str()) == 0) {
+            if (length == 1) return data->eArrayNodes[index][0];
 
-            int size1 = int(source->data->eArrayNodes[index].size());
+            int size1 = int(data->eArrayNodes[index].size());
 
             for (int index1 = 0; index1 < size1; ++index1) {
-                QeAssetJSON *ret = getJSONNode(source->data->eArrayNodes[index][index1], &keys[1], length - 1);
+                QeAssetJSON *ret = data->eArrayNodes[index][index1]->getJSONNode(&keys[1], length - 1);
                 if (ret != nullptr) return ret;
             }
             break;
@@ -638,42 +594,21 @@ QeAssetJSON *QeAsset::getJSONNode(QeAssetJSON *source, const char *keys[], int l
     return nullptr;
 }
 
-std::vector<std::string> *QeAsset::getJSONArrayValues(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char *key = va_arg(keys, const char *);
-    QeAssetJSON *source = AST->getJSON(key);
-    if (source == nullptr) {
-        va_end(keys);
-        return nullptr;
-    }
-    const char **keys1 = new const char *[length - 1];
-    for (int i = 0; i < (length - 1); ++i) keys1[i] = va_arg(keys, const char *);
-
-    std::vector<std::string> *ret = getJSONArrayValues(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return ret;
-}
-
-std::vector<std::string> *QeAsset::getJSONArrayValues(QeAssetJSON *source, int length, ...) {
-    if (source == nullptr) return nullptr;
-
+std::vector<std::string> *QeAssetJSON::getJSONArrayValues(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    std::vector<std::string> *ret = getJSONArrayValues(source, keys1, length);
+    std::vector<std::string> *ret = getJSONArrayValues(keys1, length);
     va_end(keys);
     delete[] keys1;
     return ret;
 }
 
-std::vector<std::string> *QeAsset::getJSONArrayValues(QeAssetJSON *source, const char *keys[], int length) {
-    if (source == nullptr) return nullptr;
+std::vector<std::string> *QeAssetJSON::getJSONArrayValues(const char *keys[], int length) {
+    QeAssetJSON *source = this;
 
     for (int index = 0; index < length; ++index) {
         if (index == (length - 1)) {
@@ -703,7 +638,7 @@ std::vector<std::string> *QeAsset::getJSONArrayValues(QeAssetJSON *source, const
                 int index2 = 0;
                 for (; index2 < size2; ++index2) {
                     std::vector<std::string> *ret =
-                        getJSONArrayValues(source->data->eArrayNodes[index1][index2], &keys[index + 1], length - index - 1);
+                        source->data->eArrayNodes[index1][index2]->getJSONArrayValues(&keys[index + 1], length - index - 1);
                     if (ret != nullptr) return ret;
                 }
                 break;
@@ -714,52 +649,29 @@ std::vector<std::string> *QeAsset::getJSONArrayValues(QeAssetJSON *source, const
     return nullptr;
 }
 
-std::vector<QeAssetJSON *> *QeAsset::getJSONArrayNodes(int length, ...) {
-    va_list keys;
-    va_start(keys, length);
-
-    const char *key = va_arg(keys, const char *);
-    QeAssetJSON *source = AST->getJSON(key);
-    if (source == nullptr) {
-        va_end(keys);
-        return nullptr;
-    }
-    const char **keys1 = new const char *[length - 1];
-    for (int i = 0; i < (length - 1); ++i) keys1[i] = va_arg(keys, const char *);
-
-    std::vector<QeAssetJSON *> *ret = getJSONArrayNodes(source, keys1, length);
-    va_end(keys);
-    delete[] keys1;
-    return ret;
-}
-
-std::vector<QeAssetJSON *> *QeAsset::getJSONArrayNodes(QeAssetJSON *source, int length, ...) {
-    if (source == nullptr) return nullptr;
-
+std::vector<QeAssetJSON *> *QeAssetJSON::getJSONArrayNodes(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    std::vector<QeAssetJSON *> *ret = getJSONArrayNodes(source, keys1, length);
+    std::vector<QeAssetJSON *> *ret = getJSONArrayNodes(keys1, length);
     va_end(keys);
     delete[] keys1;
     return ret;
 }
 
-std::vector<QeAssetJSON *> *QeAsset::getJSONArrayNodes(QeAssetJSON *source, const char *keys[], int length) {
-    if (source == nullptr) return nullptr;
-
-    int size = int(source->data->eKeysforArrayNodes.size());
+std::vector<QeAssetJSON *> *QeAssetJSON::getJSONArrayNodes(const char *keys[], int length) {
+    int size = int(data->eKeysforArrayNodes.size());
     for (int index = 0; index < size; ++index) {
-        if (strcmp(keys[0], source->data->eKeysforArrayNodes[index].c_str()) == 0) {
-            if (length == 1) return &source->data->eArrayNodes[index];
+        if (strcmp(keys[0], data->eKeysforArrayNodes[index].c_str()) == 0) {
+            if (length == 1) return &data->eArrayNodes[index];
 
-            int size1 = int(source->data->eArrayNodes[index].size());
+            int size1 = int(data->eArrayNodes[index].size());
 
             for (int index1 = 0; index1 < size1; ++index1) {
-                std::vector<QeAssetJSON *> *ret = getJSONArrayNodes(source->data->eArrayNodes[index][index1], &keys[1], length - 1);
+                std::vector<QeAssetJSON *> *ret = data->eArrayNodes[index][index1]->getJSONArrayNodes(&keys[1], length - 1);
                 if (ret != nullptr) return ret;
             }
             break;
@@ -767,24 +679,24 @@ std::vector<QeAssetJSON *> *QeAsset::getJSONArrayNodes(QeAssetJSON *source, cons
     }
 
     if (length > 1) {
-        size = int(source->data->eKeysforNodes.size());
+        size = int(data->eKeysforNodes.size());
         for (int index = 0; index < size; ++index) {
-            if (strcmp(keys[0], source->data->eKeysforNodes[index].c_str()) == 0) {
-                return getJSONArrayNodes(source->data->eNodes[index], &keys[1], length - 1);
+            if (strcmp(keys[0], data->eKeysforNodes[index].c_str()) == 0) {
+                return data->eNodes[index]->getJSONArrayNodes(&keys[1], length - 1);
             }
         }
     }
     return nullptr;
 }
 
-bool QeAsset::getJSONbValue(bool *output, QeAssetJSON *source, int length, ...) {
+bool QeAssetJSON::getJSONbValue(bool *output, int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getJSONValue(source, keys1, length + 1);
+    const char *ret = getJSONValue(keys1, length + 1);
     va_end(keys);
     delete[] keys1;
 
@@ -793,14 +705,14 @@ bool QeAsset::getJSONbValue(bool *output, QeAssetJSON *source, int length, ...) 
     return ret;
 }
 
-bool QeAsset::getJSONiValue(int *output, QeAssetJSON *source, int length, ...) {
+bool QeAssetJSON::getJSONiValue(int *output, int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getJSONValue(source, keys1, length + 1);
+    const char *ret = getJSONValue(keys1, length + 1);
     va_end(keys);
     delete[] keys1;
 
@@ -809,14 +721,14 @@ bool QeAsset::getJSONiValue(int *output, QeAssetJSON *source, int length, ...) {
     return ret;
 }
 
-bool QeAsset::getJSONfValue(float *output, QeAssetJSON *source, int length, ...) {
+bool QeAssetJSON::getJSONfValue(float *output, int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    const char *ret = getJSONValue(source, keys1, length + 1);
+    const char *ret = getJSONValue(keys1, length + 1);
     va_end(keys);
     delete[] keys1;
 

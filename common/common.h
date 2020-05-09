@@ -345,6 +345,18 @@ struct DllExport QeAssetJSON {
 
     QeAssetJSON();
     ~QeAssetJSON();
+
+    const char *getJSONValue(int length, ...);
+    const char *getJSONValue(const char *keys[], int length);
+    QeAssetJSON *getJSONNode(int length, ...);
+    QeAssetJSON *getJSONNode(const char *keys[], int length);
+    std::vector<std::string> *getJSONArrayValues(int length, ...);
+    std::vector<std::string> *getJSONArrayValues(const char *keys[], int length);
+    std::vector<QeAssetJSON *> *getJSONArrayNodes(int length, ...);
+    std::vector<QeAssetJSON *> *getJSONArrayNodes(const char *keys[], int length);
+    bool getJSONbValue(bool *output, int length, ...);
+    bool getJSONiValue(int *output, int length, ...);
+    bool getJSONfValue(float *output, int length, ...);
 };
 
 class DllExport QeAsset {
@@ -357,22 +369,6 @@ class DllExport QeAsset {
     void removeXML(std::string path);
 
     std::vector<char> loadFile(const char *_filePath);
-
-    const char *getJSONValue(int length, ...);
-    const char *getJSONValue(QeAssetJSON *source, int length, ...);
-    const char *getJSONValue(QeAssetJSON *source, const char *keys[], int length);
-    QeAssetJSON *getJSONNode(int length, ...);
-    QeAssetJSON *getJSONNode(QeAssetJSON *source, int length, ...);
-    QeAssetJSON *getJSONNode(QeAssetJSON *source, const char *keys[], int length);
-    std::vector<std::string> *getJSONArrayValues(int length, ...);
-    std::vector<std::string> *getJSONArrayValues(QeAssetJSON *source, int length, ...);
-    std::vector<std::string> *getJSONArrayValues(QeAssetJSON *source, const char *keys[], int length);
-    std::vector<QeAssetJSON *> *getJSONArrayNodes(int length, ...);
-    std::vector<QeAssetJSON *> *getJSONArrayNodes(QeAssetJSON *source, int length, ...);
-    std::vector<QeAssetJSON *> *getJSONArrayNodes(QeAssetJSON *source, const char *keys[], int length);
-    bool getJSONbValue(bool *output, QeAssetJSON *source, int length, ...);
-    bool getJSONiValue(int *output, QeAssetJSON *source, int length, ...);
-    bool getJSONfValue(float *output, QeAssetJSON *source, int length, ...);
 };
 #define AST QeAsset::getInstance()
 

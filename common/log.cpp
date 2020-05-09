@@ -73,12 +73,12 @@ AeFile::~AeFile() {
     output_path = nullptr;
 }
 
-#include <cerrno>
+//#include <cerrno>
 bool AeFile::open(const char *output_path_) {
     *output_path = output_path_;
     ofile->open(output_path_);
     if (ofile->fail()) {
-        std::cout << "open failure as expected: " << strerror(errno) << '\n';
+        //std::cout << "open failure as expected: " << strerror(errno) << '\n';
         return false;
     }
     return true;
