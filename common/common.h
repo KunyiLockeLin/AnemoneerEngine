@@ -46,190 +46,50 @@ struct DllExport AeVector {
         } volume;
     };
 
-    template <class T2, int N2>
-    bool operator==(const AeVector<T2, N2> &other) const {
-        int index = 0;
-        while (index < size && index < other.size) {
-            if (elements[index] != other.elements[index]) {
-                return false;
-            }
-            ++index;
-        }
-        return true;
-    }
+    AeVector();
 
     template <class T2, int N2>
-    bool operator!=(const AeVector<T2, N2> &other) const {
-        return !(this == other);
-    }
+    bool operator==(const AeVector<T2, N2> &other) const;
 
     template <class T2, int N2>
-    AeVector<T, N> &operator=(const AeVector<T2, N2> &other) {
-        int index = 0;
-        while (index < size && index < other.size) {
-            elements[index] = other.elements[index];
-            ++index;
-        }
-        return *this;
-    }
+    bool operator!=(const AeVector<T2, N2> &other) const;
 
     template <class T2, int N2>
-    AeVector<T, N> &operator+=(const AeVector<T2, N2> &other) {
-        int index = 0;
-        while (index < size && index < other.size) {
-            elements[index] += other.elements[index];
-            ++index;
-        }
-        return *this;
-    }
+    AeVector<T, N> &operator=(const AeVector<T2, N2> &other);
 
     template <class T2, int N2>
-    AeVector<T, N> &operator-=(const AeVector<T2, N2> &other) {
-        int index = 0;
-        while (index < size && index < other.size) {
-            elements[index] -= other.elements[index];
-            ++index;
-        }
-        return *this;
-    }
+    AeVector<T, N> &operator+=(const AeVector<T2, N2> &other);
+    template <class T2, int N2>
+    AeVector<T, N> &operator-=(const AeVector<T2, N2> &other);
+    template <class T2, int N2>
+    AeVector<T, N> &operator*=(const AeVector<T2, N2> &other);
+    template <class T2, int N2>
+    AeVector<T, N> &operator/=(const AeVector<T2, N2> &other);
 
     template <class T2, int N2>
-    AeVector<T, N> &operator*=(const AeVector<T2, N2> &other) {
-        int index = 0;
-        while (index < size && index < other.size) {
-            elements[index] *= other.elements[index];
-            ++index;
-        }
-        return *this;
-    }
-
+    AeVector<T, N> operator+(const AeVector<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> &operator/=(const AeVector<T2, N2> &other) {
-        int index = 0;
-        while (index < size && index < other.size) {
-            elements[index] /= other.elements[index];
-            ++index;
-        }
-        return *this;
-    }
-
+    AeVector<T, N> operator-(const AeVector<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> operator+(const AeVector<T2, N2> &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size && index < other.size) {
-            new_.elements[index = ] elements[index] + other.elements[index];
-            ++index;
-        }
-        return new_;
-    }
-
+    AeVector<T, N> operator*(const AeVector<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> operator-(const AeVector<T2, N2> &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size && index < other.size) {
-            new_.elements[index = ] elements[index] - other.elements[index];
-            ++index;
-        }
-        return new_;
-    }
-
-    template <class T2, int N2>
-    AeVector<T, N> operator*(const AeVector<T2, N2> &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size && index < other.size) {
-            new_.elements[index = ] elements[index] * other.elements[index];
-            ++index;
-        }
-        return new_;
-    }
-
-    template <class T2, int N2>
-    AeVector<T, N> operator/(const AeVector<T2, N2> &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size && index < other.size) {
-            new_.elements[index = ] elements[index] / other.elements[index];
-            ++index;
-        }
-        return new_;
-    }
+    AeVector<T, N> operator/(const AeVector<T2, N2> &other);
 
     template <class T2>
-    AeVector<T, N> &operator+=(const T2 &other) {
-        int index = 0;
-        while (index < size) {
-            elements[index] += other;
-            ++index;
-        }
-        return *this;
-    }
+    AeVector<T, N> &operator+=(const T2 &other);
+    template <class T2>
+    AeVector<T, N> &operator-=(const T2 &other);
+    template <class T2>
+    AeVector<T, N> &operator*=(const T2 &other);
+    template <class T2>
+    AeVector<T, N> &operator/=(const T2 &other);
 
     template <class T2>
-    AeVector<T, N> &operator-=(const T2 &other) {
-        int index = 0;
-        while (index < size) {
-            elements[index] -= other;
-            ++index;
-        }
-        return *this;
-    }
-
+    AeVector<T, N> operator+(const T2 &other);
     template <class T2>
-    AeVector<T, N> &operator*=(const T2 &other) {
-        int index = 0;
-        while (index < size) {
-            elements[index] *= other;
-            ++index;
-        }
-        return *this;
-    }
-
+    AeVector<T, N> operator-(const T2 &other);
     template <class T2>
-    AeVector<T, N> &operator/=(const T2 &other) {
-        int index = 0;
-        while (index < size) {
-            elements[index] /= other;
-            ++index;
-        }
-        return *this;
-    }
-
-    template <class T2>
-    AeVector<T, N> operator+(const T2 &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size) {
-            new_.elements[index = ] elements[index] + other;
-            ++index;
-        }
-        return new_;
-    }
-
-    template <class T2>
-    AeVector<T, N> operator-(const T2 &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size) {
-            new_.elements[index = ] elements[index] - other;
-            ++index;
-        }
-        return new_;
-    }
-
-    template <class T2>
-    AeVector<T, N> operator*(const T2 &other) {
-        AeVector<T, N> new_;
-        int index = 0;
-        while (index < size) {
-            new_.elements[index = ] elements[index] * other;
-            ++index;
-        }
-        return new_;
-    }
-
+    AeVector<T, N> operator*(const T2 &other);
     template <class T2>
     AeVector<T, N> operator/(const T2 &other);
 };
@@ -242,12 +102,13 @@ struct DllExport AeMatrix {
 
     AeMatrix();
     AeMatrix(float value);
-    QeMatrix4x4f &operator*=(const QeMatrix4x4f &other);
-    QeMatrix4x4f operator*(const QeMatrix4x4f &other);
-    QeVector4f operator*(const QeVector4f &other);
-    QeMatrix4x4f &operator/=(const float &other);
+    AeMatrix<T, N> &operator*=(const AeMatrix<T, N> &other);
+    AeMatrix<T, N> operator*(const AeMatrix<T, N> &other);
+    AeVector<N> operator*(const AeVector<N> &other);
+    AeMatrix<T, N> &operator/=(const float &other);
 };
 */
+
 struct DllExport QeVector2i {
     int x, y;
 
@@ -684,20 +545,11 @@ std::string DllExport operator+=(std::string const &a, const double &b);
 std::string DllExport operator+=(std::string const &a, const char *b);
 
 template <class T>
-int DllExport findElementFromVector(std::vector<T> &vec, T element) {
-    std::vector<T>::iterator it = std::find(vec.begin(), vec.end(), element);
-    if (it == vec.end()) return INDEX_NONE;
-    return int(it - vec.begin());
-}
+int DllExport findElementFromVector(std::vector<T> &vec, T element);
 
 template <class T>
-bool DllExport eraseElementFromVector(std::vector<T> &vec, T element) {
-    int index = findElementFromVector(vec, element);
-    if (index == INDEX_NONE) return false;
-    vec.erase(vec.begin() + index);
-    return true;
-}
+bool DllExport eraseElementFromVector(std::vector<T> &vec, T element);
 };  // namespace AeLib
 using namespace AeLib;
 
-#include "template.h"
+#include "template_define.h"
