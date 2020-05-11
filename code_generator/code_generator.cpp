@@ -39,7 +39,7 @@ std::string AddElementCode(std::string& key, std::vector<std::string>& types, st
 void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     // struct
     file.addNewLine("");
-    std::string s = "struct AeGameObjectComponent" + node.data->key + " {";
+    std::string s = "struct AeGameObjectComponent" + node.data->key + "Data {";
     file.addNewLine(s.c_str());
     auto* define_node = node.getXMLNode("define");
     std::vector<std::string> load_codes;
