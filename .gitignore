@@ -1,12 +1,6 @@
-.vs/*
-*.iobj
+build/*
 *.exe
-*.ipdb
-*.pdb
-*.ilk
 *.dll
-*.lib
-build*
 generated_*
-output/data/shaders/spv*
+output/data/shaders/spv/*
 output/data/log/*
