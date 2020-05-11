@@ -61,6 +61,9 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
                 case 'b':
                     s += AddElementCode(element, "bool", load_codes);
                     break;
+                case 's':
+                    s += AddElementCode(element, "std::string", load_codes);
+                    break;
                 case 'e':
                     for (auto& comment : define_node->data->comments) {
                         std::vector<std::string> ss = ENCODE->split<std::string>(comment, " ");
@@ -71,10 +74,6 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
                             break;
                         }
                     }
-                    break;
-                case 's':
-                    s += ("std::string " + element.key + ";");
-                    load_codes.push_back(element.key + " = property_->getXMLValue<std::string>(\"" + element.key + "\");");
                     break;
                 default:
                     break;

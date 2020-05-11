@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--test test test 0000-->
 <config>
-    <!--default define member and type, i:int, f:float, b:bool, type+num:array, e:enum, s:string-->
+    <!--default define member and type, i:int, f:float, b:bool, s:string, type+num:array, e:enum-->
     <scenes>
         <define type="2000" eid="i" />
         <default type="2000" eid="1">
@@ -887,15 +887,7 @@
             <default type="9" oid="0" eid="0" image="" />
         </Cubemap>
         <Partical>
-            <define type="10" oid="i" eid="i" image="s" alpha="f" reborn="b" bornTargetTranformOID="i">
-				<count once="i" period="i" total="i" range="i" />
-                <life second="i" range="i" />
-                <init_pos length="1" length_range="0" width="0.5" width_range="0" height="0" height_range="0" radius="0" radius_range="0" degree="0" degree_range="0" />
-                <init_speed X="-0.3" rangeX="0.6" Y="-0.3" rangeY="0.6" Z="1.0" rangeZ="2.0" />
-                <force X="0" rangeX="0" Y="0" rangeY="0" Z="-2.0" rangeZ="1.0" />
-                <size X="0.6" rangeX="0" Y="0.6" rangeY="0" />
-                <color R="0" rangeR="1" G="0" rangeG="1" B="0" rangeB="1" />
-			</define>
+            <define type="10" oid="i" eid="i" image="s" alpha="f" reborn="b" bornTargetTranformOID="i" count_once="i" count_period="i" count_total="i" count_range="i" life_second="i" life_range="i" init_pos_volume="f3" init_pos_volume_range="f3" init_pos_radius="f" init_pos_radius_range="f" init_pos_degree="f" init_pos_degree_range="f" init_speed="f3" init_speed_range="f3" force="f3" force_range="f3" size="f2" size_range="f2" color="f3" color_range="f3" />
             <default type="10" oid="0" eid="0" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="80">
                 <count once="5" period="10" total="100" range="0" />
                 <life second="2" range="5" />
