@@ -54,7 +54,7 @@
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -101,7 +101,7 @@
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -118,7 +118,7 @@
                 <components>
                     <Transform type="1" oid="500" eid="1" position="0 0 0" scale="1.5 1.5 1.5" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="500" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
-                    <MaterialReflect type="11" oid="1100" eid="3" vert="" tesc="" tese="" geom="" frag="cubemapreflect.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="" metallicRoughnessMap="" />
+                    <MaterialReflect type="11" oid="1100" eid="3" vert="" tesc="" tese="" geom="" frag="cubemapreflect.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere2>
@@ -156,7 +156,7 @@
                             <Transform type="1" oid="401" eid="1" position="3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 0 0" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 0 0 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -166,7 +166,7 @@
                 <components>
                     <Transform type="1" oid="1100" eid="1" position="0 -3 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
-                    <MaterialPBR type="11" oid="1100" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1100" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere00>
@@ -174,7 +174,7 @@
                 <components>
                     <Transform type="1" oid="1101" eid="1" position="0 0 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1101" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1101" />
-                    <MaterialPBR type="11" oid="1101" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1101" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="0.55" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere10>
@@ -182,7 +182,7 @@
                 <components>
                     <Transform type="1" oid="1102" eid="1" position="0 3 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1102" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1102" />
-                    <MaterialPBR type="11" oid="1102" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1102" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="0.1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere20>
@@ -190,7 +190,7 @@
                 <components>
                     <Transform type="1" oid="1103" eid="1" position="0 -3 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1103" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1103" />
-                    <MaterialPBR type="11" oid="1103" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1.0" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1103" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1.0" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere01>
@@ -198,7 +198,7 @@
                 <components>
                     <Transform type="1" oid="1104" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1104" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1104" />
-                    <MaterialPBR type="11" oid="1104" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1104" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="0.55" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere11>
@@ -206,7 +206,7 @@
                 <components>
                     <Transform type="1" oid="1105" eid="1" position="0 3 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1105" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1105" />
-                    <MaterialPBR type="11" oid="1105" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1105" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="0.1" roughness="0.55" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere21>
@@ -214,7 +214,7 @@
                 <components>
                     <Transform type="1" oid="1106" eid="1" position="0 -3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1106" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1106" />
-                    <MaterialPBR type="11" oid="1106" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1.0" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1106" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1.0" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere02>
@@ -222,7 +222,7 @@
                 <components>
                     <Transform type="1" oid="1107" eid="1" position="0 0 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1107" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1107" />
-                    <MaterialPBR type="11" oid="1107" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.55" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1107" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="0.55" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere12>
@@ -230,7 +230,7 @@
                 <components>
                     <Transform type="1" oid="1108" eid="1" position="0 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1108" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1108" />
-                    <MaterialPBR type="11" oid="1108" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="0.1" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialPBR type="11" oid="1108" eid="2" vert="" tesc="" tese="" geom="" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="0.1" roughness="0.1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere22>
@@ -244,7 +244,7 @@
                             <Transform type="1" oid="401" eid="1" position="3 -3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 0 0" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="401" targetCameraOID="" />
-                            <MaterialBase type="11" oid="401" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="401" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 0 0 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -255,7 +255,7 @@
                     <Transform type="1" oid="410" eid="1" position="3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="410" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="410" eid="1" planeType="1" materialOID="410" targetCameraOID="" />
-                    <MaterialBase type="11" oid="410" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="410" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -264,7 +264,7 @@
                     <Transform type="1" oid="411" eid="1" position="3 0 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="411" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="411" eid="1" planeType="1" materialOID="411" targetCameraOID="" />
-                    <MaterialBase type="11" oid="411" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="411" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -273,7 +273,7 @@
                     <Transform type="1" oid="412" eid="1" position="3 -3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="412" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="412" eid="1" planeType="1" materialOID="412" targetCameraOID="" />
-                    <MaterialBase type="11" oid="412" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="412" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -282,7 +282,7 @@
                     <Transform type="1" oid="413" eid="1" position="3 3 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="413" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="413" eid="1" planeType="1" materialOID="413" targetCameraOID="" />
-                    <MaterialBase type="11" oid="413" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="413" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -291,7 +291,7 @@
                     <Transform type="1" oid="414" eid="1" position="3 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="414" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="414" eid="1" planeType="1" materialOID="414" targetCameraOID="" />
-                    <MaterialBase type="11" oid="414" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="414" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -300,7 +300,7 @@
                     <Transform type="1" oid="415" eid="1" position="3 -3 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="415" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="415" eid="1" planeType="1" materialOID="415" targetCameraOID="" />
-                    <MaterialBase type="11" oid="415" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="415" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -309,7 +309,7 @@
                     <Transform type="1" oid="416" eid="1" position="3 3 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="416" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="416" eid="1" planeType="1" materialOID="416" targetCameraOID="" />
-                    <MaterialBase type="11" oid="416" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="416" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -318,7 +318,7 @@
                     <Transform type="1" oid="417" eid="1" position="3 0 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="417" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="417" eid="1" planeType="1" materialOID="417" targetCameraOID="" />
-                    <MaterialBase type="11" oid="417" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="417" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -327,7 +327,7 @@
                     <Transform type="1" oid="418" eid="1" position="3 -3 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Light type="4" oid="418" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="418" eid="1" planeType="1" materialOID="418" targetCameraOID="" />
-                    <MaterialBase type="11" oid="418" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase type="11" oid="418" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </light2>
@@ -358,7 +358,7 @@
                 <components>
                     <Transform type="1" oid="1100" eid="1" position="0 0 104" scale="10 10 10" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1100" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1100" />
-                    <MaterialBase2 type="11" oid="1100" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="0.5" baseColorG="0.5" baseColorB="0.5" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase2 type="11" oid="1100" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="0.5 0.5 0.5 1" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere>
@@ -366,7 +366,7 @@
                 <components>
                     <Transform type="1" oid="1101" eid="1" position="5 0 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1101" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1101" />
-                    <MaterialBase2 type="11" oid="1101" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase2 type="11" oid="1101" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="1 0 0 1" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere1>
@@ -374,7 +374,7 @@
                 <components>
                     <Transform type="1" oid="1102" eid="1" position="0 0 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1102" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1102" />
-                    <MaterialBase2 type="11" oid="1102" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="0" baseColorG="1" baseColorB="0" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase2 type="11" oid="1102" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="0 1 0 1" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere2>
@@ -382,7 +382,7 @@
                 <components>
                     <Transform type="1" oid="1103" eid="1" position="-5 0 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1103" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1103" />
-                    <MaterialBase2 type="11" oid="1103" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="0" baseColorG="0" baseColorB="1" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase2 type="11" oid="1103" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="0 0 1 1" baseValueRate="1" metallic="0" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphere3>
@@ -390,7 +390,7 @@
                 <components>
                     <Transform type="1" oid="1104" eid="1" position="0 -5 2" scale="1.5 1.5 1.5" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1104" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1104" />
-                    <MaterialBase2 type="11" oid="1104" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="0.7" baseColorG="0.6" baseColorB="0.5" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase2 type="11" oid="1104" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="0.7 0.6 0.5 1" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphereM>
@@ -398,7 +398,7 @@
                 <components>
                     <Transform type="1" oid="1105" eid="1" position="0 5 2" scale="1.5 1.5 1.5" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1105" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="1105" />
-                    <MaterialBase2 type="11" oid="1105" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="0.5" baseColorG="0.6" baseColorB="0.7" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialBase2 type="11" oid="1105" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="0.5 0.6 0.7 1" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </sphereM1>
@@ -465,7 +465,7 @@
                             <Transform type="1" oid="401" eid="1" position="-3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -512,7 +512,7 @@
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -589,7 +589,7 @@
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -679,7 +679,7 @@
                 <components>
                     <Transform type="1" oid="1101" eid="1" position="0 -5 0" scale="1.5 1.5 1.5" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Model type="6" oid="1101" eid="1" obj="box.gltf" outlineWidth="0" materialOID="1101" />
-                    <MaterialTess type="11" oid="1101" eid="5" vert="" tesc="base.tesc.spv" tese="base.tese.spv" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                    <MaterialTess type="11" oid="1101" eid="5" vert="" tesc="base.tesc.spv" tese="base.tese.spv" geom="" frag="basem.frag.spv" alpha="0" baseColor="1 0 0 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
                 <children />
             </box>
@@ -693,7 +693,7 @@
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                             <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                            <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
                         <children />
                     </light1>
@@ -744,7 +744,7 @@
                         <Transform type="1" oid="401" eid="1" position="-3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                         <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                         <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                        <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                        <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                     </components>
                     <children />
                 </light1>
@@ -820,7 +820,7 @@
                 <Transform type="1" oid="401" eid="1" position="2 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                 <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                 <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
-                <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+                <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
             </components>
             <children />
         </light2>
@@ -899,13 +899,13 @@
             </default>
         </Partical>
         <Material>
-            <define type="11" oid="int" eid="int" vert="std::string" tesc="std::string" tese="std::string" geom="std::string" frag="std::string" alpha="float" baseColor="float 3" baseValueRate="float" metallic="float" roughness="float" emissive="float" baseMap="std::string" cubeMap="std::string" normalMap="std::string" metallicRoughnessMap="std::string" />
-            <default type="11" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColorR="0" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
-            <MaterialBase_Texture type="11" oid="0" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
-            <MaterialPBR type="11" oid="0" eid="2" vert="" tesc="" tese="" geom="pbr.geom.spv" frag="pbr.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png" metallicRoughnessMap="" />
-            <MaterialReflect type="11" oid="0" eid="3" vert="" tesc="" tese="" geom="" frag="cubemapreflect.frag.spv" alpha="0" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="" metallicRoughnessMap="" />
-            <MaterialBase type="11" oid="0" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
-            <MaterialTess type="11" oid="0" eid="5" vert="" tesc="base.tesc.spv" tese="base.tese.spv" geom="" frag="basem.frag.spv" alpha="0" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <define type="11" oid="int" eid="int" vert="std::string" tesc="std::string" tese="std::string" geom="std::string" frag="std::string" alpha="bool" baseColor="float 4" baseValueRate="float" metallic="float" roughness="float" emissive="float" baseMap="std::string" cubeMap="std::string" normalMap="std::string" metallicRoughnessMap="std::string" />
+            <default type="11" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <MaterialBase_Texture type="11" oid="0" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="wall.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <MaterialPBR type="11" oid="0" eid="2" vert="" tesc="" tese="" geom="pbr.geom.spv" frag="pbr.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="stone.png" cubeMap="" normalMap="normalmap.png" metallicRoughnessMap="" />
+            <MaterialReflect type="11" oid="0" eid="3" vert="" tesc="" tese="" geom="" frag="cubemapreflect.frag.spv" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="cubemap1.png" normalMap="" metallicRoughnessMap="" />
+            <MaterialBase type="11" oid="0" eid="4" vert="" tesc="" tese="" geom="" frag="basem.frag.spv" alpha="0" baseColor="1 0 0 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
+            <MaterialTess type="11" oid="0" eid="5" vert="" tesc="base.tesc.spv" tese="base.tese.spv" geom="" frag="basem.frag.spv" alpha="0" baseColor="1 0 0 1" baseValueRate="1" metallic="1" roughness="1" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />
         </Material>
         <InputControl>
             <define type="12" oid="int" eid="int" />
