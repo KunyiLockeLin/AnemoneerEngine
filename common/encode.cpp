@@ -467,7 +467,7 @@ QeAssetJSON *QeEncode::decodeJSON(const char *buffer, int &index) {
     return node;
 }
 
-QeAssetXML *QeEncode::decodeXML(const char *buffer, int &index, QeAssetXML *parent) {
+AeXMLNode *QeEncode::decodeXML(const char *buffer, int &index, AeXMLNode *parent) {
     /* key
     0: <
     1: >
@@ -476,7 +476,7 @@ QeAssetXML *QeEncode::decodeXML(const char *buffer, int &index, QeAssetXML *pare
     */
     const char keys[] = "<>/=";
     int currentIndex = index, lastElemetIndex = 0;
-    QeAssetXML *node = new QeAssetXML();
+    AeXMLNode *node = new AeXMLNode();
     node->data->parent = parent;
 
     while (true) {
@@ -541,7 +541,7 @@ QeAssetXML *QeEncode::decodeXML(const char *buffer, int &index, QeAssetXML *pare
                 return node;
             } break;
             case '=': {
-                QeNode node1;
+                AeNode node1;
                 node1.key = std::string(buffer + lastElemetIndex, currentIndex - lastElemetIndex);
                 node1.key = trim(node1.key);
                 int index = int(strchr(buffer + currentIndex, '"') - buffer);
@@ -1022,24 +1022,4 @@ std::vector<unsigned char> QeEncode::decodeDeflate(unsigned char *in, unsigned i
             return out;
     }
     return out;
-}
-
-std::vector<std::string> QeEncode::split(std::string s, std::string delim) {
-    std::vector<std::string> tokens;
-    /*char dup[4096];
-    strncpy_s(dup, s, 4096);
-    char *context = NULL;
-    char *token = strtok_s(dup, delim, &context);
-    while (token != NULL) {
-        tokens.push_back(std::string(token));
-        token = strtok_s(NULL, delim, &context);
-    }*/
-
-    size_t pos = 0;
-    while ((pos = s.find(delim)) != std::string::npos) {
-        tokens.push_back(s.substr(0, pos));
-        s.erase(0, pos + delim.length());
-    }
-    tokens.push_back(s);
-    return tokens;
 }

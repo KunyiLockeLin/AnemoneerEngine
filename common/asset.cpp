@@ -2,13 +2,13 @@
 #include <sstream>
 #include <stdarg.h>
 
-std::map<std::string, QeAssetXML *> astXMLs;
+std::map<std::string, AeXMLNode *> astXMLs;
 std::map<std::string, QeAssetJSON *> astJSONs;
 
-QeAssetXML::QeAssetXML() : data(new QeXML()) {}
+AeXMLNode::AeXMLNode() : data(new AeXMLData()) {}
 
-QeAssetXML::~QeAssetXML() {
-    std::vector<QeAssetXML *>::iterator it = data->nexts.begin();
+AeXMLNode::~AeXMLNode() {
+    std::vector<AeXMLNode *>::iterator it = data->nexts.begin();
     while (it != data->nexts.end()) {
         if ((*it) != nullptr) delete (*it);
         ++it;
@@ -18,10 +18,10 @@ QeAssetXML::~QeAssetXML() {
     data = nullptr;
 }
 
-QeAssetXML *QeAssetXML::getXMLNode(const char *keys) { return getXMLNode(ENCODE->split(keys, ".")); }
+AeXMLNode *AeXMLNode::getXMLNode(const char *key) { return getXMLNode(ENCODE->split<std::string>(key, ".")); }
 
-QeAssetXML *QeAssetXML::getXMLNode(std::vector<std::string> &keys) {
-    QeAssetXML *current = this;
+AeXMLNode *AeXMLNode::getXMLNode(std::vector<std::string> &keys) {
+    AeXMLNode *current = this;
     for (const auto &key : keys) {
         bool b = true;
         for (const auto &node : current->data->nexts) {
@@ -36,335 +36,13 @@ QeAssetXML *QeAssetXML::getXMLNode(std::vector<std::string> &keys) {
     return current;
 }
 
-const char *QeAssetXML::getXMLValue(const char *keys) {
-    const char *ret = nullptr;
-    getXMLValue(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValue(const char *&value, const char *keys) { return getXMLValue(value, ENCODE->split(keys, ".")); }
-
-QeAssetXML *QeAssetXML::getXMLValue(const char *&value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *current = getXMLNode(keys1);
-    if (!current) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-    keys1[0] = keys[final_index];
-
-    for (const auto &node : current->data->elements) {
-        if (keys1[0].compare(node.key) == 0) {
-            value = node.value.c_str();
-            return current;
-        }
-    }
-
-    current = getXMLNode(keys1);
-    if (!current) return nullptr;
-    if (keys1[0].compare(current->data->key.c_str()) == 0) {
-        value = current->data->value.c_str();
-        return current;
-    }
-
-    value = nullptr;
-    return nullptr;
-}
-
-bool QeAssetXML::getXMLValueb(const char *keys) {
-    bool ret = false;
-    getXMLValueb(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValueb(bool &value, const char *keys) { return getXMLValueb(value, ENCODE->split(keys, ".")); }
-
-QeAssetXML *QeAssetXML::getXMLValueb(bool &value, std::vector<std::string> &keys) {
-    const char *value_c = nullptr;
-    QeAssetXML *ret = getXMLValue(value_c, keys);
-    if (ret) value = atoi(value_c);
-    return ret;
-}
-
-int QeAssetXML::getXMLValuei(const char *keys) {
-    int ret = 0;
-    getXMLValuei(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValuei(int &value, const char *keys) { return getXMLValuei(value, ENCODE->split(keys, ".")); }
-
-QeAssetXML *QeAssetXML::getXMLValuei(int &value, std::vector<std::string> &keys) {
-    const char *value_c = nullptr;
-    QeAssetXML *ret = getXMLValue(value_c, keys);
-    if (ret) value = atoi(value_c);
-    return ret;
-}
-
-float QeAssetXML::getXMLValuef(const char *keys) {
-    float ret = 0.f;
-    getXMLValuef(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValuef(float &value, const char *keys) { return getXMLValuef(value, ENCODE->split(keys, ".")); }
-
-QeAssetXML *QeAssetXML::getXMLValuef(float &value, std::vector<std::string> &keys) {
-    const char *value_c = nullptr;
-    QeAssetXML *ret = getXMLValue(value_c, keys);
-    if (ret) value = float(atof(value_c));
-    return ret;
-}
-
-QeVector2i QeAssetXML::getXMLValueiXY(const char *keys) {
-    QeVector2i ret = {};
-    getXMLValueiXY(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValueiXY(QeVector2i &value, const char *keys) {
-    return getXMLValueiXY(value, ENCODE->split(keys, "."));
-}
-QeAssetXML *QeAssetXML::getXMLValueiXY(QeVector2i &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "X";
-    QeAssetXML *ret = node->getXMLValuei(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "Y";
-    ret = node->getXMLValuei(value.y, keys1);
-    return ret;
-}
-
-QeVector3i QeAssetXML::getXMLValueiXYZ(const char *keys) {
-    QeVector3i ret = {};
-    getXMLValueiXYZ(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValueiXYZ(QeVector3i &value, const char *keys) {
-    return getXMLValueiXYZ(value, ENCODE->split(keys, "."));
-}
-
-QeAssetXML *QeAssetXML::getXMLValueiXYZ(QeVector3i &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "X";
-    QeAssetXML *ret = node->getXMLValuei(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "Y";
-    ret = node->getXMLValuei(value.y, keys1);
-
-    keys1[0] = keys[final_index] + "Z";
-    ret = node->getXMLValuei(value.z, keys1);
-    return ret;
-}
-
-QeVector4i QeAssetXML::getXMLValueiXYZW(const char *keys) {
-    QeVector4i ret = {};
-    getXMLValueiXYZW(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValueiXYZW(QeVector4i &value, const char *keys) {
-    return getXMLValueiXYZW(value, ENCODE->split(keys, "."));
-}
-
-QeAssetXML *QeAssetXML::getXMLValueiXYZW(QeVector4i &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "X";
-    QeAssetXML *ret = node->getXMLValuei(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "Y";
-    ret = node->getXMLValuei(value.y, keys1);
-
-    keys1[0] = keys[final_index] + "Z";
-    ret = node->getXMLValuei(value.z, keys1);
-
-    keys1[0] = keys[final_index] + "W";
-    ret = node->getXMLValuei(value.w, keys1);
-    return ret;
-}
-
-QeVector2f QeAssetXML::getXMLValuefXY(const char *keys) {
-    QeVector2f ret = {};
-    getXMLValuefXY(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValuefXY(QeVector2f &value, const char *keys) {
-    return getXMLValuefXY(value, ENCODE->split(keys, "."));
-}
-QeAssetXML *QeAssetXML::getXMLValuefXY(QeVector2f &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "X";
-    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "Y";
-    ret = node->getXMLValuef(value.y, keys1);
-    return ret;
-}
-
-QeVector3f QeAssetXML::getXMLValuefXYZ(const char *keys) {
-    QeVector3f ret = {};
-    getXMLValuefXYZ(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValuefXYZ(QeVector3f &value, const char *keys) {
-    return getXMLValuefXYZ(value, ENCODE->split(keys, "."));
-}
-
-QeAssetXML *QeAssetXML::getXMLValuefXYZ(QeVector3f &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "X";
-    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "Y";
-    ret = node->getXMLValuef(value.y, keys1);
-
-    keys1[0] = keys[final_index] + "Z";
-    ret = node->getXMLValuef(value.z, keys1);
-    return ret;
-}
-
-QeVector4f QeAssetXML::getXMLValuefXYZW(const char *keys) {
-    QeVector4f ret = {};
-    getXMLValuefXYZW(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValuefXYZW(QeVector4f &value, const char *keys) {
-    return getXMLValuefXYZW(value, ENCODE->split(keys, "."));
-}
-
-QeAssetXML *QeAssetXML::getXMLValuefXYZW(QeVector4f &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "X";
-    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "Y";
-    ret = node->getXMLValuef(value.y, keys1);
-
-    keys1[0] = keys[final_index] + "Z";
-    ret = node->getXMLValuef(value.z, keys1);
-
-    keys1[0] = keys[final_index] + "W";
-    ret = node->getXMLValuef(value.w, keys1);
-    return ret;
-}
-
-QeVector3f QeAssetXML::getXMLValueRGB(const char *keys) {
-    QeVector3f ret = {};
-    getXMLValueRGB(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValueRGB(QeVector3f &value, const char *keys) {
-    return getXMLValueRGB(value, ENCODE->split(keys, "."));
-}
-
-QeAssetXML *QeAssetXML::getXMLValueRGB(QeVector3f &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "R";
-    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "G";
-    ret = node->getXMLValuef(value.y, keys1);
-
-    keys1[0] = keys[final_index] + "B";
-    ret = node->getXMLValuef(value.z, keys1);
-    return ret;
-}
-
-QeVector4f QeAssetXML::getXMLValueRGBA(const char *keys) {
-    QeVector4f ret = {};
-    getXMLValueRGBA(ret, keys);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::getXMLValueRGBA(QeVector4f &value, const char *keys) {
-    return getXMLValueRGBA(value, ENCODE->split(keys, "."));
-}
-
-QeAssetXML *QeAssetXML::getXMLValueRGBA(QeVector4f &value, std::vector<std::string> &keys) {
-    std::vector<std::string> keys1 = keys;
-    keys1.pop_back();
-    QeAssetXML *node = getXMLNode(keys1);
-    if (!node) return nullptr;
-
-    auto final_index = keys.size() - 1;
-    keys1.resize(1);
-
-    keys1[0] = keys[final_index] + "R";
-    QeAssetXML *ret = node->getXMLValuef(value.x, keys1);
-
-    keys1[0] = keys[final_index] + "G";
-    ret = node->getXMLValuef(value.y, keys1);
-
-    keys1[0] = keys[final_index] + "B";
-    ret = node->getXMLValuef(value.z, keys1);
-
-    keys1[0] = keys[final_index] + "A";
-    ret = node->getXMLValuef(value.w, keys1);
-    return ret;
-}
-
-QeAssetXML *QeAssetXML::copyXMLNode() {
-    QeAssetXML *node = new QeAssetXML();
+AeXMLNode *AeXMLNode::copyXMLNode() {
+    AeXMLNode *node = new AeXMLNode();
     copyXMLNode(node);
     return node;
 }
 
-void QeAssetXML::copyXMLNode(QeAssetXML *to) {
+void AeXMLNode::copyXMLNode(AeXMLNode *to) {
     copyXMLValue(to);
 
     for (const auto &node : to->data->nexts) {
@@ -373,36 +51,36 @@ void QeAssetXML::copyXMLNode(QeAssetXML *to) {
     to->data->nexts.clear();
 
     for (const auto &node : data->nexts) {
-        QeAssetXML *new_node = new QeAssetXML();
+        AeXMLNode *new_node = new AeXMLNode();
         to->data->nexts.push_back(new_node);
         node->copyXMLNode(new_node);
     }
 }
 
-void QeAssetXML::copyXMLValue(QeAssetXML *to) {
+void AeXMLNode::copyXMLValue(AeXMLNode *to) {
     to->data->comments = data->comments;
     to->data->key = data->key;
     to->data->value = data->value;
     to->data->elements = data->elements;
 }
 
-void QeAssetXML::addXMLNode(QeAssetXML *node) { data->nexts.push_back(node); }
+void AeXMLNode::addXMLNode(AeXMLNode *node) { data->nexts.push_back(node); }
 
-void QeAssetXML::setXMLKey(const char *key) { this->data->key = key; }
-void QeAssetXML::setXMLValue(const char *value) { this->data->value = value; }
+void AeXMLNode::setXMLKey(const char *key) { this->data->key = key; }
+void AeXMLNode::setXMLValue(const char *value) { this->data->value = value; }
 
-void QeAssetXML::setXMLValue(const char *key, const char *value) {
+void AeXMLNode::setXMLValue(const char *key, const char *value) {
     for (auto &node : data->elements) {
         if (node.key.compare(key) == 0) {
             node.value = value;
             return;
         }
     }
-    QeNode node = {key, value};
+    AeNode node = {key, value};
     data->elements.push_back(node);
 }
 
-void QeAssetXML::removeXMLNode(QeAssetXML *node) {
+void AeXMLNode::removeXMLNode(AeXMLNode *node) {
     for (int i = 0; i < data->nexts.size(); ++i) {
         if (data->nexts[i] == node) {
             data->nexts.erase(data->nexts.begin() + i);
@@ -414,7 +92,8 @@ void QeAssetXML::removeXMLNode(QeAssetXML *node) {
         node1->removeXMLNode(node);
     }
 }
-void QeAssetXML::outputXML(const char *path, int level, std::string *content) {
+
+void AeXMLNode::outputXML(const char *path, int level, std::string *content) {
     std::string s;
 
     if (!content) {
@@ -739,7 +418,7 @@ bool QeAssetJSON::getJSONfValue(float *output, int length, ...) {
 
 QeAsset::QeAsset() {}
 QeAsset::~QeAsset() {
-    std::map<std::string, QeAssetXML *>::iterator it = astXMLs.begin();
+    std::map<std::string, AeXMLNode *>::iterator it = astXMLs.begin();
     while (it != astXMLs.end()) {
         if ((it->second) != nullptr) delete (it->second);
         ++it;
@@ -755,7 +434,7 @@ QeAsset::~QeAsset() {
 }
 
 void QeAsset::removeXML(std::string path) {
-    std::map<std::string, QeAssetXML *>::iterator it = astXMLs.find(path);
+    std::map<std::string, AeXMLNode *>::iterator it = astXMLs.find(path);
 
     if (it != astXMLs.end()) {
         delete it->second;
@@ -791,8 +470,8 @@ QeAssetJSON *QeAsset::getJSON(const char *_filePath) {
     return head;
 }
 
-QeAssetXML *QeAsset::getXML(const char *_filePath) {
-    std::map<std::string, QeAssetXML *>::iterator it = astXMLs.find(_filePath);
+AeXMLNode *QeAsset::getXML(const char *_filePath) {
+    std::map<std::string, AeXMLNode *>::iterator it = astXMLs.find(_filePath);
 
     if (it != astXMLs.end()) return it->second;
 
@@ -802,7 +481,7 @@ QeAssetXML *QeAsset::getXML(const char *_filePath) {
     std::vector<char> buffer = loadFile(_filePath);
 
     int index = 0;
-    QeAssetXML *head = ENCODE->decodeXML(buffer.data(), index);
+    AeXMLNode *head = ENCODE->decodeXML(buffer.data(), index);
     astXMLs[_filePath] = head;
 
     return head;

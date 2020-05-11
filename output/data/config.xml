@@ -847,7 +847,7 @@
         </Transform>
         <Camera>
 			<!--enum renderType AE_RENDER_TYPE eRENDER_KHR 0 eRENDER_UI 1 eRENDER_Main 2 eRENDER_Color 3 eRENDER_MAX 4-->
-            <define type="e" oid="i" eid="i" renderType="e" size="f2" lookAtTransformOID="i" up="f3" fov="f" near="f" far="f" aperture="f" speed="f" cullingDistance="f" raytracingDepth="i" postProcessingOID="i" />
+            <define type="2" oid="i" eid="i" renderType="e" size="f2" lookAtTransformOID="i" up="f3" fov="f" near="f" far="f" aperture="f" speed="f" cullingDistance="f" raytracingDepth="i" postProcessingOID="i" />
 			<default type="2" oid="0" eid="0" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
         </Camera>
         <PostProcessing>
