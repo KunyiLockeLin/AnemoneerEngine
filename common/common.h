@@ -32,16 +32,16 @@ struct DllExport AeVector {
         T elements[N];
         struct {
             T x, y, z, w;
-        } pos;
+        };
         struct {
             T r, g, b, a;
-        } color;
+        };
         struct {
             T u, v;
-        } uv;
+        };
         struct {
             T width, height, depth;
-        } volume;
+        };
     };
 
     AeVector();
@@ -351,7 +351,7 @@ struct DllExport AeXMLNode {
     AeXMLNode *getXMLNode(const char *key);
     AeXMLNode *getXMLNode(std::vector<std::string> &keys);
 
-    template<class T>
+    template <class T>
     T getXMLValue(const char *key);
     template <class T>
     AeXMLNode *getXMLValue(T &value, const char *key);
