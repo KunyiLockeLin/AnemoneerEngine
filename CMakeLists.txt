@@ -60,8 +60,8 @@ file(GLOB_RECURSE  SRC_SHADER_SPV output/data/shaders/spv/*)
 file(GLOB_RECURSE  SRC_SHADER_HEADER output/data/shaders/header*)
 file(GLOB_RECURSE  SRC_MODEL output/data/models/*.gltf)
 
-list(REMOVE_ITEM ${SRC_SHADER} ${SRC_SHADER_SPV})
-list(REMOVE_ITEM ${SRC_SHADER} ${SRC_SHADER_HEADER})
+list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_SPV})
+list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_HEADER})
 
 source_group(algorithm FILES ${SRC_ALGORITHM})
 source_group(algorithm\\header FILES ${SRC_ALGORITHM_HEADER})

@@ -26,14 +26,14 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
             <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                    <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
                 </components>
                 <children />
             </grid>
@@ -80,14 +80,14 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="3.0" exposure="3.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="3.0" exposure="3.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
             <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                    <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
                 </components>
                 <children />
             </grid>
@@ -142,7 +142,7 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
@@ -350,7 +350,7 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
@@ -422,14 +422,14 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="3" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="3" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
             <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                    <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
                 </components>
                 <children />
             </grid>
@@ -443,7 +443,7 @@
             <line_animation type="1000" oid="901" eid="901">
                 <components>
                     <Transform type="1" oid="900" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
-                    <Line type="5" oid="900" eid="1" targetTransformOID="700" colorR="1" colorG="1" colorB="0" />
+                    <Line type="5" oid="900" eid="1" targetTransformOID="700" color="1 1 0" />
                 </components>
                 <children>
                     <animation type="1000" oid="700" eid="700">
@@ -491,14 +491,14 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
             <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                    <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
                 </components>
                 <children />
             </grid>
@@ -568,14 +568,14 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
             <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                    <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
                 </components>
                 <children />
             </grid>
@@ -657,14 +657,14 @@
             <setting type="1000" oid="200" eid="200">
                 <components>
                     <InputControl type="12" oid="200" eid="1" />
-                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="1" mesh="1" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+                    <RenderSetting type="15" oid="201" eid="1" FPS="30" normal="1" mesh="1" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
                 </components>
                 <children />
             </setting>
             <grid type="1000" oid="300" eid="300">
                 <components>
                     <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                    <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
                 </components>
                 <children />
             </grid>
@@ -730,7 +730,7 @@
         <grid type="1000" oid="300" eid="300">
             <components>
                 <Transform type="1" oid="300" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                <Grid type="14" oid="300" eid="1" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+                <Grid type="14" oid="300" eid="1" column="10" row="10" color="0.5 0.5 0.5" />
             </components>
             <children />
         </grid>
@@ -796,7 +796,7 @@
         <line type="1000" oid="900" eid="900">
             <components>
                 <Transform type="1" oid="900" eid="1" position="0 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 1 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                <Line type="5" oid="900" eid="1" targetTransformOID="0" colorR="1" colorG="1" colorB="0" />
+                <Line type="5" oid="900" eid="1" targetTransformOID="0" color="1 1 0" />
             </components>
             <children>
                 <animation oid="700" eid="700">
@@ -827,7 +827,7 @@
         <line type="1000" oid="901" eid="901">
             <components>
                 <Transform type="1" oid="900" eid="1" position="0 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                <Line type="5" oid="900" eid="1" targetTransformOID="700" colorR="1" colorG="1" colorB="0" />
+                <Line type="5" oid="900" eid="1" targetTransformOID="700" color="1 1 0" />
             </components>
             <children>
                 <animation type="1000" oid="700" eid="700">
@@ -863,24 +863,24 @@
         </Light>
         <Line>
 		    <define type="5" oid="int" eid="int" targetTransformOID="int" color="float 3" />
-            <default type="5" oid="0" eid="0" targetTransformOID="0" colorR="0" colorG="0" colorB="0" />
+            <default type="5" oid="0" eid="0" targetTransformOID="0" color="0 0 0" />
         </Line>
         <Model>
             <define type="6" oid="int" eid="int" obj="std::string" outlineWidth="float" materialOID="int" />
-            <default type="6" oid="0" eid="0" obj="box.gltf" outlineWidth="0" materialOID="" />
-            <sphere type="6" oid="0" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="" />
+            <default type="6" oid="0" eid="0" obj="box.gltf" outlineWidth="0" materialOID="0" />
+            <sphere type="6" oid="0" eid="1" obj="sphere2.gltf" outlineWidth="0" materialOID="0" />
         </Model>
         <Animation>
           <!--enum actionState AE_ACTION_STATE eACTION_Stop 0 eACTION_Play 1 eACTION_Pause 2-->
           <!--enum actionPlayType AE_ACTION_PLAY_TYPE eACTION_PLAY_Once 0 eACTION_PLAY_Replay 1 eACTION_PLAY_Next 2-->
           <define type="7" oid="int" eid="int" obj="std::string" outlineWidth="float" actionState="enum" actionSpeed="float" actionID="int" actionPlayType="enum" materialOID="int" />
-          <default type="7" oid="0" eid="0" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionPlayType="2" materialOID="" />
+          <default type="7" oid="0" eid="0" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionPlayType="2" materialOID="0" />
         </Animation>
         <Plane>
             <!--enum planeType AE_PLANE_TYPE ePLANE_3D 0 ePLANE_Billboard 1 ePLANE_2D 2-->
 			<define type="8" oid="int" eid="int" planeType="enum" materialOID="int" targetCameraOID="int" />
-            <default type="8" oid="0" eid="0" planeType="0" materialOID="" targetCameraOID="" />
-            <billboard type="8" oid="0" eid="1" planeType="1" materialOID="" targetCameraOID="" />
+            <default type="8" oid="0" eid="0" planeType="0" materialOID="0" targetCameraOID="0" />
+            <billboard type="8" oid="0" eid="1" planeType="1" materialOID="0" targetCameraOID="0" />
         </Plane>
         <Cubemap>
             <define type="9" oid="int" eid="int" image="std::string" />
@@ -917,11 +917,11 @@
         </Axis>
         <Grid>
             <define type="14" oid="int" eid="int" column="int" row="int" color="float 3" />
-            <default type="14" oid="0" eid="0" column="10" row="10" colorR="0.5" colorG="0.5" colorB="0.5" />
+            <default type="14" oid="0" eid="0" column="10" row="10" color="0.5 0.5 0.5" />
         </Grid>
         <RenderSetting>
             <define type="15" oid="int" eid="int" FPS="int" normal="bool" mesh="bool" msaa="int" gamma="float" exposure="float" lineWidth="float" clearColor="float 4" />
-            <default type="15" oid="0" eid="0" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColorR="0" clearColorG="0.5" clearColorB="0.5" clearColorA="1" />
+            <default type="15" oid="0" eid="0" FPS="30" normal="0" mesh="0" msaa="1" gamma="2.2" exposure="1.0" lineWidth="1" clearColor="0 0.5 0.5 1" />
         </RenderSetting>
     </components>
     <shaders>
