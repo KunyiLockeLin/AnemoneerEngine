@@ -52,7 +52,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -99,7 +99,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -154,7 +154,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="0" colorB="0" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 0 0" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -242,7 +242,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="3 -3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="0" colorB="0" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 0 0" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="401" targetCameraOID="" />
                             <MaterialBase type="11" oid="401" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="0" baseColorB="0" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -253,7 +253,7 @@
             <light2 type="1000" oid="410" eid="410">
                 <components>
                     <Transform type="1" oid="410" eid="1" position="3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="410" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="410" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="410" eid="1" planeType="1" materialOID="410" targetCameraOID="" />
                     <MaterialBase type="11" oid="410" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -262,7 +262,7 @@
             <light2 type="1000" oid="411" eid="410">
                 <components>
                     <Transform type="1" oid="411" eid="1" position="3 0 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="411" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="411" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="411" eid="1" planeType="1" materialOID="411" targetCameraOID="" />
                     <MaterialBase type="11" oid="411" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -271,7 +271,7 @@
             <light2 type="1000" oid="412" eid="410">
                 <components>
                     <Transform type="1" oid="412" eid="1" position="3 -3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="412" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="412" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="412" eid="1" planeType="1" materialOID="412" targetCameraOID="" />
                     <MaterialBase type="11" oid="412" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -280,7 +280,7 @@
             <light2 type="1000" oid="413" eid="410">
                 <components>
                     <Transform type="1" oid="413" eid="1" position="3 3 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="413" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="413" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="413" eid="1" planeType="1" materialOID="413" targetCameraOID="" />
                     <MaterialBase type="11" oid="413" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -289,7 +289,7 @@
             <light2 type="1000" oid="414" eid="410">
                 <components>
                     <Transform type="1" oid="414" eid="1" position="3 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="414" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="414" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="414" eid="1" planeType="1" materialOID="414" targetCameraOID="" />
                     <MaterialBase type="11" oid="414" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -298,7 +298,7 @@
             <light2 type="1000" oid="415" eid="410">
                 <components>
                     <Transform type="1" oid="415" eid="1" position="3 -3 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="415" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="415" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="415" eid="1" planeType="1" materialOID="415" targetCameraOID="" />
                     <MaterialBase type="11" oid="415" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -307,7 +307,7 @@
             <light2 type="1000" oid="416" eid="410">
                 <components>
                     <Transform type="1" oid="416" eid="1" position="3 3 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="416" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="416" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="416" eid="1" planeType="1" materialOID="416" targetCameraOID="" />
                     <MaterialBase type="11" oid="416" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -316,7 +316,7 @@
             <light2 type="1000" oid="417" eid="410">
                 <components>
                     <Transform type="1" oid="417" eid="1" position="3 0 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="417" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="417" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="417" eid="1" planeType="1" materialOID="417" targetCameraOID="" />
                     <MaterialBase type="11" oid="417" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -325,7 +325,7 @@
             <light2 type="1000" oid="418" eid="410">
                 <components>
                     <Transform type="1" oid="418" eid="1" position="3 -3 -3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Light type="4" oid="418" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="10" coneAngle="90" />
+                    <Light type="4" oid="418" eid="1" lightType="0" color="1 1 1" intensity="10" coneAngle="90" />
                     <Plane type="8" oid="418" eid="1" planeType="1" materialOID="418" targetCameraOID="" />
                     <MaterialBase type="11" oid="418" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                 </components>
@@ -463,7 +463,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="-3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -510,7 +510,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -587,7 +587,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -691,7 +691,7 @@
                     <light1 type="1000" oid="401" eid="1">
                         <components>
                             <Transform type="1" oid="401" eid="1" position="0 5 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 1.5" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                            <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                             <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                             <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                         </components>
@@ -742,7 +742,7 @@
                 <light1 type="1000" oid="401" eid="1">
                     <components>
                         <Transform type="1" oid="401" eid="1" position="-3 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                        <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                        <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                         <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                         <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
                     </components>
@@ -818,7 +818,7 @@
         <light2 type="1000" oid="410" eid="410">
             <components>
                 <Transform type="1" oid="401" eid="1" position="2 3 3" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 2" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                <Light type="4" oid="400" eid="1" lightType="0" colorR="1" colorG="1" colorB="1" intensity="100" coneAngle="90" />
+                <Light type="4" oid="400" eid="1" lightType="0" color="1 1 1" intensity="100" coneAngle="90" />
                 <Plane type="8" oid="400" eid="1" planeType="1" materialOID="400" targetCameraOID="" />
                 <MaterialBase type="11" oid="400" eid="1" vert="" tesc="" tese="" geom="" frag="texturem.frag.spv" alpha="1" baseColorR="1" baseColorG="1" baseColorB="1" baseValueRate="1" metallic="1" roughness="1" emissive="10" baseMap="light.png" cubeMap="" normalMap="" metallicRoughnessMap="" />
             </components>
@@ -859,7 +859,7 @@
         <Light>
           <!--enum lightType AE_LIGHT_TYPE eLIGHT_Point 0 eACTION_Direction 1 eACTION_Spot 2-->
           <define type="4" oid="int" eid="int" lightType="enum" color="float 3" intensity="float" coneAngle="float" />
-          <default type="4" oid="0" eid="0" lightType="0" colorR="0" colorG="0" colorB="0" intensity="1000" coneAngle="90" />
+          <default type="4" oid="0" eid="0" lightType="0" color="1 1 1" intensity="1000" coneAngle="90" />
         </Light>
         <Line>
 		    <define type="5" oid="int" eid="int" targetTransformOID="int" color="float 3" />
