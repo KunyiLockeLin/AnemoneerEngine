@@ -17,7 +17,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                         </components>
                         <children />
                     </camera>
@@ -71,7 +71,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
                         </components>
                         <children />
                     </camera>
@@ -133,7 +133,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="10 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                         </components>
                         <children />
                     </camera>
@@ -341,7 +341,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="15 5 -5" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="5" postProcessingOID="0" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="5" postProcessingOID="0" />
                         </components>
                         <children />
                     </camera>
@@ -413,7 +413,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                         </components>
                         <children />
                     </camera>
@@ -482,7 +482,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                         </components>
                         <children />
                     </camera>
@@ -559,7 +559,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1201" />
                         </components>
                         <children />
                     </camera>
@@ -603,7 +603,7 @@
                     <camera type="1000" oid="2001" eid="1">
                         <components>
                             <Transform type="1" oid="2001" eid="1" position="0.1 0 20" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="2002" eid="1" renderType="3" width="800" height="600" lookAtTransformOID="2000" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1200" />
+                            <Camera type="2" oid="2002" eid="1" renderType="3" size="800 600" lookAtTransformOID="2000" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="1200" />
                         </components>
                         <children />
                     </camera>
@@ -619,7 +619,7 @@
             <camera_2D type="1000" oid="2300" eid="2300">
                 <components>
                     <Transform type="1" oid="2300" eid="1" position="0 0 2" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                    <Camera type="2" oid="2300" eid="1" renderType="1" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                    <Camera type="2" oid="2300" eid="1" renderType="1" size="0 0" lookAtTransformOID="0" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                 </components>
                 <children />
             </camera_2D>
@@ -648,7 +648,7 @@
                     <camera type="1000" oid="101" eid="101">
                         <components>
                             <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Camera type="2" oid="101" eid="1" renderType="2" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                            <Camera type="2" oid="101" eid="1" renderType="2" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                         </components>
                         <children />
                     </camera>
@@ -715,7 +715,7 @@
                 <camera type="1000" oid="101" eid="101">
                     <components>
                         <Transform type="1" oid="101" eid="1" position="20 0 1" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                        <Camera type="2" oid="101" eid="1" renderType="1" width="0" height="0" lookAtTransformOID="100" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+                        <Camera type="2" oid="101" eid="1" renderType="1" size="0 0" lookAtTransformOID="100" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
                     </components>
                     <children />
                 </camera>
@@ -848,7 +848,7 @@
         <Camera>
 			<!--enum renderType AE_RENDER_TYPE eRENDER_KHR 0 eRENDER_UI 1 eRENDER_Main 2 eRENDER_Color 3 eRENDER_MAX 4-->
             <define type="2" oid="int" eid="int" renderType="enum" size="float 2" lookAtTransformOID="int" up="float 3" fov="float" near="float" far="float" aperture="float" speed="float" cullingDistance="float" raytracingDepth="int" postProcessingOID="int" />
-			<default type="2" oid="0" eid="0" renderType="2" width="0" height="0" lookAtTransformOID="0" upX="0" upY="0" upZ="1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
+			<default type="2" oid="0" eid="0" renderType="2" size="0 0" lookAtTransformOID="0" up="0 0 1" fov="45" near="0.1" far="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
         </Camera>
         <PostProcessing>
             <define type="3" oid="int" eid="int" vert="std::string" tesc="std::string" tese="std::string" geom="std::string" frag="std::string" param0="float" param1="float" param2="float" param3="float" />
