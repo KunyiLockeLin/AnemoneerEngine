@@ -26,15 +26,14 @@ void AddCommentEnum(AeXMLNode& node, AeFile& file) {
     }
 }
 
-std::string AddElementCode(AeNode& element, const std::string& type, std::vector<std::string>& load_codes) {
-    if (element.value.length() != 2) {
-        load_codes.push_back(element.key + " = property_->getXMLValue<" + type + ">(\"" + element.key + "\");");
-        return (type + " " +element.key+";");
+std::string AddElementCode(std::string& key, std::vector<std::string>& types, std::vector<std::string>& load_codes) {
+    if (types.size() != 2) {
+        load_codes.push_back(key + " = property_->getXMLValue<" + types[0] + ">(\"" + key + "\");");
+        return (types[0] + " " + key + ";");
     }
-    std::string type1 = "AeVector<" + type + ", " + element.value.at(1) + ">";
-    load_codes.push_back(element.key + " = property_->getXMLValues<" + type + ", " + element.value.at(1) + ">(\"" + element.key +
-                         "\");");
-    return (type1 + " " + element.key + ";");
+    std::string type1 = "AeVector<" + types[0] + ", " + types[1] + ">";
+    load_codes.push_back(key + " = property_->getXMLValues<" + types[0] + ", " + types[1] + ">(\"" + key + "\");");
+    return (type1 + " " + key + ";");
 }
 
 void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
@@ -51,32 +50,19 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
             s += "AE_GAMEOBJECT_TYPE type;";
             load_codes.push_back("type = static_cast<AE_GAMEOBJECT_TYPE>(property_->getXMLValue<int>(\"type\"));");
         } else {
-            switch (element.value.at(0)) {
-                case 'i':
-                    s += AddElementCode(element, "int", load_codes);
-                    break;
-                case 'f':
-                    s += AddElementCode(element, "float", load_codes);
-                    break;
-                case 'b':
-                    s += AddElementCode(element, "bool", load_codes);
-                    break;
-                case 's':
-                    s += AddElementCode(element, "std::string", load_codes);
-                    break;
-                case 'e':
-                    for (auto& comment : define_node->data->comments) {
-                        std::vector<std::string> ss = ENCODE->split<std::string>(comment, " ");
-                        if (!element.key.compare(ss[1])) {
-                            s += (ss[2] + " " + element.key + ";");
-                            load_codes.push_back(element.key + " = static_cast<" + ss[2] + ">(property_->getXMLValue<int>(\"" +
-                                                 element.key + "\"));");
-                            break;
-                        }
+            std::vector<std::string> types = ENCODE->split<std::string>(element.value, " ");
+            if (types[0].compare("enum") == 0) {
+                for (auto& comment : define_node->data->comments) {
+                    std::vector<std::string> ss = ENCODE->split<std::string>(comment, " ");
+                    if (!element.key.compare(ss[1])) {
+                        s += (ss[2] + " " + element.key + ";");
+                        load_codes.push_back(element.key + " = static_cast<" + ss[2] + ">(property_->getXMLValue<int>(\"" +
+                                             element.key + "\"));");
+                        break;
                     }
-                    break;
-                default:
-                    break;
+                }
+            } else {
+                s += AddElementCode(element.key, types, load_codes);
             }
         }
         file.addNewLine(s.c_str());
