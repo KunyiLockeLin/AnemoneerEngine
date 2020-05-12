@@ -811,8 +811,7 @@ AeVector<float, 3> AeMath::revolute_eularAngles(AeVector<float, 3> &_position, A
                                                 AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
     AeVector<float, 3> vec = (_position - _centerPosition);
     AeVector<float, 3> eularAngle = vectorToEulerAngles(vec) + _addRevolute;
-    float f3[] = {length(vec), 0.f, 0.f};
-    AeVector<float, 3> origin(f3);
+    AeVector<float, 3> origin {length(vec), 0.f, 0.f};
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
     mat *= rotate_eularAngles(eularAngle);
@@ -829,12 +828,10 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
 
     if (_addRevolute.x) {
         if (bFixX) {
-            float f3[] = {0.f, 0.f, 1.f};
-            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
             mat *= rotate_axis(_addRevolute.x, _axis);
         } else {
-            float f3[] = {0.f, 1.f, 0.f};
-            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _axis{0.f, 1.f, 0.f};
             AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             mat *= rotate_axis(_addRevolute.x, _surface);
@@ -843,12 +840,10 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
 
     if (_addRevolute.y) {
         if (bFixY) {
-            float f3[] = {0.f, 1.f, 0.f};
-            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _axis{0.f, 1.f, 0.f};
             mat *= rotate_axis(_addRevolute.y, _axis);
         } else {
-            float f3[] = {0.f, 0.f, 1.f};
-            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
             AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.y < 0) _surface *= -1;
             mat *= rotate_axis(_addRevolute.y, _surface);
@@ -857,12 +852,10 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
 
     if (_addRevolute.z) {
         if (bFixZ) {
-            float f3[] = {0.f, 0.f, 1.f};
-            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
             mat *= rotate_axis(_addRevolute.z, _axis);
         } else {
-            float f3[] = {1.f, 0.f, 0.f};
-            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
             AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             // if ((vecN.x == 0 && vecN.y < 0) || (vecN.x < 0 && vecN.y == 0) ||

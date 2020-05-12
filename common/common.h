@@ -45,9 +45,7 @@ struct DllExport AeVector {
     };
 
     AeVector();
-    //template <class T2>
-    //AeVector(T2, T2, T2);
-    AeVector(T* other);
+    AeVector(std::initializer_list<T> l);
     template <class T2, int N2>
     AeVector(const AeVector<T2, N2> &other);
     template <class T2, int N2, class T3>
@@ -61,6 +59,7 @@ struct DllExport AeVector {
 
     template <class T2, int N2>
     AeVector<T, N> &operator=(const AeVector<T2, N2> &other);
+    T &operator[](int index);
 
     template <class T2, int N2>
     AeVector<T, N> &operator+=(const AeVector<T2, N2> &other);

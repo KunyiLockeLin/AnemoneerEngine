@@ -8,9 +8,11 @@ AeVector<T, N>::AeVector() {
 }
 
 template <class T, int N>
-AeVector<T, N>::AeVector(T *other) {
-    for (int i = 0; i < N ; ++i) {
-        elements[i] = other[i];
+AeVector<T, N>::AeVector(std::initializer_list<T> l) {
+    int index = 0;
+    for (T v : l) {
+        elements[index] = v;
+        ++index;
     }
 }
 
@@ -46,6 +48,11 @@ template <class T, int N>
 template <class T2, int N2>
 bool AeVector<T, N>::operator!=(const AeVector<T2, N2> &other) const {
     return !(this == other);
+}
+
+template <class T, int N>
+T &AeVector<T, N>::operator[](int index) {
+    return elements[index];
 }
 
 template <class T, int N>
