@@ -9,6 +9,8 @@ add_library(libCommon SHARED common/common.h common/template_define.h common/enc
 set_target_properties(libCommon PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(libCommon PROPERTIES OUTPUT_NAME_DEBUG libCommon_debug)
 
+#target_compile_features(libCommon PUBLIC cxx_std_14)
+
 target_link_libraries(libCommon Dbghelp)
 set(DEBUG_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/libCommon_debug.dll)
 set(RELEASE_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/libCommon.dll)
