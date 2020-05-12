@@ -1,7 +1,7 @@
 #include "header.h"
 
 void AeObjectManager::loadScene(int _eid) {
-    QeAssetXML *node = G_AST->getXMLEditNode(eScene, _eid);
+    AeXMLNode *node = G_AST->getXMLEditNode(eScene, _eid);
 
     if (SCENE)
         SCENE->initialize(node, nullptr);
@@ -67,7 +67,7 @@ void AeObjectManager::clear() {
     }
 }
 
-QeComponent *AeObjectManager::spwanComponent(QeAssetXML *_property, QeObject *_owner) {
+QeComponent *AeObjectManager::spwanComponent(AeXMLNode *_property, QeObject *_owner) {
     QeComponent *_component = nullptr;
 
     QeComponentType _type = (QeComponentType)_property->getXMLValuei("type");

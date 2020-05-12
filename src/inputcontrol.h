@@ -6,7 +6,7 @@ class QeInputControl : public QeComponent {
     QeInputControl(AeObjectManagerKey &_key) : QeComponent(_key) {}
     ~QeInputControl() {}
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
 
     virtual void updateInput();

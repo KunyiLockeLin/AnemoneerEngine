@@ -416,8 +416,8 @@ bool QeAssetJSON::getJSONfValue(float *output, int length, ...) {
     return ret;
 }
 
-QeAsset::QeAsset() {}
-QeAsset::~QeAsset() {
+AeCommonManager::AeCommonManager() {}
+AeCommonManager::~AeCommonManager() {
     std::map<std::string, AeXMLNode *>::iterator it = astXMLs.begin();
     while (it != astXMLs.end()) {
         if ((it->second) != nullptr) delete (it->second);
@@ -433,7 +433,7 @@ QeAsset::~QeAsset() {
     astJSONs.clear();
 }
 
-void QeAsset::removeXML(std::string path) {
+void AeCommonManager::removeXML(std::string path) {
     std::map<std::string, AeXMLNode *>::iterator it = astXMLs.find(path);
 
     if (it != astXMLs.end()) {
@@ -442,7 +442,7 @@ void QeAsset::removeXML(std::string path) {
     }
 }
 
-std::vector<char> QeAsset::loadFile(const char *_filePath) {
+std::vector<char> AeCommonManager::loadFile(const char *_filePath) {
     std::vector<char> ret;
     std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
     if (!file.is_open()) return ret;
@@ -457,7 +457,7 @@ std::vector<char> QeAsset::loadFile(const char *_filePath) {
     return ret;
 }
 
-QeAssetJSON *QeAsset::getJSON(const char *_filePath) {
+QeAssetJSON *AeCommonManager::getJSON(const char *_filePath) {
     std::map<std::string, QeAssetJSON *>::iterator it = astJSONs.find(_filePath);
 
     if (it != astJSONs.end()) return it->second;
@@ -470,7 +470,7 @@ QeAssetJSON *QeAsset::getJSON(const char *_filePath) {
     return head;
 }
 
-AeXMLNode *QeAsset::getXML(const char *_filePath) {
+AeXMLNode *AeCommonManager::getXML(const char *_filePath) {
     std::map<std::string, AeXMLNode *>::iterator it = astXMLs.find(_filePath);
 
     if (it != astXMLs.end()) return it->second;

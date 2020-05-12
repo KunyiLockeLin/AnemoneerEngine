@@ -1,9 +1,9 @@
 #include "header.h"
 
-void QeObject::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeObject::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    QeAssetXML *node = initProperty->getXMLNode("components");
+    AeXMLNode *node = initProperty->getXMLNode("components");
     if (node != nullptr && node->data->nexts.size() > 0) {
         for (int index = 0; index < node->data->nexts.size(); ++index) {
             components.push_back(OBJMGR->spwanComponent(node->data->nexts[index], this));

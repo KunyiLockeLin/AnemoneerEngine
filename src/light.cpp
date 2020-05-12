@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QeLight::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeLight::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     bufferData.color = initProperty->getXMLValueRGB("color");

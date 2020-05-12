@@ -41,6 +41,7 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     file.addNewLine("");
     std::string s = "struct AeGameObjectComponent" + node.data->key + "Data {";
     file.addNewLine(s.c_str());
+    file.addNewLine((indent + "std::string name;").c_str());
     auto* define_node = node.getXMLNode("define");
     std::vector<std::string> load_codes;
 
@@ -73,6 +74,7 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     file.addNewLine((indent + "AeXMLNode* property_;").c_str());
     file.addNewLine((indent + "void read(AeXMLNode& node) {").c_str());
     file.addNewLine((indent + indent + "property_ = &node;").c_str());
+    file.addNewLine((indent + indent + "name = property_->data->key;").c_str());
     for (auto& load_code : load_codes) {
         file.addNewLine((indent + indent + load_code).c_str());
     }
@@ -92,7 +94,7 @@ int main(int argc, char* argv[]) {
     file.addNewLine("#include \"common/common.h\"");
     // file.addNewLine("#include <cstring>");
 
-    auto* config = AST->getXML("..\\..\\output\\data\\config.xml");
+    auto* config = CM_MGR->getXML("..\\..\\output\\data\\config.xml");
 
     // enum gameobject
     file.addNewLine("");

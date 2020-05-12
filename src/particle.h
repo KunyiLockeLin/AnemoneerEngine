@@ -26,7 +26,7 @@ class QeParticle : public QeModel {
     QeDataComputePipeline computePipeline;
 
     QeVertex createParticleData();
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual QeDataDescriptorSetModel createDescriptorSetModel();
     virtual void updateDrawCommandBuffer(QeDataDrawCommand *command);

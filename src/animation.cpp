@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QeAnimation::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeAnimation::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeModel::initialize(_property, _owner);
 
     actionState = (QeActionState)initProperty->getXMLValuei("actionState");

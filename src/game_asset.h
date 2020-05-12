@@ -138,7 +138,7 @@ class QeGameAsset {
 
     ~QeGameAsset();
 
-    QeAssetXML *getXMLEditNode(QeComponentType _type, int eid);
+    AeXMLNode *getXMLEditNode(QeComponentType _type, int eid);
 
     QeAssetModel *getModel(const char *_filename, bool bCubeMap = false, float *param = nullptr);
     // QeAssetMaterial* getMaterial(const char* _filename);
@@ -150,6 +150,6 @@ class QeGameAsset {
     void imageFillto32bits(std::vector<unsigned char> *data, int bytes);
     std::string combinePath(const char *_filename, QeGameAssetType dataType);
 
-    void setGraphicsShader(QeAssetGraphicsShader &shader, QeAssetXML *shaderData, const char *defaultShaderType);
+    void setGraphicsShader(QeAssetGraphicsShader &shader, AeXMLNode *shaderData, const char *defaultShaderType);
 };
 #define G_AST QeGameAsset::getInstance()

@@ -6,6 +6,6 @@ class QeCubemap : public QeModel {
     QeCubemap(AeObjectManagerKey &_key) : QeModel(_key) {}
     //~QeCubemap() {}
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     // virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

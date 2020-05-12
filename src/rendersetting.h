@@ -15,5 +15,5 @@ class QeRenderSetting : public QeComponent {
     float lineWidth = 2.0f;
     QeVector4f clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 };

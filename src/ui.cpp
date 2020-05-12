@@ -94,12 +94,12 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             int _type = currentTreeViewNode->getXMLValuei("type");
                             int _eid = currentTreeViewNode->getXMLValuei("eid");
                             if (_type != 0 && _eid != 0) {
-                                QeAssetXML *node = G_AST->getXMLEditNode((QeComponentType)_type, _eid);
+                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, _eid);
                                 if (node)
                                     currentTreeViewNode->copyXMLNode(node);
                                 else {
-                                    QeAssetXML *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
-                                    QeAssetXML *newNode = currentTreeViewNode->copyXMLNode();
+                                    AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+                                    AeXMLNode *newNode = currentTreeViewNode->copyXMLNode();
                                     node->data->parent->addXMLNode(newNode);
                                 }
                             }
@@ -110,7 +110,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             int _type = currentTreeViewNode->getXMLValuei("type");
                             int _eid = currentTreeViewNode->getXMLValuei("eid");
                             if (_type != 0) {
-                                QeAssetXML *node = G_AST->getXMLEditNode((QeComponentType)_type, _eid);
+                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, _eid);
                                 if (node) {
                                     HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
 
@@ -153,8 +153,8 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValuei("type");
                             if (_type != 0) {
-                                QeAssetXML *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
-                                QeAssetXML *newNode = node->copyXMLNode();
+                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+                                AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 if (currentTreeViewNode != node->data->parent) {
                                     currentTreeViewNode->data->parent->addXMLNode(newNode);
@@ -173,14 +173,14 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                                 }
                                 // updateTab();
                             } else {
-                                QeAssetXML *node = nullptr;
+                                AeXMLNode *node = nullptr;
                                 if (currentTreeViewNode->data->key.compare("children") == 0) {
                                     node = G_AST->getXMLEditNode(eObject, 0);
                                 } else if (currentTreeViewNode->data->key.compare("components") == 0) {
                                     node = G_AST->getXMLEditNode(eComponent_transform, 0);
                                 }
                                 if (node) {
-                                    QeAssetXML *newNode = node->copyXMLNode();
+                                    AeXMLNode *newNode = node->copyXMLNode();
                                     newNode->data->key = "new";
                                     currentTreeViewNode->addXMLNode(newNode);
                                     // updateTab();
@@ -191,11 +191,11 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                                 }
                             }
                         } else {
-                            QeAssetXML *node1 = CONFIG->data->nexts[currentTabIndex];
+                            AeXMLNode *node1 = CONFIG->data->nexts[currentTabIndex];
                             int _type = node1->getXMLValuei("type");
                             if (_type != 0) {
-                                QeAssetXML *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
-                                QeAssetXML *newNode = node->copyXMLNode();
+                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+                                AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 node1->addXMLNode(newNode);
                                 // updateTab();
@@ -256,7 +256,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     }
 }
 
-void AeUI::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
+void AeUI::setTreeViewText(HTREEITEM hItem, AeXMLNode *node) {
     std::string s = node->data->key;
     s += " ";
     s += std::to_string(node->data->nexts.size());
@@ -270,10 +270,10 @@ void AeUI::setTreeViewText(HTREEITEM hItem, QeAssetXML *node) {
     TreeView_SetItem(treeViewLists[currentTabIndex], &item);
 }
 
-void AeUI::adjustComponetData(QeAssetXML *node) {
+void AeUI::adjustComponetData(AeXMLNode *node) {
     int _type = node->getXMLValuei("type");
     if (_type) {
-        QeAssetXML *source = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+        AeXMLNode *source = G_AST->getXMLEditNode((QeComponentType)_type, 0);
         if (source->data->parent != node) {
             auto elements = source->data->elements;
             for (auto &e : elements) {
@@ -310,7 +310,7 @@ void AeUI::resize(HWND &window) {
     windowRect.top = 0;
     int offsetX = 0;
     int offsetY = 0;
-    QeAssetXML *node = CONFIG->getXMLNode("setting.environment");
+    AeXMLNode *node = CONFIG->getXMLNode("setting.environment");
     std::string type = "";
     if (window == mainWindow) {
         windowRect.right = node->getXMLValuei("mainWidth");
@@ -565,7 +565,7 @@ void AeUI::updateListView() {
 
     if (!TreeView_GetItem(treeViewLists[currentTabIndex], &item)) return;
 
-    currentTreeViewNode = (QeAssetXML *)item.lParam;
+    currentTreeViewNode = (AeXMLNode *)item.lParam;
     ListView_DeleteAllItems(listViewDetail);
 
     LVITEM lvi;
@@ -634,7 +634,7 @@ void AeUI::updateTab() {
     // currentTreeViewNode = nullptr;
 }
 
-void AeUI::addToTreeView(QeAssetXML *node, HTREEITEM parent) {
+void AeUI::addToTreeView(AeXMLNode *node, HTREEITEM parent) {
     TVITEM tvi;
     TVINSERTSTRUCT tvins;
 
@@ -681,7 +681,7 @@ void AeUI::initialize() {
 std::string AeUI::getWindowTitle() {
     std::string device(VK->deviceProperties.deviceName);
     std::string windowTitle;
-    QeAssetXML *node = CONFIG->getXMLNode("setting.application");
+    AeXMLNode *node = CONFIG->getXMLNode("setting.application");
     windowTitle = node->getXMLValue("applicationName");
     windowTitle.append(" ");
     windowTitle.append(node->getXMLValue("applicationVersion"));

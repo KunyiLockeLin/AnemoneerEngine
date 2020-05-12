@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QeAxis::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeAxis::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);

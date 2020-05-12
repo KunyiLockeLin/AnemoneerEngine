@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QePlane::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     modelData = nullptr;
@@ -82,7 +82,7 @@ void QePlane::update1() {
         VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
         bUpdateTargetCameraOID = true;
 
-        QeAssetXML *node = CONFIG->getXMLNode("shaders.graphics.render");
+        AeXMLNode *node = CONFIG->getXMLNode("shaders.graphics.render");
         G_AST->setGraphicsShader(graphicsShader, node, shaderKey);
     }
 

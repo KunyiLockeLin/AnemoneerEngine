@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QeModel::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeModel::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     graphicsPipeline.bAlpha = initProperty->getXMLValueb("alpha");

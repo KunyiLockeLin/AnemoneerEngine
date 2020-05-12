@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QeCubemap::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeCubemap::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     modelData = G_AST->getModel("cube", true);

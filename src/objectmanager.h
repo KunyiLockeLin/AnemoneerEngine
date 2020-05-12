@@ -22,7 +22,7 @@ class AeObjectManager {
     std::map<QeComponentType, std::vector<QeComponent *>> components;
     std::map<QeComponentType, std::vector<QeComponent *>> unActiveComponents;
 
-    QeComponent *spwanComponent(QeAssetXML *_property, QeObject *_owner = nullptr);
+    QeComponent *spwanComponent(AeXMLNode *_property, QeObject *_owner = nullptr);
     QeComponent *findComponent(QeComponentType type, int _oid);
     bool removeComponent(QeComponent *component);
 

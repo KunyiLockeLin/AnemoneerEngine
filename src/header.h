@@ -89,18 +89,6 @@ class QeAxis;
 class QeGrid;
 class QeRenderSetting;
 
-enum QeActionType {
-    eActionTypeOnce = 0,
-    eActionTypeReplay = 1,
-    eActionTypeNext = 2,
-};
-
-enum QeActionState {
-    eActionStateStop = 0,
-    eActionStatePlay = 1,
-    eActionStatePause = 2,
-};
-
 enum QeModelDataType {
     eModelData_cube = 0,
     eModelData_axis = 1,
@@ -116,40 +104,6 @@ enum QeGameAssetType {
     eAssetBin = 2,
     eAssetShader = 3,
     eAssetTexture = 4,
-};
-
-enum QeComponentType {
-    eComponent_transform = 1,
-    eComponent_camera = 2,
-    eComponent_postprocessing = 3,
-    eComponent_light = 4,
-    eComponent_line = 5,
-    eComponent_model = 6,
-    eComponent_animation = 7,
-    eComponent_plane = 8,
-    eComponent_cubemap = 9,
-    eComponent_partical = 10,
-    eComponent_material = 11,
-    eComponent_inputControl = 12,
-    eComponent_axis = 13,
-    eComponent_grid = 14,
-    eComponent_rendersetting = 15,
-    eObject = 1000,
-    eScene = 2000,
-};
-
-enum QeRenderType { eRender_KHR = 0, eRender_ui = 1, eRender_main = 2, eRender_color = 3, eRender_MAX = 4 };
-
-enum QeLightType {
-    eLightPoint = 0,
-    eLightDirection = 1,
-    eLightSpot = 2,
-};
-
-enum QePlaneType {
-    ePlane_3D = 0,
-    ePlane_billboard = 1,
-    ePlane_2D = 2,
 };
 
 enum QeVKBufferType {
@@ -201,6 +155,7 @@ enum QeUIType {
 };
 
 #include "common/common.h"
+#include "generated_config_struct_enum.h"
 #include "vulkan.h"
 #include "game_encode.h"
 #include "game_asset.h"

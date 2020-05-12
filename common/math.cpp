@@ -2,87 +2,37 @@
 #include <random>
 #include "common.h"
 
-QeVector3f QeRay::positionByTime(float t) { return origin + direction * t; }
+AeVector<float, 3> QeRay::positionByTime(float t) { return origin + direction * t; }
 
-QeMath::QeMath() {}
-QeMath::~QeMath() {}
-float QeMath::dot(QeVector2f &_vec1, QeVector2f &_vec2) { return _vec1.x * _vec2.x + _vec1.y * _vec2.y; }
-float QeMath::dot(QeVector3f &_vec1, QeVector3f &_vec2) { return _vec1.x * _vec2.x + _vec1.y * _vec2.y + _vec1.z * _vec2.z; }
-float QeMath::dot(QeVector4f &_vec1, QeVector4f &_vec2) {
-    return _vec1.x * _vec2.x + _vec1.y * _vec2.y + _vec1.z * _vec2.z + _vec1.w * _vec2.w;
-}
+AeMath::AeMath() {}
+AeMath::~AeMath() {}
 
-int QeMath::iRandom(int start, int range) {
-    if (!range) return start;
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_int_distribution<int> dis(start, start + range);
-
-    return dis(gen);
-}
-
-void QeMath::iRandoms(int start, int range, int size, int *ret) {
-    if (!range) {
-        for (int i = 0; i < size; ++i) ret[i] = start;
-        return;
-    }
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_int_distribution<int> dis(start, start + range);
-
-    for (int i = 0; i < size; ++i) ret[i] = dis(gen);
-}
-
-float QeMath::fRandom(float start, float range) {
-    if (!range) return start;
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_real_distribution<float> dis(start, start + range);
-
-    return dis(gen);
-}
-
-void QeMath::fRandoms(float start, float range, int size, float *ret) {
-    if (!range) {
-        for (int i = 0; i < size; ++i) ret[i] = start;
-        return;
-    }
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_real_distribution<float> dis(start, start + range);
-
-    for (int i = 0; i < size; ++i) ret[i] = dis(gen);
-}
-
-QeVector3f QeMath::cross(QeVector3f &_vec1, QeVector3f &_vec2) {
-    QeVector3f _rtn;
+AeVector<float, 3> AeMath::cross(AeVector<float, 3> &_vec1, AeVector<float, 3> &_vec2) {
+    AeVector<float, 3> _rtn;
     _rtn.x = _vec1.y * _vec2.z - _vec1.z * _vec2.y;
     _rtn.y = _vec1.z * _vec2.x - _vec1.x * _vec2.z;
     _rtn.z = _vec1.x * _vec2.y - _vec1.y * _vec2.x;
     return _rtn;
 }
 
-QeVector3f QeMath::normalize(QeVector3f &_vec) { return _vec / length(_vec); }
-QeVector4f QeMath::normalize(QeVector4f &_vec) { return _vec / length(_vec); }
-
-QeVector3f QeMath::eulerAnglesToVector(QeVector3f &_eulerAngles) {
-    QeVector3f _radians = _eulerAngles * DEGREES_TO_RADIANS;
+AeVector<float, 3> AeMath::eulerAnglesToVector(AeVector<float, 3> &_eulerAngles) {
+    AeVector<float, 3> _radians = _eulerAngles * DEGREES_TO_RADIANS;
 
     /* roll, pitch, yaw? yaw, roll, pitch?  not roll,
     x = cos(yaw)*cos(pitch)
     y = sin(yaw)*cos(pitch)
     z = sin(pitch)
     */
-    QeVector3f ret;
+    AeVector<float, 3> ret;
     ret.x = cos(_eulerAngles.z) * cos(_eulerAngles.y);
     ret.y = sin(_eulerAngles.z) * cos(_eulerAngles.y);
     ret.z = sin(_eulerAngles.y);
     return normalize(ret);
 }
 
-QeVector3f QeMath::vectorToEulerAngles(QeVector3f &_vector) {
-    QeVector3f _radians;
-    QeVector3f _vec = normalize(_vector);
+AeVector<float, 3> AeMath::vectorToEulerAngles(AeVector<float, 3> &_vector) {
+    AeVector<float, 3> _radians;
+    AeVector<float, 3> _vec = normalize(_vector);
 
     _radians.z = atan(_vec.y / _vec.x);
     _radians.x = 0;
@@ -105,11 +55,7 @@ QeVector3f QeMath::vectorToEulerAngles(QeVector3f &_vector) {
     return _radians;
 }
 
-float QeMath::length(QeVector2f &_vec) { return fastSqrt(dot(_vec, _vec)); }
-float QeMath::length(QeVector3f &_vec) { return fastSqrt(dot(_vec, _vec)); }
-float QeMath::length(QeVector4f &_vec) { return fastSqrt(dot(_vec, _vec)); }
-
-float QeMath::fastSqrt(float _number) {
+float AeMath::fastSqrt(float _number) {
     //#ifdef FAST_SQRT_QUAKE3
     long i;
     float x2, y;
@@ -127,11 +73,11 @@ float QeMath::fastSqrt(float _number) {
     //#endif
 }
 
-QeMatrix4x4f QeMath::lookAt(QeVector3f &_pos, QeVector3f &_center, QeVector3f &_up) {
+QeMatrix4x4f AeMath::lookAt(AeVector<float, 3> &_pos, AeVector<float, 3> &_center, AeVector<float, 3> &_up) {
     QeMatrix4x4f _rtn;
-    QeVector3f _face = normalize(_center - _pos);
-    QeVector3f _surface = normalize(cross(_face, _up));
-    QeVector3f _up1 = cross(_surface, _face);
+    AeVector<float, 3> _face = normalize(_center - _pos);
+    AeVector<float, 3> _surface = normalize(cross(_face, _up));
+    AeVector<float, 3> _up1 = cross(_surface, _face);
 
     _rtn._00 = _surface.x;
     _rtn._10 = _surface.y;
@@ -151,7 +97,7 @@ QeMatrix4x4f QeMath::lookAt(QeVector3f &_pos, QeVector3f &_center, QeVector3f &_
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::perspective(float _fov, float _aspect, float _near, float _far) {
+QeMatrix4x4f AeMath::perspective(float _fov, float _aspect, float _near, float _far) {
     QeMatrix4x4f _rtn;
     float _fovR = _fov * DEGREES_TO_RADIANS;
     float tanHalfFov = tan(_fovR / 2);
@@ -165,7 +111,7 @@ QeMatrix4x4f QeMath::perspective(float _fov, float _aspect, float _near, float _
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::translate(QeVector3f &_pos) {
+QeMatrix4x4f AeMath::translate(AeVector<float, 3> &_pos) {
     QeMatrix4x4f _rtn;
     _rtn._30 = _pos.x;
     _rtn._31 = _pos.y;
@@ -173,30 +119,31 @@ QeMatrix4x4f QeMath::translate(QeVector3f &_pos) {
     return _rtn;
 }
 
-QeVector3f QeMath::move(QeVector3f &_position, QeVector3f &_addMove, QeVector3f &_face, QeVector3f &_up) {
-    QeVector3f _move;
+AeVector<float, 3> AeMath::move(AeVector<float, 3> &_position, AeVector<float, 3> &_addMove, AeVector<float, 3> &_face,
+                                AeVector<float, 3> &_up) {
+    AeVector<float, 3> _move;
 
     // forward
     if (_addMove.z) {
         _move = _face * _addMove.z;
     } else {
-        QeVector3f _surface = normalize(cross(_face, _up));
+        AeVector<float, 3> _surface = normalize(cross(_face, _up));
         // left
         if (_addMove.x) {
             _move = _surface * _addMove.x;
         }
         // up
         if (_addMove.y) {
-            QeVector3f _up1 = cross(_surface, _face);
+            AeVector<float, 3> _up1 = cross(_surface, _face);
             _move = _up1 * _addMove.y;
         }
     }
     return (_position + _move);
 }
 
-QeVector4f QeMath::eulerAngles_to_quaternion(QeVector3f &_eulerAngles) {
-    QeVector4f quat;
-    QeVector3f _half_radians = _eulerAngles * DEGREES_TO_RADIANS * 0.5f;
+AeVector<float, 4> AeMath::eulerAngles_to_quaternion(AeVector<float, 3> &_eulerAngles) {
+    AeVector<float, 4> quat;
+    AeVector<float, 3> _half_radians = _eulerAngles * DEGREES_TO_RADIANS * 0.5f;
     float c1 = cos(_half_radians.x);
     float c2 = cos(_half_radians.y);
     float c3 = cos(_half_radians.z);
@@ -211,13 +158,13 @@ QeVector4f QeMath::eulerAngles_to_quaternion(QeVector3f &_eulerAngles) {
     return quat;
 }
 
-QeMatrix4x4f QeMath::rotate_quaternion(QeVector3f &_eulerAngles) {
-    QeVector4f quat = eulerAngles_to_quaternion(_eulerAngles);
+QeMatrix4x4f AeMath::rotate_quaternion(AeVector<float, 3> &_eulerAngles) {
+    AeVector<float, 4> quat = eulerAngles_to_quaternion(_eulerAngles);
     return rotate_quaternion(quat);
 }
 
-QeVector4f QeMath::axis_to_quaternion(float _angle, QeVector3f &_axis) {
-    QeVector4f quat;
+AeVector<float, 4> AeMath::axis_to_quaternion(float _angle, AeVector<float, 3> &_axis) {
+    AeVector<float, 4> quat;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float s = sin(_radian / 2);
     quat.x = _axis.x * s;
@@ -227,12 +174,12 @@ QeVector4f QeMath::axis_to_quaternion(float _angle, QeVector3f &_axis) {
     return quat;
 }
 
-QeMatrix4x4f QeMath::rotate_quaternion(float _angle, QeVector3f &_axis) {
-    QeVector4f quat = axis_to_quaternion(_angle, _axis);
+QeMatrix4x4f AeMath::rotate_quaternion(float _angle, AeVector<float, 3> &_axis) {
+    AeVector<float, 4> quat = axis_to_quaternion(_angle, _axis);
     return rotate_quaternion(quat);
 }
 
-QeMatrix4x4f QeMath::rotate_quaternion(QeVector4f &quaternion) {
+QeMatrix4x4f AeMath::rotate_quaternion(AeVector<float, 4> &quaternion) {
     QeMatrix4x4f _rtn;
 
     float xx = quaternion.x * quaternion.x;
@@ -260,10 +207,10 @@ QeMatrix4x4f QeMath::rotate_quaternion(QeVector4f &quaternion) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotate_eularAngles(QeVector3f &_eulerAngles) {
+QeMatrix4x4f AeMath::rotate_eularAngles(AeVector<float, 3> &_eulerAngles) {
     QeMatrix4x4f _rtn;
-    QeVector3f _radians = _eulerAngles * DEGREES_TO_RADIANS;
-    QeVector3f _coss, _sins;
+    AeVector<float, 3> _radians = _eulerAngles * DEGREES_TO_RADIANS;
+    AeVector<float, 3> _coss, _sins;
     _coss.x = cos(_radians.x);
     _coss.y = cos(_radians.y);
     _coss.z = cos(_radians.z);
@@ -286,13 +233,13 @@ QeMatrix4x4f QeMath::rotate_eularAngles(QeVector3f &_eulerAngles) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotate_axis(float _angle, QeVector3f &_axis) {
+QeMatrix4x4f AeMath::rotate_axis(float _angle, AeVector<float, 3> &_axis) {
     QeMatrix4x4f _rtn;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float _cosA = cos(_radian);
     float _sinA = sin(_radian);
     _axis = normalize(_axis);
-    QeVector3f _temp(_axis * (1.0f - _cosA));
+    AeVector<float, 3> _temp(_axis * (1.0f - _cosA));
 
     _rtn._00 = _cosA + _temp.x * _axis.x;
     _rtn._01 = _temp.x * _axis.y + _sinA * _axis.z;
@@ -309,7 +256,7 @@ QeMatrix4x4f QeMath::rotate_axis(float _angle, QeVector3f &_axis) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotateX(float _angle) {
+QeMatrix4x4f AeMath::rotateX(float _angle) {
     QeMatrix4x4f _rtn;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float _cosA = cos(_radian);
@@ -321,7 +268,7 @@ QeMatrix4x4f QeMath::rotateX(float _angle) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotateY(float _angle) {
+QeMatrix4x4f AeMath::rotateY(float _angle) {
     QeMatrix4x4f _rtn;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float _cosA = cos(_radian);
@@ -333,7 +280,7 @@ QeMatrix4x4f QeMath::rotateY(float _angle) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::rotateZ(float _angle) {
+QeMatrix4x4f AeMath::rotateZ(float _angle) {
     QeMatrix4x4f _rtn;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float _cosA = cos(_radian);
@@ -345,14 +292,14 @@ QeMatrix4x4f QeMath::rotateZ(float _angle) {
     return _rtn;
 }
 
-QeMatrix4x4f QeMath::scale(QeVector3f &_size) {
+QeMatrix4x4f AeMath::scale(AeVector<float, 3> &_size) {
     QeMatrix4x4f _rtn;
     _rtn._00 = _size.x;
     _rtn._11 = _size.y;
     _rtn._22 = _size.z;
     return _rtn;
 }
-
+/*
 QeVector2i::QeVector2i() : x(0), y(0) {}
 QeVector2i::QeVector2i(int _x, int _y) : x(_x), y(_y) {}
 
@@ -620,7 +567,7 @@ QeVector4f QeVector4f::operator/(const float &other) {
     _new.w = w / other;
     return _new;
 }
-
+*/
 QeMatrix4x4f::QeMatrix4x4f()
     : _00(1.0f),
       _01(0.0f),
@@ -685,8 +632,8 @@ QeMatrix4x4f QeMatrix4x4f::operator*(const QeMatrix4x4f &other) {
             for (int k = 0; k < 4; k++) ((float *)&_new)[i * 4 + j] += (((float *)this)[k * 4 + j] * ((float *)&other)[i * 4 + k]);
     return _new;
 }
-QeVector4f QeMatrix4x4f::operator*(const QeVector4f &other) {
-    QeVector4f _new;
+AeVector<float, 4> QeMatrix4x4f::operator*(const AeVector<float, 4> &other) {
+    AeVector<float, 4> _new;
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++) ((float *)&_new)[i] += (((float *)this)[j * 4 + i] * ((float *)&other)[j]);
 
@@ -696,7 +643,7 @@ QeMatrix4x4f &QeMatrix4x4f::operator/=(const float &other) {
     for (int i = 0; i < 16; i++) ((float *)this)[i] /= other;
     return *this;
 }
-bool QeMath::inverse(QeMatrix4x4f &_inMat, QeMatrix4x4f &_outMat) {
+bool AeMath::inverse(QeMatrix4x4f &_inMat, QeMatrix4x4f &_outMat) {
     QeMatrix4x4f _new(0);
 
     _new._00 = _inMat._11 * _inMat._22 * _inMat._33 - _inMat._11 * _inMat._23 * _inMat._32 - _inMat._21 * _inMat._12 * _inMat._33 +
@@ -756,7 +703,7 @@ bool QeMath::inverse(QeMatrix4x4f &_inMat, QeMatrix4x4f &_outMat) {
     return true;
 }
 
-QeMatrix4x4f QeMath::transpose(QeMatrix4x4f &_mat) {
+QeMatrix4x4f AeMath::transpose(QeMatrix4x4f &_mat) {
     QeMatrix4x4f _new(0);
     _new._00 = _mat._00;
     _new._01 = _mat._10;
@@ -780,11 +727,11 @@ QeMatrix4x4f QeMath::transpose(QeMatrix4x4f &_mat) {
     return _new;
 }
 
-int QeMath::clamp(int in, int low, int high) { return in < low ? low : in > high ? high : in; }
-float QeMath::clamp(float in, float low, float high) { return in < low ? low : in > high ? high : in; }
+int AeMath::clamp(int in, int low, int high) { return in < low ? low : in > high ? high : in; }
+float AeMath::clamp(float in, float low, float high) { return in < low ? low : in > high ? high : in; }
 
-QeVector4f QeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
-    QeVector4f ret;
+AeVector<float, 4> AeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
+    AeVector<float, 4> ret;
     float trace = matrix._00 + matrix._11 + matrix._22;
     if (trace > 0) {
         float w4 = fastSqrt(trace + 1) * 2;
@@ -814,8 +761,8 @@ QeVector4f QeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
     return ret;
 }
 
-QeVector4f QeMath::interpolateDir(QeVector4f &a, QeVector4f &b, float blend) {
-    QeVector4f ret;
+AeVector<float, 4> AeMath::interpolateDir(AeVector<float, 4> &a, AeVector<float, 4> &b, float blend) {
+    AeVector<float, 4> ret;
 
     float dotf = dot(a, b);
     float blend1 = 1.f - blend;
@@ -834,15 +781,16 @@ QeVector4f QeMath::interpolateDir(QeVector4f &a, QeVector4f &b, float blend) {
     return ret;
 }
 
-QeVector3f QeMath::interpolatePos(QeVector3f &start, QeVector3f &end, float progression) {
-    QeVector3f ret;
+AeVector<float, 3> AeMath::interpolatePos(AeVector<float, 3> &start, AeVector<float, 3> &end, float progression) {
+    AeVector<float, 3> ret;
     ret.x = start.x + (end.x - start.x) * progression;
     ret.y = start.y + (end.y - start.y) * progression;
     ret.z = start.z + (end.z - start.z) * progression;
     return ret;
 }
 
-QeMatrix4x4f QeMath::transform(QeVector3f &_tanslation, QeVector4f &_rotation_quaternion, QeVector3f &_scale) {
+QeMatrix4x4f AeMath::transform(AeVector<float, 3> &_tanslation, AeVector<float, 4> &_rotation_quaternion,
+                               AeVector<float, 3> &_scale) {
     QeMatrix4x4f ret;
     ret *= translate(_tanslation);
     ret *= rotate_quaternion(_rotation_quaternion);
@@ -850,41 +798,44 @@ QeMatrix4x4f QeMath::transform(QeVector3f &_tanslation, QeVector4f &_rotation_qu
     return ret;
 }
 
-float QeMath::getAnglefromVectors(QeVector3f &v1, QeVector3f &v2) {
-    QeVector3f v1n = normalize(v1);
-    QeVector3f v2n = normalize(v2);
+float AeMath::getAnglefromVectors(AeVector<float, 3> &v1, AeVector<float, 3> &v2) {
+    AeVector<float, 3> v1n = normalize(v1);
+    AeVector<float, 3> v2n = normalize(v2);
 
     float d = dot(v1n, v2n);
     return acos(d) * RADIANS_TO_DEGREES;
 }
 
 // lock when y = 90 or -90
-QeVector3f QeMath::revolute_eularAngles(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX,
-                                        bool bFixY, bool bFixZ) {
-    QeVector3f vec = {_position - _centerPosition};
-    QeVector3f eularAngle = vectorToEulerAngles(vec) + _addRevolute;
-    QeVector3f origin = {length(vec), 0.f, 0.f};
+AeVector<float, 3> AeMath::revolute_eularAngles(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
+                                                AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
+    AeVector<float, 3> vec = (_position - _centerPosition);
+    AeVector<float, 3> eularAngle = vectorToEulerAngles(vec) + _addRevolute;
+    float f3[] = {length(vec), 0.f, 0.f};
+    AeVector<float, 3> origin(f3);
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
     mat *= rotate_eularAngles(eularAngle);
-    return mat * QeVector4f(origin, 1.0f);
+    return AeVector<float, 3> (mat * AeVector<float, 4>(origin, 1.0f));
 }
 
-QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX,
-                                 bool bFixY, bool bFixZ) {
-    QeVector3f vec = {_position - _centerPosition};
-    QeVector3f vecN = normalize(vec);
+AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
+                                         AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
+    AeVector<float, 3> vec = {_position - _centerPosition};
+    AeVector<float, 3> vecN = normalize(vec);
 
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
 
     if (_addRevolute.x) {
         if (bFixX) {
-            QeVector3f _axis = {0.f, 0.f, 1.f};
+            float f3[] = {0.f, 0.f, 1.f};
+            AeVector<float, 3> _axis(f3);
             mat *= rotate_axis(_addRevolute.x, _axis);
         } else {
-            QeVector3f _axis = {0.f, 1.f, 0.f};
-            QeVector3f _surface = normalize(cross(_axis, vecN));
+            float f3[] = {0.f, 1.f, 0.f};
+            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             mat *= rotate_axis(_addRevolute.x, _surface);
         }
@@ -892,11 +843,13 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
 
     if (_addRevolute.y) {
         if (bFixY) {
-            QeVector3f _axis = {0.f, 1.f, 0.f};
+            float f3[] = {0.f, 1.f, 0.f};
+            AeVector<float, 3> _axis(f3);
             mat *= rotate_axis(_addRevolute.y, _axis);
         } else {
-            QeVector3f _axis = {0.f, 0.f, 1.f};
-            QeVector3f _surface = normalize(cross(_axis, vecN));
+            float f3[] = {0.f, 0.f, 1.f};
+            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.y < 0) _surface *= -1;
             mat *= rotate_axis(_addRevolute.y, _surface);
         }
@@ -904,11 +857,13 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
 
     if (_addRevolute.z) {
         if (bFixZ) {
-            QeVector3f _axis = {0.f, 0.f, 1.f};
+            float f3[] = {0.f, 0.f, 1.f};
+            AeVector<float, 3> _axis(f3);
             mat *= rotate_axis(_addRevolute.z, _axis);
         } else {
-            QeVector3f _axis = {1.f, 0.f, 0.f};
-            QeVector3f _surface = normalize(cross(_axis, vecN));
+            float f3[] = {1.f, 0.f, 0.f};
+            AeVector<float, 3> _axis(f3);
+            AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             // if ((vecN.x == 0 && vecN.y < 0) || (vecN.x < 0 && vecN.y == 0) ||
             // (vecN.x < 0 && vecN.y < 0)|| (vecN.x < 0 && vecN.y > 0)) _surface *= -1;
@@ -916,7 +871,7 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
         }
     }
 
-    return mat * QeVector4f(vec, 1.0f);
+    return mat * AeVector<float, 4>(vec, 1.0f);
 }
 
 /*void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
@@ -984,8 +939,9 @@ QeVector3f QeMath::revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute
         rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
 }*/
 
-QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rotateEuler, QeVector3f &_scale,
-                                        QeVector3f &camera_world_position, bool bRotate, bool bFixSize) {
+QeMatrix4x4f AeMath::getTransformMatrix(AeVector<float, 3> &_translate, AeVector<float, 3> &_rotateEuler,
+                                        AeVector<float, 3> &_scale, AeVector<float, 3> &camera_world_position, bool bRotate,
+                                        bool bFixSize) {
     QeMatrix4x4f mat;
 
     mat *= translate(_translate);
@@ -1001,8 +957,8 @@ QeMatrix4x4f QeMath::getTransformMatrix(QeVector3f &_translate, QeVector3f &_rot
     return mat;
 }
 
-bool QeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere &sphere, float maxDistance, QeRayHitRecord *hit) {
-    QeVector3f vrs = sphere.center - ray.origin;
+bool AeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere &sphere, float maxDistance, QeRayHitRecord *hit) {
+    AeVector<float, 3> vrs = sphere.center - ray.origin;
     float vrs2 = dot(vrs, vrs);
     float r2 = sphere.radius * sphere.radius;
     float vrsd = 0;
@@ -1039,7 +995,7 @@ bool QeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere &sphere, float
     return b;
 }
 
-void QeMath::quicksort(float *data, int count) {
+void AeMath::quicksort(float *data, int count) {
     float r = data[count - 1];
     int i = 0;
     int final = count - 1;

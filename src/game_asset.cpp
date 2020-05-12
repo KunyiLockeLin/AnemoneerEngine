@@ -88,7 +88,7 @@ bool QeVertex::operator==(const QeVertex &other) const {
     return pos == other.pos && normal == other.normal && uv == other.uv && color == other.color;
 }
 
-QeAssetXML *QeGameAsset::getXMLEditNode(QeComponentType _type, int eid) {
+AeXMLNode *QeGameAsset::getXMLEditNode(QeComponentType _type, int eid) {
     std::string s = "";
     int type2 = 0;
 
@@ -105,7 +105,7 @@ QeAssetXML *QeGameAsset::getXMLEditNode(QeComponentType _type, int eid) {
             break;
     }
 
-    QeAssetXML *node = CONFIG->getXMLNode(s.c_str());
+    AeXMLNode *node = CONFIG->getXMLNode(s.c_str());
 
     if (node != nullptr && node->data->nexts.size() > 0) {
         if (type2 != 0) {
@@ -650,7 +650,7 @@ QeAssetParticleRule *QeGameAsset::getParticle(int _eid) {
     std::map<int, QeAssetParticleRule *>::iterator it = astParticles.find(_eid);
     if (it != astParticles.end()) return it->second;
 
-    QeAssetXML *node = getXMLEditNode(eComponent_partical, _eid);
+    AeXMLNode *node = getXMLEditNode(eComponent_partical, _eid);
     QeAssetParticleRule *particle = G_ENCODE->decodeParticle(node);
     astParticles[_eid] = particle;
     return particle;
@@ -680,7 +680,7 @@ std::string QeGameAsset::combinePath(const char *_filename, QeGameAssetType data
     return rtn.append(_filename);
 }
 
-void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, QeAssetXML *shaderData, const char *defaultShaderType) {
+void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, AeXMLNode *shaderData, const char *defaultShaderType) {
     const char *c = nullptr;
 
     if (shaderData) {
@@ -699,7 +699,7 @@ void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, QeAssetXML *s
     if (defaultShaderType && strlen(defaultShaderType)) {
         std::string keys = "shaders.graphics.";
         keys += defaultShaderType;
-        QeAssetXML *node = CONFIG->getXMLNode(keys.c_str());
+        AeXMLNode *node = CONFIG->getXMLNode(keys.c_str());
         if (shader.vert == nullptr) {
             c = node->getXMLValue("vert");
             if (c != nullptr && strlen(c)) shader.vert = getShader(c);

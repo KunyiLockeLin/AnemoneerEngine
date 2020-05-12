@@ -4,7 +4,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (AngryEngine)
 
 # lib Common
-add_library(libCommon SHARED common/common.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
+add_library(libCommon SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
 
 set_target_properties(libCommon PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(libCommon PROPERTIES OUTPUT_NAME_DEBUG libCommon_debug)
@@ -13,6 +13,11 @@ target_link_libraries(libCommon Dbghelp)
 set(DEBUG_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/libCommon_debug.dll)
 set(RELEASE_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/libCommon.dll)
 add_custom_command(TARGET libCommon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_libCommon}>$<$<CONFIG:release>:${RELEASE_libCommon}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy libCommon")
+
+#lib ui
+#add_library(libUI SHARED)
+#lib GPU
+#add_library(libGPU SHARED)
 
 # CodeGenerator
 add_executable(CodeGenerator code_generator.bat code_generator/code_generator.cpp)
@@ -35,14 +40,14 @@ set(SRC_VULKAN src/graphics.cpp src/vulkan.cpp)
 set(SRC_VULKAN_HEADER src/graphics.h src/vulkan.h)
 
 set(SRC_GAMEOBJECT  src/animation.cpp   src/axis.cpp    src/camera.cpp
-                    src/component.cpp   src/cubemap.cpp src/grid.cpp
+                    src/cubemap.cpp src/grid.cpp
                     src/inputcontrol.cpp src/light.cpp  src/line.cpp
                     src/material.cpp    src/model.cpp   src/object.cpp
                     src/particle.cpp    src/plane.cpp   src/postprocessing.cpp
                     src/transform.cpp   src/rendersetting.cpp src/scene.cpp)
 
 set(SRC_GAMEOBJECT_HEADER src/animation.h   src/axis.h    src/camera.h
-                          src/component.h   src/cubemap.h src/grid.h
+                          src/cubemap.h src/grid.h
                           src/inputcontrol.h src/light.h  src/line.h
                           src/material.h    src/model.h   src/object.h
                           src/particle.h    src/plane.h   src/postprocessing.h

@@ -16,11 +16,12 @@ class QeModel : public QeComponent {
     QeModel(AeObjectManagerKey &_key) : QeComponent(_key), modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
     //~QeModel(){}
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual void update1();
     virtual void update2();
 
+    AeGameObjectComponentModelData data;
     // QeMaterial, QeAnimation
     const char *shaderKey;
     QeAssetModel *modelData = nullptr;
@@ -34,7 +35,6 @@ class QeModel : public QeComponent {
 
     QeDataModel bufferData;
     QeVKBuffer modelBuffer;
-    int materialOID;
     bool bUpdateMaterialOID;
     bool bRotate = true;
     bool b2D = false;

@@ -13,7 +13,7 @@ class QeTransform : public QeComponent {
     int targetAnimationOID;
     const char *targetBoneName = nullptr;
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void update1();
 
     QeVector3f worldPosition();

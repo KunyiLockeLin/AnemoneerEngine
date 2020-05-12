@@ -7,5 +7,5 @@ class QeScene : public QeObject {
     QeScene(AeObjectManagerKey &_key) : QeObject(_key) {}
     ~QeScene() {}
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 };

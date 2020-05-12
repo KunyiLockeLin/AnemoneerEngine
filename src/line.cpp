@@ -1,6 +1,6 @@
 #include "header.h"
 
-void QeLine::initialize(QeAssetXML *_property, QeObject *_owner) {
+void QeLine::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
     targetTransformOID = initProperty->getXMLValuei("targetTransformOID");

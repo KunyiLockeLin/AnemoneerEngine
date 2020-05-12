@@ -45,6 +45,13 @@ struct DllExport AeVector {
     };
 
     AeVector();
+    //template <class T2>
+    //AeVector(T2, T2, T2);
+    AeVector(T* other);
+    template <class T2, int N2>
+    AeVector(const AeVector<T2, N2> &other);
+    template <class T2, int N2, class T3>
+    AeVector(const AeVector<T2, N2> &other, T3 value);
 
     template <class T2, int N2>
     bool operator==(const AeVector<T2, N2> &other) const;
@@ -108,7 +115,7 @@ struct DllExport AeMatrix {
     AeMatrix<T, N> &operator/=(const float &other);
 };
 */
-
+/*
 struct DllExport QeVector2i {
     int x, y;
 
@@ -207,6 +214,7 @@ struct DllExport QeVector4f {
     QeVector4f operator/(const float &other);
     QeVector4f &operator*=(const float &other);
 };
+*/
 
 struct DllExport QeMatrix4x4f {
     float _00, _01, _02, _03;
@@ -220,30 +228,30 @@ struct DllExport QeMatrix4x4f {
                  float __21, float __22, float __23, float __30, float __31, float __32, float __33);
     QeMatrix4x4f &operator*=(const QeMatrix4x4f &other);
     QeMatrix4x4f operator*(const QeMatrix4x4f &other);
-    QeVector4f operator*(const QeVector4f &other);
+    AeVector<float, 4> operator*(const AeVector<float, 4> &other);
     QeMatrix4x4f &operator/=(const float &other);
 };
 
 struct DllExport QeRay {
-    QeVector3f origin;
-    QeVector3f direction;
-    QeVector3f positionByTime(float t);
+    AeVector<float, 3> origin;
+    AeVector<float, 3> direction;
+    AeVector<float, 3> positionByTime(float t);
 };
 
 struct DllExport QeRayHitRecord {
     float t;
-    QeVector3f position;
-    QeVector3f normal;
+    AeVector<float, 3> position;
+    AeVector<float, 3> normal;
 };
 
 struct DllExport QeBoundingSphere {
-    QeVector3f center;
+    AeVector<float, 3> center;
     float radius;
 };
 
 struct DllExport QeBoundingBox {
-    QeVector3f min;
-    QeVector3f max;
+    AeVector<float, 3> min;
+    AeVector<float, 3> max;
 };
 
 class DllExport QeBinaryTree {
@@ -257,61 +265,63 @@ class DllExport QeBinaryTree {
 };
 
 // Right-handed Coordinate System
-class DllExport QeMath {
-    SINGLETON_CLASS(QeMath)
+class DllExport AeMath {
+    SINGLETON_CLASS(AeMath)
    public:
-    ~QeMath();
+    ~AeMath();
 
     const float PI = 3.1415927f;
     const float RADIANS_TO_DEGREES = 180.0f / PI;
     const float DEGREES_TO_RADIANS = PI / 180;
 
-    int iRandom(int start, int range);
-    void iRandoms(int start, int range, int size, int *ret);
-    float fRandom(float start, float range);
-    void fRandoms(float start, float range, int size, float *ret);
-    QeMatrix4x4f lookAt(QeVector3f &_pos, QeVector3f &_center, QeVector3f &_up);
+    template <class T>
+    T random(T start, T range);
+    template <class T, int N>
+    AeVector<T, N> randoms(T start, T range);
+    template <int N>
+    float dot(AeVector<float, N> &vec1, AeVector<float, N> &vec2);
+    template <int N>
+    float length(AeVector<float, N> &vec);
+    template <int N>
+    AeVector<float, N> normalize(AeVector<float, N> &_vec);
+
+    QeMatrix4x4f lookAt(AeVector<float, 3> &_pos, AeVector<float, 3> &_center, AeVector<float, 3> &_up);
     QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
-    QeMatrix4x4f translate(QeVector3f &_pos);
-    QeVector3f move(QeVector3f &_position, QeVector3f &_addMove, QeVector3f &_face, QeVector3f &_up);
-    QeMatrix4x4f rotate_quaternion(QeVector3f &_eulerAngles);
-    QeMatrix4x4f rotate_quaternion(QeVector4f &quaternion);
-    QeMatrix4x4f rotate_quaternion(float _angle, QeVector3f &_axis);
-    QeVector4f eulerAngles_to_quaternion(QeVector3f &_eulerAngles);
-    QeVector4f axis_to_quaternion(float _angle, QeVector3f &_axis);
-    QeMatrix4x4f rotate_eularAngles(QeVector3f &_eulerAngles);  // (roll, pitch, yaw) or (bank, attitude, heading)
-    QeMatrix4x4f rotate_axis(float _angle, QeVector3f &_axis);
+    QeMatrix4x4f translate(AeVector<float, 3> &_pos);
+    AeVector<float, 3> move(AeVector<float, 3> &_position, AeVector<float, 3> &_addMove, AeVector<float, 3> &_face,
+                            AeVector<float, 3> &_up);
+    QeMatrix4x4f rotate_quaternion(AeVector<float, 3> &_eulerAngles);
+    QeMatrix4x4f rotate_quaternion(AeVector<float, 4> &quaternion);
+    QeMatrix4x4f rotate_quaternion(float _angle, AeVector<float, 3> &_axis);
+    AeVector<float, 4> eulerAngles_to_quaternion(AeVector<float, 3> &_eulerAngles);
+    AeVector<float, 4> axis_to_quaternion(float _angle, AeVector<float, 3> &_axis);
+    QeMatrix4x4f rotate_eularAngles(AeVector<float, 3> &_eulerAngles);  // (roll, pitch, yaw) or (bank, attitude, heading)
+    QeMatrix4x4f rotate_axis(float _angle, AeVector<float, 3> &_axis);
     QeMatrix4x4f rotateX(float _angle);
     QeMatrix4x4f rotateY(float _angle);
     QeMatrix4x4f rotateZ(float _angle);
-    QeVector4f matrix_to_quaternion(QeMatrix4x4f matrix);
-    QeMatrix4x4f scale(QeVector3f &_size);
-    QeMatrix4x4f transform(QeVector3f &_tanslation, QeVector4f &_rotation_quaternion, QeVector3f &_scale);
-    QeMatrix4x4f getTransformMatrix(QeVector3f &_translate, QeVector3f &_rotateEuler, QeVector3f &_scale,
-                                    QeVector3f &camera_world_position, bool bRotate = true, bool bFixSize = false);
-    QeVector3f normalize(QeVector3f &_vec);
-    QeVector4f normalize(QeVector4f &_vec);
-    QeVector3f eulerAnglesToVector(QeVector3f &_eulerAngles);
-    QeVector3f vectorToEulerAngles(QeVector3f &_vector);
-    float length(QeVector2f &_vec);
-    float length(QeVector3f &_vec);
-    float length(QeVector4f &_vec);
-    float dot(QeVector2f &_vec1, QeVector2f &_vec2);
-    float dot(QeVector3f &_vec1, QeVector3f &_vec2);
-    float dot(QeVector4f &_vec1, QeVector4f &_vec2);
-    QeVector3f cross(QeVector3f &_vec1, QeVector3f &_vec2);
+    AeVector<float, 4> matrix_to_quaternion(QeMatrix4x4f matrix);
+    QeMatrix4x4f scale(AeVector<float, 3> &_size);
+    QeMatrix4x4f transform(AeVector<float, 3> &_tanslation, AeVector<float, 4> &_rotation_quaternion, AeVector<float, 3> &_scale);
+    QeMatrix4x4f getTransformMatrix(AeVector<float, 3> &_translate, AeVector<float, 3> &_rotateEuler, AeVector<float, 3> &_scale,
+                                    AeVector<float, 3> &camera_world_position, bool bRotate = true, bool bFixSize = false);
+
+    AeVector<float, 3> eulerAnglesToVector(AeVector<float, 3> &_eulerAngles);
+    AeVector<float, 3> vectorToEulerAngles(AeVector<float, 3> &_vector);
+    AeVector<float, 3> cross(AeVector<float, 3> &_vec1, AeVector<float, 3> &_vec2);
     float fastSqrt(float _number);
     bool inverse(QeMatrix4x4f &_inMat, QeMatrix4x4f &_outMat);
     QeMatrix4x4f transpose(QeMatrix4x4f &_mat);
     int clamp(int in, int low, int high);
     float clamp(float in, float low, float high);
-    QeVector4f interpolateDir(QeVector4f &a, QeVector4f &b, float blend);
-    QeVector3f interpolatePos(QeVector3f &start, QeVector3f &end, float progression);
-    float getAnglefromVectors(QeVector3f &v1, QeVector3f &v2);
-    QeVector3f revolute_axis(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX = false,
-                             bool bFixY = false, bool bFixZ = false);
-    QeVector3f revolute_eularAngles(QeVector3f &_position, QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX,
-                                    bool bFixY, bool bFixZ);
+    AeVector<float, 4> interpolateDir(AeVector<float, 4> &a, AeVector<float, 4> &b, float blend);
+    AeVector<float, 3> interpolatePos(AeVector<float, 3> &start, AeVector<float, 3> &end, float progression);
+    float getAnglefromVectors(AeVector<float, 3> &v1, AeVector<float, 3> &v2);
+    AeVector<float, 3> revolute_axis(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
+                                     AeVector<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
+                                     bool bFixZ = false);
+    AeVector<float, 3> revolute_eularAngles(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
+                                            AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ);
 
     // void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
     // void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
@@ -319,7 +329,7 @@ class DllExport QeMath {
     bool hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere &sphere, float maxDistance = 0.f, QeRayHitRecord *hit = nullptr);
     void quicksort(float *data, int count);
 };
-#define MATH QeMath::getInstance()
+#define MATH AeMath::getInstance()
 
 enum DllExport QeAssetType {
     eAssetXML = 0,
@@ -406,10 +416,10 @@ struct DllExport QeAssetJSON {
     bool getJSONfValue(float *output, int length, ...);
 };
 
-class DllExport QeAsset {
-    SINGLETON_CLASS(QeAsset)
+class DllExport AeCommonManager {
+    SINGLETON_CLASS(AeCommonManager)
    public:
-    ~QeAsset();
+    ~AeCommonManager();
 
     QeAssetJSON *getJSON(const char *_filePath);
     AeXMLNode *getXML(const char *_filePath);
@@ -417,7 +427,7 @@ class DllExport QeAsset {
 
     std::vector<char> loadFile(const char *_filePath);
 };
-#define AST QeAsset::getInstance()
+#define CM_MGR AeCommonManager::getInstance()
 
 class DllExport QeEncode {
     SINGLETON_CLASS(QeEncode)

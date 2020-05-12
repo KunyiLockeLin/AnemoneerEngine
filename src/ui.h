@@ -29,8 +29,8 @@ class AeUI : public AeLogListener {
     // int currentTreeViewNodeIndex;
     std::string currentEditListViewKey;
     bool bAddTreeView = false;
-    // std::vector<QeAssetXML*> currentTreeViewNodes;
-    QeAssetXML *currentTreeViewNode;
+    // std::vector<AeXMLNode*> currentTreeViewNodes;
+    AeXMLNode *currentTreeViewNode;
     AeInputData inputData;
     std::vector<QeInputControl *> inputControls;
 
@@ -50,9 +50,9 @@ class AeUI : public AeLogListener {
     void resize(HWND &window);
     std::string getWindowTitle();
     void Log(std::string _log);
-    void addToTreeView(QeAssetXML *node, HTREEITEM parent);
-    void adjustComponetData(QeAssetXML *node);
-    void setTreeViewText(HTREEITEM hItem, QeAssetXML *node);
+    void addToTreeView(AeXMLNode *node, HTREEITEM parent);
+    void adjustComponetData(AeXMLNode *node);
+    void setTreeViewText(HTREEITEM hItem, AeXMLNode *node);
 
     std::wstring chartowchar(std::string s);
     std::string wchartochar(std::wstring s);

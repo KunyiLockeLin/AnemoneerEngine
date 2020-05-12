@@ -1,10 +1,10 @@
 #include "header.h"
 
-void QeScene::initialize(QeAssetXML * _property, QeObject * _owner) {
+void QeScene::initialize(AeXMLNode * _property, QeObject * _owner) {
     QeComponent::initialize(_property, _owner);
     clear();
     GRAP->initialize();
-    QeAssetXML *node = CONFIG->getXMLNode("setting.environment");
+    AeXMLNode *node = CONFIG->getXMLNode("setting.environment");
     node->setXMLValue("currentSceneEID", std::to_string(eid).c_str());
 
     for (int index = 0; index < initProperty->data->nexts.size(); ++index) {

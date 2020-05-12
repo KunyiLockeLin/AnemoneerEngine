@@ -7,5 +7,5 @@ class QePostProcessing : public QeComponent {
     //~QePostProcessing();
 
     QeVector4f param1;
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 };

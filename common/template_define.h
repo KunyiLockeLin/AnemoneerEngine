@@ -8,9 +8,33 @@ AeVector<T, N>::AeVector() {
 }
 
 template <class T, int N>
+AeVector<T, N>::AeVector(T *other) {
+    for (int i = 0; i < N ; ++i) {
+        elements[i] = other[i];
+    }
+}
+
+template <class T, int N>
+template <class T2, int N2>
+AeVector<T, N>::AeVector(const AeVector<T2, N2> &other) {
+    *this = other;
+}
+
+template <class T, int N>
+template <class T2, int N2, class T3>
+AeVector<T, N>::AeVector(const AeVector<T2, N2> &other, T3 value) {
+    *this = other;
+    if (N>N2){
+        for (int i = N2;i<N;++i) {
+            elements[i] = value;
+        }
+    }
+}
+
+template <class T, int N>
 template <class T2, int N2>
 bool AeVector<T, N>::operator==(const AeVector<T2, N2> &other) const {
-    for (int i = 0; i< N && i< N2 ;++i) {
+    for (int i = 0; i < N && i < N2; ++i) {
         if (elements[i] != other.elements[i]) {
             return false;
         }
@@ -74,7 +98,7 @@ template <class T2, int N2>
 AeVector<T, N> AeVector<T, N>::operator+(const AeVector<T2, N2> &other) {
     AeVector<T, N> new_;
     for (int i = 0; i < N && i < N2; ++i) {
-        new_.elements[i]= elements[i] + other.elements[i];
+        new_.elements[i] = elements[i] + other.elements[i];
     }
     return new_;
 }
@@ -112,7 +136,7 @@ AeVector<T, N> AeVector<T, N>::operator/(const AeVector<T2, N2> &other) {
 template <class T, int N>
 template <class T2>
 AeVector<T, N> &AeVector<T, N>::operator=(const T2 &other) {
-    for (int i = 0; i < N ; ++i) {
+    for (int i = 0; i < N; ++i) {
         elements[i] = other;
     }
     return *this;
@@ -288,4 +312,48 @@ AeXMLNode *AeXMLNode::getXMLValues(AeVector<T, N> &value, const char *key) {
         value.elements[i] = values[i];
     }
     return ret;
+}
+
+template <class T>
+T AeMath::random(T start, T range) {
+    if (!range) return start;
+    std::random_device rd;
+    std::default_random_engine gen = std::default_random_engine(rd());
+    std::uniform_int_distribution<T> dis(start, start + range);
+
+    return dis(gen);
+}
+
+template <class T, int N>
+AeVector<T, N> AeMath::randoms(T start, T range) {
+    AeVector<T, N> ret;
+    if (!range) {
+        ret = start;
+        return ret;
+    }
+    std::random_device rd;
+    std::default_random_engine gen = std::default_random_engine(rd());
+    std::uniform_int_distribution<T> dis(start, start + range);
+
+    for (int i = 0; i < size; ++i) ret[i] = dis(gen);
+    return ret;
+}
+
+template <int N>
+float AeMath::dot(AeVector<float, N> &vec1, AeVector<float, N> &vec2) {
+    float ret = 0.f;
+    for (int i = 0; i < N; ++i) {
+        ret += (vec1.elements[i] * vec2.elements[i]);
+    }
+    return ret;
+}
+
+template <int N>
+float AeMath::length(AeVector<float, N> &vec) {
+    return fastSqrt(dot<N>(vec, vec));
+}
+
+template <int N>
+AeVector<float, N> AeMath::normalize(AeVector<float, N> &_vec) {
+    return _vec / length<N>(_vec);
 }

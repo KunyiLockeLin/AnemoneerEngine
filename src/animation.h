@@ -15,7 +15,7 @@ class QeAnimation : public QeModel {
     float currentActionTime;
     float actionSpeed;
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void update1();
 
     bool setAction(unsigned int actionID, QeActionType playType);

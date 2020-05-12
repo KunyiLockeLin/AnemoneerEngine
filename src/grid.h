@@ -8,6 +8,6 @@ class QeGrid : public QeLine {
     int column, row;
     QeVector3f color;
 
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void update1();
 };
