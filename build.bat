@@ -18,11 +18,12 @@ cmake --build . --target AngryEngine --config Debug
 timeout 3
 
 cd ..
+cd build
+start AngryEngine.sln
+cd ..
 cd output
 start AngryEngine_debug.exe
-timeout 10
-taskkill /F /im AngryEngine_debug.exe
-
-start AngryEngine.sln
+::timeout 10
+::taskkill /F /im AngryEngine_debug.exe
 
 pause

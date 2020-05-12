@@ -33,7 +33,7 @@ target_link_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
 target_link_libraries(CodeGenerator PUBLIC debug libCommon_debug optimized libCommon)
 
 # AngryEngine
-set(SRC_NONE generator.bat output/data/shader_compile.bat output/data/config.xml)
+set(SRC_NONE build.bat output/data/shader_compile.bat output/data/config.xml)
 set(SRC_ALGORITHM src/game_encode.cpp)
 set(SRC_ALGORITHM_HEADER src/game_encode.h)
 set(SRC_UI src/ui.cpp)
