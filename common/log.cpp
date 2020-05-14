@@ -84,7 +84,7 @@ bool AeFile::open(const char *output_path_) {
     }
     ofile->open(output_path_);
     if (ofile->fail()) {
-        std::cout << "open failure as expected: " << strerror(errno) << '\n';
+        //std::cout << "open failure as expected: " << strerror(errno) << '\n';
         return false;
     }
     return true;
