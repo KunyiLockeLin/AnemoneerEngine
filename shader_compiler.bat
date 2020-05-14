@@ -2,10 +2,10 @@ setlocal EnableDelayedExpansion
 
 %VULKAN_SDK%/Bin/glslangValidator.exe -h
 
-set input=%~dp0shaders\
-set output=%input%spv\
-echo input:%input%
-echo output:%output%
+set input=%~dp0shader\
+set output=%~dp0output\data\shader\
+::echo input:%input%
+::echo output:%output%
 
 rmdir %output% /s/q
 mkdir %output%

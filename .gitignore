@@ -1,6 +1,6 @@
 build/*
 *.exe
 *.dll
-generated_*
-output/data/shaders/spv/*
+generated/*
+output/data/shader/*
 output/data/log/*

@@ -476,7 +476,7 @@ class DllExport AeFile {
 
     std::ofstream *ofile;
     std::string *output_path;
-
+    void mkdir(const char *output_path);
     bool open(const char *output_path);
     bool isOpen();
     bool addNewLine(const char *s);

@@ -73,12 +73,14 @@ AeFile::~AeFile() {
     output_path = nullptr;
 }
 
-//#include <cerrno>
+#include <cerrno>
+void AeFile::mkdir(const char *output_path) { _mkdir(output_path); }
+
 bool AeFile::open(const char *output_path_) {
     *output_path = output_path_;
     ofile->open(output_path_);
     if (ofile->fail()) {
-        //std::cout << "open failure as expected: " << strerror(errno) << '\n';
+        // std::cout << "open failure as expected: " << strerror(errno) << '\n';
         return false;
     }
     return true;
@@ -110,7 +112,7 @@ AeLog::~AeLog() {
 // bool QeLog::isOutput() { return CONFIG->getXMLValuei("setting.environment.outputLog"); }
 bool AeLog::isOutput() { return (file && file->isOpen()) ? true : false; }
 
-void AeLog::switchOutput(bool turn_on, const char *output_path ) {
+void AeLog::switchOutput(bool turn_on, const char *output_path) {
     if (turn_on) {
         if (!file) {
             file = new AeFile();
@@ -129,7 +131,6 @@ void AeLog::switchOutput(bool turn_on, const char *output_path ) {
         std::string outputPath = output_path;
         outputPath += buffer;
         outputPath += ".txt";
-
         file->open(outputPath.c_str());
     } else {
         file->close();

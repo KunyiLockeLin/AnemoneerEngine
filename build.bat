@@ -1,4 +1,4 @@
-@echo | call output/data/shader_compile.bat
+@echo | call shader_compile.bat
 timeout 3
 
 rmdir build /s/q

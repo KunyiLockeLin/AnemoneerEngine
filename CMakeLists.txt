@@ -3,6 +3,9 @@ ADD_DEFINITIONS(-D_UNICODE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (AngryEngine)
 
+# shader_compiler
+add_custom_target(shader_compiler COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compile.bat COMMENT "run shader_compiler.bat")
+
 # lib Common
 add_library(libCommon SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
 
@@ -31,9 +34,11 @@ set_target_properties(CodeGenerator PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY $(S
 target_include_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
 target_link_libraries(CodeGenerator PUBLIC debug libCommon_debug optimized libCommon)
+add_custom_command(TARGET CodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
+#add_custom_target(CodeGenerator COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
 
 # AngryEngine
-set(SRC_NONE build.bat output/data/shader_compile.bat output/data/config.xml)
+set(SRC_NONE build.bat shader_compiler.bat output/data/config.xml)
 set(SRC_ALGORITHM src/game_encode.cpp)
 set(SRC_ALGORITHM_HEADER src/game_encode.h)
 set(SRC_UI src/ui.cpp)
@@ -62,12 +67,10 @@ set(SRC_MANAGER_HEADER src/header.h        src/game_asset.h src/command.h
                        src/global.h         src/engine.h
                        src/objectmanager.h)
 
-file(GLOB_RECURSE  SRC_SHADER output/data/shaders/*)
-file(GLOB_RECURSE  SRC_SHADER_SPV output/data/shaders/spv/*)
-file(GLOB_RECURSE  SRC_SHADER_HEADER output/data/shaders/header*)
+file(GLOB_RECURSE  SRC_SHADER shader/*)
+file(GLOB_RECURSE  SRC_SHADER_HEADER shader/header*)
 file(GLOB_RECURSE  SRC_MODEL output/data/models/*.gltf)
 
-list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_SPV})
 list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_HEADER})
 
 source_group(algorithm FILES ${SRC_ALGORITHM})
