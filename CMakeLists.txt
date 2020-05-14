@@ -3,13 +3,13 @@ ADD_DEFINITIONS(-D_UNICODE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (AngryEngine)
 
-# shader_compiler.bat
+# bat.shader_compiler
 file(GLOB_RECURSE  SHADER shader/*)
 file(GLOB_RECURSE  SHADER_HEADER shader/header*)
 list(REMOVE_ITEM SHADER ${SHADER_HEADER})
 source_group(shader FILES ${SHADER})
 source_group(shader_header FILES ${SHADER_HEADER})
-add_custom_target(shader_compiler.bat SOURCES shader_compiler.bat ${SHADER} ${SHADER_HEADER} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compiler.bat COMMENT "run shader_compiler.bat")
+add_custom_target(bat.shader_compiler SOURCES shader_compiler.bat ${SHADER} ${SHADER_HEADER} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compiler.bat COMMENT "run shader_compiler.bat")
 
 # lib Common
 add_library(libCommon SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
@@ -42,8 +42,8 @@ target_link_libraries(CodeGenerator PUBLIC debug libCommon_debug optimized libCo
 #add_custom_command(TARGET CodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
 #add_custom_target(CodeGenerator COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
 
-# code_generator.bat
-add_custom_target(code_generator.bat SOURCES code_generator.bat COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
+# bat.code_generator
+add_custom_target(bat.code_generator SOURCES code_generator.bat COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
 
 # AngryEngine
 set(SRC_NONE build.bat output/data/config.xml)
