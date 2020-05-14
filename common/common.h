@@ -451,6 +451,9 @@ class DllExport QeEncode {
 
     template <class T>
     std::vector<T> split(std::string s, std::string delim);
+
+    template <class T>
+    std::string combine(std::vector<T>& ss, std::string delim);
 };
 
 #define ENCODE QeEncode::getInstance()
@@ -476,7 +479,6 @@ class DllExport AeFile {
 
     std::ofstream *ofile;
     std::string *output_path;
-    void mkdir(const char *output_path);
     bool open(const char *output_path);
     bool isOpen();
     bool addNewLine(const char *s);

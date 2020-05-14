@@ -1,6 +1,6 @@
 setlocal EnableDelayedExpansion
 
-cd build\Debug
+cd %~dp0build\Debug
 CodeGenerator_debug.exe
 
 pause

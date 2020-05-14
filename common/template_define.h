@@ -26,8 +26,8 @@ template <class T, int N>
 template <class T2, int N2, class T3>
 AeVector<T, N>::AeVector(const AeVector<T2, N2> &other, T3 value) {
     *this = other;
-    if (N>N2){
-        for (int i = N2;i<N;++i) {
+    if (N > N2) {
+        for (int i = N2; i < N; ++i) {
             elements[i] = value;
         }
     }
@@ -267,6 +267,16 @@ std::vector<T> QeEncode::split(std::string s, std::string delim) {
     }
     tokens.push_back(ConvertTo<T>(s));
     return tokens;
+}
+
+template <class T>
+std::string QeEncode::combine(std::vector<T>& ss, std::string delim) {
+    if (ss.empty()) return std::string();
+    std::string ret = ss[0];
+    for (size_t i=1; i< ss.size() ;++i) {
+        ret += (delim + ss[i]);
+    }
+    return ret;
 }
 
 template <class T>

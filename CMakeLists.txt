@@ -3,8 +3,13 @@ ADD_DEFINITIONS(-D_UNICODE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (AngryEngine)
 
-# shader_compiler
-add_custom_target(shader_compiler COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compile.bat COMMENT "run shader_compiler.bat")
+# shader_compiler.bat
+file(GLOB_RECURSE  SHADER shader/*)
+file(GLOB_RECURSE  SHADER_HEADER shader/header*)
+list(REMOVE_ITEM SHADER ${SHADER_HEADER})
+source_group(shader FILES ${SHADER})
+source_group(shader_header FILES ${SHADER_HEADER})
+add_custom_target(shader_compiler.bat SOURCES shader_compiler.bat ${SHADER} ${SHADER_HEADER} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compiler.bat COMMENT "run shader_compiler.bat")
 
 # lib Common
 add_library(libCommon SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
@@ -25,7 +30,7 @@ add_custom_command(TARGET libCommon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_
 #add_library(libGPU SHARED)
 
 # CodeGenerator
-add_executable(CodeGenerator code_generator.bat code_generator/code_generator.cpp)
+add_executable(CodeGenerator code_generator/code_generator.cpp)
 
 set_target_properties(CodeGenerator PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(CodeGenerator PROPERTIES OUTPUT_NAME_DEBUG CodeGenerator_debug)
@@ -34,11 +39,14 @@ set_target_properties(CodeGenerator PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY $(S
 target_include_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_directories(CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
 target_link_libraries(CodeGenerator PUBLIC debug libCommon_debug optimized libCommon)
-add_custom_command(TARGET CodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
+#add_custom_command(TARGET CodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
 #add_custom_target(CodeGenerator COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
 
+# code_generator.bat
+add_custom_target(code_generator.bat SOURCES code_generator.bat COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
+
 # AngryEngine
-set(SRC_NONE build.bat shader_compiler.bat output/data/config.xml)
+set(SRC_NONE build.bat output/data/config.xml)
 set(SRC_ALGORITHM src/game_encode.cpp)
 set(SRC_ALGORITHM_HEADER src/game_encode.h)
 set(SRC_UI src/ui.cpp)
@@ -67,11 +75,7 @@ set(SRC_MANAGER_HEADER src/header.h        src/game_asset.h src/command.h
                        src/global.h         src/engine.h
                        src/objectmanager.h)
 
-file(GLOB_RECURSE  SRC_SHADER shader/*)
-file(GLOB_RECURSE  SRC_SHADER_HEADER shader/header*)
 file(GLOB_RECURSE  SRC_MODEL output/data/models/*.gltf)
-
-list(REMOVE_ITEM SRC_SHADER ${SRC_SHADER_HEADER})
 
 source_group(algorithm FILES ${SRC_ALGORITHM})
 source_group(algorithm\\header FILES ${SRC_ALGORITHM_HEADER})
@@ -83,14 +87,12 @@ source_group(ui FILES ${SRC_UI})
 source_group(ui\\header FILES ${SRC_UI_HEADER})
 source_group(vulkan FILES ${SRC_VULKAN})
 source_group(vulkan\\header FILES ${SRC_VULKAN_HEADER})
-source_group(shader FILES ${SRC_SHADER})
-source_group(shader\\header FILES ${SRC_SHADER_HEADER})
 source_group(model FILES ${SRC_MODEL})
 source_group("" FILES ${SRC_NONE})
 
 add_executable(AngryEngine  ${SRC_ALGORITHM} ${SRC_ALGORITHM_HEADER} ${SRC_GAMEOBJECT} ${SRC_GAMEOBJECT_HEADER}
                        ${SRC_MANAGER} ${SRC_MANAGER_HEADER} ${SRC_UI} ${SRC_UI_HEADER} ${SRC_VULKAN}
-                       ${SRC_VULKAN_HEADER} ${SRC_SHADER} ${SRC_SHADER_HEADER} ${SRC_MODEL} ${SRC_NONE})
+                       ${SRC_VULKAN_HEADER} ${SRC_MODEL} ${SRC_NONE})
 
 set_target_properties(AngryEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(AngryEngine PROPERTIES OUTPUT_NAME_DEBUG AngryEngine_debug)

@@ -5,6 +5,7 @@
 #include "dbghelp.h"
 #include <sstream>
 #include <iostream>
+#include <cerrno>
 
 namespace AeLib {
 std::string toString(const int &i) {
@@ -73,14 +74,17 @@ AeFile::~AeFile() {
     output_path = nullptr;
 }
 
-#include <cerrno>
-void AeFile::mkdir(const char *output_path) { _mkdir(output_path); }
-
 bool AeFile::open(const char *output_path_) {
     *output_path = output_path_;
+    std::vector<std::string> output_dirs = ENCODE->split<std::string>(output_path_, "\\");
+    output_dirs.pop_back();
+    if (output_dirs.size() > 0) {
+        std::string output_dir = ENCODE->combine<std::string>(output_dirs, "\\");
+        _mkdir(output_dir.c_str());
+    }
     ofile->open(output_path_);
     if (ofile->fail()) {
-        // std::cout << "open failure as expected: " << strerror(errno) << '\n';
+        std::cout << "open failure as expected: " << strerror(errno) << '\n';
         return false;
     }
     return true;
