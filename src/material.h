@@ -3,11 +3,9 @@
 
 class QeMaterial : public QeComponent {
    public:
-    QeMaterial(AeObjectManagerKey &_key) : QeComponent(_key) {}
-    ~QeMaterial() {}
+    COMPONENT_CLASS_DECLARE(QeMaterial, AeGameObjectComponentMaterialData)
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 
-    bool bAlpha;
     QeAssetMaterial materialData;
 };

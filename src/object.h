@@ -2,7 +2,30 @@
 
 #include "header.h"
 
-class QeComponent{
+#define COMPONENT_CLASS_DECLARE(class_name, componet_data_type) \
+    class_name(AeObjectManagerKey &_key) : QeComponent(_key) {} \
+    ~class_name() {} \
+    componet_data_type component_data; \
+
+#define COMPONENT_CLASS_DECLARE_PARENT(class_name, parent_class, componet_data_type) \
+    class_name(AeObjectManagerKey &_key) : parent_class(_key) {} \
+    ~class_name() {} \
+    componet_data_type component_data; \
+
+#define COMPONENT_CLASS_DECLARE_INITIALIZE(class_name, componet_data_type, ...) \
+    class_name(AeObjectManagerKey &_key) : QeComponent(_key), __VA_ARGS__ {}              \
+    ~class_name() {}                                                          \
+    componet_data_type component_data; \
+
+#define COMPONENT_INITIALIZE       \
+    QeComponent::initialize(_property, _owner); \
+    component_data.read(*_property); \
+
+#define COMPONENT_INITIALIZE_PARENT(parent_class) \
+    parent_class::initialize(_property, _owner); \
+    component_data.read(*_property); \
+
+class QeComponent {
    public:
     QeComponent(AeObjectManagerKey &_key) {}
     ~QeComponent() {}

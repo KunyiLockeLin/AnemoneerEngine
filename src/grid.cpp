@@ -1,20 +1,16 @@
 #include "header.h"
 
 void QeGrid::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE_PARENT(QeLine)
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    color = initProperty->getXMLValueRGB("color");
-    column = initProperty->getXMLValuei("column");
-    row = initProperty->getXMLValuei("row");
-
     float param[5];
-    param[0] = color.x;
-    param[1] = color.y;
-    param[2] = color.z;
-    param[3] = float(column);
-    param[4] = float(row);
+    param[0] = component_data.color.x;
+    param[1] = component_data.color.y;
+    param[2] = component_data.color.z;
+    param[3] = float(component_data.column);
+    param[4] = float(component_data.row);
 
     modelData = G_AST->getModel("grid", false, param);
 
@@ -27,4 +23,4 @@ void QeGrid::initialize(AeXMLNode *_property, QeObject *_owner) {
     VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
-void QeGrid::update1() { QeModel::update1(); }
+void QeGrid::updatePreRender() { QeModel::updatePreRender(); }

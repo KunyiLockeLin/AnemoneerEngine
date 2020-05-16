@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeAxis::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
@@ -16,7 +16,7 @@ void QeAxis::initialize(AeXMLNode *_property, QeObject *_owner) {
     VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
-void QeAxis::update1() {
+void QeAxis::updatePreRender() {
     bufferData.model = owner->transform->worldTransformMatrix(true, true);
     VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }

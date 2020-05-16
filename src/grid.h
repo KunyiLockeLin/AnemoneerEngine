@@ -3,11 +3,8 @@
 
 class QeGrid : public QeLine {
    public:
-    QeGrid(AeObjectManagerKey &_key) : QeLine(_key) {}
-
-    int column, row;
-    QeVector3f color;
+    COMPONENT_CLASS_DECLARE_PARENT(QeGrid, QeLine, AeGameObjectComponentGridData)
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
-    virtual void update1();
+    virtual void updatePreRender();
 };

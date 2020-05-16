@@ -5,21 +5,21 @@
 struct QeDataModel {
     QeMatrix4x4f model;
     QeMatrix4x4f joints[MAX_JOINT_NUM];
-    QeVector4f param1;  // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3:
+    AeVector<float,4> param1;  // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3:
                         // bMetallicRoughnessMap
-    QeVector4f param2;  // 0: outlineWidth, 1: vertexNum
+    AeVector<float, 4> param2;  // 0: outlineWidth, 1: vertexNum
     QeDataMaterial material;
 };
 
 class QeModel : public QeComponent {
    public:
-    QeModel(AeObjectManagerKey &_key) : QeComponent(_key), modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model) {}
-    //~QeModel(){}
+    COMPONENT_CLASS_DECLARE_INITIALIZE(QeModel, AeGameObjectComponentModelData, modelBuffer(eBuffer_uniform),
+                                       descriptorSet(eDescriptorSetLayout_Model))
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
-    virtual void update1();
-    virtual void update2();
+    virtual void updatePreRender();
+    virtual void updatePostRender();
 
     AeGameObjectComponentModelData data;
     // QeMaterial, QeAnimation

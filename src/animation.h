@@ -3,22 +3,16 @@
 
 class QeAnimation : public QeModel {
    public:
-    QeAnimation(AeObjectManagerKey &_key) : QeModel(_key) {}
-    ~QeAnimation() {}
+    COMPONENT_CLASS_DECLARE_PARENT(QeAnimation, QeModel, AeGameObjectComponentAnimationData)
 
-    QeActionState actionState;
-    QeActionType actionType;
     QeMatrix4x4f jointTransforms[MAX_JOINT_NUM];
-
-    int currentActionID;
     int currentActionFrame;
     float currentActionTime;
-    float actionSpeed;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
-    virtual void update1();
+    virtual void updatePreRender();
 
-    bool setAction(unsigned int actionID, QeActionType playType);
+    bool setAction(unsigned int actionID, AE_ACTION_PLAY_TYPE playType);
     void actionPlay();
     void actionPause();
     void actionStop();

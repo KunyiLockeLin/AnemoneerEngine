@@ -2,22 +2,20 @@
 #include "header.h"
 
 struct QeDataLight {
-    QeVector4f pos;
-    QeVector4f dir;
-    QeVector4f color;
-    QeVector4f param;  // 1: type, 2: intensity, 3: coneAngle
+    AeVector<float, 4> pos;
+    AeVector<float, 4> dir;
+    AeVector<float, 4> color;
+    AeVector<float, 4> param;  // 1: type, 2: intensity, 3: coneAngle
 };
 
 class QeLight : public QeComponent {
    public:
-    QeLight(AeObjectManagerKey &_key) : QeComponent(_key) {}
-    //~QeLight() {}
+    COMPONENT_CLASS_DECLARE(QeLight, AeGameObjectComponentLightData)
 
     QeDataLight bufferData;
     bool bUpdate;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
-    virtual void update1();
-    virtual void update2() {}
+    virtual void updatePreRender();
 };

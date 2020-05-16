@@ -1,18 +1,18 @@
 #include "header.h"
 
 void QeLight::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
 
-    bufferData.color = initProperty->getXMLValueRGB("color");
-    bufferData.param.x = initProperty->getXMLValuef("lightType");
-    bufferData.param.y = initProperty->getXMLValuef("intensity");
-    bufferData.param.z = initProperty->getXMLValuef("coneAngle");
+    bufferData.color = component_data.color;
+    bufferData.param.x = component_data.lightType;
+    bufferData.param.y = component_data.intensity;
+    bufferData.param.z = component_data.coneAngle;
     GRAP->addLight(this);
 }
 
 void QeLight::clear() { GRAP->removeLight(this); }
 
-void QeLight::update1() {
+void QeLight::updatePreRender() {
     if (owner && owner->transform) {
         bufferData.pos = owner->transform->worldPosition();
         bufferData.dir = owner->transform->worldFaceVector();

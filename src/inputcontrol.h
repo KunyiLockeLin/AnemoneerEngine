@@ -1,10 +1,9 @@
 #pragma once
-#include "component.h"
+#include "header.h"
 
 class QeInputControl : public QeComponent {
    public:
-    QeInputControl(AeObjectManagerKey &_key) : QeComponent(_key) {}
-    ~QeInputControl() {}
+    COMPONENT_CLASS_DECLARE(QeInputControl, AeGameObjectComponentInputControlData)
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();

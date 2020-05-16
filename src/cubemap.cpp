@@ -1,11 +1,10 @@
 #include "header.h"
 
 void QeCubemap::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE_PARENT(QeModel)
 
     modelData = G_AST->getModel("cube", true);
-    const char *image = initProperty->getXMLValue("image");
-    materialData = G_AST->getMaterialImage(image, true);
+    materialData = G_AST->getMaterialImage(component_data.image.c_str(), true);
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
     bufferData.material = materialData->value;

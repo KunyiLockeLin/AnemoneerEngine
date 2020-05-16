@@ -3,15 +3,12 @@
 
 class QeTransform : public QeComponent {
    public:
-    QeTransform(AeObjectManagerKey &_key) : QeComponent(_key) {}
-    ~QeTransform() {}
-
-    // Face is Euler angles, (roll, pitch, yaw) or (bank, attitude, heading).
-    AeGameObjectComponentTransformData component_data;
+    COMPONENT_CLASS_DECLARE(QeTransform, AeGameObjectComponentTransformData)
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void updatePreRender();
 
+    // Face is Euler angles, (roll, pitch, yaw) or (bank, attitude, heading).
     AeVector<float, 3> worldPosition();
     AeVector<float, 3> worldScale();
     AeVector<float, 3> worldFaceEular();

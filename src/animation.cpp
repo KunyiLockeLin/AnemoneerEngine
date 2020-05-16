@@ -1,12 +1,7 @@
 #include "header.h"
 
 void QeAnimation::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeModel::initialize(_property, _owner);
-
-    actionState = (QeActionState)initProperty->getXMLValuei("actionState");
-    actionSpeed = initProperty->getXMLValuef("actionSpeed");
-    currentActionID = initProperty->getXMLValuei("actionID");
-    actionType = (QeActionType)initProperty->getXMLValuei("actionType");
+    COMPONENT_INITIALIZE_PARENT(QeModel)
 
     graphicsShader.geom = nullptr;
     graphicsShader.tesc = nullptr;
@@ -20,43 +15,43 @@ void QeAnimation::initialize(AeXMLNode *_property, QeObject *_owner) {
     currentActionTime = 0;
 }
 
-void QeAnimation::update1() {
+void QeAnimation::updatePreRender() {
     updateAction();
-    QeModel::update1();
+    QeModel::updatePreRender();
 }
 
-bool QeAnimation::setAction(unsigned int actionID, QeActionType type) {
+bool QeAnimation::setAction(unsigned int actionID, AE_ACTION_PLAY_TYPE type) {
     if (actionID <= modelData->animationNum) {
-        currentActionID = actionID;
-        actionType = type;
+        component_data.actionID = actionID;
+        component_data.actionPlayType = type;
         return true;
     }
     return false;
 }
 
 void QeAnimation::actionPlay() {
-    currentActionFrame = modelData->animationStartFrames[currentActionID];
+    currentActionFrame = modelData->animationStartFrames[component_data.actionID];
     currentActionTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
-    actionState = eActionStatePlay;
+    component_data.actionState = eACTION_Play;
 }
 
-void QeAnimation::actionPause() { actionState = eActionStatePause; }
-void QeAnimation::actionStop() { actionState = eActionStateStop; }
+void QeAnimation::actionPause() { component_data.actionState = eACTION_Pause; }
+void QeAnimation::actionStop() { component_data.actionState = eACTION_Stop; }
 
 void QeAnimation::updateAction() {
-    if (!modelData || !modelData->rootJoint || (actionState != eActionStatePlay && ENGINE->deltaTime)) return;
+    if (!modelData || !modelData->rootJoint || (component_data.actionState != eACTION_Play && ENGINE->deltaTime)) return;
 
     float previousActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame];
     float nextActionFrameTime = modelData->jointsAnimation[0].rotationInput[currentActionFrame + 1];
     bool bFinalFrame = false;
-    if ((currentActionFrame + 1) == modelData->animationEndFrames[currentActionID]) bFinalFrame = true;
+    if ((currentActionFrame + 1) == modelData->animationEndFrames[component_data.actionID]) bFinalFrame = true;
 
     float progessive =
         MATH->clamp((currentActionTime - previousActionFrameTime) / (nextActionFrameTime - previousActionFrameTime), 0.f, 1.f);
 
-    QeVector3f previousTranslation, nextTranslation, currentTranslation;
-    QeVector4f previousRotation, nextRotation, currentRotation;
-    QeVector3f currentScale = {1, 1, 1};
+    AeVector<float, 3> previousTranslation, nextTranslation, currentTranslation;
+    AeVector<float, 4 > previousRotation, nextRotation, currentRotation;
+    AeVector<float, 3> currentScale = {1, 1, 1};
 
     size_t size = modelData->jointsAnimation.size();
 
@@ -75,15 +70,15 @@ void QeAnimation::updateAction() {
     QeMatrix4x4f transform;
     setChildrenJointTransform(*modelData->rootJoint, transform);
 
-    currentActionTime += ENGINE->deltaTime * actionSpeed;
+    currentActionTime += ENGINE->deltaTime * component_data.actionSpeed;
     if (currentActionTime > nextActionFrameTime) {
         if (bFinalFrame) {
-            if (actionType == eActionTypeOnce)
+            if (component_data.actionPlayType == eACTION_PLAY_Once)
                 actionStop();
             else {
-                if (actionType == eActionTypeNext) {
-                    ++currentActionID;
-                    if (currentActionID >= modelData->animationNum) currentActionID -= modelData->animationNum;
+                if (component_data.actionPlayType == eACTION_PLAY_Next) {
+                    ++component_data.actionID;
+                    if (component_data.actionID >= modelData->animationNum) component_data.actionID -= modelData->animationNum;
                 }
                 actionPlay();
             }
@@ -94,7 +89,7 @@ void QeAnimation::updateAction() {
 
 void QeAnimation::setChildrenJointTransform(QeDataJoint &joint, QeMatrix4x4f &parentTransform) {
     size_t size = modelData->jointsAnimation.size();
-    QeVector3f scale(1, 1, 1);
+    AeVector<float,3> scale({1, 1, 1});
 
     for (size_t i = 0; i < size; ++i) {
         if (modelData->jointsAnimation[i].id == joint.id) {

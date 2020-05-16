@@ -1,14 +1,11 @@
 #include "header.h"
 
 void QeLine::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
-
-    targetTransformOID = initProperty->getXMLValuei("targetTransformOID");
-    color = initProperty->getXMLValueRGB("color");
+    COMPONENT_INITIALIZE_PARENT(QeModel)
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    modelData = G_AST->getModel("line", false, (float *)&color);
+    modelData = G_AST->getModel("line", false, (float *)&component_data.color);
 
     shaderKey = "line";
     G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
@@ -20,18 +17,19 @@ void QeLine::initialize(AeXMLNode *_property, QeObject *_owner) {
     VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
 }
 
-void QeLine::update1() {
-    if (targetTransformOID == 0) return;
+void QeLine::updatePreRender() {
+    if (component_data.targetTransformOID == 0) return;
 
-    QeTransform *targetTransform = (QeTransform *)OBJMGR->findComponent(eComponent_transform, targetTransformOID);
+    QeTransform *targetTransform =
+        (QeTransform *)OBJMGR->findComponent(eGAMEOBJECT_Component_Transform, component_data.targetTransformOID);
     if (targetTransform == 0) return;
 
-    QeVector3f targetPos = targetTransform->worldPosition();
-    QeVector3f pos = owner->transform->worldPosition();
+    AeVector<float,3> targetPos = targetTransform->worldPosition();
+    AeVector<float, 3> pos = owner->transform->worldPosition();
 
-    QeVector3f vec = targetPos - pos;
+     AeVector<float, 3> vec = targetPos - pos;
     float size = MATH->fastSqrt(MATH->length(vec));
-    QeVector3f scale = {size, size, size};
+     AeVector<float, 3> scale = {size, size, size};
 
     // LOG("line x: " + vec.x + "  y: " + vec.y + "  z: " + vec.z);
     bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), MATH->vectorToEulerAngles(vec), scale,

@@ -3,16 +3,13 @@
 
 class QePlane : public QeModel {
    public:
-    // face: (0,0,1)
+    COMPONENT_CLASS_DECLARE_PARENT(QePlane, QeModel, AeGameObjectComponentPlaneData)
 
-    QePlane(AeObjectManagerKey &_key) : QeModel(_key) {}
-    //~QePlane() {}
-    QePlaneType planeType;
-    int targetCameraOID;
+    // face: (0,0,1)
     bool bUpdateTargetCameraOID;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
-    virtual void update1();
+    virtual void updatePreRedner();
     virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

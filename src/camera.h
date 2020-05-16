@@ -3,44 +3,33 @@
 #include "header.h"
 
 struct QeDataCamera {
-    QeVector4f pos_rayTracingDepth;
-    QeVector4f horizontal_aspect;
-    QeVector4f vertical_lensRadius;
-    QeVector4f lowerLeftCorner;
+    AeVector<float, 4> pos_rayTracingDepth;
+    AeVector<float, 4> horizontal_aspect;
+    AeVector<float, 4> vertical_lensRadius;
+    AeVector<float, 4> lowerLeftCorner;
     QeMatrix4x4f view;
     QeMatrix4x4f projection;
 };
 
 class QeCamera : public QeComponent {
    public:
-    QeCamera(AeObjectManagerKey &_key) : QeComponent(_key) {}
-    ~QeCamera() {}
+    COMPONENT_CLASS_DECLARE(QeCamera, AeGameObjectComponentCameraData)
 
-    QeRenderType renderType;
-    int lookAtTransformOID;
-    VkExtent2D renderSize;
-
-    QeVector3f up;
-    float aperture, fov, fnear, ffar, speed;
-
-    int cullingDistance;
-    QeVector2i lastMousePos;
-    int postProcessingOID;
+    AeVector<int, 2> lastMousePos;
     bool bUpdatePostProcessingOID;
     QeDataCamera bufferData;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
-
-    virtual void update1();
+    virtual void updatePreRender();
 
     virtual void reset();
     void setLookAtTransformOID(int _lookAtTransformOID);
-    void rotateTarget(QeVector3f _addRotate);
-    void rotateTargetByMouse(QeVector2i mousePos);
-    void setMousePos(QeVector2i mousePos);
-    void zoomInOut(QeVector2i mousePos);
-    void move(QeVector3f _dir, bool bMoveCenter = true);
+    void rotateTarget(AeVector<float, 3> _addRotate);
+    void rotateTargetByMouse(AeVector<int, 2> mousePos);
+    void setMousePos(AeVector<int, 2> mousePos);
+    void zoomInOut(AeVector<int, 2>  mousePos);
+    void move(AeVector<float, 3> _dir, bool bMoveCenter = true);
     bool isRaytracing();
-    QeVector3f face();
-    QeVector3f lookAt();
+    AeVector<float, 3> face();
+    AeVector<float, 3> lookAt();
 };

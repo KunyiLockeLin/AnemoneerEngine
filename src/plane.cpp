@@ -1,15 +1,11 @@
 #include "header.h"
 
 void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
 
     modelData = nullptr;
     materialData = nullptr;
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
-
-    planeType = (QePlaneType)initProperty->getXMLValuei("planeType");
-    materialOID = initProperty->getXMLValuei("materialOID");
-    targetCameraOID = initProperty->getXMLValuei("targetCameraOID");
 
     bUpdateTargetCameraOID = false;
     if (targetCameraOID) bUpdateTargetCameraOID = true;

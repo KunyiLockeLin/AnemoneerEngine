@@ -325,7 +325,7 @@ AeXMLNode *AeXMLNode::getXMLValues(AeVector<T, N> &value, const char *key) {
     std::string str_values;
     AeXMLNode *ret = getXMLValue<std::string>(str_values, key);
     auto values = ENCODE->split<T>(str_values, " ");
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < N && i < values.size(); ++i) {
         value.elements[i] = values[i];
     }
     return ret;

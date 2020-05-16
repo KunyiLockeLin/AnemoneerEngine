@@ -613,7 +613,7 @@ bool QeGraphics::addPostProcssing(AE_RENDER_TYPE renderType, int cameraOID, int 
     return true;
 }
 
-QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, VkExtent2D renderSize) {
+QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, AeVector<float,2> renderSize) {
     QeDataRender *render = new QeDataRender();
     renders[type] = render;
 

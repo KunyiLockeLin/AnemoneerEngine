@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeModel::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
 
     graphicsPipeline.bAlpha = initProperty->getXMLValueb("alpha");
     bufferData.param2.x = initProperty->getXMLValuef("outlineWidth");

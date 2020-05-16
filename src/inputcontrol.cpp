@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeInputControl::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
     UI->inputControls.push_back(this);
 }
 

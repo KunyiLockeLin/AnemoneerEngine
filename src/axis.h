@@ -3,8 +3,8 @@
 
 class QeAxis : public QeLine {
    public:
-    QeAxis(AeObjectManagerKey &_key) : QeLine(_key) {}
+    COMPONENT_CLASS_DECLARE_PARENT(QeAxis, QeLine, AeGameObjectComponentAxisData)
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
-    virtual void update1();
+    virtual void updatePreRender();
 };
