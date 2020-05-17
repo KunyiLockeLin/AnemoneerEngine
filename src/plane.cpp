@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
-    COMPONENT_INITIALIZE_PARENT(QeModel)
+    COMPONENT_INITIALIZE
 
     modelData = nullptr;
     materialData = nullptr;
