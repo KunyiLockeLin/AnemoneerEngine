@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeLine::initialize(AeXMLNode *_property, QeObject *_owner) {
-    COMPONENT_INITIALIZE_PARENT(QeModel)
+    COMPONENT_INITIALIZE
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
