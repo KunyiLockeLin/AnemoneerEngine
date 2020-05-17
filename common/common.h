@@ -454,6 +454,12 @@ class DllExport QeEncode {
     template <class T>
     T ConvertTo(const std::string &str);
 
+    template <>
+    const char *ConvertTo<const char *>(const std::string &str);
+
+    template <>
+    std::string ConvertTo<std::string>(const std::string &str);
+
     template <class T>
     std::vector<T> split(std::string s, std::string delim);
 

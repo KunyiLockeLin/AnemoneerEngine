@@ -123,16 +123,16 @@ void QeVulkan::createInstance() {
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
     node = CONFIG->getXMLNode("setting.application");
-    appInfo.pApplicationName = node->getXMLValue<std::string>("applicationName").c_str();
+    appInfo.pApplicationName = node->getXMLValue<const char*>("applicationName");
 
-    std::vector<std::string> vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("applicationVersion"), ".");
+    std::vector<std::string> vs = ENCODE->split <std::string> (node->getXMLValue<const char *>("applicationVersion"), ".");
     appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    appInfo.pEngineName = node->getXMLValue<std::string>("engineName").c_str();
-    vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("engineVersion"), ".");
+    appInfo.pEngineName = node->getXMLValue<const char *>("engineName");
+    vs = ENCODE->split<std::string>(node->getXMLValue<const char *>("engineVersion"), ".");
     appInfo.engineVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("VulkanAPIVersion"), ".");
+    vs = ENCODE->split<std::string>(node->getXMLValue<const char *>("VulkanAPIVersion"), ".");
     appInfo.apiVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
     VkInstanceCreateInfo createInfo = {};

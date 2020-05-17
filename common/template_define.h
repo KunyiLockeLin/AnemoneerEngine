@@ -253,6 +253,16 @@ T QeEncode::ConvertTo(const std::string &str) {
     return num;
 }
 
+template <>
+const char *QeEncode::ConvertTo<const char *>(const std::string &str) {
+    return str.c_str();
+}
+
+template <>
+std::string QeEncode::ConvertTo<std::string>(const std::string &str) {
+    return str;
+}
+
 template <class T>
 std::vector<T> QeEncode::split(std::string s, std::string delim) {
     std::vector<T> tokens;
