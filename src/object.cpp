@@ -2,6 +2,7 @@
 
 void QeComponent::initialize(AeXMLNode *_property, QeObject *_owner) {
     owner = _owner;
+    data.read(*_property);
 }
 
 void QeObject::initialize(AeXMLNode *_property, QeObject *_owner) {

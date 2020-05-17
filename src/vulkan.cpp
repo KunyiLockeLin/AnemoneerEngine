@@ -117,15 +117,15 @@ void QeVulkan::createInstance() {
         }
     }
 
-    if (!checkValidationLayerSupport()) LOG("validation layers requested, but not available!");
+    checkValidationLayerSupport();
 
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
     node = CONFIG->getXMLNode("setting.application");
-    appInfo.pApplicationName = node->getXMLValue<const char*>("applicationName");
+    appInfo.pApplicationName = node->getXMLValue<const char *>("applicationName");
 
-    std::vector<std::string> vs = ENCODE->split <std::string> (node->getXMLValue<const char *>("applicationVersion"), ".");
+    std::vector<std::string> vs = ENCODE->split<std::string>(node->getXMLValue<const char *>("applicationVersion"), ".");
     appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
     appInfo.pEngineName = node->getXMLValue<const char *>("engineName");
@@ -146,6 +146,13 @@ void QeVulkan::createInstance() {
     createInfo.ppEnabledExtensionNames = extensions.data();
     createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
+//#include <cassert>
+//assert(stage == 0);
+//#define ASSERT_VK_SUCCESS(err)                                                 \
+//    {                                                                          \
+//        const VkResult resolved_err = err;                                     \
+//        ASSERT_EQ(VK_SUCCESS, resolved_err) << vk_result_string(resolved_err); \
+//    }
 
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) LOG("failed to create instance!");
 }
@@ -643,7 +650,7 @@ void QeVulkan::transitionImageLayout(VkCommandBuffer cmdBuf, QeVKImage &image, V
                                      uint32_t mipLevels) {
     if (image.layout == newLayout) return;
     VkCommandBuffer commandBuffer;
-    if (cmdBuf!= VK_NULL_HANDLE) {
+    if (cmdBuf != VK_NULL_HANDLE) {
         commandBuffer = cmdBuf;
     } else {
         commandBuffer = beginSingleTimeCommands();
@@ -718,7 +725,7 @@ void QeVulkan::transitionImageLayout(VkCommandBuffer cmdBuf, QeVKImage &image, V
     }
     vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
     image.layout = newLayout;
-    if (cmdBuf== VK_NULL_HANDLE) endSingleTimeCommands(commandBuffer);
+    if (cmdBuf == VK_NULL_HANDLE) endSingleTimeCommands(commandBuffer);
 }
 
 void QeVulkan::copyBufferToImage(VkBuffer buffer, VkImage image, VkDeviceSize dataSize, int imageCount, VkExtent2D &imageSize) {
@@ -974,26 +981,29 @@ std::vector<const char *> QeVulkan::getRequiredExtensions() {
     return extensions;
 }
 
-bool QeVulkan::checkValidationLayerSupport() {
+void QeVulkan::checkValidationLayerSupport() {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
     std::vector<VkLayerProperties> availableLayers(layerCount);
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    for (const char *layerName : validationLayers) {
+    auto it = validationLayers.begin();
+    while (it != validationLayers.end()) {
         bool layerFound = false;
-
         for (const auto &layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
+            if (strcmp(*it, layerProperties.layerName) == 0) {
                 layerFound = true;
                 break;
             }
         }
-        if (!layerFound) return false;
+        if (!layerFound) {
+            LOG("validation layer: " + *it + " requested, but not available!");
+            it = validationLayers.erase(it);
+        } else {
+            LOG("validation layer: " + *it + " added!");
+            ++it;
+        }
     }
-
-    return true;
 }
 
 VKAPI_ATTR VkBool32 VKAPI_CALL QeVulkan::debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType,
@@ -1793,7 +1803,7 @@ void QeVulkan::createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCou
                     VK_IMAGE_USAGE_STORAGE_BIT;
             bSampler = true;
             layout_dst = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            //layout_dst = VK_IMAGE_LAYOUT_GENERAL;
+            // layout_dst = VK_IMAGE_LAYOUT_GENERAL;
             bLayout = true;
             break;
 
@@ -1801,7 +1811,7 @@ void QeVulkan::createImage(QeVKImage &image, VkDeviceSize dataSize, int imageCou
             usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
                     VK_IMAGE_USAGE_STORAGE_BIT;
             bSampler = true;
-            //layout_dst = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            // layout_dst = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             layout_dst = VK_IMAGE_LAYOUT_GENERAL;
             bLayout = true;
             break;

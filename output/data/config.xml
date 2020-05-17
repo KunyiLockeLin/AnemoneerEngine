@@ -915,8 +915,8 @@
     <setting>
         <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.104" />
         <environment currentSceneEID="2" outputLog="1" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
-        <path log="data\log\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shaders\spv\" />
-        <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" />
+        <path log="data\log\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shader\" />
+        <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" VK_LAYER_LUNARG_standard_validation="1"/>
     </setting>
 </config>
 

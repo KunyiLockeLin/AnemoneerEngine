@@ -119,7 +119,8 @@ void QeGraphics::updateViewport() {
             viewport->scissor.extent.height = int(viewport->viewport.height);
             viewport->scissor.offset.x = int(viewport->viewport.x);
             viewport->scissor.offset.y = int(viewport->viewport.y);
-            viewport->computePipelineRayTracing.shader = G_AST->getShader(CONFIG->getXMLValue<std::string>("shaders.compute.raytracing.comp").c_str());
+            viewport->computePipelineRayTracing.shader =
+                G_AST->getShader(CONFIG->getXMLValue<const char *>("shaders.compute.raytracing.comp"));
             VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
             viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             // viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

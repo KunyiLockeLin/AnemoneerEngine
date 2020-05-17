@@ -9,7 +9,7 @@ void QeParticle::initialize(AeXMLNode *_property, QeObject *_owner) {
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    computePipeline.shader = G_AST->getShader(CONFIG->getXMLValue<std::string>("shaders.compute.particle.comp").c_str());
+    computePipeline.shader = G_AST->getShader(CONFIG->getXMLValue<const char*>("shaders.compute.particle.comp"));
 
     shaderKey = "particle";
     G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
