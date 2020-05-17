@@ -44,7 +44,7 @@ void QeModel::clear() {
         eraseElementFromVector<QeModel *>(GRAP->models, this);
 }
 
-void QeModel::update1() {
+void QeModel::updatePreRender() {
     if (bUpdateMaterialOID && materialOID) {
         QeMaterial *material = (QeMaterial *)OBJMGR->findComponent(eComponent_material, materialOID);
         if (material) {
@@ -71,7 +71,6 @@ void QeModel::update1() {
 
     VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
 }
-void QeModel::update2() {}
 
 QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
     QeDataDescriptorSetModel descriptorSetData;

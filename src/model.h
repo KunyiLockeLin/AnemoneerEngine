@@ -19,9 +19,7 @@ class QeModel : public QeComponent {
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual void updatePreRender();
-    virtual void updatePostRender();
 
-    AeGameObjectComponentModelData data;
     // QeMaterial, QeAnimation
     const char *shaderKey;
     QeAssetModel *modelData = nullptr;
