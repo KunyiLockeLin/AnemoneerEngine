@@ -41,7 +41,7 @@ class QeComponent {
     QeObject *owner = nullptr;
     AeGameObjectData data;
 
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner) {}
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear() {}
 
     virtual void updatePreRender() {}

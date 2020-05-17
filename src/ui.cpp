@@ -70,7 +70,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         ENGINE->initialize();
                         break;
                     case eUIType_btnLoadAll:
-                        AST->removeXML(CONFIG_PATH);
+                        CM_MGR->removeXML(CONFIG_PATH);
                         ENGINE->initialize();
                         // updateTab();
                         setAllTreeView();
@@ -499,7 +499,7 @@ void AeUI::openLogPanel() {
     int width;
     int height;
     getWindowSize(logPanel, width, height);
-    int fontSize = CONFIG->getXMLValuei("setting.environment.logFontSize");
+    int fontSize = CONFIG->getXMLValue<int>("setting.environment.logFontSize");
     HFONT hFont = CreateFont(fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
                              CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 

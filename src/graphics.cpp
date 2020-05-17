@@ -119,7 +119,7 @@ void QeGraphics::updateViewport() {
             viewport->scissor.extent.height = int(viewport->viewport.height);
             viewport->scissor.offset.x = int(viewport->viewport.x);
             viewport->scissor.offset.y = int(viewport->viewport.y);
-            viewport->computePipelineRayTracing.shader = G_AST->getShader(CONFIG->getXMLValue<const char*>("shaders.compute.raytracing.comp"));
+            viewport->computePipelineRayTracing.shader = G_AST->getShader(CONFIG->getXMLValue<std::string>("shaders.compute.raytracing.comp").c_str());
             VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
             viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             // viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -236,8 +236,8 @@ void QeGraphics::updateBuffer() {
         VK->setMemoryBuffer(modelDatasBuffer, sizeof(QeDataModel) * size, modelsData.data());
     }
 
-    VK->bShowMesh = renderSetting->bMesh;
-    VK->bShowNormal = renderSetting->bNormal;
+    VK->bShowMesh = renderSetting->component_data.mesh;
+    VK->bShowNormal = renderSetting->component_data.normal;
 
     size_t size = renders.size();
     for (size_t i = 1; i < size; ++i) {
@@ -249,8 +249,8 @@ void QeGraphics::updateBuffer() {
         for (size_t j = 0; j < size1; ++j) {
             QeDataViewport *viewport = render->viewports[j];
             viewport->environmentData.camera = viewport->camera->bufferData;
-            viewport->environmentData.param.x = renderSetting->gamma;
-            viewport->environmentData.param.y = renderSetting->exposure;
+            viewport->environmentData.param.x = renderSetting->component_data.gamma;
+            viewport->environmentData.param.y = renderSetting->component_data.exposure;
 
             VK->setMemoryBuffer(viewport->environmentBuffer, sizeof(viewport->environmentData), &viewport->environmentData);
 
@@ -436,7 +436,7 @@ void QeGraphics::refreshRender() {
         if (i == eRENDER_Main || i == eRENDER_KHR || i == eRENDER_UI) {
             render->scissor.extent = swapchain.extent;
             if (render->viewports[0]->camera) {
-                render->viewports[0]->camera->renderSize = render->scissor.extent;
+                render->viewports[0]->camera->component_data.renderSize = {(int)render->scissor.extent.width, (int)render->scissor.extent.height};
             }
         }
         size_t size1 = render->subpass.size();
@@ -578,7 +578,7 @@ bool QeGraphics::addPostProcssing(AE_RENDER_TYPE renderType, int cameraOID, int 
     int count = 1;
     int type = 0;  // 1: bloom
 
-    if (strcmp(postprocessing->component_data.property_->getXMLValue<const char *>("frag"), "bloomf.spv") == 0) {
+    if (postprocessing->component_data.property_->getXMLValue<std::string>("frag").compare("bloomf.spv") == 0) {
         if (postprocessing->component_data.param[0] > 1.f) count = int(postprocessing->component_data.param[0]);
         type = 1;
     }
@@ -613,12 +613,12 @@ bool QeGraphics::addPostProcssing(AE_RENDER_TYPE renderType, int cameraOID, int 
     return true;
 }
 
-QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, AeVector<float,2> renderSize) {
+QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, AeVector<int, 2> renderSize) {
     QeDataRender *render = new QeDataRender();
     renders[type] = render;
 
     render->cameraOID = cameraOID;
-    render->scissor.extent = renderSize;
+    render->scissor.extent = {(uint32_t)renderSize.width, (uint32_t)renderSize.height};
 
     if (type == eRENDER_Main) {
         setTargetCamera(cameraOID);
@@ -755,8 +755,8 @@ void QeGraphics::updateDrawCommandBuffers() {
 
         if (i == eRENDER_KHR) {
             clearValues.resize(1);
-            clearValues[0].color = {renderSetting->clearColor.x, renderSetting->clearColor.y, renderSetting->clearColor.z,
-                                    renderSetting->clearColor.w};
+            clearValues[0].color = {renderSetting->component_data.clearColor.x, renderSetting->component_data.clearColor.y,
+                                    renderSetting->component_data.clearColor.z, renderSetting->component_data.clearColor.w};
         } else {
             if (renderSetting->sampleCount == VK_SAMPLE_COUNT_1_BIT)
                 clearValues.resize(render->subpass.size() + 2);
@@ -767,8 +767,8 @@ void QeGraphics::updateDrawCommandBuffers() {
 
             size_t size2 = clearValues.size();
             for (size_t k = 1; k < size2; ++k) {
-                clearValues[k].color = {renderSetting->clearColor.x, renderSetting->clearColor.y, renderSetting->clearColor.z,
-                                        renderSetting->clearColor.w};
+                clearValues[k].color = {renderSetting->component_data.clearColor.x, renderSetting->component_data.clearColor.y,
+                                        renderSetting->component_data.clearColor.z, renderSetting->component_data.clearColor.w};
             }
         }
         renderPassInfo.renderPass = render->renderPass;
@@ -888,7 +888,7 @@ void QeGraphics::updateDrawCommandBuffers() {
                         }
                     }
                 } else {
-                    vkCmdSetLineWidth(render->commandBuffers[j], renderSetting->lineWidth);
+                    vkCmdSetLineWidth(render->commandBuffers[j], renderSetting->component_data.lineWidth);
 
                     size_t size2 = render->viewports.size();
                     for (size_t k = 0; k < size2; ++k) {

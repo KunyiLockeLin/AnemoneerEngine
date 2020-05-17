@@ -22,7 +22,7 @@ AeVector<float, 3> QeTransform::worldPosition() {
         QeAnimation *animation =
             (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, component_data.targetAnimationOID);
         if (animation) {
-            AeVector<float, 4> vec = {component_data.position, 1};
+            AeVector<float, 4> vec = {component_data.position, 1.f};
             return animation->getBoneTransfrom(component_data.targetBoneName.c_str()) * vec;
         }
     }

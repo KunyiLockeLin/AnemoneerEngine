@@ -123,12 +123,12 @@ void QeVulkan::createInstance() {
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
     node = CONFIG->getXMLNode("setting.application");
-    appInfo.pApplicationName = node->getXMLValue<const char*>("applicationName");
+    appInfo.pApplicationName = node->getXMLValue<std::string>("applicationName").c_str();
 
     std::vector<std::string> vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("applicationVersion"), ".");
     appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    appInfo.pEngineName = node->getXMLValue<const char *>("engineName");
+    appInfo.pEngineName = node->getXMLValue<std::string>("engineName").c_str();
     vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("engineVersion"), ".");
     appInfo.engineVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
@@ -1177,7 +1177,7 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline *data) {
             topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
             cullMode = VK_CULL_MODE_FRONT_BIT;
             break;
-        case eGAMEOBJECT_Component_Partical:
+        case eGAMEOBJECT_Component_Particle:
             topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
             break;
         case eGAMEOBJECT_Component_Model:

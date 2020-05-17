@@ -8,6 +8,7 @@
 #include <map>
 #include <chrono>
 #include <fstream>
+#include <random>
 
 #define SINGLETON_CLASS(class_name)           \
    private:                                   \
@@ -48,8 +49,8 @@ struct DllExport AeVector {
     AeVector(std::initializer_list<T> l);
     template <class T2, int N2>
     AeVector(const AeVector<T2, N2> &other);
-    template <class T2, int N2, class T3>
-    AeVector(const AeVector<T2, N2> &other, T3 value);
+    template <class T2, int N2>
+    AeVector(const AeVector<T2, N2> &other, T value);
 
     template <class T2, int N2>
     bool operator==(const AeVector<T2, N2> &other) const;
@@ -273,8 +274,12 @@ class DllExport AeMath {
     const float RADIANS_TO_DEGREES = 180.0f / PI;
     const float DEGREES_TO_RADIANS = PI / 180;
 
+    //template <class T>
+    //T random(T start, T range);
     template <class T>
-    T random(T start, T range);
+    typename std::enable_if<std::is_integral<T>::value, T>::type random(T start, T range);
+    template <class T>
+    typename std::enable_if<std::is_floating_point<T>::value, T>::type random(T start, T range);
     template <class T, int N>
     AeVector<T, N> randoms(T start, T range);
     template <int N>

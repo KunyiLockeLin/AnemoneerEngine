@@ -385,7 +385,7 @@ QeAssetModel *QeGameAsset::getModel(const char *_filename, bool bCubeMap, float 
                 vertex.normal = {0, param[4] * 2, 0, 1};
                 model->vertices.push_back(vertex);
             }
-            for (index = (int)-param[4]; index <= (int)param[4]; ++index) {
+            for (index = -param[4]; index <= param[4]; ++index) {
                 vertex.pos = {-param[3], index, 0, 1};
                 vertex.normal = {param[3] * 2, 0, 0, 1};
                 model->vertices.push_back(vertex);
@@ -686,15 +686,15 @@ void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, AeXMLNode *sh
     const char *c = nullptr;
 
     if (shaderData) {
-        c = shaderData->getXMLValue<const char*>("vert");
+        c = shaderData->getXMLValue<std::string>("vert").c_str();
         if (c != nullptr && strlen(c)) shader.vert = getShader(c);
-        c = shaderData->getXMLValue<const char *>("tesc");
+        c = shaderData->getXMLValue<std::string>("tesc").c_str();
         if (c != nullptr && strlen(c)) shader.tesc = getShader(c);
-        c = shaderData->getXMLValue<const char *>("tese");
+        c = shaderData->getXMLValue<std::string>("tese").c_str();
         if (c != nullptr && strlen(c)) shader.tese = getShader(c);
-        c = shaderData->getXMLValue<const char *>("geom");
+        c = shaderData->getXMLValue<std::string>("geom").c_str();
         if (c != nullptr && strlen(c)) shader.geom = getShader(c);
-        c = shaderData->getXMLValue<const char *>("frag");
+        c = shaderData->getXMLValue<std::string>("frag").c_str();
         if (c != nullptr && strlen(c)) shader.frag = getShader(c);
     }
 
@@ -703,23 +703,23 @@ void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, AeXMLNode *sh
         keys += defaultShaderType;
         AeXMLNode *node = CONFIG->getXMLNode(keys.c_str());
         if (shader.vert == nullptr) {
-            c = node->getXMLValue<const char *>("vert");
+            c = node->getXMLValue<std::string>("vert").c_str();
             if (c != nullptr && strlen(c)) shader.vert = getShader(c);
         }
         if (shader.tesc == nullptr) {
-            c = node->getXMLValue<const char *>("tesc");
+            c = node->getXMLValue<std::string>("tesc").c_str();
             if (c != nullptr && strlen(c)) shader.tesc = getShader(c);
         }
         if (shader.tese == nullptr) {
-            c = node->getXMLValue<const char *>("tese");
+            c = node->getXMLValue<std::string>("tese").c_str();
             if (c != nullptr && strlen(c)) shader.tese = getShader(c);
         }
         if (shader.geom == nullptr) {
-            c = node->getXMLValue<const char *>("geom");
+            c = node->getXMLValue<std::string>("geom").c_str();
             if (c != nullptr && strlen(c)) shader.geom = getShader(c);
         }
         if (shader.frag == nullptr) {
-            c = node->getXMLValue<const char *>("frag");
+            c = node->getXMLValue<std::string>("frag").c_str();
             if (c != nullptr && strlen(c)) shader.frag = getShader(c);
         }
     }

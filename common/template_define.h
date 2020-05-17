@@ -23,8 +23,8 @@ AeVector<T, N>::AeVector(const AeVector<T2, N2> &other) {
 }
 
 template <class T, int N>
-template <class T2, int N2, class T3>
-AeVector<T, N>::AeVector(const AeVector<T2, N2> &other, T3 value) {
+template <class T2, int N2>
+AeVector<T, N>::AeVector(const AeVector<T2, N2> &other, T value) {
     *this = other;
     if (N > N2) {
         for (int i = N2; i < N; ++i) {
@@ -47,7 +47,12 @@ bool AeVector<T, N>::operator==(const AeVector<T2, N2> &other) const {
 template <class T, int N>
 template <class T2, int N2>
 bool AeVector<T, N>::operator!=(const AeVector<T2, N2> &other) const {
-    return !(this == other);
+    for (int i = 0; i < N && i < N2; ++i) {
+        if (elements[i] == other.elements[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 template <class T, int N>
@@ -330,14 +335,40 @@ AeXMLNode *AeXMLNode::getXMLValues(AeVector<T, N> &value, const char *key) {
     }
     return ret;
 }
+/*
+template <>
+int AeMath::random<int>(int start, int range) {
+    if (!range) return start;
+    std::random_device rd;
+    std::default_random_engine gen = std::default_random_engine(rd());
+    std::uniform_real_distribution<int> dis(start, start + range);
+    return dis(gen);
+}
+template <>
+float AeMath::random<float>(float start, float range) {
+    if (!range) return start;
+    std::random_device rd;
+    std::default_random_engine gen = std::default_random_engine(rd());
+    std::uniform_real_distribution<float> dis(start, start + range);
+    return dis(gen);
+}
+*/
 
 template <class T>
-T AeMath::random(T start, T range) {
+typename std::enable_if<std::is_floating_point<T>::value, T>::type AeMath::random(T start, T range) {
+    if (!range) return start;
+    std::random_device rd;
+    std::default_random_engine gen = std::default_random_engine(rd());
+    std::uniform_real_distribution<T> dis(start, start + range);
+    return dis(gen);
+}
+
+template <class T>
+typename std::enable_if<std::is_integral<T>::value, T>::type AeMath::random(T start, T range) {
     if (!range) return start;
     std::random_device rd;
     std::default_random_engine gen = std::default_random_engine(rd());
     std::uniform_int_distribution<T> dis(start, start + range);
-
     return dis(gen);
 }
 
@@ -350,7 +381,8 @@ AeVector<T, N> AeMath::randoms(T start, T range) {
     }
     std::random_device rd;
     std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_int_distribution<T> dis(start, start + range);
+    //std::uniform_int_distribution<int> dis(start, start + range);
+    std::uniform_real_distribution<T> dis(start, start + range);
 
     for (int i = 0; i < size; ++i) ret[i] = dis(gen);
     return ret;

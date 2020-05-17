@@ -112,7 +112,7 @@ QeComponent *AeObjectManager::spwanComponent(AeXMLNode *_property, QeObject *_ow
             case eGAMEOBJECT_Component_Cubemap:
                 _component = new QeCubemap(key);
                 break;
-            case eGAMEOBJECT_Component_Partical:
+            case eGAMEOBJECT_Component_Particle:
                 _component = new QeParticle(key);
                 break;
             case eGAMEOBJECT_Component_Material:

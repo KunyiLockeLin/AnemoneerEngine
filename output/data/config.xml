@@ -533,7 +533,7 @@
                 <children />
             </particle1>
         </particle>
-        <render2 type="2000 eid="6">
+        <render2 type="2000" eid="6">
             <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <Transform type="1" oid="100" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
@@ -750,7 +750,7 @@
         </cubemap>
         <animation type="1000" oid="700" eid="700">
             <components>
-                <Transform type="1" oid="700" eid="1" position="5 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="1 0 0" revoluteSpeed="0 0 0" targetAnimationOID="0" targetBoneName="" />
+                <Transform type="1" oid="700" eid="1" position="5 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="1 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                 <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
             </components>
             <children />
@@ -823,7 +823,7 @@
         </Transform>
         <Camera>
 			<!--enum renderType AE_RENDER_TYPE eRENDER_KHR 0 eRENDER_UI 1 eRENDER_Main 2 eRENDER_Color 3 eRENDER_MAX 4-->
-            <define type="2" oid="int" eid="int" renderType="enum" renderSize="float 2" lookAtTransformOID="int" up="float 3" fov="float" fnear="float" ffar="float" aperture="float" speed="float" cullingDistance="float" raytracingDepth="int" postProcessingOID="int" />
+            <define type="2" oid="int" eid="int" renderType="enum" renderSize="int 2" lookAtTransformOID="int" up="float 3" fov="float" fnear="float" ffar="float" aperture="float" speed="float" cullingDistance="float" raytracingDepth="int" postProcessingOID="int" />
 			<default type="2" oid="0" eid="0" renderType="2" renderSize="0 0" lookAtTransformOID="0" up="0 0 1" fov="45" fnear="0.1" ffar="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
         </Camera>
         <PostProcessing>

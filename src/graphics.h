@@ -131,7 +131,7 @@ class QeGraphics {
 
     // VkSemaphore textOverlayComplete;
 
-    QeDataRender *createRender(AE_RENDER_TYPE type, int cameraOID, AeVector<float, 2> renderSize);
+    QeDataRender *createRender(AE_RENDER_TYPE type, int cameraOID, AeVector<int, 2> renderSize);
     void refreshRender();
     void cleanupRender();
     void drawFrame();

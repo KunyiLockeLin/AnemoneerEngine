@@ -1,5 +1,4 @@
 ﻿#include <cmath>
-#include <random>
 #include "common.h"
 
 AeVector<float, 3> QeRay::positionByTime(float t) { return origin + direction * t; }

@@ -4,37 +4,35 @@ void QeParticle::initialize(AeXMLNode *_property, QeObject *_owner) {
     COMPONENT_INITIALIZE
 
     bRotate = false;
-    particleRule = G_ENCODE->decodeParticle(initProperty);
-    materialData = G_AST->getMaterialImage(particleRule->image);
+    //particleRule = G_ENCODE->decodeParticle(initProperty);
+    materialData = G_AST->getMaterialImage(component_data.image.c_str());
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    computePipeline.shader = G_AST->getShader(CONFIG->getXMLValue("shaders.compute.particle.comp"));
+    computePipeline.shader = G_AST->getShader(CONFIG->getXMLValue<std::string>("shaders.compute.particle.comp").c_str());
 
     shaderKey = "particle";
     G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     // count
-    totalParticlesSize = MATH->iRandom(particleRule->count_total, particleRule->count_range);
+    totalParticlesSize = MATH->random<int>(component_data.count_total, component_data.count_range);
     currentParticlesSize = 0;  // particleRule->count_once;
-    periodTimer.setTimer(particleRule->count_period);
+    periodTimer.setTimer(component_data.count_period);
     particles.clear();
     bDeaths.resize(totalParticlesSize);
     memset(bDeaths.data(), 0, sizeof(bDeaths[0]) * bDeaths.size());
 
     // ahlpa
-    graphicsPipeline.bAlpha = particleRule->bAlpha;
+    graphicsPipeline.bAlpha = component_data.alpha;
     if (graphicsPipeline.bAlpha)
         GRAP->alphaModels.push_back(this);
     else
         GRAP->models.push_back(this);
 
     // size
-    size.x = MATH->fRandom(particleRule->size.x, particleRule->size_range.x);
-    size.y = MATH->fRandom(particleRule->size.y, particleRule->size_range.y);
+    size.x = MATH->random<float>(component_data.size.x, component_data.size_range.x);
+    size.y = MATH->random<float>(component_data.size.y, component_data.size_range.y);
     size.z = 1;
-
-    bornTargetTranformOID = initProperty->getXMLValuei("bornTargetTranformOID");
 
     bufferData.material = materialData->value;
     // bufferData.param2.y = (float)bornTargetTranformOID;
@@ -54,7 +52,7 @@ void QeParticle::initialize(AeXMLNode *_property, QeObject *_owner) {
 }
 
 void QeParticle::clear() {
-    delete particleRule;
+    //delete particleRule;
     particles.clear();
     bDeaths.clear();
     vertexBuffer.~QeVKBuffer();
@@ -66,27 +64,27 @@ void QeParticle::clear() {
 QeVertex QeParticle::createParticleData() {
     QeVertex particle;
 
-    particle.pos.z =
-        MATH->fRandom(particleRule->init_pos_square.z, particleRule->init_pos_square_range.z) * (MATH->iRandom(0, 1) ? 1 : -1);
-    int type = MATH->iRandom(0, 1);
+    particle.pos.z = MATH->random<float>(component_data.init_pos_volume.z, component_data.init_pos_volume_range.z) *
+                     (MATH->random<int>(0, 1) ? 1 : -1);
+    int type = MATH->random<int>(0, 1);
     switch (type) {
         case 0:
-            particle.pos.x = MATH->fRandom(particleRule->init_pos_square.x, particleRule->init_pos_square_range.x) *
-                             (MATH->iRandom(0, 1) ? 1 : -1);
-            particle.pos.y = MATH->fRandom(-(particleRule->init_pos_square.y + particleRule->init_pos_square_range.y),
-                                           (particleRule->init_pos_square.y + particleRule->init_pos_square_range.y) * 2);
+            particle.pos.x = MATH->random<float>(component_data.init_pos_volume.x, component_data.init_pos_volume_range.x) *
+                             (MATH->random<int>(0, 1) ? 1 : -1);
+            particle.pos.y = MATH->random<float>(-(component_data.init_pos_volume.y + component_data.init_pos_volume_range.y),
+                                                 (component_data.init_pos_volume.y + component_data.init_pos_volume_range.y) * 2);
             break;
         case 1:
-            particle.pos.x = MATH->fRandom(-(particleRule->init_pos_square.x + particleRule->init_pos_square_range.x),
-                                           (particleRule->init_pos_square.x + particleRule->init_pos_square_range.x) * 2);
-            particle.pos.y = MATH->fRandom(particleRule->init_pos_square.y, particleRule->init_pos_square_range.y) *
-                             (MATH->iRandom(0, 1) ? 1 : -1);
+            particle.pos.x = MATH->random<float>(-(component_data.init_pos_volume.x + component_data.init_pos_volume_range.x),
+                                                 (component_data.init_pos_volume.x + component_data.init_pos_volume_range.x) * 2);
+            particle.pos.y = MATH->random<float>(component_data.init_pos_volume.y, component_data.init_pos_volume_range.y) *
+                             (MATH->random<int>(0, 1) ? 1 : -1);
             break;
     }
-    if (particleRule->init_pos_cycle.x != 0 || particleRule->init_pos_cycle_range.x != 0) {
-        float radius = MATH->fRandom(particleRule->init_pos_cycle.x, particleRule->init_pos_cycle_range.x);
+    if (component_data.init_pos_radius != 0 || component_data.init_pos_radius_range != 0) {
+        float radius = MATH->random<float>(component_data.init_pos_radius, component_data.init_pos_radius_range);
         float radian =
-            MATH->fRandom(particleRule->init_pos_cycle.y, particleRule->init_pos_cycle_range.y) * MATH->DEGREES_TO_RADIANS;
+            MATH->random<float>(component_data.init_pos_degree, component_data.init_pos_degree_range) * MATH->DEGREES_TO_RADIANS;
         particle.pos.x = radius * cos(radian);
         particle.pos.y = radius * sin(radian);
     }
@@ -95,27 +93,27 @@ QeVertex QeParticle::createParticleData() {
     // particle.uv = particle.pos;
 
     // color
-    particle.color.x = MATH->fRandom(particleRule->color.x, particleRule->color_range.x);
-    particle.color.y = MATH->fRandom(particleRule->color.y, particleRule->color_range.y);
-    particle.color.z = MATH->fRandom(particleRule->color.z, particleRule->color_range.z);
+    particle.color.x = MATH->random<float>(component_data.color.x, component_data.color_range.x);
+    particle.color.y = MATH->random<float>(component_data.color.y, component_data.color_range.y);
+    particle.color.z = MATH->random<float>(component_data.color.z, component_data.color_range.z);
     particle.color.w = 1.0f;
 
     // normal = speed
-    particle.normal.x = MATH->fRandom(particleRule->init_speed.x, particleRule->init_speed_range.x);
-    particle.normal.y = MATH->fRandom(particleRule->init_speed.y, particleRule->init_speed_range.y);
-    particle.normal.z = MATH->fRandom(particleRule->init_speed.z, particleRule->init_speed_range.z);
+    particle.normal.x = MATH->random<float>(component_data.init_speed.x, component_data.init_speed_range.x);
+    particle.normal.y = MATH->random<float>(component_data.init_speed.y, component_data.init_speed_range.y);
+    particle.normal.z = MATH->random<float>(component_data.init_speed.z, component_data.init_speed_range.z);
 
     // life time
-    particle.normal.w = float(MATH->iRandom(particleRule->life_scend, particleRule->life_range));
+    particle.normal.w = float(MATH->random<int>(component_data.life_second, component_data.life_range));
 
     // init speed & life time = joint
     // particle.joint = particle.normal;
     // particle.normal.w = 0;
 
     // tangent = force
-    particle.tangent.x = MATH->fRandom(particleRule->force.x, particleRule->force_range.x);
-    particle.tangent.y = MATH->fRandom(particleRule->force.y, particleRule->force_range.y);
-    particle.tangent.z = MATH->fRandom(particleRule->force.z, particleRule->force_range.z);
+    particle.tangent.x = MATH->random<float>(component_data.force.x, component_data.force_range.x);
+    particle.tangent.y = MATH->random<float>(component_data.force.y, component_data.force_range.y);
+    particle.tangent.z = MATH->random<float>(component_data.force.z, component_data.force_range.z);
 
     // reborn
     // particle.tangent.w = particleRule->bReborn;
@@ -160,7 +158,7 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand *command) {
                             1, &descriptorSet.set, 0, nullptr);
 
     graphicsPipeline.subpass = 0;
-    graphicsPipeline.componentType = componentType;
+    graphicsPipeline.componentType = data.type;
     graphicsPipeline.sampleCount = GRAP->renderSetting->sampleCount;
     graphicsPipeline.renderPass = command->renderPass;
     graphicsPipeline.minorType = eGraphicsPipeLine_none;
@@ -172,7 +170,7 @@ void QeParticle::updateDrawCommandBuffer(QeDataDrawCommand *command) {
     vkCmdDraw(command->commandBuffer, currentParticlesSize, 1, 0, 0);
 }
 
-void QeParticle::update1() {
+void QeParticle::updatePreRender() {
     if (!totalParticlesSize) return;
 
     bool b = false;
@@ -187,22 +185,23 @@ void QeParticle::update1() {
             particles.erase(particles.begin() + i2);
             --i2;
             --currentParticlesSize;
-            if (!particleRule->bReborn) --totalParticlesSize;
+            if (!component_data.reborn) --totalParticlesSize;
         }
     }
 
     int passMilliSecond;
     if (periodTimer.checkTimer(passMilliSecond)) {
         int size = currentParticlesSize;
-        size += particleRule->count_once;
+        size += component_data.count_once;
         if (size > totalParticlesSize) size = totalParticlesSize;
         if (size != currentParticlesSize) {
             b = true;
             for (int i = currentParticlesSize; i < size; ++i) {
                 QeVertex particle = createParticleData();
 
-                if (bornTargetTranformOID) {
-                    QeTransform *target = (QeTransform *)OBJMGR->findComponent(eComponent_transform, bornTargetTranformOID);
+                if (component_data.bornTargetTranformOID) {
+                    QeTransform *target =
+                        (QeTransform *)OBJMGR->findComponent(eGAMEOBJECT_Component_Transform, component_data.bornTargetTranformOID);
                     particle.pos.x += target->worldPosition().x;
                     particle.pos.y += target->worldPosition().y;
                     particle.pos.z += target->worldPosition().z;
@@ -221,7 +220,7 @@ void QeParticle::update1() {
         // bDeaths.data());
     }
 
-    QeVector3f scale = owner->transform->worldScale();
+    AeVector<float, 3> scale = owner->transform->worldScale();
     scale.x *= size.x;
     scale.y *= size.y;
 
