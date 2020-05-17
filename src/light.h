@@ -15,7 +15,6 @@ class QeLight : public QeComponent {
     QeDataLight bufferData;
     bool bUpdate;
 
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual void updatePreRender();
 };

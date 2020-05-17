@@ -521,14 +521,14 @@
             <particle type="1000" oid="800" eid="800">
                 <components>
                     <Transform type="1" oid="800" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-					<Partical type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="401" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
+					<Particle type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="401" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
                 </components>
                 <children />
             </particle>
             <particle1 type="1000" oid="801" eid="801">
                 <components>
                     <Transform type="1" oid="800" eid="1" position="0 -10 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-					<Partical type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="0" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
+                  <Particle type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="0" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
                 </components>
                 <children />
             </particle1>
@@ -758,7 +758,7 @@
         <particle type="1000" oid="800" eid="800">
             <components>
                 <Transform type="1" oid="800" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-				<Partical type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="80" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
+              <Particle type="10" oid="800" eid="1" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="80" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
             </components>
             <children />
         </particle>
@@ -862,10 +862,10 @@
             <define type="9" oid="int" eid="int" image="std::string" />
             <default type="9" oid="0" eid="0" image="" />
         </Cubemap>
-        <Partical>
+      <Particle>
             <define type="10" oid="int" eid="int" image="std::string" alpha="bool" reborn="bool" bornTargetTranformOID="int" count_once="int" count_period="int" count_total="int" count_range="int" life_second="int" life_range="int" init_pos_volume="float 3" init_pos_volume_range="float 3" init_pos_radius="float" init_pos_radius_range="float" init_pos_degree="float" init_pos_degree_range="float" init_speed="float 3" init_speed_range="float 3" force="float 3" force_range="float 3" size="float 2" size_range="float 2" color="float 3" color_range="float 3" />
 			<default type="10" oid="0" eid="0" image="light.png" alpha="1" reborn="1" bornTargetTranformOID="80" count_once="5" count_period="10" count_total="100" count_range="0" life_second="2" life_range="5" init_pos_volume="1 0.5 0" init_pos_volume_range="0 0 0" init_pos_radius="0" init_pos_radius_range="0" init_pos_degree="0" init_pos_degree_range="0" init_speed="-0.3 -0.3 1" init_speed_range="0.6 0.6 2" force="0 0 -2" force_range="0 0 1" size="0.6 0.6" size_range="0 0" color="0 0 0" color_range="1 1 1" />
-        </Partical>
+        </Particle>
         <Material>
             <define type="11" oid="int" eid="int" vert="std::string" tesc="std::string" tese="std::string" geom="std::string" frag="std::string" alpha="bool" baseColor="float 4" baseValueRate="float" metallic="float" roughness="float" emissive="float" baseMap="std::string" cubeMap="std::string" normalMap="std::string" metallicRoughnessMap="std::string" />
             <default type="11" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" alpha="0" baseColor="1 1 1 1" baseValueRate="1" metallic="1" roughness="0" emissive="1" baseMap="" cubeMap="" normalMap="" metallicRoughnessMap="" />

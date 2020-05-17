@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeParticle::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
 
     bRotate = false;
     particleRule = G_ENCODE->decodeParticle(initProperty);

@@ -19,7 +19,6 @@ class QeCamera : public QeComponent {
     bool bUpdatePostProcessingOID;
     QeDataCamera bufferData;
 
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void updatePreRender();
 
     virtual void reset();

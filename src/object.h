@@ -6,16 +6,25 @@
     class_name(AeObjectManagerKey &_key) : QeComponent(_key) {} \
     ~class_name() {} \
     componet_data_type component_data; \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner); \
 
 #define COMPONENT_CLASS_DECLARE_PARENT(class_name, parent_class, componet_data_type) \
     class_name(AeObjectManagerKey &_key) : parent_class(_key) {} \
     ~class_name() {} \
     componet_data_type component_data; \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 
 #define COMPONENT_CLASS_DECLARE_INITIALIZE(class_name, componet_data_type, ...) \
     class_name(AeObjectManagerKey &_key) : QeComponent(_key), __VA_ARGS__ {}              \
     ~class_name() {}                                                          \
     componet_data_type component_data; \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
+
+#define COMPONENT_CLASS_DECLARE_PARENT_INITIALIZE(class_name, parent_class, componet_data_type, ...) \
+    class_name(AeObjectManagerKey &_key) : parent_class(_key), __VA_ARGS__ {}    \
+    ~class_name() {}                                                            \
+    componet_data_type component_data; \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 
 #define COMPONENT_INITIALIZE       \
     QeComponent::initialize(_property, _owner); \

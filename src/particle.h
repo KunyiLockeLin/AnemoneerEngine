@@ -3,15 +3,12 @@
 
 class QeParticle : public QeModel {
    public:
-    QeParticle(AeObjectManagerKey &_key)
-        : QeModel(_key),
-          vertexBuffer(eBuffer_vertex_texel),
-          outBuffer(eBuffer_storage_compute_shader_return),
-          descriptorSetCompute(eDescriptorSetLayout_Compute) {}
-    //~QeParticle() {}
+    COMPONENT_CLASS_DECLARE_PARENT_INITIALIZE(QeParticle, QeModel, AeGameObjectComponentParticleData,
+                                              vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return),
+                                              descriptorSetCompute(eDescriptorSetLayout_Compute))
 
     // QeAssetShader shader;
-    QeAssetParticleRule *particleRule;
+    //QeAssetParticleRule *particleRule;
     int totalParticlesSize;
     int currentParticlesSize;
     std::vector<QeVertex> particles;
@@ -26,10 +23,9 @@ class QeParticle : public QeModel {
     QeDataComputePipeline computePipeline;
 
     QeVertex createParticleData();
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual QeDataDescriptorSetModel createDescriptorSetModel();
     virtual void updateDrawCommandBuffer(QeDataDrawCommand *command);
     virtual void updateComputeCommandBuffer(VkCommandBuffer &commandBuffer);
-    virtual void update1();
+    virtual void updatePreRender();
 };

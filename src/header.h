@@ -51,7 +51,7 @@ struct QeVKImageBuffer;
 struct QeVertex;
 struct QeAssetModel;
 struct QeAssetMaterial;
-struct QeAssetParticleRule;
+//struct QeAssetParticleRule;
 struct QeDataMaterial;
 struct QeDataDescriptorSet;
 struct QeAssetImage;

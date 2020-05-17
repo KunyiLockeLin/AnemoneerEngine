@@ -1,20 +1,14 @@
 #include "header.h"
 
 void QeRenderSetting::initialize(AeXMLNode *_property, QeObject *_owner) {
-    QeComponent::initialize(_property, _owner);
+    COMPONENT_INITIALIZE
+
     GRAP->renderSetting = this;
-    bMesh = initProperty->getXMLValueb("mesh");
-    bNormal = initProperty->getXMLValueb("normal");
-    clearColor = initProperty->getXMLValueRGBA("clearColor");
-    gamma = initProperty->getXMLValuef("gamma");
-    exposure = initProperty->getXMLValuef("exposure");
-    lineWidth = initProperty->getXMLValuef("lineWidth");
-    msaa = initProperty->getXMLValuei("msaa");
 
     VkSampleCountFlags counts = std::min(VK->deviceProperties.limits.framebufferColorSampleCounts,
                                          VK->deviceProperties.limits.framebufferDepthSampleCounts);
 
-    if (counts > uint32_t(msaa)) counts = msaa;
+    if (counts > uint32_t(component_data.msaa)) counts = component_data.msaa;
     if (counts >= VK_SAMPLE_COUNT_64_BIT)
         sampleCount = VK_SAMPLE_COUNT_64_BIT;
     else if (counts >= VK_SAMPLE_COUNT_32_BIT)
@@ -29,6 +23,6 @@ void QeRenderSetting::initialize(AeXMLNode *_property, QeObject *_owner) {
         sampleCount = VK_SAMPLE_COUNT_2_BIT;
     else
         sampleCount = VK_SAMPLE_COUNT_1_BIT;
-    ENGINE->FPS = initProperty->getXMLValuei("FPS");
+    ENGINE->FPS = component_data.FPS;
     ENGINE->FPSTimer.setTimer(1000 / ENGINE->FPS);
 }

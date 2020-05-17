@@ -1,31 +1,31 @@
 #include "header.h"
 
 void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
-    COMPONENT_INITIALIZE
+    COMPONENT_INITIALIZE_PARENT(QeModel)
 
     modelData = nullptr;
     materialData = nullptr;
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
     bUpdateTargetCameraOID = false;
-    if (targetCameraOID) bUpdateTargetCameraOID = true;
+    if (component_data.targetCameraOID) bUpdateTargetCameraOID = true;
 
     bUpdateMaterialOID = false;
-    if (materialOID) bUpdateMaterialOID = true;
+    if (component_data.materialOID) bUpdateMaterialOID = true;
     graphicsPipeline.bAlpha = false;
 
-    switch (planeType) {
-        case ePlane_3D:
+    switch (component_data.planeType) {
+        case ePLANE_3D:
             shaderKey = "plane";
             bRotate = true;
             GRAP->models.push_back(this);
             break;
-        case ePlane_billboard:
+        case ePLANE_Billboard:
             shaderKey = "billboard";
             bRotate = false;
             GRAP->models.push_back(this);
             break;
-        case ePlane_2D:
+        case ePLANE_2D:
             shaderKey = "b2d";
             bRotate = false;
             GRAP->add2DModel(this);
@@ -40,17 +40,17 @@ void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
 
 void QePlane::clear() {
     QeModel::clear();
-    if (planeType == ePlane_2D) eraseElementFromVector<QeModel *>(GRAP->models2D, this);
+    if (component_data.planeType == ePLANE_2D) eraseElementFromVector<QeModel *>(GRAP->models2D, this);
 }
 
 QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {
-    if (targetCameraOID) {
-        QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, targetCameraOID);
+    if (component_data.targetCameraOID) {
+        QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eGAMEOBJECT_Component_Camera, component_data.targetCameraOID);
 
         if (camera) {
             QeDataDescriptorSetModel descriptorSetData;
             descriptorSetData.modelBuffer = modelBuffer.buffer;
-            QeDataRender *render = GRAP->getRender(eRender_color, targetCameraOID);
+            QeDataRender *render = GRAP->getRender(eRENDER_Color, component_data.targetCameraOID);
 
             //if (render->subpass.size() > 0)
             //    descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -73,7 +73,7 @@ QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {
     return QeModel::createDescriptorSetModel();
 }
 
-void QePlane::update1() {
+void QePlane::updatePreRender() {
     if (bUpdateTargetCameraOID) {
         VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
         bUpdateTargetCameraOID = true;
@@ -82,17 +82,17 @@ void QePlane::update1() {
         G_AST->setGraphicsShader(graphicsShader, node, shaderKey);
     }
 
-    if (targetCameraOID) {
-        QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, targetCameraOID);
+    if (component_data.targetCameraOID) {
+        QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eGAMEOBJECT_Component_Camera, component_data.targetCameraOID);
 
         if (camera) {
-            QeVector3f scale = owner->transform->worldScale();
-            scale.x *= MATH->fastSqrt((float(camera->renderSize.width) / camera->renderSize.height));
+            AeVector<float, 3> scale = owner->transform->worldScale();
+            scale.x *= MATH->fastSqrt((float(camera->component_data.renderSize.width) / camera->component_data.renderSize.height));
             bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(),
                                                         scale, GRAP->getTargetCamera()->owner->transform->worldPosition());
             VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
         }
     } else {
-        QeModel::update1();
+        QeModel::updatePreRender();
     }
 }

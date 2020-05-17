@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeCubemap::initialize(AeXMLNode *_property, QeObject *_owner) {
-    COMPONENT_INITIALIZE_PARENT(QeModel)
+    COMPONENT_INITIALIZE
 
     modelData = G_AST->getModel("cube", true);
     materialData = G_AST->getMaterialImage(component_data.image.c_str(), true);

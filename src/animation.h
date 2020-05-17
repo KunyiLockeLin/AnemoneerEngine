@@ -9,7 +9,6 @@ class QeAnimation : public QeModel {
     int currentActionFrame;
     float currentActionTime;
 
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void updatePreRender();
 
     bool setAction(unsigned int actionID, AE_ACTION_PLAY_TYPE playType);

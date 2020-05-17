@@ -1,7 +1,7 @@
 #include "header.h"
 
 void QeGrid::initialize(AeXMLNode *_property, QeObject *_owner) {
-    COMPONENT_INITIALIZE_PARENT(QeLine)
+    COMPONENT_INITIALIZE
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 

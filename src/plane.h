@@ -8,8 +8,7 @@ class QePlane : public QeModel {
     // face: (0,0,1)
     bool bUpdateTargetCameraOID;
 
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
-    virtual void updatePreRedner();
+    virtual void updatePreRender();
     virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

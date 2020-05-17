@@ -3,12 +3,11 @@
 void QeModel::initialize(AeXMLNode *_property, QeObject *_owner) {
     COMPONENT_INITIALIZE
 
-    graphicsPipeline.bAlpha = initProperty->getXMLValueb("alpha");
-    bufferData.param2.x = initProperty->getXMLValuef("outlineWidth");
+    bufferData.param2.x = component_data.outlineWidth;
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    const char *c = initProperty->getXMLValue("obj");
+    const char *c = component_data.obj.c_str();
     modelData = G_AST->getModel(c);
     materialData = modelData->pMaterial;
     if (materialData) bufferData.material = materialData->value;
@@ -20,10 +19,8 @@ void QeModel::initialize(AeXMLNode *_property, QeObject *_owner) {
     G_AST->setGraphicsShader(normalShader, nullptr, "normal");
     G_AST->setGraphicsShader(outlineShader, nullptr, "outline");
 
-    materialOID = initProperty->getXMLValuei("materialOID");
-
     bUpdateMaterialOID = false;
-    if (materialOID) bUpdateMaterialOID = true;
+    if (component_data.materialOID) bUpdateMaterialOID = true;
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);
 
@@ -45,13 +42,13 @@ void QeModel::clear() {
 }
 
 void QeModel::updatePreRender() {
-    if (bUpdateMaterialOID && materialOID) {
-        QeMaterial *material = (QeMaterial *)OBJMGR->findComponent(eComponent_material, materialOID);
+    if (bUpdateMaterialOID && component_data.materialOID) {
+        QeMaterial *material = (QeMaterial *)OBJMGR->findComponent(eGAMEOBJECT_Component_Material, component_data.materialOID);
         if (material) {
             bUpdateMaterialOID = false;
 
-            if (graphicsPipeline.bAlpha != material->bAlpha) {
-                graphicsPipeline.bAlpha = material->bAlpha;
+            if (graphicsPipeline.bAlpha != material->component_data.alpha) {
+                graphicsPipeline.bAlpha = material->component_data.alpha;
                 if (graphicsPipeline.bAlpha) {
                     eraseElementFromVector<QeModel *>(GRAP->models, this);
                     GRAP->alphaModels.push_back(this);
@@ -61,7 +58,7 @@ void QeModel::updatePreRender() {
                 }
             }
             materialData = &material->materialData;
-            G_AST->setGraphicsShader(graphicsShader, material->initProperty, shaderKey);
+            G_AST->setGraphicsShader(graphicsShader, material->component_data.property_, shaderKey);
             bufferData.material = materialData->value;
             VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
         }
@@ -112,17 +109,17 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 }
 
 bool QeModel::isShowByCulling(QeCamera *camera) {
-    if (componentType == eComponent_plane) {
+    if (data.type == eGAMEOBJECT_Component_Plane) {
         QePlane *plane = (QePlane *)this;
-        if (plane->planeType == ePlane_2D) return true;
+        if (plane->component_data.planeType == ePLANE_2D) return true;
     }
     bool _bCullingShow = true;
-    QeVector3f vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
+    AeVector<float, 3> vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
     float dis = MATH->length(vec);
 
-    if (dis > camera->cullingDistance) return false;
+    if (dis > camera->component_data.cullingDistance) return false;
 
-    if (componentType != eComponent_cubemap && _bCullingShow) {
+    if (data.type != eGAMEOBJECT_Component_Cubemap && _bCullingShow) {
         float angle = MATH->getAnglefromVectors(camera->face(), vec);
         if (angle > 100 || angle < -100) return false;
     }
@@ -139,7 +136,7 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand *command) {
     VkDeviceSize offsets[] = {0};
 
     graphicsPipeline.subpass = 0;
-    graphicsPipeline.componentType = componentType;
+    graphicsPipeline.componentType = data.type;
     graphicsPipeline.sampleCount = GRAP->renderSetting->sampleCount;
     graphicsPipeline.renderPass = command->renderPass;
     graphicsPipeline.minorType = eGraphicsPipeLine_none;
@@ -147,22 +144,22 @@ void QeModel::updateDrawCommandBuffer(QeDataDrawCommand *command) {
 
     vkCmdBindPipeline(command->commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, VK->createGraphicsPipeline(&graphicsPipeline));
 
-    switch (componentType) {
-        case eComponent_model:
-        case eComponent_cubemap:
-        case eComponent_animation:
+    switch (data.type) {
+        case eGAMEOBJECT_Component_Model:
+        case eGAMEOBJECT_Component_Cubemap:
+        case eGAMEOBJECT_Component_Animation:
             vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
             vkCmdBindIndexBuffer(command->commandBuffer, modelData->index.buffer, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(command->commandBuffer, static_cast<uint32_t>(modelData->indexSize), 1, 0, 0, 0);
             break;
 
-        case eComponent_plane:
+        case eGAMEOBJECT_Component_Plane:
             vkCmdDraw(command->commandBuffer, 1, 1, 0, 0);
             break;
 
-        case eComponent_line:
-        case eComponent_axis:
-        case eComponent_grid:
+        case eGAMEOBJECT_Component_Line:
+        case eGAMEOBJECT_Component_Axis:
+        case eGAMEOBJECT_Component_Grid:
             vkCmdBindVertexBuffers(command->commandBuffer, 0, 1, &modelData->vertex.buffer, offsets);
             vkCmdDraw(command->commandBuffer, uint32_t(modelData->vertices.size()), 1, 0, 0);
             break;

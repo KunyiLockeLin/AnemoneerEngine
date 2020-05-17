@@ -16,7 +16,6 @@ class QeModel : public QeComponent {
     COMPONENT_CLASS_DECLARE_INITIALIZE(QeModel, AeGameObjectComponentModelData, modelBuffer(eBuffer_uniform),
                                        descriptorSet(eDescriptorSetLayout_Model))
 
-    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual void updatePreRender();
 
