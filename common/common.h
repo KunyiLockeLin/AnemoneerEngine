@@ -34,17 +34,7 @@ struct DllExport AeVector {
         struct {
             T x, y, z, w;
         };
-        struct {
-            T r, g, b, a;
-        };
-        struct {
-            T u, v;
-        };
-        struct {
-            T width, height, depth;
-        };
     };
-
     AeVector();
     AeVector(std::initializer_list<T> l);
     template <class T2, int N2>
@@ -99,6 +89,22 @@ struct DllExport AeVector {
     AeVector<T, N> operator*(const T2 &other);
     template <class T2>
     AeVector<T, N> operator/(const T2 &other);
+};
+
+template <class T>
+struct DllExport AeVector<T, 2> {
+    union {
+        T elements[2];
+        struct {
+            T x, y;
+        };
+        struct {
+            T width, height;
+        };
+        struct {
+            T u, v;
+        };
+    };
 };
 
 /*

@@ -81,6 +81,17 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
 }
 
 int main(int argc, char* argv[]) {
+    AeVector<int, 1> a1;
+    int a1s = sizeof a1;
+    AeVector<int, 2> a2;
+    int a2s = sizeof a2;
+    AeVector<int, 3> a3;
+    int a3s = sizeof a3;
+    AeVector<int, 4> a4;
+    int a4s = sizeof a4;
+    AeVector<int, 5> a5;
+    int a5s = sizeof a5;
+
     // generated_config_struct_enum.h
     LOG("Create generated\\generated_config_struct_enum.h");
     AeFile file;
@@ -140,5 +151,6 @@ int main(int argc, char* argv[]) {
     }
 
     file.close();
+    LOG("CodeGenerator End.");
     return 0;
 }

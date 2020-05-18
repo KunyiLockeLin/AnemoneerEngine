@@ -153,7 +153,7 @@ void QeVulkan::createInstance() {
 //        const VkResult resolved_err = err;                                     \
 //        ASSERT_EQ(VK_SUCCESS, resolved_err) << vk_result_string(resolved_err); \
 //    }
-
+//assert(condition && "message");
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) LOG("failed to create instance!");
 }
 
