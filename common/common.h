@@ -26,15 +26,36 @@
 const char INDEX_NONE = -1;
 
 #define ARRAY_SIZE(c_array) sizeof c_array / sizeof c_array[0]
-
+struct Empty {};
+//typename std::conditional<N >= 1, T, Empty>::type x;
 template <class T, int N>
 struct DllExport AeVector {
     union {
         T elements[N];
         struct {
-            T x, y, z, w;
+            typename std::conditional<N >= 1, T, Empty>::type x;
+            typename std::conditional<N >= 2, T, Empty>::type y;
+            typename std::conditional<N >= 3, T, Empty>::type z;
+            typename std::conditional<N >= 4, T, Empty>::type w;
+
+        };
+        struct {
+            typename std::conditional<N >= 1, T, Empty>::type r;
+            typename std::conditional<N >= 2, T, Empty>::type g;
+            typename std::conditional<N >= 3, T, Empty>::type b;
+            typename std::conditional<N >= 4, T, Empty>::type a;
+        };
+        struct {
+            typename std::conditional<N >= 1, T, Empty>::type u;
+            typename std::conditional<N >= 2, T, Empty>::type v;
+        };
+        struct {
+            typename std::conditional<N >= 1, T, Empty>::type width;
+            typename std::conditional<N >= 2, T, Empty>::type height;
+            typename std::conditional<N >= 3, T, Empty>::type depth;
         };
     };
+    static uint64_t size_of() { return sizeof elements[N]; }
     AeVector();
     AeVector(std::initializer_list<T> l);
     template <class T2, int N2>
@@ -90,7 +111,7 @@ struct DllExport AeVector {
     template <class T2>
     AeVector<T, N> operator/(const T2 &other);
 };
-
+/*
 template <class T>
 struct DllExport AeVector<T, 2> {
     union {
@@ -106,6 +127,7 @@ struct DllExport AeVector<T, 2> {
         };
     };
 };
+*/
 
 /*
 template <class T, int N>

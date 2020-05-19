@@ -280,6 +280,9 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 
                     if (strncmp(path, "translation", 11) == 0) {
                         model->jointsAnimation[k].translationOutput.resize(count);
+                        //for (int i = 0;i<count; ++i) {
+                        //    model->jointsAnimation[k].translationOutput[i] =*(AeVector<float,3>*)(binData + offset + 12 * i);
+                        //}
                         memcpy(model->jointsAnimation[k].translationOutput.data(), binData + offset, length);
                     } else if (strncmp(path, "rotation", 8) == 0) {
                         model->jointsAnimation[k].rotationOutput.resize(count);
@@ -449,8 +452,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 
         pMaterial->image.pNormalMap = G_AST->getImage(texturePath, bCubeMap);
     }
-    std::vector<std::string> *baseColorJ =
-        json->getJSONArrayValues(3, "materials", "pbrMetallicRoughness", "baseColorFactor");
+    std::vector<std::string> *baseColorJ = json->getJSONArrayValues(3, "materials", "pbrMetallicRoughness", "baseColorFactor");
     // QeDataMaterialPBR mtl;
     QeDataMaterial mtl;
 
