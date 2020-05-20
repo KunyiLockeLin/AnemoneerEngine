@@ -445,7 +445,8 @@ void AeCommonManager::removeXML(std::string path) {
 std::vector<char> AeCommonManager::loadFile(const char *_filePath) {
     std::vector<char> ret;
     std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
-    if (!file.is_open()) return ret;
+    //if (!file.is_open()) return ret;
+    ASSERT(file.is_open(), _filePath)
 
     file.seekg(0, file.end);
     int length = int(file.tellg());

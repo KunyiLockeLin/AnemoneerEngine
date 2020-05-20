@@ -9,6 +9,7 @@
 #include <chrono>
 #include <fstream>
 #include <random>
+#include <iostream>
 
 #define SINGLETON_CLASS(class_name)           \
    private:                                   \
@@ -26,36 +27,63 @@
 const char INDEX_NONE = -1;
 
 #define ARRAY_SIZE(c_array) sizeof c_array / sizeof c_array[0]
-struct Empty {};
-//typename std::conditional<N >= 1, T, Empty>::type x;
+// struct Empty {};
+// typename std::conditional<N >= 1, T, Empty>::type x;
 template <class T, int N>
-struct DllExport AeVector {
-    union {
-        T elements[N];
-        struct {
-            typename std::conditional<N >= 1, T, Empty>::type x;
-            typename std::conditional<N >= 2, T, Empty>::type y;
-            typename std::conditional<N >= 3, T, Empty>::type z;
-            typename std::conditional<N >= 4, T, Empty>::type w;
+struct AeVectorBase {
+    T elements[N];
+};
 
+template <class T>
+struct AeVectorBase<T, 2> {
+    union {
+        T elements[2];
+        struct {
+            T x, y;
         };
         struct {
-            typename std::conditional<N >= 1, T, Empty>::type r;
-            typename std::conditional<N >= 2, T, Empty>::type g;
-            typename std::conditional<N >= 3, T, Empty>::type b;
-            typename std::conditional<N >= 4, T, Empty>::type a;
+            T u, v;
         };
         struct {
-            typename std::conditional<N >= 1, T, Empty>::type u;
-            typename std::conditional<N >= 2, T, Empty>::type v;
-        };
-        struct {
-            typename std::conditional<N >= 1, T, Empty>::type width;
-            typename std::conditional<N >= 2, T, Empty>::type height;
-            typename std::conditional<N >= 3, T, Empty>::type depth;
+            T width, height;
         };
     };
-    static uint64_t size_of() { return sizeof elements[N]; }
+};
+
+template <class T>
+struct AeVectorBase<T, 3> {
+    union {
+        T elements[3];
+        struct {
+            T x, y, z;
+        };
+        struct {
+            T r, g, b;
+        };
+        struct {
+            T width, height, depth;
+        };
+    };
+};
+
+template <class T>
+struct AeVectorBase<T, 4> {
+    union {
+        T elements[4];
+        struct {
+            T x, y, z, w;
+        };
+        struct {
+            T r, g, b, a;
+        };
+        struct {
+            T width, height, depth, time;
+        };
+    };
+};
+
+template <class T, int N>
+struct DllExport AeVector : public AeVectorBase<T, N> {
     AeVector();
     AeVector(std::initializer_list<T> l);
     template <class T2, int N2>
@@ -302,8 +330,8 @@ class DllExport AeMath {
     const float RADIANS_TO_DEGREES = 180.0f / PI;
     const float DEGREES_TO_RADIANS = PI / 180;
 
-    //template <class T>
-    //T random(T start, T range);
+    // template <class T>
+    // T random(T start, T range);
     template <class T>
     typename std::enable_if<std::is_integral<T>::value, T>::type random(T start, T range);
     template <class T>
@@ -492,7 +520,7 @@ class DllExport QeEncode {
     std::vector<T> split(std::string s, std::string delim);
 
     template <class T>
-    std::string combine(std::vector<T>& ss, std::string delim);
+    std::string combine(std::vector<T> &ss, std::string delim);
 };
 
 #define ENCODE QeEncode::getInstance()
@@ -541,13 +569,28 @@ class DllExport AeLog {
     void removeListener(AeLogListener &listener);
     void switchOutput(bool turn_on, const char *output_path = nullptr);
     std::string stack(int from, int to);
-    void print(std::string &msg, bool bShowStack = false, int stackLevel = 4);
+    void print(std::string &msg, bool bShowStack = false, int stackLevel = 5);
 
     bool isOutput();
 };
 #define LOGOBJ AeLog::getInstance()
 #define LOG(msg) LOGOBJ->print(std::string("") + msg)
 #define STACK(msg) LOGOBJ->print(std::string("") + msg, true)
+// std::terminate();
+
+#ifndef NDEBUG
+#define ASSERT(condition, message) \
+    if (!(condition)) {            \
+        std::ostringstream oss;   \
+        oss << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message; \
+        STACK(oss.str());           \
+        std::terminate(); \
+     }
+#define ASSERT_NULL(condition) ASSERT(condition, "NULL")
+#else
+#define ASSERT(condition, message)
+#define ASSERT_NULL(condition)
+#endif
 
 namespace AeLib {
 std::string DllExport toString(const int &i);

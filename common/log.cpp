@@ -83,10 +83,7 @@ bool AeFile::open(const char *output_path_) {
         _mkdir(output_dir.c_str());
     }
     ofile->open(output_path_);
-    if (ofile->fail()) {
-        //std::cout << "open failure as expected: " << strerror(errno) << '\n';
-        return false;
-    }
+    ASSERT(!ofile->fail(), output_path_)
     return true;
 }
 
@@ -171,7 +168,7 @@ std::string AeLog::stack(int from, int to) {
 
         char s[512];
 
-        sprintf_s(s, "\n%1d %s %d", iFrame, symbol->Name, line.LineNumber);
+        sprintf_s(s, "\n    %1d %s %d", iFrame, symbol->Name, line.LineNumber);
         ret.append(s);
     }
     SymCleanup(hProcess);

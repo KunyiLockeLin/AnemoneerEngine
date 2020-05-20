@@ -1588,7 +1588,7 @@ VkShaderModule QeVulkan::createShaderModel(void *data, VkDeviceSize size) {
     createInfo.pCode = reinterpret_cast<const uint32_t *>(data);
 
     VkShaderModule shader;
-    if (vkCreateShaderModule(device, &createInfo, nullptr, &shader) != VK_SUCCESS) LOG("failed to create shader module!");
+    ASSERT_VK_SUCCESS(vkCreateShaderModule(device, &createInfo, nullptr, &shader));
 
     return shader;
 }
