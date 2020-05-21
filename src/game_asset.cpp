@@ -113,7 +113,7 @@ AeXMLNode *QeGameAsset::getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid) {
         if (type2 != 0) {
             bool b = false;
             for (int index = 0; index < node->data->nexts.size(); ++index) {
-                int _type = node->data->nexts[index]->getXMLValue<int>("type");
+                int _type = node->data->nexts[index]->getXMLValue<int>("default.type");
                 if (_type == type2) {
                     b = true;
                     node = node->data->nexts[index];
@@ -124,6 +124,9 @@ AeXMLNode *QeGameAsset::getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid) {
         }
 
         for (int index = 0; index < node->data->nexts.size(); ++index) {
+            if (node->data->nexts[index]->data->key.compare("define") == 0) {
+                continue;
+            }
             int _eid = node->data->nexts[index]->getXMLValue<int>("eid");
             if (_eid == eid) return node->data->nexts[index];
         }

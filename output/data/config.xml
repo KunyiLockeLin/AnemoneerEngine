@@ -2,14 +2,15 @@
 <!--test test test 0000-->
 <config>
     <!--default define member and type-->
-    <scenes>
+  <!--enum type AE_GAMEOBJECT_TYPE-->
+  <scenes>
         <define type="2000" eid="i" />
         <default type="2000" eid="0">
             <!--test test test 33333-->
             <MainCamera type="1000" oid="100" eid="100">
                 <components>
                     <!--test test test 4444-->
-                    <Transform type="1" oid="100" eid="1" positionX="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
+                    <Transform type="1" oid="100" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
 					<!--test test test 5555-->
                     <Axis type="13" oid="100" eid="1" />
                 </components>
@@ -442,14 +443,14 @@
             </attach_sphere>
             <line_animation type="1000" oid="901" eid="901">
                 <components>
-                    <Transform type="1" oid="900" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeedX="0" revoluteSpeedY="0" revoluteSpeedZ="0" revoluteFixAxisX="0" revoluteFixAxisY="0" revoluteFixAxisZ="0" targetAnimationOID="0" targetBoneName="" />
+                    <Transform type="1" oid="900" eid="1" position="0 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="0 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
                     <Line type="5" oid="900" eid="1" targetTransformOID="700" color="1 1 0" />
                 </components>
                 <children>
                     <animation type="1000" oid="700" eid="700">
                         <components>
                             <Transform type="1" oid="700" eid="1" position="10 0 -4" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="-1 0 0" revoluteFixAxis="1 0 0" targetAnimationOID="0" targetBoneName="" />
-                            <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
+                            <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionPlayType="2" materialOID="" />
                         </components>
                         <children />
                     </animation>
@@ -751,7 +752,7 @@
         <animation type="1000" oid="700" eid="700">
             <components>
                 <Transform type="1" oid="700" eid="1" position="5 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="1 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
+                <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionPlayType="2" materialOID="" />
             </components>
             <children />
         </animation>
@@ -778,7 +779,7 @@
                 <animation oid="700" eid="700">
                     <components>
                         <Transform type="1" oid="700" eid="1" position="5 0 0" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="1 0 0" revoluteFixAxis="0 0 0" targetAnimationOID="0" targetBoneName="" />
-                        <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
+                        <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionPlayType="2" materialOID="" />
                     </components>
                     <children />
                 </animation>
@@ -809,7 +810,7 @@
                 <animation type="1000" oid="700" eid="700">
                     <components>
                         <Transform type="1" oid="700" eid="1" position="3 0 -4" scale="1 1 1" faceEular="0 0 0" rotateSpeed="0 0 0" revoluteSpeed="-1 0 0" revoluteFixAxis="1 0 0" targetAnimationOID="0" targetBoneName="" />
-                        <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionType="2" materialOID="" />
+                        <Animation type="7" oid="700" eid="1" obj="animation.gltf" outlineWidth="0" actionState="1" actionSpeed="1" actionID="0" actionPlayType="2" materialOID="" />
                     </components>
                     <children />
                 </animation>
@@ -914,7 +915,7 @@
     </shaders>
     <setting>
         <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.104" />
-        <environment currentSceneEID="2" outputLog="1" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
+        <environment currentSceneEID="0" outputLog="1" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
         <path log="data\log\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shader\" />
         <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" VK_LAYER_LUNARG_standard_validation="1"/>
     </setting>
