@@ -15,7 +15,7 @@ void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
     graphicsPipeline.bAlpha = false;
 
     switch (component_data.planeType) {
-        case ePLANE_3D:
+        case ePLANE_D3D:
             shaderKey = "plane";
             bRotate = true;
             GRAP->models.push_back(this);
@@ -25,7 +25,7 @@ void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
             bRotate = false;
             GRAP->models.push_back(this);
             break;
-        case ePLANE_2D:
+        case ePLANE_D2D:
             shaderKey = "b2d";
             bRotate = false;
             GRAP->add2DModel(this);
@@ -40,7 +40,7 @@ void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
 
 void QePlane::clear() {
     QeModel::clear();
-    if (component_data.planeType == ePLANE_2D) eraseElementFromVector<QeModel *>(GRAP->models2D, this);
+    if (component_data.planeType == ePLANE_D2D) eraseElementFromVector<QeModel *>(GRAP->models2D, this);
 }
 
 QeDataDescriptorSetModel QePlane::createDescriptorSetModel() {

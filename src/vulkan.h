@@ -3,11 +3,8 @@
 #include "header.h"
 
 #ifndef NDEBUG
-static inline const char *vk_result_string(VkResult err) {
+static inline const char *string_VkResult(VkResult err) {
     switch (err) {
-#define STR(r) \
-    case r:    \
-        return #r
         STR(VK_SUCCESS);
         STR(VK_NOT_READY);
         STR(VK_TIMEOUT);
@@ -41,9 +38,8 @@ static inline const char *vk_result_string(VkResult err) {
         STR(VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT);
         STR(VK_ERROR_NOT_PERMITTED_EXT);
         STR(VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT);
-#undef STR
         default:
-            return "UNKNOWN_RESULT";
+            return "UNKNOWN_VkResult";
     }
 }
 
@@ -51,7 +47,7 @@ static inline const char *vk_result_string(VkResult err) {
     const VkResult resolved_err = condition; \
     if (resolved_err != VK_SUCCESS) {                                                                                        \
         std::ostringstream osss; \
-        osss << vk_result_string(resolved_err) << "(" << resolved_err << ")"; \
+        osss << string_VkResult(resolved_err) << "(" << resolved_err << ")"; \
         ASSERT_PRINT(condition, osss.str())\
     }
 #else

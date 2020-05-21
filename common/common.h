@@ -11,6 +11,10 @@
 #include <random>
 #include <iostream>
 
+#define STR(r) \
+    case r:    \
+        return #r
+
 #define SINGLETON_CLASS(class_name) \
    private:                         \
     class_name();                   \

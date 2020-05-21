@@ -6,25 +6,14 @@
 //#include "src/generated_config_struct_enum.h"
 
 const std::string indent = "    ";
+AeXMLNode* config = nullptr;
 
-void AddCommentEnum(AeXMLNode& node, AeFile& file) {
-    for (auto& comment : node.data->comments) {
-        if (!comment.compare(0, 5, "enum ")) {
-            file.addNewLine("");
-            std::vector<std::string> ss = ENCODE.split<std::string>(comment, " ");
-            std::string s = "enum " + ss[2] + " {";
-            file.addNewLine(s.c_str());
-            for (size_t i = 3; i < ss.size(); i += 2) {
-                s = indent + ss[i] + " = " + ss[i + 1] + ",";
-                file.addNewLine(s.c_str());
-            }
-            file.addNewLine("};");
-        }
-    }
-    for (auto next : node.data->nexts) {
-        AddCommentEnum(*next, file);
-    }
-}
+struct enum_data {
+    std::string key;
+    std::string name;
+    std::string prefix;
+    std::vector<AeNode> enums;
+};
 
 std::string AddElementCode(std::string& key, std::vector<std::string>& types, std::vector<std::string>& load_codes) {
     if (types.size() != 2) {
@@ -50,15 +39,11 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
         } else {
             std::vector<std::string> types = ENCODE.split<std::string>(element.value, " ");
             if (types[0].compare("enum") == 0) {
-                for (auto& comment : define_node->data->comments) {
-                    std::vector<std::string> ss = ENCODE.split<std::string>(comment, " ");
-                    if (!element.key.compare(ss[1])) {
-                        s += (ss[2] + " " + element.key + ";");
-                        load_codes.push_back(element.key + " = static_cast<" + ss[2] + ">(property_->getXMLValue<int>(\"" +
-                                             element.key + "\"));");
-                        break;
-                    }
-                }
+                std::string key = "enum_define." + element.key + ".name";
+                std::string enum_name = config->getXMLValue<std::string>(key.c_str());
+                s += (enum_name + " " + element.key + ";");
+                load_codes.push_back(element.key + " = static_cast<" + enum_name + ">(property_->getXMLValue<int>(\"" +
+                                     element.key + "\"));");
             } else {
                 s += AddElementCode(element.key, types, load_codes);
             }
@@ -90,36 +75,75 @@ int main(int argc, char* argv[]) {
     file.addNewLine("#include \"common/common.h\"");
     // file.addNewLine("#include <cstring>");
 
-    auto* config = CM_MGR.getXML("..\\..\\output\\data\\config.xml");
+    config = CM_MGR.getXML("..\\..\\output\\data\\config.xml");
 
-    // enum gameobject
-    file.addNewLine("");
-    file.addNewLine("enum AE_GAMEOBJECT_TYPE {");
-    std::string key = indent + "eGAMEOBJECT_";
+    // enum
+    auto* enum_define = config->getXMLNode("enum_define");
+    std::vector<enum_data> enum_datas;
+    for (auto node : enum_define->data->nexts) {
+        enum_data e_data;
+        e_data.key = node->data->key;
 
-    auto* node = config->getXMLNode("scenes.define");
-    std::string enum_name = key + "Scene = " + node->getXMLValue<int>("type") + ",";
-    file.addNewLine(enum_name.c_str());
+        for (auto e : node->data->elements) {
+            if (e.key.compare("name") == 0) {
+                e_data.name = e.value;
+            } else if (e.key.compare("prefix") == 0) {
+                e_data.prefix = e.value;
+            } else {
+                e_data.enums.push_back(e);
+            }
+        }
 
-    node = config->getXMLNode("objects.define");
-    enum_name = key + "Object = " + node->getXMLValue<int>("type") + ",";
-    file.addNewLine(enum_name.c_str());
+        if (e_data.key.compare("type") == 0) {
+            auto* node = config->getXMLNode("scenes.default");
+            e_data.enums.push_back({"Scene", node->getXMLValue<const char*>("type")});
 
-    node = config->getXMLNode("components");
-    key += "Component_";
-    for (auto comp : node->data->nexts) {
-        enum_name = key + comp->data->key + " = " + comp->getXMLValue<int>("define.type") + ",";
-        file.addNewLine(enum_name.c_str());
+            node = config->getXMLNode("objects.default");
+            e_data.enums.push_back({"Object", node->getXMLValue<const char*>("type")});
+
+            node = config->getXMLNode("components");
+            std::string key = "Component_";
+            for (auto comp : node->data->nexts) {
+                auto* node2 = comp->getXMLNode("default");
+                e_data.enums.push_back({key + comp->data->key, node2->getXMLValue<const char*>("type")});
+            }
+        }
+        enum_datas.push_back(e_data);
     }
-    file.addNewLine("};");
-    // comment enum
-    AddCommentEnum(*config, file);
+    for (auto e_data : enum_datas) {
+        file.addNewLine("");
+
+        std::string s = "enum ";
+        s += (e_data.name + " {");
+        file.addNewLine(s.c_str());
+        for (auto e : e_data.enums) {
+            std::string s = indent + e_data.prefix + e.key + " = " + e.value + ",";
+            file.addNewLine(s.c_str());
+        }
+        file.addNewLine("};");
+
+        file.addNewLine("");
+        s = "static inline const char* string_";
+        s += e_data.name + "(" + e_data.name + " type) {";
+        file.addNewLine(s.c_str());
+        file.addNewLine((indent + "switch (type) {").c_str());
+        for (auto e : e_data.enums) {
+            file.addNewLine((indent + indent + "STR(" + e_data.prefix + e.key + ");").c_str());
+        }
+        file.addNewLine((indent + indent + "default:").c_str());
+        file.addNewLine((indent + indent + indent + "ASSERT(0,\"" + e_data.prefix + "INVALID\");").c_str());
+        file.addNewLine((indent + "}").c_str());
+        //file.addNewLine((indent + "return \"" + e_data.prefix + "INVALID\";").c_str());
+        file.addNewLine("}");
+    }
 
     // struct
     file.addNewLine("");
+    std::string type_name = enum_define->getXMLValue<std::string>("type.name");
+    file.addNewLine("");
     file.addNewLine("struct AeGameObjectData {");
     file.addNewLine((indent + "std::string name;").c_str());
-    file.addNewLine((indent + "AE_GAMEOBJECT_TYPE type;").c_str());
+    file.addNewLine((indent + type_name + " type;").c_str());
     file.addNewLine((indent + "int oid;").c_str());
     file.addNewLine((indent + "int eid;").c_str());
     file.addNewLine("");
@@ -127,14 +151,14 @@ int main(int argc, char* argv[]) {
     file.addNewLine((indent + "void read(AeXMLNode& node) {").c_str());
     file.addNewLine((indent + indent + "property_ = &node;").c_str());
     file.addNewLine((indent + indent + "name = property_->data->key;").c_str());
-    file.addNewLine((indent + indent + "type = static_cast<AE_GAMEOBJECT_TYPE>(property_->getXMLValue<int>(\"type\"));").c_str());
+    file.addNewLine((indent + indent + "type = static_cast<" + type_name + ">(property_->getXMLValue<int>(\"type\"));").c_str());
     file.addNewLine((indent + indent + "oid = property_->getXMLValue<int>(\"oid\");").c_str());
     file.addNewLine((indent + indent + "eid = property_->getXMLValue<int>(\"eid\");").c_str());
     file.addNewLine((indent + "}").c_str());
     file.addNewLine((indent + "void reset() { read(*property_); }").c_str());
     file.addNewLine("};");
 
-    node = config->getXMLNode("components");
+    auto node = config->getXMLNode("components");
     for (auto comp : node->data->nexts) {
         AddGameObjectComponentStrcut(*comp, file);
     }

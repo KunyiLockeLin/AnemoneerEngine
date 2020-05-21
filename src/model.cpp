@@ -111,7 +111,7 @@ QeDataDescriptorSetModel QeModel::createDescriptorSetModel() {
 bool QeModel::isShowByCulling(QeCamera *camera) {
     if (data.type == eGAMEOBJECT_Component_Plane) {
         QePlane *plane = (QePlane *)this;
-        if (plane->component_data.planeType == ePLANE_2D) return true;
+        if (plane->component_data.planeType == ePLANE_D2D) return true;
     }
     bool _bCullingShow = true;
     AeVector<float, 3> vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
