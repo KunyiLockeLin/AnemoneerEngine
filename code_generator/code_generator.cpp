@@ -81,7 +81,6 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
 }
 
 int main(int argc, char* argv[]) {
-    ASSERT(0, "sss");
     // generated_config_struct_enum.h
     LOG("Create generated\\generated_config_struct_enum.h");
     AeFile file;

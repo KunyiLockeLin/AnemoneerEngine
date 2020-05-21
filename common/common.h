@@ -586,10 +586,13 @@ class DllExport AeLog {
 // std::terminate();
 
 #ifndef NDEBUG
+/*
 static void setterminate() {
     std::cerr << "Unhandled exception\n";
     abort();  // forces abnormal termination
 }
+std::set_terminate(setterminate);
+*/
 #define ASSERT_PRINT(condition, message)                                                                   \
     std::ostringstream oss;                                                                                \
     oss << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message; \
@@ -598,7 +601,6 @@ static void setterminate() {
         errno = 0;                                                                                         \
     }                                                                                                      \
     STACK(oss.str());                                                                                      \
-    std::set_terminate(setterminate);         \
     std::terminate();
 
 #define ASSERT(condition, message)       \

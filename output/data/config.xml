@@ -4,7 +4,7 @@
     <!--default define member and type-->
     <scenes>
         <define type="2000" eid="i" />
-        <default type="2000" eid="1">
+        <default type="2000" eid="0">
             <!--test test test 33333-->
             <MainCamera type="1000" oid="100" eid="100">
                 <components>
