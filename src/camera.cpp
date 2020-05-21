@@ -19,7 +19,7 @@ void QeCamera::rotateTarget(AeVector<float, 3> _addRotate) {
     AeVector<float, 3> pos = owner->transform->worldPosition();
     AeVector<float, 3> vec = {pos - lookAtV};
 
-    AeVector<float, 3> euler = MATH->vectorToEulerAngles(vec);
+    AeVector<float, 3> euler = MATH.vectorToEulerAngles(vec);
     if ((euler.y < -85 && _addRotate.y < 0) || (euler.y > 85 && _addRotate.y > 0)) return;
     _addRotate *= component_data.speed;
 
@@ -58,7 +58,7 @@ void QeCamera::move(AeVector<float, 3> _dir, bool bMoveCenter) {
     }
 
     // forward
-    if (_dir.z > 0 && !bMoveCenter && MATH->length(face) < 1) {
+    if (_dir.z > 0 && !bMoveCenter && MATH.length(face) < 1) {
         return;
     }
     _dir *= component_data.speed;
@@ -78,7 +78,7 @@ bool QeCamera::isRaytracing() { return bufferData.pos_rayTracingDepth.w > 0 ? tr
 
 AeVector<float, 3> QeCamera::face() {
     if (component_data.renderType == eRENDER_UI) return {0, 0, 1};
-    return MATH->normalize(lookAt() - owner->transform->worldPosition());
+    return MATH.normalize(lookAt() - owner->transform->worldPosition());
 }
 
 AeVector<float, 3> QeCamera::lookAt() {
@@ -128,15 +128,15 @@ void QeCamera::updatePreRender() {
     bufferData.pos_rayTracingDepth = pos;
     AeVector<float, 3> lookAtV = lookAt();
     AeVector<float, 3> face = lookAtV - pos;
-    float focusDist = MATH->length(face);
-    face = MATH->normalize(face);
+    float focusDist = MATH.length(face);
+    face = MATH.normalize(face);
     // focusDist = 1;
     if (component_data.renderType == eRENDER_UI) {
         bufferData.horizontal_aspect.w = ((float)component_data.renderSize.width) / component_data.renderSize.height;
     } else {
-        bufferData.view = MATH->lookAt(pos, lookAtV, component_data.up);
+        bufferData.view = MATH.lookAt(pos, lookAtV, component_data.up);
         bufferData.projection =
-            MATH->perspective(component_data.fov, bufferData.horizontal_aspect.w, component_data.fnear, component_data.ffar);
+            MATH.perspective(component_data.fov, bufferData.horizontal_aspect.w, component_data.fnear, component_data.ffar);
 
         float half_height = -1.0f / bufferData.projection._11;            // tan(theta/2);
         float half_width = bufferData.horizontal_aspect.w * half_height;  // 1.0/cam.projection[0][0];

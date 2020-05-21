@@ -2,6 +2,8 @@
 #include <sstream>
 #include <stdarg.h>
 
+SINGLETON_INSTANCE(AeCommonManager)
+
 std::map<std::string, AeXMLNode *> astXMLs;
 std::map<std::string, QeAssetJSON *> astJSONs;
 
@@ -18,7 +20,7 @@ AeXMLNode::~AeXMLNode() {
     data = nullptr;
 }
 
-AeXMLNode *AeXMLNode::getXMLNode(const char *key) { return getXMLNode(ENCODE->split<std::string>(key, ".")); }
+AeXMLNode *AeXMLNode::getXMLNode(const char *key) { return getXMLNode(ENCODE.split<std::string>(key, ".")); }
 
 AeXMLNode *AeXMLNode::getXMLNode(std::vector<std::string> &keys) {
     AeXMLNode *current = this;
@@ -445,8 +447,8 @@ void AeCommonManager::removeXML(std::string path) {
 std::vector<char> AeCommonManager::loadFile(const char *_filePath) {
     std::vector<char> ret;
     std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
-    //if (!file.is_open()) return ret;
     ASSERT(file.is_open(), _filePath)
+    //if (!file.is_open()) return ret;
 
     file.seekg(0, file.end);
     int length = int(file.tellg());
@@ -466,7 +468,7 @@ QeAssetJSON *AeCommonManager::getJSON(const char *_filePath) {
     std::vector<char> buffer = loadFile(_filePath);
 
     int index = 0;
-    QeAssetJSON *head = ENCODE->decodeJSON(buffer.data(), index);
+    QeAssetJSON *head = ENCODE.decodeJSON(buffer.data(), index);
     astJSONs[_filePath] = head;
     return head;
 }
@@ -482,7 +484,7 @@ AeXMLNode *AeCommonManager::getXML(const char *_filePath) {
     std::vector<char> buffer = loadFile(_filePath);
 
     int index = 0;
-    AeXMLNode *head = ENCODE->decodeXML(buffer.data(), index);
+    AeXMLNode *head = ENCODE.decodeXML(buffer.data(), index);
     astXMLs[_filePath] = head;
 
     return head;

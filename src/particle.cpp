@@ -5,17 +5,17 @@ void QeParticle::initialize(AeXMLNode *_property, QeObject *_owner) {
 
     bRotate = false;
     //particleRule = G_ENCODE->decodeParticle(initProperty);
-    materialData = G_AST->getMaterialImage(component_data.image.c_str());
+    materialData = G_AST.getMaterialImage(component_data.image.c_str());
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    computePipeline.shader = G_AST->getShader(CONFIG->getXMLValue<const char*>("shaders.compute.particle.comp"));
+    computePipeline.shader = G_AST.getShader(CONFIG->getXMLValue<const char*>("shaders.compute.particle.comp"));
 
     shaderKey = "particle";
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     // count
-    totalParticlesSize = MATH->random<int>(component_data.count_total, component_data.count_range);
+    totalParticlesSize = MATH.random<int>(component_data.count_total, component_data.count_range);
     currentParticlesSize = 0;  // particleRule->count_once;
     periodTimer.setTimer(component_data.count_period);
     particles.clear();
@@ -30,8 +30,8 @@ void QeParticle::initialize(AeXMLNode *_property, QeObject *_owner) {
         GRAP->models.push_back(this);
 
     // size
-    size.x = MATH->random<float>(component_data.size.x, component_data.size_range.x);
-    size.y = MATH->random<float>(component_data.size.y, component_data.size_range.y);
+    size.x = MATH.random<float>(component_data.size.x, component_data.size_range.x);
+    size.y = MATH.random<float>(component_data.size.y, component_data.size_range.y);
     size.z = 1;
 
     bufferData.material = materialData->value;
@@ -64,27 +64,27 @@ void QeParticle::clear() {
 QeVertex QeParticle::createParticleData() {
     QeVertex particle;
 
-    particle.pos.z = MATH->random<float>(component_data.init_pos_volume.z, component_data.init_pos_volume_range.z) *
-                     (MATH->random<int>(0, 1) ? 1 : -1);
-    int type = MATH->random<int>(0, 1);
+    particle.pos.z = MATH.random<float>(component_data.init_pos_volume.z, component_data.init_pos_volume_range.z) *
+                     (MATH.random<int>(0, 1) ? 1 : -1);
+    int type = MATH.random<int>(0, 1);
     switch (type) {
         case 0:
-            particle.pos.x = MATH->random<float>(component_data.init_pos_volume.x, component_data.init_pos_volume_range.x) *
-                             (MATH->random<int>(0, 1) ? 1 : -1);
-            particle.pos.y = MATH->random<float>(-(component_data.init_pos_volume.y + component_data.init_pos_volume_range.y),
+            particle.pos.x = MATH.random<float>(component_data.init_pos_volume.x, component_data.init_pos_volume_range.x) *
+                             (MATH.random<int>(0, 1) ? 1 : -1);
+            particle.pos.y = MATH.random<float>(-(component_data.init_pos_volume.y + component_data.init_pos_volume_range.y),
                                                  (component_data.init_pos_volume.y + component_data.init_pos_volume_range.y) * 2);
             break;
         case 1:
-            particle.pos.x = MATH->random<float>(-(component_data.init_pos_volume.x + component_data.init_pos_volume_range.x),
+            particle.pos.x = MATH.random<float>(-(component_data.init_pos_volume.x + component_data.init_pos_volume_range.x),
                                                  (component_data.init_pos_volume.x + component_data.init_pos_volume_range.x) * 2);
-            particle.pos.y = MATH->random<float>(component_data.init_pos_volume.y, component_data.init_pos_volume_range.y) *
-                             (MATH->random<int>(0, 1) ? 1 : -1);
+            particle.pos.y = MATH.random<float>(component_data.init_pos_volume.y, component_data.init_pos_volume_range.y) *
+                             (MATH.random<int>(0, 1) ? 1 : -1);
             break;
     }
     if (component_data.init_pos_radius != 0 || component_data.init_pos_radius_range != 0) {
-        float radius = MATH->random<float>(component_data.init_pos_radius, component_data.init_pos_radius_range);
+        float radius = MATH.random<float>(component_data.init_pos_radius, component_data.init_pos_radius_range);
         float radian =
-            MATH->random<float>(component_data.init_pos_degree, component_data.init_pos_degree_range) * MATH->DEGREES_TO_RADIANS;
+            MATH.random<float>(component_data.init_pos_degree, component_data.init_pos_degree_range) * MATH.DEGREES_TO_RADIANS;
         particle.pos.x = radius * cos(radian);
         particle.pos.y = radius * sin(radian);
     }
@@ -93,27 +93,27 @@ QeVertex QeParticle::createParticleData() {
     // particle.uv = particle.pos;
 
     // color
-    particle.color.x = MATH->random<float>(component_data.color.x, component_data.color_range.x);
-    particle.color.y = MATH->random<float>(component_data.color.y, component_data.color_range.y);
-    particle.color.z = MATH->random<float>(component_data.color.z, component_data.color_range.z);
+    particle.color.x = MATH.random<float>(component_data.color.x, component_data.color_range.x);
+    particle.color.y = MATH.random<float>(component_data.color.y, component_data.color_range.y);
+    particle.color.z = MATH.random<float>(component_data.color.z, component_data.color_range.z);
     particle.color.w = 1.0f;
 
     // normal = speed
-    particle.normal.x = MATH->random<float>(component_data.init_speed.x, component_data.init_speed_range.x);
-    particle.normal.y = MATH->random<float>(component_data.init_speed.y, component_data.init_speed_range.y);
-    particle.normal.z = MATH->random<float>(component_data.init_speed.z, component_data.init_speed_range.z);
+    particle.normal.x = MATH.random<float>(component_data.init_speed.x, component_data.init_speed_range.x);
+    particle.normal.y = MATH.random<float>(component_data.init_speed.y, component_data.init_speed_range.y);
+    particle.normal.z = MATH.random<float>(component_data.init_speed.z, component_data.init_speed_range.z);
 
     // life time
-    particle.normal.w = float(MATH->random<int>(component_data.life_second, component_data.life_range));
+    particle.normal.w = float(MATH.random<int>(component_data.life_second, component_data.life_range));
 
     // init speed & life time = joint
     // particle.joint = particle.normal;
     // particle.normal.w = 0;
 
     // tangent = force
-    particle.tangent.x = MATH->random<float>(component_data.force.x, component_data.force_range.x);
-    particle.tangent.y = MATH->random<float>(component_data.force.y, component_data.force_range.y);
-    particle.tangent.z = MATH->random<float>(component_data.force.z, component_data.force_range.z);
+    particle.tangent.x = MATH.random<float>(component_data.force.x, component_data.force_range.x);
+    particle.tangent.y = MATH.random<float>(component_data.force.y, component_data.force_range.y);
+    particle.tangent.z = MATH.random<float>(component_data.force.z, component_data.force_range.z);
 
     // reborn
     // particle.tangent.w = particleRule->bReborn;
@@ -224,7 +224,7 @@ void QeParticle::updatePreRender() {
     scale.x *= size.x;
     scale.y *= size.y;
 
-    bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale,
+    bufferData.model = MATH.getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(), scale,
                                                 GRAP->getTargetCamera()->owner->transform->worldPosition());
 
     VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);

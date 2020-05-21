@@ -5,10 +5,10 @@ void QeLine::initialize(AeXMLNode *_property, QeObject *_owner) {
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    modelData = G_AST->getModel("line", false, (float *)&component_data.color);
+    modelData = G_AST.getModel("line", false, (float *)&component_data.color);
 
     shaderKey = "line";
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);
@@ -28,11 +28,11 @@ void QeLine::updatePreRender() {
     AeVector<float, 3> pos = owner->transform->worldPosition();
 
      AeVector<float, 3> vec = targetPos - pos;
-    float size = MATH->fastSqrt(MATH->length(vec));
+    float size = MATH.fastSqrt(MATH.length(vec));
      AeVector<float, 3> scale = {size, size, size};
 
     // LOG("line x: " + vec.x + "  y: " + vec.y + "  z: " + vec.z);
-    bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), MATH->vectorToEulerAngles(vec), scale,
+    bufferData.model = MATH.getTransformMatrix(owner->transform->worldPosition(), MATH.vectorToEulerAngles(vec), scale,
                                                 GRAP->getTargetCamera()->owner->transform->worldPosition());
 
     VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);

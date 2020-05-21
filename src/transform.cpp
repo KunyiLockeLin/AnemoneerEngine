@@ -76,9 +76,9 @@ AeVector<float, 3> QeTransform::worldFaceEular() {
     return _ret;
 }
 
-AeVector<float, 3> QeTransform::worldFaceVector() { return MATH->eulerAnglesToVector(worldFaceEular()); }
+AeVector<float, 3> QeTransform::worldFaceVector() { return MATH.eulerAnglesToVector(worldFaceEular()); }
 
-AeVector<float, 3> QeTransform::localFaceVector() { return MATH->eulerAnglesToVector(component_data.faceEular); }
+AeVector<float, 3> QeTransform::localFaceVector() { return MATH.eulerAnglesToVector(component_data.faceEular); }
 
 void QeTransform::setWorldPosition(AeVector<float, 3> &_worldPosition) {
     component_data.position = _worldPosition;
@@ -111,16 +111,16 @@ void QeTransform::setWorldFaceByEular(AeVector<float, 3> &_worldFace) {
 }
 
 void QeTransform::setWorldFaceByVector(AeVector<float, 3> &_worldFaceVector) {
-    setWorldFaceByEular(MATH->vectorToEulerAngles(_worldFaceVector));
+    setWorldFaceByEular(MATH.vectorToEulerAngles(_worldFaceVector));
 }
 
 void QeTransform::move(AeVector<float, 3> &_addMove, AeVector<float, 3> &_face, AeVector<float, 3> &_up) {
-    component_data.position = MATH->move(component_data.position, _addMove, _face, _up);
+    component_data.position = MATH.move(component_data.position, _addMove, _face, _up);
 }
 
 void QeTransform::revolute(AeVector<float, 3> &_addRevolute, AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY,
                            bool bFixZ) {
-    setWorldPosition(MATH->revolute_axis(worldPosition(), _addRevolute, _centerPosition, bFixX, bFixY, bFixZ));
+    setWorldPosition(MATH.revolute_axis(worldPosition(), _addRevolute, _centerPosition, bFixX, bFixY, bFixZ));
 }
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {
@@ -129,11 +129,11 @@ QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {
             (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, component_data.targetAnimationOID);
         if (animation) {
             return animation->getBoneTransfrom(component_data.targetBoneName.c_str()) *
-                   MATH->getTransformMatrix(component_data.position, component_data.faceEular, component_data.scale,
+                   MATH.getTransformMatrix(component_data.position, component_data.faceEular, component_data.scale,
                                             GRAP->getTargetCamera()->owner->transform->worldPosition(), bRotate, bFixSize);
         }
     }
 
-    return MATH->getTransformMatrix(worldPosition(), worldFaceEular(), worldScale(),
+    return MATH.getTransformMatrix(worldPosition(), worldFaceEular(), worldScale(),
                                     GRAP->getTargetCamera()->owner->transform->worldPosition(), bRotate, bFixSize);
 }

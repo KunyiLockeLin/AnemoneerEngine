@@ -7,6 +7,8 @@
 #include <iostream>
 #include <cerrno>
 
+SINGLETON_INSTANCE(AeLog)
+
 namespace AeLib {
 std::string toString(const int &i) {
     std::ostringstream oss;
@@ -76,10 +78,10 @@ AeFile::~AeFile() {
 
 bool AeFile::open(const char *output_path_) {
     *output_path = output_path_;
-    std::vector<std::string> output_dirs = ENCODE->split<std::string>(output_path_, "\\");
+    std::vector<std::string> output_dirs = ENCODE.split<std::string>(output_path_, "\\");
     output_dirs.pop_back();
     if (output_dirs.size() > 0) {
-        std::string output_dir = ENCODE->combine<std::string>(output_dirs, "\\");
+        std::string output_dir = ENCODE.combine<std::string>(output_dirs, "\\");
         _mkdir(output_dir.c_str());
     }
     ofile->open(output_path_);
@@ -168,7 +170,7 @@ std::string AeLog::stack(int from, int to) {
 
         char s[512];
 
-        sprintf_s(s, "\n    %1d %s %d", iFrame, symbol->Name, line.LineNumber);
+        sprintf_s(s, "\n    %1d %s line %d", iFrame, symbol->Name, line.LineNumber);
         ret.append(s);
     }
     SymCleanup(hProcess);

@@ -1,7 +1,7 @@
 #include "header.h"
 
 void AeObjectManager::loadScene(int _eid) {
-    AeXMLNode *node = G_AST->getXMLEditNode(eGAMEOBJECT_Scene, _eid);
+    AeXMLNode *node = G_AST.getXMLEditNode(eGAMEOBJECT_Scene, _eid);
 
     if (SCENE)
         SCENE->initialize(node, nullptr);

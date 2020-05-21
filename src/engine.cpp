@@ -6,7 +6,7 @@ void AngryEngine::run() {
     if (CONFIG->getXMLValue<bool>("setting.environment.outputLog")) {
         std::string outputPath = CONFIG->getXMLValue<std::string>("setting.path.log");
         outputPath += "Ae";
-        LOGOBJ->switchOutput(true, outputPath.c_str());
+        LOGOBJ.switchOutput(true, outputPath.c_str());
     }
     UI->initialize();
     VK->initialize();

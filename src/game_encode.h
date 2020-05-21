@@ -2,7 +2,7 @@
 #include "header.h"
 
 class QeGameEncode {
-    SINGLETON_CLASS(QeGameEncode)
+    SINGLETON_CLASS(QeGameEncode);
 
    public:
     ~QeGameEncode() {}

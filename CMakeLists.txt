@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
-ADD_DEFINITIONS(-D_UNICODE)
+add_definitions(-D_UNICODE)
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (AngryEngine)
 

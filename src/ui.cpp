@@ -24,7 +24,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
 
-AeUI::~AeUI() { LOGOBJ->removeListener(*this); }
+AeUI::~AeUI() { LOGOBJ.removeListener(*this); }
 
 void AeUI::closeCommand() {
     ShowWindow(commandBox, SW_HIDE);
@@ -70,7 +70,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         ENGINE->initialize();
                         break;
                     case eUIType_btnLoadAll:
-                        CM_MGR->removeXML(CONFIG_PATH);
+                        CM_MGR.removeXML(CONFIG_PATH);
                         ENGINE->initialize();
                         // updateTab();
                         setAllTreeView();
@@ -94,11 +94,11 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
                             int _eid = currentTreeViewNode->getXMLValue<int>("eid");
                             if (_type != 0 && _eid != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
+                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node)
                                     currentTreeViewNode->copyXMLNode(node);
                                 else {
-                                    AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+                                    AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                     AeXMLNode *newNode = currentTreeViewNode->copyXMLNode();
                                     node->data->parent->addXMLNode(newNode);
                                 }
@@ -110,7 +110,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
                             int _eid = currentTreeViewNode->getXMLValue<int>("eid");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
+                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node) {
                                     HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
 
@@ -153,7 +153,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                 AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 if (currentTreeViewNode != node->data->parent) {
@@ -175,9 +175,9 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             } else {
                                 AeXMLNode *node = nullptr;
                                 if (currentTreeViewNode->data->key.compare("children") == 0) {
-                                    node = G_AST->getXMLEditNode(eGAMEOBJECT_Object, 0);
+                                    node = G_AST.getXMLEditNode(eGAMEOBJECT_Object, 0);
                                 } else if (currentTreeViewNode->data->key.compare("components") == 0) {
-                                    node = G_AST->getXMLEditNode(eGAMEOBJECT_Component_Transform, 0);
+                                    node = G_AST.getXMLEditNode(eGAMEOBJECT_Component_Transform, 0);
                                 }
                                 if (node) {
                                     AeXMLNode *newNode = node->copyXMLNode();
@@ -194,7 +194,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             AeXMLNode *node1 = CONFIG->data->nexts[currentTabIndex];
                             int _type = node1->getXMLValue<int>("type");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                 AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 node1->addXMLNode(newNode);
@@ -273,7 +273,7 @@ void AeUI::setTreeViewText(HTREEITEM hItem, AeXMLNode *node) {
 void AeUI::adjustComponetData(AeXMLNode *node) {
     int _type = node->getXMLValue<int>("type");
     if (_type) {
-        AeXMLNode *source = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+        AeXMLNode *source = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
         if (source->data->parent != node) {
             auto elements = source->data->elements;
             for (auto &e : elements) {
@@ -509,7 +509,7 @@ void AeUI::openLogPanel() {
     logHDC = GetDC(listBoxLog);
     SelectObject(logHDC, hFont);
     logMaxWidth = 0;
-    LOGOBJ->addListener(*this);
+    LOGOBJ.addListener(*this);
 }
 
 void AeUI::Log(std::string _log) {

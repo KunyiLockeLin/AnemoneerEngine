@@ -47,15 +47,12 @@ static inline const char *vk_result_string(VkResult err) {
     }
 }
 
-//std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << vk_result_string(resolved_err);
 #define ASSERT_VK_SUCCESS(condition)         \
     const VkResult resolved_err = condition; \
     if (resolved_err != VK_SUCCESS) {                                                                                        \
-        std::ostringstream oss;                                                                                \
-        oss << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " \
-            << vk_result_string(resolved_err) <<"("<< resolved_err<<")"; \
-        STACK(oss.str());                                                                                      \
-        std::terminate(); \
+        std::ostringstream osss; \
+        osss << vk_result_string(resolved_err) << "(" << resolved_err << ")"; \
+        ASSERT_PRINT(condition, osss.str())\
     }
 #else
 #define ASSERT_VK_SUCCESS(condition)

@@ -5,9 +5,9 @@ void QeAxis::initialize(AeXMLNode *_property, QeObject *_owner) {
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
-    modelData = G_AST->getModel("axis");
+    modelData = G_AST.getModel("axis");
     shaderKey = "line";
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);

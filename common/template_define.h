@@ -304,7 +304,7 @@ T AeXMLNode::getXMLValue(const char *key) {
 template <class T>
 AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
     std::memset((void *)&value, 0, sizeof value);
-    auto keys = ENCODE->split<std::string>(key, ".");
+    auto keys = ENCODE.split<std::string>(key, ".");
     std::vector<std::string> keys1 = keys;
     keys1.pop_back();
     AeXMLNode *current = getXMLNode(keys1);
@@ -314,7 +314,7 @@ AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
 
     for (const auto &node : current->data->elements) {
         if (final_key.compare(node.key) == 0) {
-            value = ENCODE->ConvertTo<T>(node.value);
+            value = ENCODE.ConvertTo<T>(node.value);
             return current;
         }
     }
@@ -322,7 +322,7 @@ AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
     current = getXMLNode(final_key.c_str());
     if (!current) return nullptr;
     if (final_key.compare(current->data->key.c_str()) == 0) {
-        value = ENCODE->ConvertTo<T>(current->data->value);
+        value = ENCODE.ConvertTo<T>(current->data->value);
         return current;
     }
     return nullptr;
@@ -339,7 +339,7 @@ template <class T, int N>
 AeXMLNode *AeXMLNode::getXMLValues(AeVector<T, N> &value, const char *key) {
     std::string str_values;
     AeXMLNode *ret = getXMLValue<std::string>(str_values, key);
-    auto values = ENCODE->split<T>(str_values, " ");
+    auto values = ENCODE.split<T>(str_values, " ");
     for (int i = 0; i < N && i < values.size(); ++i) {
         value.elements[i] = values[i];
     }

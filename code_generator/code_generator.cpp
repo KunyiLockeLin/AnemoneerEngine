@@ -11,7 +11,7 @@ void AddCommentEnum(AeXMLNode& node, AeFile& file) {
     for (auto& comment : node.data->comments) {
         if (!comment.compare(0, 5, "enum ")) {
             file.addNewLine("");
-            std::vector<std::string> ss = ENCODE->split<std::string>(comment, " ");
+            std::vector<std::string> ss = ENCODE.split<std::string>(comment, " ");
             std::string s = "enum " + ss[2] + " {";
             file.addNewLine(s.c_str());
             for (size_t i = 3; i < ss.size(); i += 2) {
@@ -48,10 +48,10 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
         s = indent;
         if (!element.key.compare("type") || !element.key.compare("oid") || !element.key.compare("eid")) {
         } else {
-            std::vector<std::string> types = ENCODE->split<std::string>(element.value, " ");
+            std::vector<std::string> types = ENCODE.split<std::string>(element.value, " ");
             if (types[0].compare("enum") == 0) {
                 for (auto& comment : define_node->data->comments) {
-                    std::vector<std::string> ss = ENCODE->split<std::string>(comment, " ");
+                    std::vector<std::string> ss = ENCODE.split<std::string>(comment, " ");
                     if (!element.key.compare(ss[1])) {
                         s += (ss[2] + " " + element.key + ";");
                         load_codes.push_back(element.key + " = static_cast<" + ss[2] + ">(property_->getXMLValue<int>(\"" +
@@ -81,7 +81,7 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
 }
 
 int main(int argc, char* argv[]) {
-
+    ASSERT(0, "sss");
     // generated_config_struct_enum.h
     LOG("Create generated\\generated_config_struct_enum.h");
     AeFile file;
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
     file.addNewLine("#include \"common/common.h\"");
     // file.addNewLine("#include <cstring>");
 
-    auto* config = CM_MGR->getXML("..\\..\\output\\data\\config.xml");
+    auto* config = CM_MGR.getXML("..\\..\\output\\data\\config.xml");
 
     // enum gameobject
     file.addNewLine("");

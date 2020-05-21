@@ -120,7 +120,7 @@ void QeGraphics::updateViewport() {
             viewport->scissor.offset.x = int(viewport->viewport.x);
             viewport->scissor.offset.y = int(viewport->viewport.y);
             viewport->computePipelineRayTracing.shader =
-                G_AST->getShader(CONFIG->getXMLValue<const char *>("shaders.compute.raytracing.comp"));
+                G_AST.getShader(CONFIG->getXMLValue<const char *>("shaders.compute.raytracing.comp"));
             VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
             viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             // viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -592,7 +592,7 @@ bool QeGraphics::addPostProcssing(AE_RENDER_TYPE renderType, int cameraOID, int 
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = i + 1;
 
-        G_AST->setGraphicsShader(data->graphicsShader, postprocessing->component_data.property_, "postprocessing");
+        G_AST.setGraphicsShader(data->graphicsShader, postprocessing->component_data.property_, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
 
@@ -635,7 +635,7 @@ QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, AeVec
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = 0;
 
-        G_AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
+        G_AST.setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
         // data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -651,7 +651,7 @@ QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, AeVec
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = 0;
 
-        G_AST->setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
+        G_AST.setGraphicsShader(data->graphicsShader, nullptr, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
         // data->descriptorSet.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -940,9 +940,9 @@ void QeGraphics::sortAlphaModels(QeCamera *camera) {
     for (size_t i = 0; i < size; ++i) {
         for (size_t j = i + 1; j < size; ++j) {
             float dis1 =
-                MATH->length(camera->owner->transform->worldPosition() - alphaModels[i]->owner->transform->worldPosition());
+                MATH.length(camera->owner->transform->worldPosition() - alphaModels[i]->owner->transform->worldPosition());
             float dis2 =
-                MATH->length(camera->owner->transform->worldPosition() - alphaModels[j]->owner->transform->worldPosition());
+                MATH.length(camera->owner->transform->worldPosition() - alphaModels[j]->owner->transform->worldPosition());
 
             if (dis1 < dis2) std::swap(alphaModels[i], alphaModels[j]);
         }

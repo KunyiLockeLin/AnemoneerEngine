@@ -11,14 +11,17 @@
 #include <random>
 #include <iostream>
 
-#define SINGLETON_CLASS(class_name)           \
-   private:                                   \
-    class_name();                             \
-                                              \
-   public:                                    \
-    static inline class_name *getInstance() { \
-        static class_name instance;           \
-        return &instance;                     \
+#define SINGLETON_CLASS(class_name) \
+   private:                         \
+    class_name();                   \
+                                    \
+   public:                          \
+    static class_name &getInstance()
+
+#define SINGLETON_INSTANCE(class_name)      \
+    class_name &class_name::getInstance() { \
+        static class_name instance;         \
+        return instance;                    \
     }
 
 // template class DllExport std::vector<std::string>;
@@ -322,7 +325,8 @@ class DllExport QeBinaryTree {
 
 // Right-handed Coordinate System
 class DllExport AeMath {
-    SINGLETON_CLASS(AeMath)
+    SINGLETON_CLASS(AeMath);
+
    public:
     ~AeMath();
 
@@ -477,7 +481,8 @@ struct DllExport QeAssetJSON {
 };
 
 class DllExport AeCommonManager {
-    SINGLETON_CLASS(AeCommonManager)
+    SINGLETON_CLASS(AeCommonManager);
+
    public:
     ~AeCommonManager();
 
@@ -490,7 +495,8 @@ class DllExport AeCommonManager {
 #define CM_MGR AeCommonManager::getInstance()
 
 class DllExport QeEncode {
-    SINGLETON_CLASS(QeEncode)
+    SINGLETON_CLASS(QeEncode);
+
    public:
     ~QeEncode() {}
 
@@ -558,7 +564,8 @@ class DllExport AeLogListener {
 };
 
 class DllExport AeLog {
-    SINGLETON_CLASS(AeLog)
+    SINGLETON_CLASS(AeLog);
+
    public:
     ~AeLog();
 
@@ -574,18 +581,30 @@ class DllExport AeLog {
     bool isOutput();
 };
 #define LOGOBJ AeLog::getInstance()
-#define LOG(msg) LOGOBJ->print(std::string("") + msg)
-#define STACK(msg) LOGOBJ->print(std::string("") + msg, true)
+#define LOG(msg) LOGOBJ.print(std::string("") + msg)
+#define STACK(msg) LOGOBJ.print(std::string("") + msg, true)
 // std::terminate();
 
 #ifndef NDEBUG
-#define ASSERT(condition, message) \
-    if (!(condition)) {            \
-        std::ostringstream oss;   \
-        oss << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message; \
-        STACK(oss.str());           \
-        std::terminate(); \
-     }
+static void setterminate() {
+    std::cerr << "Unhandled exception\n";
+    abort();  // forces abnormal termination
+}
+#define ASSERT_PRINT(condition, message)                                                                   \
+    std::ostringstream oss;                                                                                \
+    oss << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message; \
+    if (errno) {                                                                                           \
+        oss << ": " << strerror(errno);                                                                    \
+        errno = 0;                                                                                         \
+    }                                                                                                      \
+    STACK(oss.str());                                                                                      \
+    std::set_terminate(setterminate);         \
+    std::terminate();
+
+#define ASSERT(condition, message)       \
+    if (!(condition)) {                  \
+        ASSERT_PRINT(condition, message) \
+    }
 #define ASSERT_NULL(condition) ASSERT(condition, "NULL")
 #else
 #define ASSERT(condition, message)

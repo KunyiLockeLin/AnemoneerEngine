@@ -12,9 +12,9 @@ void QeGrid::initialize(AeXMLNode *_property, QeObject *_owner) {
     param[3] = float(component_data.column);
     param[4] = float(component_data.row);
 
-    modelData = G_AST->getModel("grid", false, param);
+    modelData = G_AST.getModel("grid", false, param);
 
-    G_AST->setGraphicsShader(graphicsShader, nullptr, "line");
+    G_AST.setGraphicsShader(graphicsShader, nullptr, "line");
 
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);

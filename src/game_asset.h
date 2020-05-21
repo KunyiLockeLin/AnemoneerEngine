@@ -108,7 +108,7 @@ struct QeAssetMaterial {
 };
 
 class QeGameAsset {
-    SINGLETON_CLASS(QeGameAsset)
+    SINGLETON_CLASS(QeGameAsset);
 
    public:
     std::map<std::string, QeAssetModel *> astModels;

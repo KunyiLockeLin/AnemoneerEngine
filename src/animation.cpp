@@ -10,7 +10,7 @@ void QeAnimation::initialize(AeXMLNode *_property, QeObject *_owner) {
     graphicsShader.frag = nullptr;
     shaderKey = "animation";
 
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
     currentActionFrame = 0;
     currentActionTime = 0;
 }
@@ -47,7 +47,7 @@ void QeAnimation::updateAction() {
     if ((currentActionFrame + 1) == modelData->animationEndFrames[component_data.actionID]) bFinalFrame = true;
 
     float progessive =
-        MATH->clamp((currentActionTime - previousActionFrameTime) / (nextActionFrameTime - previousActionFrameTime), 0.f, 1.f);
+        MATH.clamp((currentActionTime - previousActionFrameTime) / (nextActionFrameTime - previousActionFrameTime), 0.f, 1.f);
 
     AeVector<float, 3> previousTranslation, nextTranslation, currentTranslation;
     AeVector<float, 4 > previousRotation, nextRotation, currentRotation;
@@ -58,13 +58,13 @@ void QeAnimation::updateAction() {
     for (size_t i = 0; i < size; ++i) {
         previousTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame];
         nextTranslation = modelData->jointsAnimation[i].translationOutput[currentActionFrame + 1];
-        currentTranslation = MATH->interpolatePos(previousTranslation, nextTranslation, progessive);
+        currentTranslation = MATH.interpolatePos(previousTranslation, nextTranslation, progessive);
 
         previousRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame];
         nextRotation = modelData->jointsAnimation[i].rotationOutput[currentActionFrame + 1];
-        currentRotation = MATH->interpolateDir(previousRotation, nextRotation, progessive);
+        currentRotation = MATH.interpolateDir(previousRotation, nextRotation, progessive);
 
-        jointTransforms[i] = MATH->transform(currentTranslation, currentRotation, currentScale);
+        jointTransforms[i] = MATH.transform(currentTranslation, currentRotation, currentScale);
     }
 
     QeMatrix4x4f transform;

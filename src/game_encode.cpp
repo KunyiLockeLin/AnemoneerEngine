@@ -1,5 +1,6 @@
 #include "game_encode.h"
 
+SINGLETON_INSTANCE(QeGameEncode)
 /*
 QeAssetModel *QeEncode::decodeOBJ(char *buffer) {
     std::vector<QeVector3f> normalV;
@@ -127,8 +128,8 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
     char *ret = strrchr((char *)binData, '.');
     std::vector<char> buf;
     if (strcmp(ret + 1, "bin") == 0) {
-        std::string _filePath = G_AST->combinePath(binData, eAssetBin);
-        buf = CM_MGR->loadFile(_filePath.c_str());
+        std::string _filePath = G_AST.combinePath(binData, eAssetBin);
+        buf = CM_MGR.loadFile(_filePath.c_str());
         binData = buf.data();
     }
     /*
@@ -439,9 +440,9 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
         const char *texturePath = (*imageJSON)[textureIndex]->getJSONValue(1, "uri");
 
         if (bCubeMap)
-            pMaterial->image.pCubeMap = G_AST->getImage(texturePath, bCubeMap, true);
+            pMaterial->image.pCubeMap = G_AST.getImage(texturePath, bCubeMap, true);
         else
-            pMaterial->image.pBaseColorMap = G_AST->getImage(texturePath, bCubeMap, true);
+            pMaterial->image.pBaseColorMap = G_AST.getImage(texturePath, bCubeMap, true);
     }
 
     c = json->getJSONValue(3, "materials", "normalTexture", "index");
@@ -450,7 +451,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
         std::vector<QeAssetJSON *> *imageJSON = json->getJSONArrayNodes(1, "images");
         const char *texturePath = (*imageJSON)[textureIndex]->getJSONValue(1, "uri");
 
-        pMaterial->image.pNormalMap = G_AST->getImage(texturePath, bCubeMap);
+        pMaterial->image.pNormalMap = G_AST.getImage(texturePath, bCubeMap);
     }
     std::vector<std::string> *baseColorJ = json->getJSONArrayValues(3, "materials", "pbrMetallicRoughness", "baseColorFactor");
     // QeDataMaterialPBR mtl;

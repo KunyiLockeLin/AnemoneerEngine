@@ -8,16 +8,16 @@ void QeModel::initialize(AeXMLNode *_property, QeObject *_owner) {
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
 
     const char *c = component_data.obj.c_str();
-    modelData = G_AST->getModel(c);
+    modelData = G_AST.getModel(c);
     materialData = modelData->pMaterial;
     if (materialData) bufferData.material = materialData->value;
 
     bufferData.param2.y = (float)modelData->vertices.size();
 
     shaderKey = "model";
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
-    G_AST->setGraphicsShader(normalShader, nullptr, "normal");
-    G_AST->setGraphicsShader(outlineShader, nullptr, "outline");
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(normalShader, nullptr, "normal");
+    G_AST.setGraphicsShader(outlineShader, nullptr, "outline");
 
     bUpdateMaterialOID = false;
     if (component_data.materialOID) bUpdateMaterialOID = true;
@@ -58,7 +58,7 @@ void QeModel::updatePreRender() {
                 }
             }
             materialData = &material->materialData;
-            G_AST->setGraphicsShader(graphicsShader, material->component_data.property_, shaderKey);
+            G_AST.setGraphicsShader(graphicsShader, material->component_data.property_, shaderKey);
             bufferData.material = materialData->value;
             VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
         }
@@ -115,12 +115,12 @@ bool QeModel::isShowByCulling(QeCamera *camera) {
     }
     bool _bCullingShow = true;
     AeVector<float, 3> vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
-    float dis = MATH->length(vec);
+    float dis = MATH.length(vec);
 
     if (dis > camera->component_data.cullingDistance) return false;
 
     if (data.type != eGAMEOBJECT_Component_Cubemap && _bCullingShow) {
-        float angle = MATH->getAnglefromVectors(camera->face(), vec);
+        float angle = MATH.getAnglefromVectors(camera->face(), vec);
         if (angle > 100 || angle < -100) return false;
     }
 

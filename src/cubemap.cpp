@@ -3,13 +3,13 @@
 void QeCubemap::initialize(AeXMLNode *_property, QeObject *_owner) {
     COMPONENT_INITIALIZE
 
-    modelData = G_AST->getModel("cube", true);
-    materialData = G_AST->getMaterialImage(component_data.image.c_str(), true);
+    modelData = G_AST.getModel("cube", true);
+    materialData = G_AST.getMaterialImage(component_data.image.c_str(), true);
 
     VK->createBuffer(modelBuffer, sizeof(bufferData), nullptr);
     bufferData.material = materialData->value;
     shaderKey = "cubemap";
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
     graphicsPipeline.bAlpha = false;
     GRAP->models.push_back(this);
 

@@ -1,6 +1,9 @@
 ﻿#include <cmath>
 #include "common.h"
 
+
+SINGLETON_INSTANCE(AeMath)
+
 AeVector<float, 3> QeRay::positionByTime(float t) { return origin + direction * t; }
 
 AeMath::AeMath() {}

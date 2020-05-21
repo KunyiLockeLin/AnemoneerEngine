@@ -32,7 +32,7 @@ void QePlane::initialize(AeXMLNode *_property, QeObject *_owner) {
             break;
     }
 
-    G_AST->setGraphicsShader(graphicsShader, nullptr, shaderKey);
+    G_AST.setGraphicsShader(graphicsShader, nullptr, shaderKey);
 
     VK->createDescriptorSet(descriptorSet);
     VK->updateDescriptorSet(&createDescriptorSetModel(), descriptorSet);
@@ -79,7 +79,7 @@ void QePlane::updatePreRender() {
         bUpdateTargetCameraOID = true;
 
         AeXMLNode *node = CONFIG->getXMLNode("shaders.graphics.render");
-        G_AST->setGraphicsShader(graphicsShader, node, shaderKey);
+        G_AST.setGraphicsShader(graphicsShader, node, shaderKey);
     }
 
     if (component_data.targetCameraOID) {
@@ -87,8 +87,8 @@ void QePlane::updatePreRender() {
 
         if (camera) {
             AeVector<float, 3> scale = owner->transform->worldScale();
-            scale.x *= MATH->fastSqrt((float(camera->component_data.renderSize.width) / camera->component_data.renderSize.height));
-            bufferData.model = MATH->getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(),
+            scale.x *= MATH.fastSqrt((float(camera->component_data.renderSize.width) / camera->component_data.renderSize.height));
+            bufferData.model = MATH.getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(),
                                                         scale, GRAP->getTargetCamera()->owner->transform->worldPosition());
             VK->setMemoryBuffer(modelBuffer, sizeof(bufferData), &bufferData);
         }

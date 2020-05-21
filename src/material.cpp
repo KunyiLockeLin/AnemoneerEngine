@@ -14,9 +14,9 @@ void QeMaterial::initialize(AeXMLNode *_property, QeObject *_owner) {
     materialData.image.pNormalMap = nullptr;
     materialData.image.pMetallicRoughnessMap = nullptr;
 
-    if (!component_data.baseMap.empty()) materialData.image.pBaseColorMap = G_AST->getImage(component_data.baseMap.c_str(), false, true);
-    if (!component_data.cubeMap.empty()) materialData.image.pCubeMap = G_AST->getImage(component_data.cubeMap.c_str(), true, true);
-    if (!component_data.normalMap.empty()) materialData.image.pNormalMap = G_AST->getImage(component_data.normalMap.c_str(), false);
+    if (!component_data.baseMap.empty()) materialData.image.pBaseColorMap = G_AST.getImage(component_data.baseMap.c_str(), false, true);
+    if (!component_data.cubeMap.empty()) materialData.image.pCubeMap = G_AST.getImage(component_data.cubeMap.c_str(), true, true);
+    if (!component_data.normalMap.empty()) materialData.image.pNormalMap = G_AST.getImage(component_data.normalMap.c_str(), false);
     if (!component_data.metallicRoughnessMap.empty())
-        materialData.image.pMetallicRoughnessMap = G_AST->getImage(component_data.metallicRoughnessMap.c_str(), false);
+        materialData.image.pMetallicRoughnessMap = G_AST.getImage(component_data.metallicRoughnessMap.c_str(), false);
 }
