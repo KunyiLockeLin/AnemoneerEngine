@@ -247,6 +247,7 @@ bool AeLib::eraseElementFromVector(std::vector<T> &vec, T element) {
 
 template <class T>
 T QeEncode::ConvertTo(const std::string &str) {
+    if (str.empty()) return 0;
     std::stringstream ss(str);
     T num;
     ss >> num;

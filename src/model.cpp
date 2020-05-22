@@ -42,8 +42,15 @@ void QeModel::clear() {
 }
 
 void QeModel::updatePreRender() {
-    if (bUpdateMaterialOID && component_data.materialOID) {
-        QeMaterial *material = (QeMaterial *)OBJMGR->findComponent(eGAMEOBJECT_Component_Material, component_data.materialOID);
+    if (bUpdateMaterialOID) {
+        int materialOID = 0;
+        if (data.type == eGAMEOBJECT_Component_Plane) {
+            QePlane *plane = (QePlane *)this;
+            materialOID = plane->component_data.materialOID;
+        } else {
+            materialOID = component_data.materialOID;
+        }
+        QeMaterial *material = (QeMaterial *)OBJMGR->findComponent(eGAMEOBJECT_Component_Material, materialOID);
         if (material) {
             bUpdateMaterialOID = false;
 
