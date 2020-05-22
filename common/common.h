@@ -11,7 +11,7 @@
 #include <random>
 #include <iostream>
 
-#define STR(r) \
+#define CASE_STR(r) \
     case r:    \
         return #r
 

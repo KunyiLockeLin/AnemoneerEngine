@@ -35,20 +35,17 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
 
     for (auto& element : define_node->data->elements) {
         s = indent;
-        if (!element.key.compare("type") || !element.key.compare("oid") || !element.key.compare("eid")) {
+        std::vector<std::string> types = ENCODE.split<std::string>(element.value, " ");
+        if (types[0].compare("enum") == 0) {
+            std::string key = "enum_define." + element.key + ".name";
+            std::string enum_name = config->getXMLValue<std::string>(key.c_str());
+            s += (enum_name + " " + element.key + ";");
+            load_codes.push_back(element.key + " = static_cast<" + enum_name + ">(property_->getXMLValue<int>(\"" +
+                                    element.key + "\"));");
         } else {
-            std::vector<std::string> types = ENCODE.split<std::string>(element.value, " ");
-            if (types[0].compare("enum") == 0) {
-                std::string key = "enum_define." + element.key + ".name";
-                std::string enum_name = config->getXMLValue<std::string>(key.c_str());
-                s += (enum_name + " " + element.key + ";");
-                load_codes.push_back(element.key + " = static_cast<" + enum_name + ">(property_->getXMLValue<int>(\"" +
-                                     element.key + "\"));");
-            } else {
-                s += AddElementCode(element.key, types, load_codes);
-            }
-            file.addNewLine(s.c_str());
+            s += AddElementCode(element.key, types, load_codes);
         }
+        file.addNewLine(s.c_str());
     }
 
     // read xml
@@ -128,7 +125,7 @@ int main(int argc, char* argv[]) {
         file.addNewLine(s.c_str());
         file.addNewLine((indent + "switch (type) {").c_str());
         for (auto e : e_data.enums) {
-            file.addNewLine((indent + indent + "STR(" + e_data.prefix + e.key + ");").c_str());
+            file.addNewLine((indent + indent + "CASE_STR(" + e_data.prefix + e.key + ");").c_str());
         }
         file.addNewLine((indent + indent + "default:").c_str());
         file.addNewLine((indent + indent + indent + "ASSERT(0,\"" + e_data.prefix + "INVALID\");").c_str());
