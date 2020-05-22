@@ -140,7 +140,6 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
     5123 (UNSIGNED_SHORT)	2
     5125 (UNSIGNED_INT)		4
     5126 (FLOAT)			4
-
     type 		Number of components
     "SCALAR" 	1
     "VEC2" 		2
@@ -281,9 +280,6 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 
                     if (strncmp(path, "translation", 11) == 0) {
                         model->jointsAnimation[k].translationOutput.resize(count);
-                        //for (int i = 0;i<count; ++i) {
-                        //    model->jointsAnimation[k].translationOutput[i] =*(AeArray<float,3>*)(binData + offset + 12 * i);
-                        //}
                         memcpy(model->jointsAnimation[k].translationOutput.data(), binData + offset, length);
                     } else if (strncmp(path, "rotation", 8) == 0) {
                         model->jointsAnimation[k].rotationOutput.resize(count);
@@ -384,7 +380,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) model->vertices[j].tangent = *(dataPos + j);
         } else if (index == bufferViews[5]) {  // joint
-            AeArray<float, 4> *dataPos = (AeArray<float, 4> *)(binData + offset);
+            AeArray<short int, 4> *dataPos = (AeArray<short int, 4> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) model->vertices[j].joint = *(dataPos + j);
 

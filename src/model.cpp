@@ -45,8 +45,11 @@ void QeModel::updatePreRender() {
     if (bUpdateMaterialOID) {
         int materialOID = 0;
         if (data.type == eGAMEOBJECT_Component_Plane) {
-            QePlane *plane = (QePlane *)this;
-            materialOID = plane->component_data.materialOID;
+            QePlane *node = (QePlane *)this;
+            materialOID = node->component_data.materialOID;
+        } else if (data.type == eGAMEOBJECT_Component_Animation) {
+            QeAnimation *node = (QeAnimation *)this;
+            materialOID = node->component_data.materialOID;
         } else {
             materialOID = component_data.materialOID;
         }
