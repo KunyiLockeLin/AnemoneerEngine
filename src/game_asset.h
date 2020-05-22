@@ -3,13 +3,13 @@
 #include "header.h"
 
 struct QeVertex {
-    AeVector<float, 4> pos = {0.0f, 0.0f, 0.0f, 1.0f};
-    AeVector<float, 4> color = {0.0f, 0.0f, 0.0f, 1.0f};
-    AeVector<float, 4> uv;
-    AeVector<float, 4> normal = {0.0f, 0.0f, 0.0f, 1.0f};
-    AeVector<float, 4> tangent;
-    AeVector<float, 4> joint;
-    AeVector<float, 4> weight;
+    AeArray<float, 4> pos = {0.0f, 0.0f, 0.0f, 1.0f};
+    AeArray<float, 4> color = {0.0f, 0.0f, 0.0f, 1.0f};
+    AeArray<float, 4> uv;
+    AeArray<float, 4> normal = {0.0f, 0.0f, 0.0f, 1.0f};
+    AeArray<float, 4> tangent;
+    AeArray<float, 4> joint;
+    AeArray<float, 4> weight;
 
     static VkVertexInputBindingDescription getBindingDescription();
     static std::array<VkVertexInputAttributeDescription, 7> getAttributeDescriptions();
@@ -26,9 +26,9 @@ struct QeDataJoint {
     // QeMatrix4x4f transform;
     QeMatrix4x4f inverseBindMatrix;
     std::vector<float> translationInput;
-    std::vector<AeVector<float, 3>> translationOutput;
+    std::vector<AeArray<float, 3>> translationOutput;
     std::vector<float> rotationInput;
-    std::vector<AeVector<float, 4>> rotationOutput;
+    std::vector<AeArray<float, 4>> rotationOutput;
     // std::vector<float> scaleInput;
     // std::vector<QeVector3f> scaleOutput;
 };
@@ -40,7 +40,7 @@ struct QeAssetModel {
 
     QeVKBuffer vertex;
     QeVKBuffer index;
-    AeVector<float, 3> scale;
+    AeArray<float, 3> scale;
 
     QeAssetMaterial *pMaterial = nullptr;
     QeDataJoint *rootJoint = nullptr;
@@ -78,8 +78,8 @@ struct QeDataMaterial {
             QeDataMaterialPhong phong;
             QeDataMaterialPBR pbr;
     };*/
-    AeVector<float, 4> baseColor;
-    AeVector<float, 4> metallicRoughnessEmissive;
+    AeArray<float, 4> baseColor;
+    AeArray<float, 4> metallicRoughnessEmissive;
     QeDataMaterial() {}
 };
 

@@ -24,12 +24,12 @@ void QeLine::updatePreRender() {
         (QeTransform *)OBJMGR->findComponent(eGAMEOBJECT_Component_Transform, component_data.targetTransformOID);
     if (targetTransform == 0) return;
 
-    AeVector<float,3> targetPos = targetTransform->worldPosition();
-    AeVector<float, 3> pos = owner->transform->worldPosition();
+    AeArray<float,3> targetPos = targetTransform->worldPosition();
+    AeArray<float, 3> pos = owner->transform->worldPosition();
 
-     AeVector<float, 3> vec = targetPos - pos;
+     AeArray<float, 3> vec = targetPos - pos;
     float size = MATH.fastSqrt(MATH.length(vec));
-     AeVector<float, 3> scale = {size, size, size};
+     AeArray<float, 3> scale = {size, size, size};
 
     // LOG("line x: " + vec.x + "  y: " + vec.y + "  z: " + vec.z);
     bufferData.model = MATH.getTransformMatrix(owner->transform->worldPosition(), MATH.vectorToEulerAngles(vec), scale,

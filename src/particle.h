@@ -16,7 +16,7 @@ class QeParticle : public QeModel {
     QeVKBuffer vertexBuffer;
     QeVKBuffer outBuffer;
     QeTimer periodTimer;
-    AeVector<float, 3> size;
+    AeArray<float, 3> size;
 
     QeDataDescriptorSet descriptorSetCompute;
     QeDataComputePipeline computePipeline;

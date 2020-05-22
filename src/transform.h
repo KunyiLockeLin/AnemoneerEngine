@@ -8,19 +8,19 @@ class QeTransform : public QeComponent {
     virtual void updatePreRender();
 
     // Face is Euler angles, (roll, pitch, yaw) or (bank, attitude, heading).
-    AeVector<float, 3> worldPosition();
-    AeVector<float, 3> worldScale();
-    AeVector<float, 3> worldFaceEular();
-    AeVector<float, 3> worldFaceVector();
-    AeVector<float, 3> localFaceVector();
+    AeArray<float, 3> worldPosition();
+    AeArray<float, 3> worldScale();
+    AeArray<float, 3> worldFaceEular();
+    AeArray<float, 3> worldFaceVector();
+    AeArray<float, 3> localFaceVector();
 
-    void setWorldPosition(AeVector<float, 3> &_worldPosition);
-    void setWorldScale(AeVector<float, 3> &_worldScale);
-    void setWorldFaceByEular(AeVector<float, 3> &_worldFaceEular);
-    void setWorldFaceByVector(AeVector<float, 3> &_worldFaceVector);
+    void setWorldPosition(AeArray<float, 3> &_worldPosition);
+    void setWorldScale(AeArray<float, 3> &_worldScale);
+    void setWorldFaceByEular(AeArray<float, 3> &_worldFaceEular);
+    void setWorldFaceByVector(AeArray<float, 3> &_worldFaceVector);
 
-    void move(AeVector<float, 3> &_addMove, AeVector<float, 3> &_face, AeVector<float, 3> &_up);
-    void revolute(AeVector<float, 3> &_addRevolute, AeVector<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
+    void move(AeArray<float, 3> &_addMove, AeArray<float, 3> &_face, AeArray<float, 3> &_up);
+    void revolute(AeArray<float, 3> &_addRevolute, AeArray<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
                   bool bFixZ = false);
 
     QeMatrix4x4f worldTransformMatrix(bool bRotate = true, bool bFixSize = false);

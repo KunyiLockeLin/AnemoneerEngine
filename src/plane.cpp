@@ -86,7 +86,7 @@ void QePlane::updatePreRender() {
         QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eGAMEOBJECT_Component_Camera, component_data.targetCameraOID);
 
         if (camera) {
-            AeVector<float, 3> scale = owner->transform->worldScale();
+            AeArray<float, 3> scale = owner->transform->worldScale();
             scale.x *= MATH.fastSqrt((float(camera->component_data.renderSize.width) / camera->component_data.renderSize.height));
             bufferData.model = MATH.getTransformMatrix(owner->transform->worldPosition(), owner->transform->worldFaceEular(),
                                                         scale, GRAP->getTargetCamera()->owner->transform->worldPosition());

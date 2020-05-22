@@ -4,37 +4,37 @@
 
 SINGLETON_INSTANCE(AeMath)
 
-AeVector<float, 3> QeRay::positionByTime(float t) { return origin + direction * t; }
+AeArray<float, 3> QeRay::positionByTime(float t) { return origin + direction * t; }
 
 AeMath::AeMath() {}
 AeMath::~AeMath() {}
 
-AeVector<float, 3> AeMath::cross(AeVector<float, 3> &_vec1, AeVector<float, 3> &_vec2) {
-    AeVector<float, 3> _rtn;
+AeArray<float, 3> AeMath::cross(AeArray<float, 3> &_vec1, AeArray<float, 3> &_vec2) {
+    AeArray<float, 3> _rtn;
     _rtn.x = _vec1.y * _vec2.z - _vec1.z * _vec2.y;
     _rtn.y = _vec1.z * _vec2.x - _vec1.x * _vec2.z;
     _rtn.z = _vec1.x * _vec2.y - _vec1.y * _vec2.x;
     return _rtn;
 }
 
-AeVector<float, 3> AeMath::eulerAnglesToVector(AeVector<float, 3> &_eulerAngles) {
-    AeVector<float, 3> _radians = _eulerAngles * DEGREES_TO_RADIANS;
+AeArray<float, 3> AeMath::eulerAnglesToVector(AeArray<float, 3> &_eulerAngles) {
+    AeArray<float, 3> _radians = _eulerAngles * DEGREES_TO_RADIANS;
 
     /* roll, pitch, yaw? yaw, roll, pitch?  not roll,
     x = cos(yaw)*cos(pitch)
     y = sin(yaw)*cos(pitch)
     z = sin(pitch)
     */
-    AeVector<float, 3> ret;
+    AeArray<float, 3> ret;
     ret.x = cos(_eulerAngles.z) * cos(_eulerAngles.y);
     ret.y = sin(_eulerAngles.z) * cos(_eulerAngles.y);
     ret.z = sin(_eulerAngles.y);
     return normalize(ret);
 }
 
-AeVector<float, 3> AeMath::vectorToEulerAngles(AeVector<float, 3> &_vector) {
-    AeVector<float, 3> _radians;
-    AeVector<float, 3> _vec = normalize(_vector);
+AeArray<float, 3> AeMath::vectorToEulerAngles(AeArray<float, 3> &_vector) {
+    AeArray<float, 3> _radians;
+    AeArray<float, 3> _vec = normalize(_vector);
 
     _radians.z = atan(_vec.y / _vec.x);
     _radians.x = 0;
@@ -75,11 +75,11 @@ float AeMath::fastSqrt(float _number) {
     //#endif
 }
 
-QeMatrix4x4f AeMath::lookAt(AeVector<float, 3> &_pos, AeVector<float, 3> &_center, AeVector<float, 3> &_up) {
+QeMatrix4x4f AeMath::lookAt(AeArray<float, 3> &_pos, AeArray<float, 3> &_center, AeArray<float, 3> &_up) {
     QeMatrix4x4f _rtn;
-    AeVector<float, 3> _face = normalize(_center - _pos);
-    AeVector<float, 3> _surface = normalize(cross(_face, _up));
-    AeVector<float, 3> _up1 = cross(_surface, _face);
+    AeArray<float, 3> _face = normalize(_center - _pos);
+    AeArray<float, 3> _surface = normalize(cross(_face, _up));
+    AeArray<float, 3> _up1 = cross(_surface, _face);
 
     _rtn._00 = _surface.x;
     _rtn._10 = _surface.y;
@@ -113,7 +113,7 @@ QeMatrix4x4f AeMath::perspective(float _fov, float _aspect, float _near, float _
     return _rtn;
 }
 
-QeMatrix4x4f AeMath::translate(AeVector<float, 3> &_pos) {
+QeMatrix4x4f AeMath::translate(AeArray<float, 3> &_pos) {
     QeMatrix4x4f _rtn;
     _rtn._30 = _pos.x;
     _rtn._31 = _pos.y;
@@ -121,31 +121,31 @@ QeMatrix4x4f AeMath::translate(AeVector<float, 3> &_pos) {
     return _rtn;
 }
 
-AeVector<float, 3> AeMath::move(AeVector<float, 3> &_position, AeVector<float, 3> &_addMove, AeVector<float, 3> &_face,
-                                AeVector<float, 3> &_up) {
-    AeVector<float, 3> _move;
+AeArray<float, 3> AeMath::move(AeArray<float, 3> &_position, AeArray<float, 3> &_addMove, AeArray<float, 3> &_face,
+                                AeArray<float, 3> &_up) {
+    AeArray<float, 3> _move;
 
     // forward
     if (_addMove.z) {
         _move = _face * _addMove.z;
     } else {
-        AeVector<float, 3> _surface = normalize(cross(_face, _up));
+        AeArray<float, 3> _surface = normalize(cross(_face, _up));
         // left
         if (_addMove.x) {
             _move = _surface * _addMove.x;
         }
         // up
         if (_addMove.y) {
-            AeVector<float, 3> _up1 = cross(_surface, _face);
+            AeArray<float, 3> _up1 = cross(_surface, _face);
             _move = _up1 * _addMove.y;
         }
     }
     return (_position + _move);
 }
 
-AeVector<float, 4> AeMath::eulerAngles_to_quaternion(AeVector<float, 3> &_eulerAngles) {
-    AeVector<float, 4> quat;
-    AeVector<float, 3> _half_radians = _eulerAngles * DEGREES_TO_RADIANS * 0.5f;
+AeArray<float, 4> AeMath::eulerAngles_to_quaternion(AeArray<float, 3> &_eulerAngles) {
+    AeArray<float, 4> quat;
+    AeArray<float, 3> _half_radians = _eulerAngles * DEGREES_TO_RADIANS * 0.5f;
     float c1 = cos(_half_radians.x);
     float c2 = cos(_half_radians.y);
     float c3 = cos(_half_radians.z);
@@ -160,13 +160,13 @@ AeVector<float, 4> AeMath::eulerAngles_to_quaternion(AeVector<float, 3> &_eulerA
     return quat;
 }
 
-QeMatrix4x4f AeMath::rotate_quaternion(AeVector<float, 3> &_eulerAngles) {
-    AeVector<float, 4> quat = eulerAngles_to_quaternion(_eulerAngles);
+QeMatrix4x4f AeMath::rotate_quaternion(AeArray<float, 3> &_eulerAngles) {
+    AeArray<float, 4> quat = eulerAngles_to_quaternion(_eulerAngles);
     return rotate_quaternion(quat);
 }
 
-AeVector<float, 4> AeMath::axis_to_quaternion(float _angle, AeVector<float, 3> &_axis) {
-    AeVector<float, 4> quat;
+AeArray<float, 4> AeMath::axis_to_quaternion(float _angle, AeArray<float, 3> &_axis) {
+    AeArray<float, 4> quat;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float s = sin(_radian / 2);
     quat.x = _axis.x * s;
@@ -176,12 +176,12 @@ AeVector<float, 4> AeMath::axis_to_quaternion(float _angle, AeVector<float, 3> &
     return quat;
 }
 
-QeMatrix4x4f AeMath::rotate_quaternion(float _angle, AeVector<float, 3> &_axis) {
-    AeVector<float, 4> quat = axis_to_quaternion(_angle, _axis);
+QeMatrix4x4f AeMath::rotate_quaternion(float _angle, AeArray<float, 3> &_axis) {
+    AeArray<float, 4> quat = axis_to_quaternion(_angle, _axis);
     return rotate_quaternion(quat);
 }
 
-QeMatrix4x4f AeMath::rotate_quaternion(AeVector<float, 4> &quaternion) {
+QeMatrix4x4f AeMath::rotate_quaternion(AeArray<float, 4> &quaternion) {
     QeMatrix4x4f _rtn;
 
     float xx = quaternion.x * quaternion.x;
@@ -209,10 +209,10 @@ QeMatrix4x4f AeMath::rotate_quaternion(AeVector<float, 4> &quaternion) {
     return _rtn;
 }
 
-QeMatrix4x4f AeMath::rotate_eularAngles(AeVector<float, 3> &_eulerAngles) {
+QeMatrix4x4f AeMath::rotate_eularAngles(AeArray<float, 3> &_eulerAngles) {
     QeMatrix4x4f _rtn;
-    AeVector<float, 3> _radians = _eulerAngles * DEGREES_TO_RADIANS;
-    AeVector<float, 3> _coss, _sins;
+    AeArray<float, 3> _radians = _eulerAngles * DEGREES_TO_RADIANS;
+    AeArray<float, 3> _coss, _sins;
     _coss.x = cos(_radians.x);
     _coss.y = cos(_radians.y);
     _coss.z = cos(_radians.z);
@@ -235,13 +235,13 @@ QeMatrix4x4f AeMath::rotate_eularAngles(AeVector<float, 3> &_eulerAngles) {
     return _rtn;
 }
 
-QeMatrix4x4f AeMath::rotate_axis(float _angle, AeVector<float, 3> &_axis) {
+QeMatrix4x4f AeMath::rotate_axis(float _angle, AeArray<float, 3> &_axis) {
     QeMatrix4x4f _rtn;
     float _radian = _angle * DEGREES_TO_RADIANS;
     float _cosA = cos(_radian);
     float _sinA = sin(_radian);
     _axis = normalize(_axis);
-    AeVector<float, 3> _temp(_axis * (1.0f - _cosA));
+    AeArray<float, 3> _temp(_axis * (1.0f - _cosA));
 
     _rtn._00 = _cosA + _temp.x * _axis.x;
     _rtn._01 = _temp.x * _axis.y + _sinA * _axis.z;
@@ -294,7 +294,7 @@ QeMatrix4x4f AeMath::rotateZ(float _angle) {
     return _rtn;
 }
 
-QeMatrix4x4f AeMath::scale(AeVector<float, 3> &_size) {
+QeMatrix4x4f AeMath::scale(AeArray<float, 3> &_size) {
     QeMatrix4x4f _rtn;
     _rtn._00 = _size.x;
     _rtn._11 = _size.y;
@@ -634,8 +634,8 @@ QeMatrix4x4f QeMatrix4x4f::operator*(const QeMatrix4x4f &other) {
             for (int k = 0; k < 4; k++) ((float *)&_new)[i * 4 + j] += (((float *)this)[k * 4 + j] * ((float *)&other)[i * 4 + k]);
     return _new;
 }
-AeVector<float, 4> QeMatrix4x4f::operator*(const AeVector<float, 4> &other) {
-    AeVector<float, 4> _new;
+AeArray<float, 4> QeMatrix4x4f::operator*(const AeArray<float, 4> &other) {
+    AeArray<float, 4> _new;
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++) ((float *)&_new)[i] += (((float *)this)[j * 4 + i] * ((float *)&other)[j]);
 
@@ -732,8 +732,8 @@ QeMatrix4x4f AeMath::transpose(QeMatrix4x4f &_mat) {
 int AeMath::clamp(int in, int low, int high) { return in < low ? low : in > high ? high : in; }
 float AeMath::clamp(float in, float low, float high) { return in < low ? low : in > high ? high : in; }
 
-AeVector<float, 4> AeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
-    AeVector<float, 4> ret;
+AeArray<float, 4> AeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
+    AeArray<float, 4> ret;
     float trace = matrix._00 + matrix._11 + matrix._22;
     if (trace > 0) {
         float w4 = fastSqrt(trace + 1) * 2;
@@ -763,8 +763,8 @@ AeVector<float, 4> AeMath::matrix_to_quaternion(QeMatrix4x4f matrix) {
     return ret;
 }
 
-AeVector<float, 4> AeMath::interpolateDir(AeVector<float, 4> &a, AeVector<float, 4> &b, float blend) {
-    AeVector<float, 4> ret;
+AeArray<float, 4> AeMath::interpolateDir(AeArray<float, 4> &a, AeArray<float, 4> &b, float blend) {
+    AeArray<float, 4> ret;
 
     float dotf = dot(a, b);
     float blend1 = 1.f - blend;
@@ -783,16 +783,16 @@ AeVector<float, 4> AeMath::interpolateDir(AeVector<float, 4> &a, AeVector<float,
     return ret;
 }
 
-AeVector<float, 3> AeMath::interpolatePos(AeVector<float, 3> &start, AeVector<float, 3> &end, float progression) {
-    AeVector<float, 3> ret;
+AeArray<float, 3> AeMath::interpolatePos(AeArray<float, 3> &start, AeArray<float, 3> &end, float progression) {
+    AeArray<float, 3> ret;
     ret.x = start.x + (end.x - start.x) * progression;
     ret.y = start.y + (end.y - start.y) * progression;
     ret.z = start.z + (end.z - start.z) * progression;
     return ret;
 }
 
-QeMatrix4x4f AeMath::transform(AeVector<float, 3> &_tanslation, AeVector<float, 4> &_rotation_quaternion,
-                               AeVector<float, 3> &_scale) {
+QeMatrix4x4f AeMath::transform(AeArray<float, 3> &_tanslation, AeArray<float, 4> &_rotation_quaternion,
+                               AeArray<float, 3> &_scale) {
     QeMatrix4x4f ret;
     ret *= translate(_tanslation);
     ret *= rotate_quaternion(_rotation_quaternion);
@@ -800,41 +800,41 @@ QeMatrix4x4f AeMath::transform(AeVector<float, 3> &_tanslation, AeVector<float, 
     return ret;
 }
 
-float AeMath::getAnglefromVectors(AeVector<float, 3> &v1, AeVector<float, 3> &v2) {
-    AeVector<float, 3> v1n = normalize(v1);
-    AeVector<float, 3> v2n = normalize(v2);
+float AeMath::getAnglefromVectors(AeArray<float, 3> &v1, AeArray<float, 3> &v2) {
+    AeArray<float, 3> v1n = normalize(v1);
+    AeArray<float, 3> v2n = normalize(v2);
 
     float d = dot(v1n, v2n);
     return acos(d) * RADIANS_TO_DEGREES;
 }
 
 // lock when y = 90 or -90
-AeVector<float, 3> AeMath::revolute_eularAngles(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
-                                                AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
-    AeVector<float, 3> vec = (_position - _centerPosition);
-    AeVector<float, 3> eularAngle = vectorToEulerAngles(vec) + _addRevolute;
-    AeVector<float, 3> origin {length(vec), 0.f, 0.f};
+AeArray<float, 3> AeMath::revolute_eularAngles(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
+                                                AeArray<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
+    AeArray<float, 3> vec = (_position - _centerPosition);
+    AeArray<float, 3> eularAngle = vectorToEulerAngles(vec) + _addRevolute;
+    AeArray<float, 3> origin {length(vec), 0.f, 0.f};
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
     mat *= rotate_eularAngles(eularAngle);
-    return AeVector<float, 3> (mat * AeVector<float, 4>(origin, 1.0f));
+    return AeArray<float, 3> (mat * AeArray<float, 4>(origin, 1.0f));
 }
 
-AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
-                                         AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
-    AeVector<float, 3> vec = {_position - _centerPosition};
-    AeVector<float, 3> vecN = normalize(vec);
+AeArray<float, 3> AeMath::revolute_axis(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
+                                         AeArray<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ) {
+    AeArray<float, 3> vec = {_position - _centerPosition};
+    AeArray<float, 3> vecN = normalize(vec);
 
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
 
     if (_addRevolute.x) {
         if (bFixX) {
-            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
+            AeArray<float, 3> _axis{0.f, 0.f, 1.f};
             mat *= rotate_axis(_addRevolute.x, _axis);
         } else {
-            AeVector<float, 3> _axis{0.f, 1.f, 0.f};
-            AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
+            AeArray<float, 3> _axis{0.f, 1.f, 0.f};
+            AeArray<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             mat *= rotate_axis(_addRevolute.x, _surface);
         }
@@ -842,11 +842,11 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
 
     if (_addRevolute.y) {
         if (bFixY) {
-            AeVector<float, 3> _axis{0.f, 1.f, 0.f};
+            AeArray<float, 3> _axis{0.f, 1.f, 0.f};
             mat *= rotate_axis(_addRevolute.y, _axis);
         } else {
-            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
-            AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
+            AeArray<float, 3> _axis{0.f, 0.f, 1.f};
+            AeArray<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.y < 0) _surface *= -1;
             mat *= rotate_axis(_addRevolute.y, _surface);
         }
@@ -854,11 +854,11 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
 
     if (_addRevolute.z) {
         if (bFixZ) {
-            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
+            AeArray<float, 3> _axis{0.f, 0.f, 1.f};
             mat *= rotate_axis(_addRevolute.z, _axis);
         } else {
-            AeVector<float, 3> _axis{0.f, 0.f, 1.f};
-            AeVector<float, 3> _surface = normalize(cross(_axis, vecN));
+            AeArray<float, 3> _axis{0.f, 0.f, 1.f};
+            AeArray<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             // if ((vecN.x == 0 && vecN.y < 0) || (vecN.x < 0 && vecN.y == 0) ||
             // (vecN.x < 0 && vecN.y < 0)|| (vecN.x < 0 && vecN.y > 0)) _surface *= -1;
@@ -866,7 +866,7 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
         }
     }
 
-    return mat * AeVector<float, 4>(vec, 1.0f);
+    return mat * AeArray<float, 4>(vec, 1.0f);
 }
 
 /*void QeMath::getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle) {
@@ -934,8 +934,8 @@ AeVector<float, 3> AeMath::revolute_axis(AeVector<float, 3> &_position, AeVector
         rotatefromCenter(center, pos, polarAngle, azimuthalAngle);
 }*/
 
-QeMatrix4x4f AeMath::getTransformMatrix(AeVector<float, 3> &_translate, AeVector<float, 3> &_rotateEuler,
-                                        AeVector<float, 3> &_scale, AeVector<float, 3> &camera_world_position, bool bRotate,
+QeMatrix4x4f AeMath::getTransformMatrix(AeArray<float, 3> &_translate, AeArray<float, 3> &_rotateEuler,
+                                        AeArray<float, 3> &_scale, AeArray<float, 3> &camera_world_position, bool bRotate,
                                         bool bFixSize) {
     QeMatrix4x4f mat;
 
@@ -953,7 +953,7 @@ QeMatrix4x4f AeMath::getTransformMatrix(AeVector<float, 3> &_translate, AeVector
 }
 
 bool AeMath::hit_test_raycast_sphere(QeRay &ray, QeBoundingSphere &sphere, float maxDistance, QeRayHitRecord *hit) {
-    AeVector<float, 3> vrs = sphere.center - ray.origin;
+    AeArray<float, 3> vrs = sphere.center - ray.origin;
     float vrs2 = dot(vrs, vrs);
     float r2 = sphere.radius * sphere.radius;
     float vrsd = 0;

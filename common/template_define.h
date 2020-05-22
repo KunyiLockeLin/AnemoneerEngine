@@ -3,12 +3,12 @@
 #include <sstream>
 
 template <class T, int N>
-AeVector<T, N>::AeVector() {
+AeArray<T, N>::AeArray() {
     std::memset(elements, 0, sizeof elements);
 }
 
 template <class T, int N>
-AeVector<T, N>::AeVector(std::initializer_list<T> l) {
+AeArray<T, N>::AeArray(std::initializer_list<T> l) {
     int index = 0;
     for (T v : l) {
         elements[index] = v;
@@ -18,13 +18,13 @@ AeVector<T, N>::AeVector(std::initializer_list<T> l) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N>::AeVector(const AeVector<T2, N2> &other) {
+AeArray<T, N>::AeArray(const AeArray<T2, N2> &other) {
     *this = other;
 }
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N>::AeVector(const AeVector<T2, N2> &other, T value) {
+AeArray<T, N>::AeArray(const AeArray<T2, N2> &other, T value) {
     *this = other;
     if (N > N2) {
         for (int i = N2; i < N; ++i) {
@@ -35,7 +35,7 @@ AeVector<T, N>::AeVector(const AeVector<T2, N2> &other, T value) {
 
 template <class T, int N>
 template <class T2, int N2>
-bool AeVector<T, N>::operator==(const AeVector<T2, N2> &other) const {
+bool AeArray<T, N>::operator==(const AeArray<T2, N2> &other) const {
     for (int i = 0; i < N && i < N2; ++i) {
         if (elements[i] != other.elements[i]) {
             return false;
@@ -46,7 +46,7 @@ bool AeVector<T, N>::operator==(const AeVector<T2, N2> &other) const {
 
 template <class T, int N>
 template <class T2, int N2>
-bool AeVector<T, N>::operator!=(const AeVector<T2, N2> &other) const {
+bool AeArray<T, N>::operator!=(const AeArray<T2, N2> &other) const {
     for (int i = 0; i < N && i < N2; ++i) {
         if (elements[i] == other.elements[i]) {
             return false;
@@ -56,13 +56,13 @@ bool AeVector<T, N>::operator!=(const AeVector<T2, N2> &other) const {
 }
 
 template <class T, int N>
-T &AeVector<T, N>::operator[](int index) {
+T &AeArray<T, N>::operator[](int index) {
     return elements[index];
 }
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> &AeVector<T, N>::operator=(const AeVector<T2, N2> &other) {
+AeArray<T, N> &AeArray<T, N>::operator=(const AeArray<T2, N2> &other) {
     for (int i = 0; i < N && i < N2; ++i) {
         elements[i] = other.elements[i];
     }
@@ -71,7 +71,7 @@ AeVector<T, N> &AeVector<T, N>::operator=(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> &AeVector<T, N>::operator+=(const AeVector<T2, N2> &other) {
+AeArray<T, N> &AeArray<T, N>::operator+=(const AeArray<T2, N2> &other) {
     for (int i = 0; i < N && i < N2; ++i) {
         elements[i] += other.elements[i];
     }
@@ -80,7 +80,7 @@ AeVector<T, N> &AeVector<T, N>::operator+=(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> &AeVector<T, N>::operator-=(const AeVector<T2, N2> &other) {
+AeArray<T, N> &AeArray<T, N>::operator-=(const AeArray<T2, N2> &other) {
     for (int i = 0; i < N && i < N2; ++i) {
         elements[i] -= other.elements[i];
     }
@@ -89,7 +89,7 @@ AeVector<T, N> &AeVector<T, N>::operator-=(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> &AeVector<T, N>::operator*=(const AeVector<T2, N2> &other) {
+AeArray<T, N> &AeArray<T, N>::operator*=(const AeArray<T2, N2> &other) {
     for (int i = 0; i < N && i < N2; ++i) {
         elements[i] *= other.elements[i];
     }
@@ -98,7 +98,7 @@ AeVector<T, N> &AeVector<T, N>::operator*=(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> &AeVector<T, N>::operator/=(const AeVector<T2, N2> &other) {
+AeArray<T, N> &AeArray<T, N>::operator/=(const AeArray<T2, N2> &other) {
     for (int i = 0; i < N && i < N2; ++i) {
         elements[i] /= other.elements[i];
     }
@@ -107,8 +107,8 @@ AeVector<T, N> &AeVector<T, N>::operator/=(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> AeVector<T, N>::operator+(const AeVector<T2, N2> &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator+(const AeArray<T2, N2> &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N && i < N2; ++i) {
         new_.elements[i] = elements[i] + other.elements[i];
     }
@@ -117,8 +117,8 @@ AeVector<T, N> AeVector<T, N>::operator+(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> AeVector<T, N>::operator-(const AeVector<T2, N2> &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator-(const AeArray<T2, N2> &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N && i < N2; ++i) {
         new_.elements[i] = elements[i] - other.elements[i];
     }
@@ -127,8 +127,8 @@ AeVector<T, N> AeVector<T, N>::operator-(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> AeVector<T, N>::operator*(const AeVector<T2, N2> &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator*(const AeArray<T2, N2> &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N && i < N2; ++i) {
         new_.elements[i] = elements[i] * other.elements[i];
     }
@@ -137,8 +137,8 @@ AeVector<T, N> AeVector<T, N>::operator*(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2, int N2>
-AeVector<T, N> AeVector<T, N>::operator/(const AeVector<T2, N2> &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator/(const AeArray<T2, N2> &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N && i < N2; ++i) {
         new_.elements[i] = elements[i] / other.elements[i];
     }
@@ -147,7 +147,7 @@ AeVector<T, N> AeVector<T, N>::operator/(const AeVector<T2, N2> &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> &AeVector<T, N>::operator=(const T2 &other) {
+AeArray<T, N> &AeArray<T, N>::operator=(const T2 &other) {
     for (int i = 0; i < N; ++i) {
         elements[i] = other;
     }
@@ -156,7 +156,7 @@ AeVector<T, N> &AeVector<T, N>::operator=(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> &AeVector<T, N>::operator+=(const T2 &other) {
+AeArray<T, N> &AeArray<T, N>::operator+=(const T2 &other) {
     for (int i = 0; i < N; ++i) {
         elements[i] += other;
     }
@@ -165,7 +165,7 @@ AeVector<T, N> &AeVector<T, N>::operator+=(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> &AeVector<T, N>::operator-=(const T2 &other) {
+AeArray<T, N> &AeArray<T, N>::operator-=(const T2 &other) {
     for (int i = 0; i < N; ++i) {
         elements[i] -= other;
     }
@@ -174,7 +174,7 @@ AeVector<T, N> &AeVector<T, N>::operator-=(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> &AeVector<T, N>::operator*=(const T2 &other) {
+AeArray<T, N> &AeArray<T, N>::operator*=(const T2 &other) {
     for (int i = 0; i < N; ++i) {
         elements[i] *= other;
     }
@@ -183,7 +183,7 @@ AeVector<T, N> &AeVector<T, N>::operator*=(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> &AeVector<T, N>::operator/=(const T2 &other) {
+AeArray<T, N> &AeArray<T, N>::operator/=(const T2 &other) {
     for (int i = 0; i < N; ++i) {
         elements[i] /= other;
     }
@@ -192,8 +192,8 @@ AeVector<T, N> &AeVector<T, N>::operator/=(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> AeVector<T, N>::operator+(const T2 &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator+(const T2 &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N; ++i) {
         new_.elements[i] = elements[i] + other;
     }
@@ -202,8 +202,8 @@ AeVector<T, N> AeVector<T, N>::operator+(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> AeVector<T, N>::operator-(const T2 &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator-(const T2 &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N; ++i) {
         new_.elements[i] = elements[i] - other;
     }
@@ -212,8 +212,8 @@ AeVector<T, N> AeVector<T, N>::operator-(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> AeVector<T, N>::operator*(const T2 &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator*(const T2 &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N; ++i) {
         new_.elements[i] = elements[i] * other;
     }
@@ -222,8 +222,8 @@ AeVector<T, N> AeVector<T, N>::operator*(const T2 &other) {
 
 template <class T, int N>
 template <class T2>
-AeVector<T, N> AeVector<T, N>::operator/(const T2 &other) {
-    AeVector<T, N> new_;
+AeArray<T, N> AeArray<T, N>::operator/(const T2 &other) {
+    AeArray<T, N> new_;
     for (int i = 0; i < N; ++i) {
         new_.elements[i] = elements[i] / other;
     }
@@ -329,14 +329,14 @@ AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
 }
 
 template <class T, int N>
-AeVector<T, N> AeXMLNode::getXMLValues(const char *key) {
-    AeVector<T, N> ret;
+AeArray<T, N> AeXMLNode::getXMLValues(const char *key) {
+    AeArray<T, N> ret;
     getXMLValues<T, N>(ret, key);
     return ret;
 }
 
 template <class T, int N>
-AeXMLNode *AeXMLNode::getXMLValues(AeVector<T, N> &value, const char *key) {
+AeXMLNode *AeXMLNode::getXMLValues(AeArray<T, N> &value, const char *key) {
     std::string str_values;
     AeXMLNode *ret = getXMLValue<std::string>(str_values, key);
     auto values = ENCODE.split<T>(str_values, " ");
@@ -383,8 +383,8 @@ typename std::enable_if<std::is_integral<T>::value, T>::type AeMath::random(T st
 }
 
 template <class T, int N>
-AeVector<T, N> AeMath::randoms(T start, T range) {
-    AeVector<T, N> ret;
+AeArray<T, N> AeMath::randoms(T start, T range) {
+    AeArray<T, N> ret;
     if (!range) {
         ret = start;
         return ret;
@@ -399,7 +399,7 @@ AeVector<T, N> AeMath::randoms(T start, T range) {
 }
 
 template <int N>
-float AeMath::dot(AeVector<float, N> &vec1, AeVector<float, N> &vec2) {
+float AeMath::dot(AeArray<float, N> &vec1, AeArray<float, N> &vec2) {
     float ret = 0.f;
     for (int i = 0; i < N; ++i) {
         ret += (vec1.elements[i] * vec2.elements[i]);
@@ -408,11 +408,11 @@ float AeMath::dot(AeVector<float, N> &vec1, AeVector<float, N> &vec2) {
 }
 
 template <int N>
-float AeMath::length(AeVector<float, N> &vec) {
+float AeMath::length(AeArray<float, N> &vec) {
     return fastSqrt(dot<N>(vec, vec));
 }
 
 template <int N>
-AeVector<float, N> AeMath::normalize(AeVector<float, N> &_vec) {
+AeArray<float, N> AeMath::normalize(AeArray<float, N> &_vec) {
     return _vec / length<N>(_vec);
 }

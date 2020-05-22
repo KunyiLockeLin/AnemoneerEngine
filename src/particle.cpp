@@ -220,7 +220,7 @@ void QeParticle::updatePreRender() {
         // bDeaths.data());
     }
 
-    AeVector<float, 3> scale = owner->transform->worldScale();
+    AeArray<float, 3> scale = owner->transform->worldScale();
     scale.x *= size.x;
     scale.y *= size.y;
 

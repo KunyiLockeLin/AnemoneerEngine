@@ -4,9 +4,7 @@ void QeLight::initialize(AeXMLNode *_property, QeObject *_owner) {
     COMPONENT_INITIALIZE
 
     bufferData.color = component_data.color;
-    bufferData.param.x = float(component_data.lightType);
-    bufferData.param.y = component_data.intensity;
-    bufferData.param.z = component_data.coneAngle;
+    bufferData.param = { float(component_data.lightType), component_data.intensity, component_data.coneAngle};
     GRAP->addLight(this);
 }
 

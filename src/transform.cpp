@@ -17,17 +17,17 @@ void QeTransform::updatePreRender() {
     }
 }
 
-AeVector<float, 3> QeTransform::worldPosition() {
+AeArray<float, 3> QeTransform::worldPosition() {
     if (component_data.targetAnimationOID) {
         QeAnimation *animation =
             (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, component_data.targetAnimationOID);
         if (animation) {
-            AeVector<float, 4> vec = {component_data.position, 1.f};
+            AeArray<float, 4> vec = {component_data.position, 1.f};
             return animation->getBoneTransfrom(component_data.targetBoneName.c_str()) * vec;
         }
     }
 
-    AeVector<float, 3> _ret = component_data.position;
+    AeArray<float, 3> _ret = component_data.position;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
@@ -37,7 +37,7 @@ AeVector<float, 3> QeTransform::worldPosition() {
     return _ret;
 }
 
-AeVector<float, 3> QeTransform::worldScale() {
+AeArray<float, 3> QeTransform::worldScale() {
     /*if (targetAnimationOID) {
             QeAnimation* animation =
     (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
@@ -46,7 +46,7 @@ AeVector<float, 3> QeTransform::worldScale() {
             }
     }*/
 
-    AeVector<float, 3> _ret = component_data.scale;
+    AeArray<float, 3> _ret = component_data.scale;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
@@ -56,7 +56,7 @@ AeVector<float, 3> QeTransform::worldScale() {
     return _ret;
 }
 
-AeVector<float, 3> QeTransform::worldFaceEular() {
+AeArray<float, 3> QeTransform::worldFaceEular() {
     /*if (targetAnimationOID) {
             QeAnimation* animation =
     (QeAnimation*)OBJMGR->findComponent(eComponent_animation, targetAnimationOID);
@@ -66,7 +66,7 @@ AeVector<float, 3> QeTransform::worldFaceEular() {
             }
     }*/
 
-     AeVector<float, 3> _ret = component_data.faceEular;
+     AeArray<float, 3> _ret = component_data.faceEular;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
@@ -76,11 +76,11 @@ AeVector<float, 3> QeTransform::worldFaceEular() {
     return _ret;
 }
 
-AeVector<float, 3> QeTransform::worldFaceVector() { return MATH.eulerAnglesToVector(worldFaceEular()); }
+AeArray<float, 3> QeTransform::worldFaceVector() { return MATH.eulerAnglesToVector(worldFaceEular()); }
 
-AeVector<float, 3> QeTransform::localFaceVector() { return MATH.eulerAnglesToVector(component_data.faceEular); }
+AeArray<float, 3> QeTransform::localFaceVector() { return MATH.eulerAnglesToVector(component_data.faceEular); }
 
-void QeTransform::setWorldPosition(AeVector<float, 3> &_worldPosition) {
+void QeTransform::setWorldPosition(AeArray<float, 3> &_worldPosition) {
     component_data.position = _worldPosition;
     QeObject *_parent = owner->owner;
 
@@ -90,7 +90,7 @@ void QeTransform::setWorldPosition(AeVector<float, 3> &_worldPosition) {
     }
 }
 
-void QeTransform::setWorldScale(AeVector<float, 3> &_worldScale) {
+void QeTransform::setWorldScale(AeArray<float, 3> &_worldScale) {
     component_data.scale = _worldScale;
     QeObject *_parent = owner->owner;
 
@@ -100,7 +100,7 @@ void QeTransform::setWorldScale(AeVector<float, 3> &_worldScale) {
     }
 }
 
-void QeTransform::setWorldFaceByEular(AeVector<float, 3> &_worldFace) {
+void QeTransform::setWorldFaceByEular(AeArray<float, 3> &_worldFace) {
     component_data.faceEular = _worldFace;
     QeObject *_parent = owner->owner;
 
@@ -110,15 +110,15 @@ void QeTransform::setWorldFaceByEular(AeVector<float, 3> &_worldFace) {
     }
 }
 
-void QeTransform::setWorldFaceByVector(AeVector<float, 3> &_worldFaceVector) {
+void QeTransform::setWorldFaceByVector(AeArray<float, 3> &_worldFaceVector) {
     setWorldFaceByEular(MATH.vectorToEulerAngles(_worldFaceVector));
 }
 
-void QeTransform::move(AeVector<float, 3> &_addMove, AeVector<float, 3> &_face, AeVector<float, 3> &_up) {
+void QeTransform::move(AeArray<float, 3> &_addMove, AeArray<float, 3> &_face, AeArray<float, 3> &_up) {
     component_data.position = MATH.move(component_data.position, _addMove, _face, _up);
 }
 
-void QeTransform::revolute(AeVector<float, 3> &_addRevolute, AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY,
+void QeTransform::revolute(AeArray<float, 3> &_addRevolute, AeArray<float, 3> &_centerPosition, bool bFixX, bool bFixY,
                            bool bFixZ) {
     setWorldPosition(MATH.revolute_axis(worldPosition(), _addRevolute, _centerPosition, bFixX, bFixY, bFixZ));
 }

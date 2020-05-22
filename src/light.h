@@ -2,10 +2,10 @@
 #include "header.h"
 
 struct QeDataLight {
-    AeVector<float, 4> pos;
-    AeVector<float, 4> dir;
-    AeVector<float, 4> color;
-    AeVector<float, 4> param;  // 1: type, 2: intensity, 3: coneAngle
+    AeArray<float, 4> pos;
+    AeArray<float, 4> dir;
+    AeArray<float, 4> color;
+    AeArray<float, 4> param;  // 1: type, 2: intensity, 3: coneAngle
 };
 
 class QeLight : public QeComponent {

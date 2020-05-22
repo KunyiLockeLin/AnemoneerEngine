@@ -20,7 +20,7 @@ std::string AddElementCode(std::string& key, std::vector<std::string>& types, st
         load_codes.push_back(key + " = property_->getXMLValue<" + types[0] + ">(\"" + key + "\");");
         return (types[0] + " " + key + ";");
     }
-    std::string type1 = "AeVector<" + types[0] + ", " + types[1] + ">";
+    std::string type1 = "AeArray<" + types[0] + ", " + types[1] + ">";
     load_codes.push_back(key + " = property_->getXMLValues<" + types[0] + ", " + types[1] + ">(\"" + key + "\");");
     return (type1 + " " + key + ";");
 }

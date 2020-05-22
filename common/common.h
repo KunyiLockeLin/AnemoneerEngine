@@ -37,12 +37,12 @@ const char INDEX_NONE = -1;
 // struct Empty {};
 // typename std::conditional<N >= 1, T, Empty>::type x;
 template <class T, int N>
-struct AeVectorBase {
+struct AeArrayBase {
     T elements[N];
 };
 
 template <class T>
-struct AeVectorBase<T, 2> {
+struct AeArrayBase<T, 2> {
     union {
         T elements[2];
         struct {
@@ -58,7 +58,7 @@ struct AeVectorBase<T, 2> {
 };
 
 template <class T>
-struct AeVectorBase<T, 3> {
+struct AeArrayBase<T, 3> {
     union {
         T elements[3];
         struct {
@@ -74,7 +74,7 @@ struct AeVectorBase<T, 3> {
 };
 
 template <class T>
-struct AeVectorBase<T, 4> {
+struct AeArrayBase<T, 4> {
     union {
         T elements[4];
         struct {
@@ -90,65 +90,65 @@ struct AeVectorBase<T, 4> {
 };
 
 template <class T, int N>
-struct DllExport AeVector : public AeVectorBase<T, N> {
-    AeVector();
-    AeVector(std::initializer_list<T> l);
+struct DllExport AeArray : public AeArrayBase<T, N> {
+    AeArray();
+    AeArray(std::initializer_list<T> l);
     template <class T2, int N2>
-    AeVector(const AeVector<T2, N2> &other);
+    AeArray(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector(const AeVector<T2, N2> &other, T value);
+    AeArray(const AeArray<T2, N2> &other, T value);
 
     template <class T2, int N2>
-    bool operator==(const AeVector<T2, N2> &other) const;
+    bool operator==(const AeArray<T2, N2> &other) const;
 
     template <class T2, int N2>
-    bool operator!=(const AeVector<T2, N2> &other) const;
+    bool operator!=(const AeArray<T2, N2> &other) const;
 
     template <class T2, int N2>
-    AeVector<T, N> &operator=(const AeVector<T2, N2> &other);
+    AeArray<T, N> &operator=(const AeArray<T2, N2> &other);
     T &operator[](int index);
 
     template <class T2, int N2>
-    AeVector<T, N> &operator+=(const AeVector<T2, N2> &other);
+    AeArray<T, N> &operator+=(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> &operator-=(const AeVector<T2, N2> &other);
+    AeArray<T, N> &operator-=(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> &operator*=(const AeVector<T2, N2> &other);
+    AeArray<T, N> &operator*=(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> &operator/=(const AeVector<T2, N2> &other);
+    AeArray<T, N> &operator/=(const AeArray<T2, N2> &other);
 
     template <class T2, int N2>
-    AeVector<T, N> operator+(const AeVector<T2, N2> &other);
+    AeArray<T, N> operator+(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> operator-(const AeVector<T2, N2> &other);
+    AeArray<T, N> operator-(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> operator*(const AeVector<T2, N2> &other);
+    AeArray<T, N> operator*(const AeArray<T2, N2> &other);
     template <class T2, int N2>
-    AeVector<T, N> operator/(const AeVector<T2, N2> &other);
+    AeArray<T, N> operator/(const AeArray<T2, N2> &other);
 
     template <class T2>
-    AeVector<T, N> &operator=(const T2 &other);
+    AeArray<T, N> &operator=(const T2 &other);
     template <class T2>
-    AeVector<T, N> &operator+=(const T2 &other);
+    AeArray<T, N> &operator+=(const T2 &other);
     template <class T2>
-    AeVector<T, N> &operator-=(const T2 &other);
+    AeArray<T, N> &operator-=(const T2 &other);
     template <class T2>
-    AeVector<T, N> &operator*=(const T2 &other);
+    AeArray<T, N> &operator*=(const T2 &other);
     template <class T2>
-    AeVector<T, N> &operator/=(const T2 &other);
+    AeArray<T, N> &operator/=(const T2 &other);
 
     template <class T2>
-    AeVector<T, N> operator+(const T2 &other);
+    AeArray<T, N> operator+(const T2 &other);
     template <class T2>
-    AeVector<T, N> operator-(const T2 &other);
+    AeArray<T, N> operator-(const T2 &other);
     template <class T2>
-    AeVector<T, N> operator*(const T2 &other);
+    AeArray<T, N> operator*(const T2 &other);
     template <class T2>
-    AeVector<T, N> operator/(const T2 &other);
+    AeArray<T, N> operator/(const T2 &other);
 };
 /*
 template <class T>
-struct DllExport AeVector<T, 2> {
+struct DllExport AeArray<T, 2> {
     union {
         T elements[2];
         struct {
@@ -174,7 +174,7 @@ struct DllExport AeMatrix {
     AeMatrix(float value);
     AeMatrix<T, N> &operator*=(const AeMatrix<T, N> &other);
     AeMatrix<T, N> operator*(const AeMatrix<T, N> &other);
-    AeVector<N> operator*(const AeVector<N> &other);
+    AeArray<N> operator*(const AeArray<N> &other);
     AeMatrix<T, N> &operator/=(const float &other);
 };
 */
@@ -291,30 +291,30 @@ struct DllExport QeMatrix4x4f {
                  float __21, float __22, float __23, float __30, float __31, float __32, float __33);
     QeMatrix4x4f &operator*=(const QeMatrix4x4f &other);
     QeMatrix4x4f operator*(const QeMatrix4x4f &other);
-    AeVector<float, 4> operator*(const AeVector<float, 4> &other);
+    AeArray<float, 4> operator*(const AeArray<float, 4> &other);
     QeMatrix4x4f &operator/=(const float &other);
 };
 
 struct DllExport QeRay {
-    AeVector<float, 3> origin;
-    AeVector<float, 3> direction;
-    AeVector<float, 3> positionByTime(float t);
+    AeArray<float, 3> origin;
+    AeArray<float, 3> direction;
+    AeArray<float, 3> positionByTime(float t);
 };
 
 struct DllExport QeRayHitRecord {
     float t;
-    AeVector<float, 3> position;
-    AeVector<float, 3> normal;
+    AeArray<float, 3> position;
+    AeArray<float, 3> normal;
 };
 
 struct DllExport QeBoundingSphere {
-    AeVector<float, 3> center;
+    AeArray<float, 3> center;
     float radius;
 };
 
 struct DllExport QeBoundingBox {
-    AeVector<float, 3> min;
-    AeVector<float, 3> max;
+    AeArray<float, 3> min;
+    AeArray<float, 3> max;
 };
 
 class DllExport QeBinaryTree {
@@ -345,51 +345,51 @@ class DllExport AeMath {
     template <class T>
     typename std::enable_if<std::is_floating_point<T>::value, T>::type random(T start, T range);
     template <class T, int N>
-    AeVector<T, N> randoms(T start, T range);
+    AeArray<T, N> randoms(T start, T range);
     template <int N>
-    float dot(AeVector<float, N> &vec1, AeVector<float, N> &vec2);
+    float dot(AeArray<float, N> &vec1, AeArray<float, N> &vec2);
     template <int N>
-    float length(AeVector<float, N> &vec);
+    float length(AeArray<float, N> &vec);
     template <int N>
-    AeVector<float, N> normalize(AeVector<float, N> &_vec);
+    AeArray<float, N> normalize(AeArray<float, N> &_vec);
 
-    QeMatrix4x4f lookAt(AeVector<float, 3> &_pos, AeVector<float, 3> &_center, AeVector<float, 3> &_up);
+    QeMatrix4x4f lookAt(AeArray<float, 3> &_pos, AeArray<float, 3> &_center, AeArray<float, 3> &_up);
     QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
-    QeMatrix4x4f translate(AeVector<float, 3> &_pos);
-    AeVector<float, 3> move(AeVector<float, 3> &_position, AeVector<float, 3> &_addMove, AeVector<float, 3> &_face,
-                            AeVector<float, 3> &_up);
-    QeMatrix4x4f rotate_quaternion(AeVector<float, 3> &_eulerAngles);
-    QeMatrix4x4f rotate_quaternion(AeVector<float, 4> &quaternion);
-    QeMatrix4x4f rotate_quaternion(float _angle, AeVector<float, 3> &_axis);
-    AeVector<float, 4> eulerAngles_to_quaternion(AeVector<float, 3> &_eulerAngles);
-    AeVector<float, 4> axis_to_quaternion(float _angle, AeVector<float, 3> &_axis);
-    QeMatrix4x4f rotate_eularAngles(AeVector<float, 3> &_eulerAngles);  // (roll, pitch, yaw) or (bank, attitude, heading)
-    QeMatrix4x4f rotate_axis(float _angle, AeVector<float, 3> &_axis);
+    QeMatrix4x4f translate(AeArray<float, 3> &_pos);
+    AeArray<float, 3> move(AeArray<float, 3> &_position, AeArray<float, 3> &_addMove, AeArray<float, 3> &_face,
+                            AeArray<float, 3> &_up);
+    QeMatrix4x4f rotate_quaternion(AeArray<float, 3> &_eulerAngles);
+    QeMatrix4x4f rotate_quaternion(AeArray<float, 4> &quaternion);
+    QeMatrix4x4f rotate_quaternion(float _angle, AeArray<float, 3> &_axis);
+    AeArray<float, 4> eulerAngles_to_quaternion(AeArray<float, 3> &_eulerAngles);
+    AeArray<float, 4> axis_to_quaternion(float _angle, AeArray<float, 3> &_axis);
+    QeMatrix4x4f rotate_eularAngles(AeArray<float, 3> &_eulerAngles);  // (roll, pitch, yaw) or (bank, attitude, heading)
+    QeMatrix4x4f rotate_axis(float _angle, AeArray<float, 3> &_axis);
     QeMatrix4x4f rotateX(float _angle);
     QeMatrix4x4f rotateY(float _angle);
     QeMatrix4x4f rotateZ(float _angle);
-    AeVector<float, 4> matrix_to_quaternion(QeMatrix4x4f matrix);
-    QeMatrix4x4f scale(AeVector<float, 3> &_size);
-    QeMatrix4x4f transform(AeVector<float, 3> &_tanslation, AeVector<float, 4> &_rotation_quaternion, AeVector<float, 3> &_scale);
-    QeMatrix4x4f getTransformMatrix(AeVector<float, 3> &_translate, AeVector<float, 3> &_rotateEuler, AeVector<float, 3> &_scale,
-                                    AeVector<float, 3> &camera_world_position, bool bRotate = true, bool bFixSize = false);
+    AeArray<float, 4> matrix_to_quaternion(QeMatrix4x4f matrix);
+    QeMatrix4x4f scale(AeArray<float, 3> &_size);
+    QeMatrix4x4f transform(AeArray<float, 3> &_tanslation, AeArray<float, 4> &_rotation_quaternion, AeArray<float, 3> &_scale);
+    QeMatrix4x4f getTransformMatrix(AeArray<float, 3> &_translate, AeArray<float, 3> &_rotateEuler, AeArray<float, 3> &_scale,
+                                    AeArray<float, 3> &camera_world_position, bool bRotate = true, bool bFixSize = false);
 
-    AeVector<float, 3> eulerAnglesToVector(AeVector<float, 3> &_eulerAngles);
-    AeVector<float, 3> vectorToEulerAngles(AeVector<float, 3> &_vector);
-    AeVector<float, 3> cross(AeVector<float, 3> &_vec1, AeVector<float, 3> &_vec2);
+    AeArray<float, 3> eulerAnglesToVector(AeArray<float, 3> &_eulerAngles);
+    AeArray<float, 3> vectorToEulerAngles(AeArray<float, 3> &_vector);
+    AeArray<float, 3> cross(AeArray<float, 3> &_vec1, AeArray<float, 3> &_vec2);
     float fastSqrt(float _number);
     bool inverse(QeMatrix4x4f &_inMat, QeMatrix4x4f &_outMat);
     QeMatrix4x4f transpose(QeMatrix4x4f &_mat);
     int clamp(int in, int low, int high);
     float clamp(float in, float low, float high);
-    AeVector<float, 4> interpolateDir(AeVector<float, 4> &a, AeVector<float, 4> &b, float blend);
-    AeVector<float, 3> interpolatePos(AeVector<float, 3> &start, AeVector<float, 3> &end, float progression);
-    float getAnglefromVectors(AeVector<float, 3> &v1, AeVector<float, 3> &v2);
-    AeVector<float, 3> revolute_axis(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
-                                     AeVector<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
+    AeArray<float, 4> interpolateDir(AeArray<float, 4> &a, AeArray<float, 4> &b, float blend);
+    AeArray<float, 3> interpolatePos(AeArray<float, 3> &start, AeArray<float, 3> &end, float progression);
+    float getAnglefromVectors(AeArray<float, 3> &v1, AeArray<float, 3> &v2);
+    AeArray<float, 3> revolute_axis(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
+                                     AeArray<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
                                      bool bFixZ = false);
-    AeVector<float, 3> revolute_eularAngles(AeVector<float, 3> &_position, AeVector<float, 3> &_addRevolute,
-                                            AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ);
+    AeArray<float, 3> revolute_eularAngles(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
+                                            AeArray<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ);
 
     // void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
     // void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
@@ -435,9 +435,9 @@ struct DllExport AeXMLNode {
     AeXMLNode *getXMLValue(T &value, const char *key);
 
     template <class T, int N>
-    AeVector<T, N> getXMLValues(const char *key);
+    AeArray<T, N> getXMLValues(const char *key);
     template <class T, int N>
-    AeXMLNode *getXMLValues(AeVector<T, N> &value, const char *key);
+    AeXMLNode *getXMLValues(AeArray<T, N> &value, const char *key);
 
     AeXMLNode *copyXMLNode();
     void copyXMLValue(AeXMLNode *to);

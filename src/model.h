@@ -5,9 +5,9 @@
 struct QeDataModel {
     QeMatrix4x4f model;
     QeMatrix4x4f joints[MAX_JOINT_NUM];
-    AeVector<float,4> param1;  // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3:
+    AeArray<float,4> param1;  // 0: bColorMap, 1: bCubeMap, 2: bNormalMap, 3:
                         // bMetallicRoughnessMap
-    AeVector<float, 4> param2;  // 0: outlineWidth, 1: vertexNum
+    AeArray<float, 4> param2;  // 0: outlineWidth, 1: vertexNum
     QeDataMaterial material;
 };
 

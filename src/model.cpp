@@ -114,7 +114,7 @@ bool QeModel::isShowByCulling(QeCamera *camera) {
         if (plane->component_data.planeType == ePLANE_D2D) return true;
     }
     bool _bCullingShow = true;
-    AeVector<float, 3> vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
+    AeArray<float, 3> vec = owner->transform->worldPosition() - camera->owner->transform->worldPosition();
     float dis = MATH.length(vec);
 
     if (dis > camera->component_data.cullingDistance) return false;

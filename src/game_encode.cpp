@@ -282,7 +282,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
                     if (strncmp(path, "translation", 11) == 0) {
                         model->jointsAnimation[k].translationOutput.resize(count);
                         //for (int i = 0;i<count; ++i) {
-                        //    model->jointsAnimation[k].translationOutput[i] =*(AeVector<float,3>*)(binData + offset + 12 * i);
+                        //    model->jointsAnimation[k].translationOutput[i] =*(AeArray<float,3>*)(binData + offset + 12 * i);
                         //}
                         memcpy(model->jointsAnimation[k].translationOutput.data(), binData + offset, length);
                     } else if (strncmp(path, "rotation", 8) == 0) {
@@ -365,26 +365,26 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
                 for (j = 0; j < count; ++j) model->indices.push_back(*(dataPos + j));
             }
         } else if (index == bufferViews[1]) {  // position
-            AeVector<float, 3> *dataPos = (AeVector<float, 3> *)(binData + offset);
+            AeArray<float, 3> *dataPos = (AeArray<float, 3> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) {
                 model->vertices[j].pos = *(dataPos + j);
                 model->vertices[j].color = {1.0f, 1.0f, 1.0f, 1.0f};
             }
         } else if (index == bufferViews[2]) {  // normal
-            AeVector<float, 3> *dataPos = (AeVector<float, 3> *)(binData + offset);
+            AeArray<float, 3> *dataPos = (AeArray<float, 3> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) model->vertices[j].normal = *(dataPos + j);
         } else if (index == bufferViews[3]) {  // uv
-            AeVector<float, 2> *dataPos = (AeVector<float, 2> *)(binData + offset);
+            AeArray<float, 2> *dataPos = (AeArray<float, 2> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) model->vertices[j].uv = *(dataPos + j);
         } else if (index == bufferViews[4]) {  // tangent
-            AeVector<float, 4> *dataPos = (AeVector<float, 4> *)(binData + offset);
+            AeArray<float, 4> *dataPos = (AeArray<float, 4> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) model->vertices[j].tangent = *(dataPos + j);
         } else if (index == bufferViews[5]) {  // joint
-            AeVector<float, 4> *dataPos = (AeVector<float, 4> *)(binData + offset);
+            AeArray<float, 4> *dataPos = (AeArray<float, 4> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             for (j = 0; j < count; ++j) model->vertices[j].joint = *(dataPos + j);
 
@@ -398,7 +398,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
             // for (j = 0; j < count; ++j) model->joints[j] = *(dataPos + j);
             // memcpy(model->joints.data(), dataPos, length);
         } else if (index == bufferViews[6]) {  // weight
-            AeVector<float, 4> *dataPos = (AeVector<float, 4> *)(binData + offset);
+            AeArray<float, 4> *dataPos = (AeArray<float, 4> *)(binData + offset);
             if (model->vertices.size() < count) model->vertices.resize(count);
             float totalWeight = 1;
             int lastWeight = 0;

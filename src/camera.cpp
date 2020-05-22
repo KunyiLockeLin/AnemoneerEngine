@@ -12,14 +12,14 @@ void QeCamera::initialize(AeXMLNode *_property, QeObject *_owner) {
     GRAP->createRender(component_data.renderType, data.oid, component_data.renderSize);
 }
 
-void QeCamera::rotateTarget(AeVector<float, 3> _addRotate) {
+void QeCamera::rotateTarget(AeArray<float, 3> _addRotate) {
     if (component_data.renderType == eRENDER_UI) return;
 
-    AeVector<float, 3> lookAtV = lookAt();
-    AeVector<float, 3> pos = owner->transform->worldPosition();
-    AeVector<float, 3> vec = {pos - lookAtV};
+    AeArray<float, 3> lookAtV = lookAt();
+    AeArray<float, 3> pos = owner->transform->worldPosition();
+    AeArray<float, 3> vec = {pos - lookAtV};
 
-    AeVector<float, 3> euler = MATH.vectorToEulerAngles(vec);
+    AeArray<float, 3> euler = MATH.vectorToEulerAngles(vec);
     if ((euler.y < -85 && _addRotate.y < 0) || (euler.y > 85 && _addRotate.y > 0)) return;
     _addRotate *= component_data.speed;
 
@@ -33,22 +33,22 @@ void QeCamera::rotateTarget(AeVector<float, 3> _addRotate) {
     owner->transform->revolute(_addRotate, lookAtV, false, false, true);
 }
 
-void QeCamera::rotateTargetByMouse(AeVector<int, 2> mousePos) {
+void QeCamera::rotateTargetByMouse(AeArray<int, 2> mousePos) {
     rotateTarget({0.f, float(mousePos.y - lastMousePos.y), float(mousePos.x - lastMousePos.x)});
     lastMousePos = mousePos;
 }
 
-void QeCamera::setMousePos(AeVector<int, 2> mousePos) { lastMousePos = mousePos; }
+void QeCamera::setMousePos(AeArray<int, 2> mousePos) { lastMousePos = mousePos; }
 
-void QeCamera::zoomInOut(AeVector<int, 2> mousePos) {
+void QeCamera::zoomInOut(AeArray<int, 2> mousePos) {
     move({0, 0, float(-(mousePos.x - lastMousePos.x) / 10)}, false);
     lastMousePos = mousePos;
 }
 
-void QeCamera::move(AeVector<float, 3> _dir, bool bMoveCenter) {
-    AeVector<float, 3> lookAtV = lookAt();
-    AeVector<float, 3> pos = owner->transform->worldPosition();
-    AeVector<float, 3> face = pos - lookAtV;
+void QeCamera::move(AeArray<float, 3> _dir, bool bMoveCenter) {
+    AeArray<float, 3> lookAtV = lookAt();
+    AeArray<float, 3> pos = owner->transform->worldPosition();
+    AeArray<float, 3> face = pos - lookAtV;
 
     if (component_data.renderType == eRENDER_UI) {
         _dir *= component_data.speed;
@@ -76,14 +76,14 @@ void QeCamera::move(AeVector<float, 3> _dir, bool bMoveCenter) {
 
 bool QeCamera::isRaytracing() { return bufferData.pos_rayTracingDepth.w > 0 ? true : false; }
 
-AeVector<float, 3> QeCamera::face() {
+AeArray<float, 3> QeCamera::face() {
     if (component_data.renderType == eRENDER_UI) return {0, 0, 1};
     return MATH.normalize(lookAt() - owner->transform->worldPosition());
 }
 
-AeVector<float, 3> QeCamera::lookAt() {
+AeArray<float, 3> QeCamera::lookAt() {
     if (component_data.renderType == eRENDER_UI) {
-        AeVector<float, 3> pos = owner->transform->worldPosition();
+        AeArray<float, 3> pos = owner->transform->worldPosition();
         return {pos.x, pos.y, pos.z + 1};
     }
     if (component_data.lookAtTransformOID > 0) {
@@ -124,10 +124,10 @@ void QeCamera::updatePreRender() {
         }
     }
 
-    AeVector<float, 3> pos = owner->transform->worldPosition();
+    AeArray<float, 3> pos = owner->transform->worldPosition();
     bufferData.pos_rayTracingDepth = pos;
-    AeVector<float, 3> lookAtV = lookAt();
-    AeVector<float, 3> face = lookAtV - pos;
+    AeArray<float, 3> lookAtV = lookAt();
+    AeArray<float, 3> face = lookAtV - pos;
     float focusDist = MATH.length(face);
     face = MATH.normalize(face);
     // focusDist = 1;
@@ -141,10 +141,10 @@ void QeCamera::updatePreRender() {
         float half_height = -1.0f / bufferData.projection._11;            // tan(theta/2);
         float half_width = bufferData.horizontal_aspect.w * half_height;  // 1.0/cam.projection[0][0];
 
-        AeVector<float, 3> w = face;  // vec3(cam.view[0][2], cam.view[1][2], cam.view[2][2]);
-        AeVector<float, 3> u = {bufferData.view._00, bufferData.view._10,
+        AeArray<float, 3> w = face;  // vec3(cam.view[0][2], cam.view[1][2], cam.view[2][2]);
+        AeArray<float, 3> u = {bufferData.view._00, bufferData.view._10,
                                   bufferData.view._20};  // cross(vup, w);
-        AeVector<float, 3> v = {bufferData.view._01, bufferData.view._11,
+        AeArray<float, 3> v = {bufferData.view._01, bufferData.view._11,
                                   bufferData.view._21};  // cross(w, u);
         bufferData.lowerLeftCorner = pos - u * half_width * focusDist - v * half_height * focusDist + w * focusDist;
         bufferData.horizontal_aspect = u * 2 * half_width * focusDist;

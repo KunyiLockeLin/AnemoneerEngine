@@ -4,7 +4,7 @@
 
 struct QeDataEnvironment {
     QeDataCamera camera;
-    AeVector<float,4> param;  // 0: gamma, 1: exposure
+    AeArray<float,4> param;  // 0: gamma, 1: exposure
 };
 
 struct QeDataViewport {
@@ -29,7 +29,7 @@ struct QeDataViewport {
 };
 
 struct QeBufferSubpass {
-    AeVector<float, 4> param;  // 0: blurHorizontal, 1: blurScale, 2: blurStrength
+    AeArray<float, 4> param;  // 0: blurHorizontal, 1: blurScale, 2: blurStrength
 };
 
 struct QeDataSubpass {
@@ -131,7 +131,7 @@ class QeGraphics {
 
     // VkSemaphore textOverlayComplete;
 
-    QeDataRender *createRender(AE_RENDER_TYPE type, int cameraOID, AeVector<int, 2> renderSize);
+    QeDataRender *createRender(AE_RENDER_TYPE type, int cameraOID, AeArray<int, 2> renderSize);
     void refreshRender();
     void cleanupRender();
     void drawFrame();

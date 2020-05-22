@@ -49,9 +49,9 @@ void QeAnimation::updateAction() {
     float progessive =
         MATH.clamp((currentActionTime - previousActionFrameTime) / (nextActionFrameTime - previousActionFrameTime), 0.f, 1.f);
 
-    AeVector<float, 3> previousTranslation, nextTranslation, currentTranslation;
-    AeVector<float, 4 > previousRotation, nextRotation, currentRotation;
-    AeVector<float, 3> currentScale = {1, 1, 1};
+    AeArray<float, 3> previousTranslation, nextTranslation, currentTranslation;
+    AeArray<float, 4 > previousRotation, nextRotation, currentRotation;
+    AeArray<float, 3> currentScale = {1, 1, 1};
 
     size_t size = modelData->jointsAnimation.size();
 
@@ -89,7 +89,7 @@ void QeAnimation::updateAction() {
 
 void QeAnimation::setChildrenJointTransform(QeDataJoint &joint, QeMatrix4x4f &parentTransform) {
     size_t size = modelData->jointsAnimation.size();
-    AeVector<float,3> scale({1, 1, 1});
+    AeArray<float,3> scale({1, 1, 1});
 
     for (size_t i = 0; i < size; ++i) {
         if (modelData->jointsAnimation[i].id == joint.id) {
