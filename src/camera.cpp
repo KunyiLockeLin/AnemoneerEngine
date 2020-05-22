@@ -4,7 +4,7 @@ void QeCamera::initialize(AeXMLNode *_property, QeObject *_owner) {
     COMPONENT_INITIALIZE
 
     // type = eCameraThirdPerson;
-    bufferData.pos_rayTracingDepth.w = component_data.raytracingDepth;
+    bufferData.pos_rayTracingDepth.w = float(component_data.raytracingDepth);
     bufferData.vertical_lensRadius.w = component_data.aperture / 2;
 
     bUpdatePostProcessingOID = false;

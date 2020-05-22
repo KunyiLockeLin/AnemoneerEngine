@@ -1,12 +1,16 @@
-@echo | call shader_compile.bat
+@echo | call shader_compiler.bat
 timeout 3
 
 rmdir build /s/q
 mkdir build
 cd build
 cmake -G "Visual Studio 15 Win64" ..
+timeout 3
 
-cmake --build . --target CodeGenerator --config Debug
+cmake --build . --target lib_common --config Debug
+timeout 3
+
+cmake --build . --target exe_CodeGenerator --config Debug
 timeout 3
 
 cd ..
@@ -14,7 +18,7 @@ cd ..
 timeout 3
 
 cd build
-cmake --build . --target AngryEngine --config Debug
+cmake --build . --target exe_AngryEngine --config Debug
 timeout 3
 
 cd ..
