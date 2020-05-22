@@ -817,7 +817,7 @@ AeArray<float, 3> AeMath::revolute_eularAngles(AeArray<float, 3> &_position, AeA
     QeMatrix4x4f mat;
     mat *= translate(_centerPosition);
     mat *= rotate_eularAngles(eularAngle);
-    return AeArray<float, 3> (mat * AeArray<float, 4>(origin, 1.0f));
+    return mat * AeArray<float, 4>(origin, 1.0f);
 }
 
 AeArray<float, 3> AeMath::revolute_axis(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
@@ -857,7 +857,7 @@ AeArray<float, 3> AeMath::revolute_axis(AeArray<float, 3> &_position, AeArray<fl
             AeArray<float, 3> _axis{0.f, 0.f, 1.f};
             mat *= rotate_axis(_addRevolute.z, _axis);
         } else {
-            AeArray<float, 3> _axis{0.f, 0.f, 1.f};
+            AeArray<float, 3> _axis{1.f, 0.f, 0.f};
             AeArray<float, 3> _surface = normalize(cross(_axis, vecN));
             if (vecN.z < 0) _surface *= -1;
             // if ((vecN.x == 0 && vecN.y < 0) || (vecN.x < 0 && vecN.y == 0) ||

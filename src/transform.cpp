@@ -13,7 +13,7 @@ void QeTransform::updatePreRender() {
     if ((owner && owner->owner && owner->owner->transform) &&
         (component_data.revoluteSpeed.x != 0.f || component_data.revoluteSpeed.y != 0.f || component_data.revoluteSpeed.z != 0.f)) {
         revolute((component_data.revoluteSpeed * ENGINE->deltaTime * 30.f), owner->owner->transform->worldPosition(),
-                 component_data.revoluteFixAxis.x, component_data.revoluteFixAxis.y, component_data.revoluteFixAxis.y);
+                 component_data.revoluteFixAxis.x, component_data.revoluteFixAxis.y, component_data.revoluteFixAxis.z);
     }
 }
 
