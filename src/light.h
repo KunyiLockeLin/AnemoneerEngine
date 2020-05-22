@@ -10,7 +10,7 @@ struct QeDataLight {
 
 class QeLight : public QeComponent {
    public:
-    COMPONENT_CLASS_DECLARE(QeLight, AeGameObjectComponentLightData)
+    COMPONENT_CLASS_DECLARE(Light)
 
     QeDataLight bufferData;
     bool bUpdate;

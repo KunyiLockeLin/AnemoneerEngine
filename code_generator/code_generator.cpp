@@ -6,6 +6,7 @@
 //#include "src/generated_config_struct_enum.h"
 
 const std::string indent = "    ";
+const std::string gameobject_struct_name = "AeGameObjectData";
 AeXMLNode* config = nullptr;
 
 struct enum_data {
@@ -28,7 +29,8 @@ std::string AddElementCode(std::string& key, std::vector<std::string>& types, st
 void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     // struct
     file.addNewLine("");
-    std::string s = "struct AeGameObjectComponent" + node.data->key + "Data {";
+    std::string s = "struct ";
+    s += (gameobject_struct_name + "Component" + node.data->key + " {");
     file.addNewLine(s.c_str());
     auto* define_node = node.getXMLNode("define");
     std::vector<std::string> load_codes;
@@ -138,7 +140,9 @@ int main(int argc, char* argv[]) {
     file.addNewLine("");
     std::string type_name = enum_define->getXMLValue<std::string>("type.name");
     file.addNewLine("");
-    file.addNewLine("struct AeGameObjectData {");
+    std::string s = "struct ";
+    s += (gameobject_struct_name + " {");
+    file.addNewLine(s.c_str());
     file.addNewLine((indent + "std::string name;").c_str());
     file.addNewLine((indent + type_name + " type;").c_str());
     file.addNewLine((indent + "int oid;").c_str());

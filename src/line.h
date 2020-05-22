@@ -3,7 +3,7 @@
 
 class QeLine : public QeModel {
    public:
-    COMPONENT_CLASS_DECLARE_PARENT(QeLine, QeModel, AeGameObjectComponentLineData)
+    COMPONENT_CLASS_DECLARE_PARENT(Line, Model)
 
     virtual void updatePreRender();
 

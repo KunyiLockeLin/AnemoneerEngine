@@ -13,7 +13,7 @@ struct QeDataCamera {
 
 class QeCamera : public QeComponent {
    public:
-    COMPONENT_CLASS_DECLARE(QeCamera, AeGameObjectComponentCameraData)
+    COMPONENT_CLASS_DECLARE(Camera)
 
     AeArray<int, 2> lastMousePos;
     bool bUpdatePostProcessingOID;

@@ -13,8 +13,7 @@ struct QeDataModel {
 
 class QeModel : public QeComponent {
    public:
-    COMPONENT_CLASS_DECLARE_INITIALIZE(QeModel, AeGameObjectComponentModelData, modelBuffer(eBuffer_uniform),
-                                       descriptorSet(eDescriptorSetLayout_Model))
+    COMPONENT_CLASS_DECLARE_INITIALIZE(Model, modelBuffer(eBuffer_uniform), descriptorSet(eDescriptorSetLayout_Model))
 
     virtual void clear();
     virtual void updatePreRender();

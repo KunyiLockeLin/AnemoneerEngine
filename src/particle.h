@@ -3,8 +3,8 @@
 
 class QeParticle : public QeModel {
    public:
-    COMPONENT_CLASS_DECLARE_PARENT_INITIALIZE(QeParticle, QeModel, AeGameObjectComponentParticleData,
-                                              vertexBuffer(eBuffer_vertex_texel), outBuffer(eBuffer_storage_compute_shader_return),
+    COMPONENT_CLASS_DECLARE_PARENT_INITIALIZE(Particle, Model, vertexBuffer(eBuffer_vertex_texel),
+                                              outBuffer(eBuffer_storage_compute_shader_return),
                                               descriptorSetCompute(eDescriptorSetLayout_Compute))
 
     // QeAssetShader shader;

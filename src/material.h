@@ -3,7 +3,7 @@
 
 class QeMaterial : public QeComponent {
    public:
-    COMPONENT_CLASS_DECLARE(QeMaterial, AeGameObjectComponentMaterialData)
+    COMPONENT_CLASS_DECLARE(Material)
 
     QeAssetMaterial materialData;
 };

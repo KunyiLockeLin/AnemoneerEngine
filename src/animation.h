@@ -3,7 +3,7 @@
 
 class QeAnimation : public QeModel {
    public:
-    COMPONENT_CLASS_DECLARE_PARENT(QeAnimation, QeModel, AeGameObjectComponentAnimationData)
+    COMPONENT_CLASS_DECLARE_PARENT(Animation, Model)
 
     QeMatrix4x4f jointTransforms[MAX_JOINT_NUM];
     int currentActionFrame;

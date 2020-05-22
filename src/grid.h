@@ -3,7 +3,7 @@
 
 class QeGrid : public QeLine {
    public:
-    COMPONENT_CLASS_DECLARE_PARENT(QeGrid, QeLine, AeGameObjectComponentGridData)
+    COMPONENT_CLASS_DECLARE_PARENT(Grid, Line)
 
     virtual void updatePreRender();
 };

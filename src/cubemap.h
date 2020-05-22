@@ -3,7 +3,7 @@
 
 class QeCubemap : public QeModel {
    public:
-    COMPONENT_CLASS_DECLARE_PARENT(QeCubemap, QeModel, AeGameObjectComponentCubemapData)
+    COMPONENT_CLASS_DECLARE_PARENT(Cubemap, Model)
 
     // virtual QeDataDescriptorSetModel createDescriptorSetModel();
 };

@@ -3,7 +3,7 @@
 
 class QeTransform : public QeComponent {
    public:
-    COMPONENT_CLASS_DECLARE(QeTransform, AeGameObjectComponentTransformData)
+    COMPONENT_CLASS_DECLARE(Transform)
 
     virtual void updatePreRender();
 

@@ -3,7 +3,7 @@
 
 class QePlane : public QeModel {
    public:
-    COMPONENT_CLASS_DECLARE_PARENT(QePlane, QeModel, AeGameObjectComponentPlaneData)
+    COMPONENT_CLASS_DECLARE_PARENT(Plane, Model)
 
     // face: (0,0,1)
     bool bUpdateTargetCameraOID;

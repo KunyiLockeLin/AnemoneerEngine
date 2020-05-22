@@ -3,7 +3,7 @@
 
 class QeInputControl : public QeComponent {
    public:
-    COMPONENT_CLASS_DECLARE(QeInputControl, AeGameObjectComponentInputControlData)
+    COMPONENT_CLASS_DECLARE(InputControl)
 
     virtual void clear();
 
