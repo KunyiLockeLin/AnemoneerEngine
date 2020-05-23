@@ -18,7 +18,7 @@ add_custom_target(bat_shader_compiler SOURCES shader_compiler.bat ${SHADER} ${SH
 
 
 # lib common
-add_library(lib_common SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
+add_library(lib_common SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/manager.cpp common/log.cpp common/timer.cpp)
 
 set_target_properties(lib_common PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(lib_common PROPERTIES OUTPUT_NAME_DEBUG common_debug)
@@ -33,11 +33,63 @@ add_custom_command(TARGET lib_common POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy
 
 
 #lib ui
-#add_library(lib_ui SHARED)
+add_library(lib_ui SHARED ui/ui.h ui/ui.cpp)
+
+set_target_properties(lib_ui PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+set_target_properties(lib_ui PROPERTIES OUTPUT_NAME_DEBUG ui_debug)
+set_target_properties(lib_ui PROPERTIES OUTPUT_NAME_RELEASE ui)
+set_target_properties(lib_ui PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+
+target_include_directories(lib_ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(lib_ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(lib_ui PUBLIC debug common_debug optimized common)
+
+set(DEBUG_ui ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/ui_debug.dll)
+set(RELEASE_ui ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/ui.dll)
+add_custom_command(TARGET lib_ui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_ui}>$<$<CONFIG:release>:${RELEASE_ui}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy ui")
+
+
+# exe UITest
+add_executable(exe_UITest ui/ui.h ui/ui.cpp ui/main.cpp)
+
+set_target_properties(exe_UITest PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+set_target_properties(exe_UITest PROPERTIES OUTPUT_NAME_DEBUG UITest_debug)
+set_target_properties(exe_UITest PROPERTIES OUTPUT_NAME_RELEASE UITest)
+set_target_properties(exe_UITest PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+
+target_include_directories(exe_UITest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_UITest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_UITest PUBLIC debug common_debug optimized common)
 
 
 #lib gpu
-#add_library(lib_gpu SHARED)
+add_library(lib_gpu SHARED gpu/vulkan.h gpu/vulkan.cpp gpu/graphics.h gpu/graphics.cpp)
+
+set_target_properties(lib_gpu PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+set_target_properties(lib_gpu PROPERTIES OUTPUT_NAME_DEBUG gpu_debug)
+set_target_properties(lib_gpu PROPERTIES OUTPUT_NAME_RELEASE gpu)
+set_target_properties(lib_gpu PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+
+target_include_directories(lib_gpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(lib_gpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(lib_gpu PUBLIC debug common_debug optimized common)
+
+set(DEBUG_gpu ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/gpu_debug.dll)
+set(RELEASE_gpu ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/gpu.dll)
+add_custom_command(TARGET lib_ui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_gpu}>$<$<CONFIG:release>:${RELEASE_gpu}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy gpu")
+
+
+# exe GPUTest
+add_executable(exe_GPUTest gpu/vulkan.h gpu/vulkan.cpp gpu/graphics.h gpu/graphics.cpp gpu/main.cpp)
+
+set_target_properties(exe_GPUTest PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+set_target_properties(exe_GPUTest PROPERTIES OUTPUT_NAME_DEBUG GPUTest_debug)
+set_target_properties(exe_GPUTest PROPERTIES OUTPUT_NAME_RELEASE GPUTest)
+set_target_properties(exe_GPUTest PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+
+target_include_directories(exe_GPUTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_GPUTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_GPUTest PUBLIC debug common_debug optimized common)
 
 
 # exe CodeGenerator
