@@ -1,6 +1,6 @@
 #include "common.h"
 
-SINGLETON_INSTANCE(QeEncode)
+SINGLETON_INSTANCE(AeCommonEncode)
 
 struct QeHuffmanTree {
     unsigned int *tree = nullptr;
@@ -134,7 +134,7 @@ unsigned int huffmanDecodeSymbol(const unsigned char *in, size_t *bitPointer, co
     unsigned int treepos = 0, ret = 0;
 
     while (1) {
-        ret = tree->tree[(treepos << 1) + ENCODE.readBits(in, bitPointer, 1)];
+        ret = tree->tree[(treepos << 1) + COM_ENCODE.readBits(in, bitPointer, 1)];
         if (ret < tree->numcodes)
             return ret;
         else
@@ -143,9 +143,9 @@ unsigned int huffmanDecodeSymbol(const unsigned char *in, size_t *bitPointer, co
 }
 
 void buildDynamicLZ77HuffmanTree(QeHuffmanTree *treeLL, QeHuffmanTree *treeD, const unsigned char *in, size_t *bitPointer) {
-    unsigned int HLIT = ENCODE.readBits(in, bitPointer, 5) + 257;
-    unsigned int HDIST = ENCODE.readBits(in, bitPointer, 5) + 1;
-    unsigned int HCLEN = ENCODE.readBits(in, bitPointer, 4) + 4;
+    unsigned int HLIT = COM_ENCODE.readBits(in, bitPointer, 5) + 257;
+    unsigned int HDIST = COM_ENCODE.readBits(in, bitPointer, 5) + 1;
+    unsigned int HCLEN = COM_ENCODE.readBits(in, bitPointer, 4) + 4;
 
     unsigned int i = 0, j = 0;
     unsigned int bitlenCCL[19];
@@ -153,7 +153,7 @@ void buildDynamicLZ77HuffmanTree(QeHuffmanTree *treeLL, QeHuffmanTree *treeD, co
     // for (i = 0; i < 19; ++i) bitlenCCL[i] = 0;
 
     for (i = 0; i < 19; ++i)
-        if (i < HCLEN) bitlenCCL[CCL_ORDER[i]] = ENCODE.readBits(in, bitPointer, 3);
+        if (i < HCLEN) bitlenCCL[CCL_ORDER[i]] = COM_ENCODE.readBits(in, bitPointer, 3);
 
     QeHuffmanTree treeCCL;
     buildHuffmanTree(&treeCCL, bitlenCCL, 19, 7);
@@ -173,7 +173,7 @@ void buildDynamicLZ77HuffmanTree(QeHuffmanTree *treeLL, QeHuffmanTree *treeD, co
                 bitlenD[i - HLIT] = code;
             ++i;
         } else if (code == 16) {  // not 0, duplicate 3-6
-            unsigned int replength = 3 + ENCODE.readBits(in, bitPointer, 2);
+            unsigned int replength = 3 + COM_ENCODE.readBits(in, bitPointer, 2);
             unsigned int value;
 
             if (i < HLIT + 1)
@@ -189,7 +189,7 @@ void buildDynamicLZ77HuffmanTree(QeHuffmanTree *treeLL, QeHuffmanTree *treeD, co
                 ++i;
             }
         } else if (code == 17) {  // 0, duplicate 3-10, 3 bits
-            unsigned int replength = 3 + ENCODE.readBits(in, bitPointer, 3);
+            unsigned int replength = 3 + COM_ENCODE.readBits(in, bitPointer, 3);
 
             for (j = 0; j < replength; ++j) {
                 if (i < HLIT)
@@ -199,7 +199,7 @@ void buildDynamicLZ77HuffmanTree(QeHuffmanTree *treeLL, QeHuffmanTree *treeD, co
                 ++i;
             }
         } else if (code == 18) {  // 0, duplicate 11-138, 7 bits
-            unsigned int replength = 11 + ENCODE.readBits(in, bitPointer, 7);
+            unsigned int replength = 11 + COM_ENCODE.readBits(in, bitPointer, 7);
 
             for (j = 0; j < replength; ++j) {
                 if (i < HLIT)
@@ -223,11 +223,11 @@ void decodeLitLenDis(std::vector<unsigned char> *out, QeHuffmanTree *treeLL, QeH
 
         else if (codeLL > 256 && codeLL < 286) {  // length
             unsigned int numextrabitsLen = LENGTHEXTRA[codeLL - 257];
-            unsigned int length = LENGTHBASE[codeLL - 257] + ENCODE.readBits(in, bitPointer, numextrabitsLen);
+            unsigned int length = LENGTHBASE[codeLL - 257] + COM_ENCODE.readBits(in, bitPointer, numextrabitsLen);
 
             unsigned int codeD = huffmanDecodeSymbol(in, bitPointer, treeD);  // 0-29
             unsigned int numextrabitsDis = DISTANCEEXTRA[codeD];
-            unsigned int distance = DISTANCEBASE[codeD] + ENCODE.readBits(in, bitPointer, numextrabitsDis);
+            unsigned int distance = DISTANCEBASE[codeD] + COM_ENCODE.readBits(in, bitPointer, numextrabitsDis);
 
             while (1) {
                 if (distance < length) {
@@ -265,7 +265,7 @@ unsigned int getHuffmanDecodeSymbol(const unsigned char *in, size_t *bitPointer,
         if (tree->codeBits[i] != codeBits) {
             *bitPointer = oBitPointer;
             codeBits = tree->codeBits[i];
-            key = ENCODE.readBits(in, bitPointer, codeBits, true);
+            key = COM_ENCODE.readBits(in, bitPointer, codeBits, true);
         }
         if (key == tree->codes[i]) return tree->values[i];
     }
@@ -281,7 +281,7 @@ void getHuffmanDecodeSymbolfromDCAC(short int *out, unsigned char blocks, const 
     int j = 0;
     for (int i = 0; i < blocks; ++i) {
         value1 = getHuffmanDecodeSymbol(in, bitPointer, dc);
-        value2 = ENCODE.readBits(in, bitPointer, value1, true, true);
+        value2 = COM_ENCODE.readBits(in, bitPointer, value1, true, true);
         out[index] = value2;
         ++index;
 
@@ -290,12 +290,12 @@ void getHuffmanDecodeSymbolfromDCAC(short int *out, unsigned char blocks, const 
             if (value1 == 0) break;
 
             index1 = 0;
-            value2 = ENCODE.readBits((unsigned char *)&value1, &index1, 4);
-            value3 = ENCODE.readBits((unsigned char *)&value1, &index1, 4);
+            value2 = COM_ENCODE.readBits((unsigned char *)&value1, &index1, 4);
+            value3 = COM_ENCODE.readBits((unsigned char *)&value1, &index1, 4);
             index += value3;
 
             if (value2 > 0)
-                out[index] = ENCODE.readBits(in, bitPointer, value2, true, true);
+                out[index] = COM_ENCODE.readBits(in, bitPointer, value2, true, true);
             else
                 out[index] = 0;
             ++index;
@@ -328,9 +328,10 @@ void FastIntegerIDCT(int *i8x8) {
     for (i = 0; i < 8; i++) idct1(b2 + i * 8, i8x8 + i, 12, 1 << 11);
 }
 
-QeEncode::QeEncode() {}
+AeCommonEncode::AeCommonEncode() {}
+AeCommonEncode::~AeCommonEncode() {}
 
-int QeEncode::readBits(const unsigned char *stream, size_t *bitPointer, size_t readCount, bool bLeft, bool bNegative) {
+int AeCommonEncode::readBits(const unsigned char *stream, size_t *bitPointer, size_t readCount, bool bLeft, bool bNegative) {
     size_t bytes;
     unsigned char bits;
     size_t move;
@@ -368,14 +369,14 @@ int QeEncode::readBits(const unsigned char *stream, size_t *bitPointer, size_t r
     return ret;
 }
 
-std::string QeEncode::trim(std::string s) {
+std::string AeCommonEncode::trim(std::string s) {
     if (!s.length()) return s;
     s.erase(0, s.find_first_not_of(" \t\n\r\f\v"));
     s.erase(s.find_last_not_of(" \t\n\r\f\v") + 1);
     return s;
 }
 
-QeAssetJSON *QeEncode::decodeJSON(const char *buffer, int &index) {
+AeJSONNode *AeCommonEncode::decodeJSON(const char *buffer, int &index) {
     /* key
     0: {
     1: }
@@ -386,7 +387,7 @@ QeAssetJSON *QeEncode::decodeJSON(const char *buffer, int &index) {
     6: ,
     */
     const char keys[] = "{}\":[],";
-    QeAssetJSON *node = new QeAssetJSON();
+    AeJSONNode *node = new AeJSONNode();
     int lastIndex = index, currentIndex = index, lastKey = 0, currentKey;
     bool bValue = false;
     int count = 0;
@@ -422,7 +423,7 @@ QeAssetJSON *QeEncode::decodeJSON(const char *buffer, int &index) {
             }
         } else if (lastKey == 4) {
             if (currentKey == 0) {
-                std::vector<QeAssetJSON *> vjson;
+                std::vector<AeJSONNode *> vjson;
                 while (1) {
                     vjson.push_back(decodeJSON(buffer, currentIndex));
                     lastIndex = currentIndex + 1;
@@ -469,7 +470,7 @@ QeAssetJSON *QeEncode::decodeJSON(const char *buffer, int &index) {
     return node;
 }
 
-AeXMLNode *QeEncode::decodeXML(const char *buffer, int &index, AeXMLNode *parent) {
+AeXMLNode *AeCommonEncode::decodeXML(const char *buffer, int &index, AeXMLNode *parent) {
     /* key
     0: <
     1: >
@@ -561,7 +562,7 @@ AeXMLNode *QeEncode::decodeXML(const char *buffer, int &index, AeXMLNode *parent
     return nullptr;
 }
 
-std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char *buffer, size_t size, int *width, int *height, int *bytes) {
+std::vector<unsigned char> AeCommonEncode::decodeJPEG(unsigned char *buffer, size_t size, int *width, int *height, int *bytes) {
     std::vector<unsigned char> ret;
     // YCbCr(YUV), DCT(Discrete Cosine Transform), Quantization, Zig-zag(Entropy
     // Coding), RLC(Run Length Coding), Canonical Huffman Code
@@ -819,7 +820,7 @@ std::vector<unsigned char> QeEncode::decodeJPEG(unsigned char *buffer, size_t si
     return ret;
 }
 
-std::vector<unsigned char> QeEncode::decodeBMP(unsigned char *buffer, int *width, int *height, int *bytes) {
+std::vector<unsigned char> AeCommonEncode::decodeBMP(unsigned char *buffer, int *width, int *height, int *bytes) {
     std::vector<unsigned char> ret;
     if (strncmp((char *)buffer, "BM", 2) != 0) return ret;
 
@@ -835,7 +836,7 @@ std::vector<unsigned char> QeEncode::decodeBMP(unsigned char *buffer, int *width
     return ret;
 }
 
-std::vector<unsigned char> QeEncode::decodePNG(unsigned char *buffer, int *width, int *height, int *bytes) {
+std::vector<unsigned char> AeCommonEncode::decodePNG(unsigned char *buffer, int *width, int *height, int *bytes) {
     std::vector<unsigned char> ret;
     unsigned char headerKey[8] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     if (memcmp(buffer, headerKey, 8) != 0) return ret;
@@ -987,7 +988,7 @@ std::vector<unsigned char> QeEncode::decodePNG(unsigned char *buffer, int *width
     return ret;
 }
 
-std::vector<unsigned char> QeEncode::decodeDeflate(unsigned char *in, unsigned int size) {
+std::vector<unsigned char> AeCommonEncode::decodeDeflate(unsigned char *in, unsigned int size) {
     // gzip, zlib, Deflate, LZ77, Canonical Huffman Code, inflate
     // 78 01 - fastest
     // 78 5E - fast

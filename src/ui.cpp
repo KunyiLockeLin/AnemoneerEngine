@@ -70,7 +70,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         ENGINE->initialize();
                         break;
                     case eUIType_btnLoadAll:
-                        CM_MGR.removeXML(CONFIG_PATH);
+                        COM_MGR.removeXML(CONFIG_PATH);
                         ENGINE->initialize();
                         // updateTab();
                         setAllTreeView();

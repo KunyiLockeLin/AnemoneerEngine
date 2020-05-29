@@ -110,14 +110,11 @@ struct QeAssetMaterial {
 class QeGameAsset {
     SINGLETON_CLASS(QeGameAsset);
 
-   public:
     std::map<std::string, QeAssetModel *> astModels;
     std::map<std::string, QeAssetMaterial *> astMaterials;
     std::map<std::string, VkShaderModule> astShaders;
     std::map<std::string, QeVKImage *> astTextures;
     //std::map<int, QeAssetParticleRule *> astParticles;
-
-    ~QeGameAsset();
 
     AeXMLNode *getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid);
 

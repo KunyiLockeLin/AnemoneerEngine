@@ -78,10 +78,10 @@ AeFile::~AeFile() {
 
 bool AeFile::open(const char *output_path_) {
     *output_path = output_path_;
-    std::vector<std::string> output_dirs = ENCODE.split<std::string>(output_path_, "\\");
+    std::vector<std::string> output_dirs = COM_ENCODE.split<std::string>(output_path_, "\\");
     output_dirs.pop_back();
     if (output_dirs.size() > 0) {
-        std::string output_dir = ENCODE.combine<std::string>(output_dirs, "\\");
+        std::string output_dir = COM_ENCODE.combine<std::string>(output_dirs, "\\");
         _mkdir(output_dir.c_str());
     }
     ofile->open(output_path_);

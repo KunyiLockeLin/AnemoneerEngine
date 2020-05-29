@@ -163,7 +163,7 @@ QeAssetModel *QeGameAsset::getModel(const char *_filename, bool bCubeMap, float 
     }
 
     QeAssetModel *model = nullptr;
-    QeAssetJSON *json = nullptr;
+    AeJSONNode *json = nullptr;
     std::vector<char> buffer;
     QeVertex vertex;
     float index = 0.f;
@@ -174,7 +174,7 @@ QeAssetModel *QeGameAsset::getModel(const char *_filename, bool bCubeMap, float 
         // model = ENCODE->decodeOBJ(buffer.data());
         //	break;
         case eModelData_gltf:
-            json = CM_MGR.getJSON(_filePath.c_str());
+            json = COM_MGR.getJSON(_filePath.c_str());
             model = G_ENCODE.decodeGLTF(json, bCubeMap);
             break;
             // case 2:
@@ -586,17 +586,17 @@ QeVKImage *QeGameAsset::getImage(const char *_filename, bool bCubeMap, bool bGam
     for (int i = 0; i < size; ++i) {
         std::string path(_filePath);
         path.insert(cIndex, imageList[i]);
-        std::vector<char> buffer = CM_MGR.loadFile(path.c_str());
+        std::vector<char> buffer = COM_MGR.loadFile(path.c_str());
 
         switch (type) {
             case 0:
-                data = ENCODE.decodeBMP((unsigned char *)buffer.data(), &width, &height, &bytes);
+                data = COM_ENCODE.decodeBMP((unsigned char *)buffer.data(), &width, &height, &bytes);
                 break;
             case 1:
-                data = ENCODE.decodePNG((unsigned char *)buffer.data(), &width, &height, &bytes);
+                data = COM_ENCODE.decodePNG((unsigned char *)buffer.data(), &width, &height, &bytes);
                 break;
             case 2:
-                data = ENCODE.decodeJPEG((unsigned char *)buffer.data(), buffer.size(), &width, &height, &bytes);
+                data = COM_ENCODE.decodeJPEG((unsigned char *)buffer.data(), buffer.size(), &width, &height, &bytes);
                 break;
         }
         if (bytes != 4) imageFillto32bits(&data, bytes);
@@ -644,7 +644,7 @@ VkShaderModule QeGameAsset::getShader(const char *_filename) {
     std::map<std::string, VkShaderModule>::iterator it = astShaders.find(_filePath);
     if (it != astShaders.end()) return it->second;
 
-    std::vector<char> buffer = CM_MGR.loadFile(_filePath.c_str());
+    std::vector<char> buffer = COM_MGR.loadFile(_filePath.c_str());
 
     VkShaderModule shader = VK->createShaderModel((void *)buffer.data(), int(buffer.size()));
     astShaders[_filePath] = shader;

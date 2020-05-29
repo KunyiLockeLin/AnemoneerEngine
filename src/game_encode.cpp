@@ -120,8 +120,9 @@ QeAssetMaterial *QeEncode::decodeMTL(char *buffer) {
 }
 */
 QeGameEncode::QeGameEncode() {}
+QeGameEncode::~QeGameEncode() {}
 
-QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
+QeAssetModel *QeGameEncode::decodeGLTF(AeJSONNode *json, bool bCubeMap) {
     QeAssetModel *model = new QeAssetModel();
 
     const char *binData = json->getJSONValue(2, "buffers", "uri");
@@ -129,7 +130,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
     std::vector<char> buf;
     if (strcmp(ret + 1, "bin") == 0) {
         std::string _filePath = G_AST.combinePath(binData, eAssetBin);
-        buf = CM_MGR.loadFile(_filePath.c_str());
+        buf = COM_MGR.loadFile(_filePath.c_str());
         binData = buf.data();
     }
     /*
@@ -149,8 +150,8 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
     "MAT3" 		9
     "MAT4" 		16
     */
-    std::vector<QeAssetJSON *> *jaccessors = json->getJSONArrayNodes(1, "accessors");
-    std::vector<QeAssetJSON *> *jbufferViews = json->getJSONArrayNodes(1, "bufferViews");
+    std::vector<AeJSONNode *> *jaccessors = json->getJSONArrayNodes(1, "accessors");
+    std::vector<AeJSONNode *> *jbufferViews = json->getJSONArrayNodes(1, "bufferViews");
     std::vector<std::string> *sv;
     size_t size, size1, size2;
     unsigned char index;
@@ -194,7 +195,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
         size = jboneID->size();
         model->jointsAnimation.resize(size);
 
-        std::vector<QeAssetJSON *> *jboneName = json->getJSONArrayNodes(1, "nodes");
+        std::vector<AeJSONNode *> *jboneName = json->getJSONArrayNodes(1, "nodes");
 
         for (i = 0; i < size; ++i) {
             model->jointsAnimation[i].id = atoi((*jboneID)[i].c_str());
@@ -245,8 +246,8 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
             }
         }
 
-        std::vector<QeAssetJSON *> *jchannels = json->getJSONArrayNodes(2, "animations", "channels");
-        std::vector<QeAssetJSON *> *jsmaplers = json->getJSONArrayNodes(2, "animations", "samplers");
+        std::vector<AeJSONNode *> *jchannels = json->getJSONArrayNodes(2, "animations", "channels");
+        std::vector<AeJSONNode *> *jsmaplers = json->getJSONArrayNodes(2, "animations", "samplers");
         size1 = jchannels->size();
         const char *path = nullptr;
 
@@ -432,7 +433,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
     c = json->getJSONValue(4, "materials", "pbrMetallicRoughness", "baseColorTexture", "index");
     if (c) {
         int textureIndex = atoi(c);
-        std::vector<QeAssetJSON *> *imageJSON = json->getJSONArrayNodes(1, "images");
+        std::vector<AeJSONNode *> *imageJSON = json->getJSONArrayNodes(1, "images");
         const char *texturePath = (*imageJSON)[textureIndex]->getJSONValue(1, "uri");
 
         if (bCubeMap)
@@ -444,7 +445,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
     c = json->getJSONValue(3, "materials", "normalTexture", "index");
     if (c) {
         int textureIndex = atoi(json->getJSONValue(3, "materials", "normalTexture", "index"));
-        std::vector<QeAssetJSON *> *imageJSON = json->getJSONArrayNodes(1, "images");
+        std::vector<AeJSONNode *> *imageJSON = json->getJSONArrayNodes(1, "images");
         const char *texturePath = (*imageJSON)[textureIndex]->getJSONValue(1, "uri");
 
         pMaterial->image.pNormalMap = G_AST.getImage(texturePath, bCubeMap);

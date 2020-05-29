@@ -5,7 +5,7 @@
 SINGLETON_INSTANCE(AeCommonManager)
 
 std::map<std::string, AeXMLNode *> astXMLs;
-std::map<std::string, QeAssetJSON *> astJSONs;
+std::map<std::string, AeJSONNode *> astJSONs;
 
 AeXMLNode::AeXMLNode() : data(new AeXMLData()) {}
 
@@ -20,7 +20,7 @@ AeXMLNode::~AeXMLNode() {
     data = nullptr;
 }
 
-AeXMLNode *AeXMLNode::getXMLNode(const char *key) { return getXMLNode(ENCODE.split<std::string>(key, ".")); }
+AeXMLNode *AeXMLNode::getXMLNode(const char *key) { return getXMLNode(COM_ENCODE.split<std::string>(key, ".")); }
 
 AeXMLNode *AeXMLNode::getXMLNode(std::vector<std::string> &keys) {
     AeXMLNode *current = this;
@@ -157,17 +157,17 @@ void AeXMLNode::outputXML(const char *path, int level, std::string *content) {
     }
 }
 
-QeAssetJSON::QeAssetJSON() : data(new QeJSON) {}
+AeJSONNode::AeJSONNode() : data(new AeJSON) {}
 
-QeAssetJSON::~QeAssetJSON() {
-    std::vector<QeAssetJSON *>::iterator it = data->eNodes.begin();
+AeJSONNode::~AeJSONNode() {
+    std::vector<AeJSONNode *>::iterator it = data->eNodes.begin();
     while (it != data->eNodes.end()) {
         if ((*it) != nullptr) delete (*it);
         ++it;
     }
     data->eNodes.clear();
 
-    std::vector<std::vector<QeAssetJSON *>>::iterator it1 = data->eArrayNodes.begin();
+    std::vector<std::vector<AeJSONNode *>>::iterator it1 = data->eArrayNodes.begin();
     while (it1 != data->eArrayNodes.end()) {
         it = it1->begin();
         while (it != it1->end()) {
@@ -181,7 +181,7 @@ QeAssetJSON::~QeAssetJSON() {
     data = nullptr;
 }
 
-const char *QeAssetJSON::getJSONValue(int length, ...) {
+const char *AeJSONNode::getJSONValue(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
@@ -194,8 +194,8 @@ const char *QeAssetJSON::getJSONValue(int length, ...) {
     return ret;
 }
 
-const char *QeAssetJSON::getJSONValue(const char *keys[], int length) {
-    QeAssetJSON *source = this;
+const char *AeJSONNode::getJSONValue(const char *keys[], int length) {
+    AeJSONNode *source = this;
 
     for (int index = 0; index < length; ++index) {
         if (index == (length - 1)) {
@@ -235,20 +235,20 @@ const char *QeAssetJSON::getJSONValue(const char *keys[], int length) {
     return nullptr;
 }
 
-QeAssetJSON *QeAssetJSON::getJSONNode(int length, ...) {
+AeJSONNode *AeJSONNode::getJSONNode(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    QeAssetJSON* source = getJSONNode(keys1, length);
+    AeJSONNode* source = getJSONNode(keys1, length);
     va_end(keys);
     delete[] keys1;
     return source;
 }
 
-QeAssetJSON *QeAssetJSON::getJSONNode(const char *keys[], int length) {
+AeJSONNode *AeJSONNode::getJSONNode(const char *keys[], int length) {
     int size = int(data->eKeysforNodes.size());
     for (int index = 0; index < size; ++index) {
         if (strcmp(keys[0], data->eKeysforNodes[index].c_str()) == 0) {
@@ -266,7 +266,7 @@ QeAssetJSON *QeAssetJSON::getJSONNode(const char *keys[], int length) {
             int size1 = int(data->eArrayNodes[index].size());
 
             for (int index1 = 0; index1 < size1; ++index1) {
-                QeAssetJSON *ret = data->eArrayNodes[index][index1]->getJSONNode(&keys[1], length - 1);
+                AeJSONNode *ret = data->eArrayNodes[index][index1]->getJSONNode(&keys[1], length - 1);
                 if (ret != nullptr) return ret;
             }
             break;
@@ -275,7 +275,7 @@ QeAssetJSON *QeAssetJSON::getJSONNode(const char *keys[], int length) {
     return nullptr;
 }
 
-std::vector<std::string> *QeAssetJSON::getJSONArrayValues(int length, ...) {
+std::vector<std::string> *AeJSONNode::getJSONArrayValues(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
@@ -288,8 +288,8 @@ std::vector<std::string> *QeAssetJSON::getJSONArrayValues(int length, ...) {
     return ret;
 }
 
-std::vector<std::string> *QeAssetJSON::getJSONArrayValues(const char *keys[], int length) {
-    QeAssetJSON *source = this;
+std::vector<std::string> *AeJSONNode::getJSONArrayValues(const char *keys[], int length) {
+    AeJSONNode *source = this;
 
     for (int index = 0; index < length; ++index) {
         if (index == (length - 1)) {
@@ -330,20 +330,20 @@ std::vector<std::string> *QeAssetJSON::getJSONArrayValues(const char *keys[], in
     return nullptr;
 }
 
-std::vector<QeAssetJSON *> *QeAssetJSON::getJSONArrayNodes(int length, ...) {
+std::vector<AeJSONNode *> *AeJSONNode::getJSONArrayNodes(int length, ...) {
     va_list keys;
     va_start(keys, length);
 
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    std::vector<QeAssetJSON *> *ret = getJSONArrayNodes(keys1, length);
+    std::vector<AeJSONNode *> *ret = getJSONArrayNodes(keys1, length);
     va_end(keys);
     delete[] keys1;
     return ret;
 }
 
-std::vector<QeAssetJSON *> *QeAssetJSON::getJSONArrayNodes(const char *keys[], int length) {
+std::vector<AeJSONNode *> *AeJSONNode::getJSONArrayNodes(const char *keys[], int length) {
     int size = int(data->eKeysforArrayNodes.size());
     for (int index = 0; index < size; ++index) {
         if (strcmp(keys[0], data->eKeysforArrayNodes[index].c_str()) == 0) {
@@ -352,7 +352,7 @@ std::vector<QeAssetJSON *> *QeAssetJSON::getJSONArrayNodes(const char *keys[], i
             int size1 = int(data->eArrayNodes[index].size());
 
             for (int index1 = 0; index1 < size1; ++index1) {
-                std::vector<QeAssetJSON *> *ret = data->eArrayNodes[index][index1]->getJSONArrayNodes(&keys[1], length - 1);
+                std::vector<AeJSONNode *> *ret = data->eArrayNodes[index][index1]->getJSONArrayNodes(&keys[1], length - 1);
                 if (ret != nullptr) return ret;
             }
             break;
@@ -370,7 +370,7 @@ std::vector<QeAssetJSON *> *QeAssetJSON::getJSONArrayNodes(const char *keys[], i
     return nullptr;
 }
 
-bool QeAssetJSON::getJSONbValue(bool *output, int length, ...) {
+bool AeJSONNode::getJSONbValue(bool *output, int length, ...) {
     va_list keys;
     va_start(keys, length);
 
@@ -386,7 +386,7 @@ bool QeAssetJSON::getJSONbValue(bool *output, int length, ...) {
     return ret;
 }
 
-bool QeAssetJSON::getJSONiValue(int *output, int length, ...) {
+bool AeJSONNode::getJSONiValue(int *output, int length, ...) {
     va_list keys;
     va_start(keys, length);
 
@@ -402,7 +402,7 @@ bool QeAssetJSON::getJSONiValue(int *output, int length, ...) {
     return ret;
 }
 
-bool QeAssetJSON::getJSONfValue(float *output, int length, ...) {
+bool AeJSONNode::getJSONfValue(float *output, int length, ...) {
     va_list keys;
     va_start(keys, length);
 
@@ -427,7 +427,7 @@ AeCommonManager::~AeCommonManager() {
     }
     astXMLs.clear();
 
-    std::map<std::string, QeAssetJSON *>::iterator it1 = astJSONs.begin();
+    std::map<std::string, AeJSONNode *>::iterator it1 = astJSONs.begin();
     while (it1 != astJSONs.end()) {
         if ((it1->second) != nullptr) delete (it1->second);
         ++it1;
@@ -460,15 +460,15 @@ std::vector<char> AeCommonManager::loadFile(const char *_filePath) {
     return ret;
 }
 
-QeAssetJSON *AeCommonManager::getJSON(const char *_filePath) {
-    std::map<std::string, QeAssetJSON *>::iterator it = astJSONs.find(_filePath);
+AeJSONNode *AeCommonManager::getJSON(const char *_filePath) {
+    std::map<std::string, AeJSONNode *>::iterator it = astJSONs.find(_filePath);
 
     if (it != astJSONs.end()) return it->second;
 
     std::vector<char> buffer = loadFile(_filePath);
 
     int index = 0;
-    QeAssetJSON *head = ENCODE.decodeJSON(buffer.data(), index);
+    AeJSONNode *head = COM_ENCODE.decodeJSON(buffer.data(), index);
     astJSONs[_filePath] = head;
     return head;
 }
@@ -484,7 +484,7 @@ AeXMLNode *AeCommonManager::getXML(const char *_filePath) {
     std::vector<char> buffer = loadFile(_filePath);
 
     int index = 0;
-    AeXMLNode *head = ENCODE.decodeXML(buffer.data(), index);
+    AeXMLNode *head = COM_ENCODE.decodeXML(buffer.data(), index);
     astXMLs[_filePath] = head;
 
     return head;

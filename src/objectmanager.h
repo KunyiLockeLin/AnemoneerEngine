@@ -2,16 +2,10 @@
 
 #include "header.h"
 
-class AeObjectManagerKey {
-    friend class AeObjectManager;
-
-   private:
-    AeObjectManagerKey() {}
-};
+MANAGER_KEY_CLASS(Object);
 
 class AeObjectManager {
-   private:
-    AeObjectManagerKey key;
+   MANAGER_KEY_INSTANCE(Object);
 
    public:
     AeObjectManager(AeGlobalKey &_key) {}

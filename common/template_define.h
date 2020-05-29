@@ -246,7 +246,7 @@ bool AeLib::eraseElementFromVector(std::vector<T> &vec, T element) {
 }
 
 template <class T>
-T QeEncode::ConvertTo(const std::string &str) {
+typename std::enable_if<std::is_arithmetic<T>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
     if (str.empty()) return 0;
     std::stringstream ss(str);
     T num;
@@ -254,18 +254,24 @@ T QeEncode::ConvertTo(const std::string &str) {
     return num;
 }
 
-template <>
-const char *QeEncode::ConvertTo<const char *>(const std::string &str) {
+template <class T>
+typename std::enable_if<std::is_enum<T>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
+    int i = ConvertTo<int>(str);
+    return static_cast<T>(i);
+}
+
+template <class T>
+typename std::enable_if<std::is_same<T, const char *>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
     return str.c_str();
 }
 
-template <>
-std::string QeEncode::ConvertTo<std::string>(const std::string &str) {
+template <class T>
+typename std::enable_if<std::is_same<T, std::string>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
     return str;
 }
 
 template <class T>
-std::vector<T> QeEncode::split(std::string s, std::string delim) {
+std::vector<T> AeCommonEncode::split(std::string s, std::string delim) {
     std::vector<T> tokens;
     /*char dup[4096];
     strncpy_s(dup, s, 4096);
@@ -286,10 +292,10 @@ std::vector<T> QeEncode::split(std::string s, std::string delim) {
 }
 
 template <class T>
-std::string QeEncode::combine(std::vector<T>& ss, std::string delim) {
+std::string AeCommonEncode::combine(std::vector<T> &ss, std::string delim) {
     if (ss.empty()) return std::string();
     std::string ret = ss[0];
-    for (size_t i=1; i< ss.size() ;++i) {
+    for (size_t i = 1; i < ss.size(); ++i) {
         ret += (delim + ss[i]);
     }
     return ret;
@@ -305,7 +311,7 @@ T AeXMLNode::getXMLValue(const char *key) {
 template <class T>
 AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
     std::memset((void *)&value, 0, sizeof value);
-    auto keys = ENCODE.split<std::string>(key, ".");
+    auto keys = COM_ENCODE.split<std::string>(key, ".");
     std::vector<std::string> keys1 = keys;
     keys1.pop_back();
     AeXMLNode *current = getXMLNode(keys1);
@@ -315,7 +321,7 @@ AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
 
     for (const auto &node : current->data->elements) {
         if (final_key.compare(node.key) == 0) {
-            value = ENCODE.ConvertTo<T>(node.value);
+            value = COM_ENCODE.ConvertTo<T>(node.value);
             return current;
         }
     }
@@ -323,7 +329,7 @@ AeXMLNode *AeXMLNode::getXMLValue(T &value, const char *key) {
     current = getXMLNode(final_key.c_str());
     if (!current) return nullptr;
     if (final_key.compare(current->data->key.c_str()) == 0) {
-        value = ENCODE.ConvertTo<T>(current->data->value);
+        value = COM_ENCODE.ConvertTo<T>(current->data->value);
         return current;
     }
     return nullptr;
@@ -340,7 +346,7 @@ template <class T, int N>
 AeXMLNode *AeXMLNode::getXMLValues(AeArray<T, N> &value, const char *key) {
     std::string str_values;
     AeXMLNode *ret = getXMLValue<std::string>(str_values, key);
-    auto values = ENCODE.split<T>(str_values, " ");
+    auto values = COM_ENCODE.split<T>(str_values, " ");
     for (int i = 0; i < N && i < values.size(); ++i) {
         value.elements[i] = values[i];
     }
@@ -392,7 +398,7 @@ AeArray<T, N> AeMath::randoms(T start, T range) {
     }
     std::random_device rd;
     std::default_random_engine gen = std::default_random_engine(rd());
-    //std::uniform_int_distribution<int> dis(start, start + range);
+    // std::uniform_int_distribution<int> dis(start, start + range);
     std::uniform_real_distribution<T> dis(start, start + range);
 
     for (int i = 0; i < size; ++i) ret[i] = dis(gen);

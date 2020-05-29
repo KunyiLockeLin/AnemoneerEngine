@@ -39,7 +39,7 @@ class QeComponent {
     QeComponent(AeObjectManagerKey &_key) {}
     ~QeComponent() {}
     QeObject *owner = nullptr;
-    AeGameObjectData data;
+    AeBaseData data;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear() {}

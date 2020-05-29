@@ -1,43 +1,48 @@
-#include "header.h"
+#include "ui.h"
+
+SINGLETON_INSTANCE(AeUIMgr)
 
 LRESULT EditProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_CHAR:
             switch (wParam) {
                 case KEY_FSLASH:
-                    UI->closeCommand();
+                    UI_MGR.closeCommand();
                     break;
                 case VK_RETURN:
-                    UI->sendCommand();
-                    UI->closeCommand();
+                    UI_MGR.sendCommand();
+                    UI_MGR.closeCommand();
                     return true;
                     break;
             }
         default:
-            return CallWindowProc(UI->DefEditProc, hwnd, uMsg, wParam, lParam);
+            return CallWindowProc(UI_MGR.DefEditProc, hwnd, uMsg, wParam, lParam);
     }
     return FALSE;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    UI->handleMessages(hWnd, uMsg, wParam, lParam);
+    UI_MGR.handleMessages(hWnd, uMsg, wParam, lParam);
     return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
 
-AeUI::~AeUI() { LOGOBJ.removeListener(*this); }
+AeUIMgr::AeUIMgr(){}
+AeUIMgr::~AeUIMgr() { LOGOBJ.removeListener(*this); }
 
-void AeUI::closeCommand() {
+void AeUIMgr::closeCommand() {
     ShowWindow(commandBox, SW_HIDE);
     SetFocus(mainWindow);
 }
 
-void AeUI::sendCommand() {
+void AeUIMgr::sendCommand() {
     wchar_t lpString[256];
     GetWindowText(commandBox, lpString, 256);
-    CMD(wchartochar(lpString));
+    for (auto *listener : command_listeners) {
+        listener->updateCommand(wchartochar(lpString));
+    }
 }
 
-void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+void AeUIMgr::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     if (hWnd == editPanel) {
         switch (uMsg) {
             case WM_NOTIFY:
@@ -64,53 +69,53 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
             case WM_COMMAND:
                 switch (wParam) {
                     case eUIType_btnPause:
-                        ENGINE->bPause = !ENGINE->bPause;
+                        // ENGINE->bPause = !ENGINE->bPause;
                         break;
                     case eUIType_btnUpdateAll:
-                        ENGINE->initialize();
+                        // ENGINE->initialize();
                         break;
                     case eUIType_btnLoadAll:
-                        CM_MGR.removeXML(CONFIG_PATH);
-                        ENGINE->initialize();
+                        COM_MGR.removeXML(CONFIG_PATH);
+                        // ENGINE->initialize();
                         // updateTab();
                         setAllTreeView();
                         break;
                     case eUIType_btnSaveAll: {
                         adjustComponetData(CONFIG);
                         CONFIG->outputXML(CONFIG_PATH);
-                        ENGINE->initialize();
+                        // ENGINE->initialize();
                     } break;
                     case eUIType_btnLoadScene:
                         if (currentTreeViewNode) {
                             int type = currentTreeViewNode->getXMLValue<int>("type");
                             if (type == eGAMEOBJECT_Scene) {
-                                int eid = currentTreeViewNode->getXMLValue<int>("eid");
-                                OBJMGR->loadScene(eid);
+                                int eid = currentTreeViewNode->getXMLValue<ID>("eid");
+                                // OBJMGR->loadScene(eid);
                             }
                         }
                         break;
                     case eUIType_btnSaveEID:
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
-                            int _eid = currentTreeViewNode->getXMLValue<int>("eid");
+                            int _eid = currentTreeViewNode->getXMLValue<ID>("eid");
                             if (_type != 0 && _eid != 0) {
-                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
+                                /*AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node)
                                     currentTreeViewNode->copyXMLNode(node);
                                 else {
                                     AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                     AeXMLNode *newNode = currentTreeViewNode->copyXMLNode();
                                     node->data->parent->addXMLNode(newNode);
-                                }
+                                }*/
                             }
                         }
                         break;
                     case eUIType_btnLoadEID:
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
-                            int _eid = currentTreeViewNode->getXMLValue<int>("eid");
+                            int _eid = currentTreeViewNode->getXMLValue<ID>("eid");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
+                                /*AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node) {
                                     HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
 
@@ -127,7 +132,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                                         addToTreeView(n, hSelectedItem);
                                     }
                                     updateListView();
-                                }
+                                }*/
                             }
                         }
                         break;
@@ -135,8 +140,8 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         if (currentTreeViewNode) {
                             int type = currentTreeViewNode->getXMLValue<int>("type");
                             if (type == eGAMEOBJECT_Component_Transform) {
-                                int oid = currentTreeViewNode->getXMLValue<int>("oid");
-                                GRAP->getTargetCamera()->setLookAtTransformOID(oid);
+                                ID oid = currentTreeViewNode->getXMLValue<ID>("oid");
+                                // GRAP->getTargetCamera()->setLookAtTransformOID(oid);
                             }
                         }
                         break;
@@ -144,8 +149,8 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         if (currentTreeViewNode) {
                             int type = currentTreeViewNode->getXMLValue<int>("type");
                             if (type == eGAMEOBJECT_Component_Camera) {
-                                int oid = currentTreeViewNode->getXMLValue<int>("oid");
-                                GRAP->setTargetCamera(oid);
+                                ID oid = currentTreeViewNode->getXMLValue<ID>("oid");
+                                // GRAP->setTargetCamera(oid);
                             }
                         }
                         break;
@@ -153,7 +158,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+                                /*AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                 AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 if (currentTreeViewNode != node->data->parent) {
@@ -170,14 +175,14 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
                                     setTreeViewText(hSelectedItem, currentTreeViewNode);
                                     addToTreeView(newNode, hSelectedItem);
-                                }
+                                }*/
                                 // updateTab();
                             } else {
                                 AeXMLNode *node = nullptr;
                                 if (currentTreeViewNode->data->key.compare("children") == 0) {
-                                    node = G_AST.getXMLEditNode(eGAMEOBJECT_Object, 0);
+                                    // node = G_AST.getXMLEditNode(eGAMEOBJECT_Object, 0);
                                 } else if (currentTreeViewNode->data->key.compare("components") == 0) {
-                                    node = G_AST.getXMLEditNode(eGAMEOBJECT_Component_Transform, 0);
+                                    // node = G_AST.getXMLEditNode(eGAMEOBJECT_Component_Transform, 0);
                                 }
                                 if (node) {
                                     AeXMLNode *newNode = node->copyXMLNode();
@@ -194,12 +199,12 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             AeXMLNode *node1 = CONFIG->data->nexts[currentTabIndex];
                             int _type = node1->getXMLValue<int>("type");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+                                /*AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                 AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 node1->addXMLNode(newNode);
                                 // updateTab();
-                                addToTreeView(newNode, TVI_FIRST);
+                                addToTreeView(newNode, TVI_FIRST);*/
                             }
                         }
 
@@ -227,27 +232,25 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
         switch (inputData.inputType) {
             case WM_CLOSE:
-                ENGINE->bClosed = true;
+                // ENGINE->bClosed = true;
                 break;
             case WM_EXITSIZEMOVE:
-                GRAP->bRecreateRender = true;
+                // GRAP->bRecreateRender = true;
                 break;
 
             default:
 
                 switch (inputData.inputKey) {
                     case VK_ESCAPE:
-                        if (uMsg != WM_IME_COMPOSITION) ENGINE->bClosed = true;
+                        // if (uMsg != WM_IME_COMPOSITION) ENGINE->bClosed = true;
                         break;
                     case KEY_FSLASH:
                         SetWindowText(commandBox, L"");
                         ShowWindow(commandBox, SW_SHOW);
                         SetFocus(commandBox);
                     default:
-                        std::vector<QeInputControl *>::iterator it = inputControls.begin();
-                        while (it != inputControls.end()) {
-                            (*it)->updateInput();
-                            ++it;
+                        for (auto *listener : input_listeners) {
+                            listener->updateInput(inputData);
                         }
                         break;
                 }
@@ -256,7 +259,7 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     }
 }
 
-void AeUI::setTreeViewText(HTREEITEM hItem, AeXMLNode *node) {
+void AeUIMgr::setTreeViewText(HTREEITEM hItem, AeXMLNode *node) {
     std::string s = node->data->key;
     s += " ";
     s += std::to_string(node->data->nexts.size());
@@ -270,41 +273,41 @@ void AeUI::setTreeViewText(HTREEITEM hItem, AeXMLNode *node) {
     TreeView_SetItem(treeViewLists[currentTabIndex], &item);
 }
 
-void AeUI::adjustComponetData(AeXMLNode *node) {
+void AeUIMgr::adjustComponetData(AeXMLNode *node) {
     int _type = node->getXMLValue<int>("type");
     if (_type) {
-        AeXMLNode *source = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
-        if (source->data->parent != node) {
-            auto elements = source->data->elements;
-            for (auto &e : elements) {
-                for (auto &e1 : node->data->elements) {
-                    if (e.key.compare(e1.key) == 0) {
-                        e.value = e1.value;
-                    }
-                }
-            }
-            node->data->elements = elements;
-        }
+        /* AeXMLNode *source = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
+         if (source->data->parent != node) {
+             auto elements = source->data->elements;
+             for (auto &e : elements) {
+                 for (auto &e1 : node->data->elements) {
+                     if (e.key.compare(e1.key) == 0) {
+                         e.value = e1.value;
+                     }
+                 }
+             }
+             node->data->elements = elements;
+         }*/
     }
     for (const auto &n : node->data->nexts) {
         adjustComponetData(n);
     }
 }
 
-void AeUI::getWindowSize(HWND &window, int &width, int &height) {
+void AeUIMgr::getWindowSize(HWND &window, int &width, int &height) {
     RECT rect;
     GetClientRect(window, &rect);
     width = rect.right - rect.left;
     height = rect.bottom - rect.top;
 }
 
-void AeUI::resizeAll() {
+void AeUIMgr::resizeAll() {
     resize(logPanel);
     resize(editPanel);
     resize(mainWindow);
 }
 
-void AeUI::resize(HWND &window) {
+void AeUIMgr::resize(HWND &window) {
     RECT windowRect;
     windowRect.left = 0;
     windowRect.top = 0;
@@ -342,10 +345,11 @@ void AeUI::resize(HWND &window) {
 
     SetWindowPos(window, 0, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
                  SWP_NOZORDER);
-    GRAP->bRecreateRender = true;
+    // GRAP->bRecreateRender = true;
 }
 
-void AeUI::openMainWindow() {
+void AeUIMgr::openMainWindow() {
+    LOG("create MainWindow");
     WNDCLASSEX wndClass;
     std::wstring title = L"MainWindow";
 
@@ -377,10 +381,11 @@ void AeUI::openMainWindow() {
     commandBox = CreateWindow(WC_EDITW, L"", WS_CHILD, 0, 0, width, 20, mainWindow, (HMENU)1, NULL, NULL);
 
     ShowWindow(commandBox, SW_HIDE);
-    UI->DefEditProc = (WNDPROC)SetWindowLongPtr(UI->commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
+    DefEditProc = (WNDPROC)SetWindowLongPtr(commandBox, GWLP_WNDPROC, (LONG_PTR)(EditProc));
 }
 
-void AeUI::openEditPanel() {
+void AeUIMgr::openEditPanel() {
+    LOG("create Edit Panel");
     std::wstring title = L"Edit Panel";
     WNDCLASSEX wndClass;
     wndClass.cbSize = sizeof(WNDCLASSEX);
@@ -471,7 +476,7 @@ void AeUI::openEditPanel() {
     // updateTab();
 }
 
-void AeUI::openLogPanel() {
+void AeUIMgr::openLogPanel() {
     std::wstring title = L"Log Panel";
 
     WNDCLASSEX wndClass;
@@ -510,9 +515,10 @@ void AeUI::openLogPanel() {
     SelectObject(logHDC, hFont);
     logMaxWidth = 0;
     LOGOBJ.addListener(*this);
+    LOG("create Log Panel");
 }
 
-void AeUI::Log(std::string _log) {
+void AeUIMgr::Log(std::string _log) {
     std::wstring ws = chartowchar(_log);
     SendMessage(listBoxLog, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
     SIZE textWidth;
@@ -534,7 +540,7 @@ void AeUI::Log(std::string _log) {
     SendMessage(listBoxLog, LB_SETHORIZONTALEXTENT, logMaxWidth, 0);*/
 }
 
-void AeUI::updateListViewItem() {
+void AeUIMgr::updateListViewItem() {
     TCHAR text[512] = L"";
     GetWindowText(currentEditListView, text, sizeof(text));
 
@@ -550,7 +556,7 @@ void AeUI::updateListViewItem() {
         currentTreeViewNode->setXMLValue(currentEditListViewKey.c_str(), wchartochar(text).c_str());
 }
 
-void AeUI::updateListView() {
+void AeUIMgr::updateListView() {
     if (bAddTreeView) return;
     HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
     if (!hSelectedItem) return;
@@ -601,7 +607,7 @@ void AeUI::updateListView() {
     }
 }
 
-void AeUI::setAllTreeView() {
+void AeUIMgr::setAllTreeView() {
     bAddTreeView = true;
     int i = 0;
     for (const auto &it : CONFIG->data->nexts) {
@@ -621,7 +627,7 @@ void AeUI::setAllTreeView() {
     updateTab();
 }
 
-void AeUI::updateTab() {
+void AeUIMgr::updateTab() {
     currentTabIndex = TabCtrl_GetCurSel(tabControlCategory);
 
     // TreeView_DeleteAllItems(treeViewLists[currentTabIndex]);
@@ -634,7 +640,7 @@ void AeUI::updateTab() {
     // currentTreeViewNode = nullptr;
 }
 
-void AeUI::addToTreeView(AeXMLNode *node, HTREEITEM parent) {
+void AeUIMgr::addToTreeView(AeXMLNode *node, HTREEITEM parent) {
     TVITEM tvi;
     TVINSERTSTRUCT tvins;
 
@@ -664,7 +670,7 @@ void AeUI::addToTreeView(AeXMLNode *node, HTREEITEM parent) {
     }
 }
 
-void AeUI::initialize() {
+void AeUIMgr::initialize() {
     if (bInit) return;
     bInit = true;
 
@@ -678,9 +684,9 @@ void AeUI::initialize() {
     SetFocus(mainWindow);
 }
 
-std::string AeUI::getWindowTitle() {
-    std::string device(VK->deviceProperties.deviceName);
-    std::string windowTitle;
+std::string AeUIMgr::getWindowTitle() {
+    std::string windowTitle = "";
+    /*std::string device(VK->deviceProperties.deviceName);
     AeXMLNode *node = CONFIG->getXMLNode("setting.application");
     windowTitle = node->getXMLValue<std::string>("applicationName");
     windowTitle.append(" ");
@@ -700,11 +706,11 @@ std::string AeUI::getWindowTitle() {
     windowTitle.append(" FPS - ");
     windowTitle.append(SCENE->data.name);
     windowTitle.append(" ");
-    windowTitle.append(std::to_string(SCENE->data.eid));
+    windowTitle.append(std::to_string(SCENE->data.eid));*/
     return windowTitle;
 }
 
-void AeUI::update1() {
+void AeUIMgr::update1() {
     std::string windowTitle = getWindowTitle();
     std::wstring ws = chartowchar(windowTitle);
     SetWindowText(mainWindow, ws.c_str());
@@ -717,7 +723,7 @@ void AeUI::update1() {
     // consoleInput();
 }
 
-void AeUI::update2() {}
+void AeUIMgr::update2() {}
 
 /*void QeWindow::consoleInput() {
     if (!DEBUG->isConsole()) return;
@@ -773,14 +779,14 @@ case VK_RETURN:
 }*/
 //}
 
-std::wstring AeUI::chartowchar(std::string s) {
+std::wstring AeUIMgr::chartowchar(std::string s) {
     wchar_t rtn[4096];
     size_t outSize;
     mbstowcs_s(&outSize, rtn, 4096, s.c_str(), s.length());
     return rtn;
 }
 
-std::string AeUI::wchartochar(std::wstring s) {
+std::string AeUIMgr::wchartochar(std::wstring s) {
     char rtn[4096];
     size_t outSize;
     wcstombs_s(&outSize, rtn, 4096, s.c_str(), s.length());

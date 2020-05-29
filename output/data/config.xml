@@ -911,15 +911,18 @@
             <raytracing comp="raytracing.comp.spv" />
         </compute>
     </shaders>
-  <enum_define>
+  <code_define>
+    <id type="int" />
+    <enum>
     <type name="AE_GAMEOBJECT_TYPE"  prefix="eGAMEOBJECT_"/>
     <renderType name="AE_RENDER_TYPE" prefix="eRENDER_" KHR="0" UI="1" Main="2" Color="3" MAX="4" />
     <lightType name="AE_LIGHT_TYPE" prefix="eLIGHT_" Point="0" Direction="1" Spot="2" />
     <actionState name="AE_ACTION_STATE" prefix="eACTION_" Stop="0" Play="1" Pause="2" />
     <actionPlayType name="AE_ACTION_PLAY_TYPE" prefix="eACTION_PLAY_" Once="0" Replay="1" Next="2"/>
     <planeType name="AE_PLANE_TYPE" prefix="ePLANE_" D3D="0" Billboard="1" D2D="2" />
-  </enum_define>
-      <setting>
+  </enum>
+    </code_define>
+    <setting>
         <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.1.104" />
         <environment currentSceneEID="2" outputLog="1" mainWidth="1280" mainHeight="720" mainOffsetX="-100" mainOffsetY="50" editWidth="1024" editHeight="768" editOffsetX="250" editOffsetY="20" editFontSize="24" logWidth="1280" logHeight="960" logOffsetX="0" logOffsetY="-50" logFontSize="24" />
         <path log="data\log\" model="data\models\" material="data\models\" bin="data\models\" texture="data\textures\" sharder="data\shader\" />

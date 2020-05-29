@@ -49,17 +49,17 @@ set(RELEASE_ui ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/ui.dll)
 add_custom_command(TARGET lib_ui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_ui}>$<$<CONFIG:release>:${RELEASE_ui}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy ui")
 
 
-# exe UITest
-add_executable(exe_UITest ui/ui.h ui/ui.cpp ui/main.cpp)
+# exe testUI
+add_executable(exe_testUI ui/ui.h ui/ui.cpp ui/main.cpp)
 
-set_target_properties(exe_UITest PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
-set_target_properties(exe_UITest PROPERTIES OUTPUT_NAME_DEBUG UITest_debug)
-set_target_properties(exe_UITest PROPERTIES OUTPUT_NAME_RELEASE UITest)
-set_target_properties(exe_UITest PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+set_target_properties(exe_testUI PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+set_target_properties(exe_testUI PROPERTIES OUTPUT_NAME_DEBUG testUI_debug)
+set_target_properties(exe_testUI PROPERTIES OUTPUT_NAME_RELEASE testUI)
+set_target_properties(exe_testUI PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
 
-target_include_directories(exe_UITest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_UITest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exe_UITest PUBLIC debug common_debug optimized common)
+target_include_directories(exe_testUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_testUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_testUI PUBLIC debug common_debug optimized common)
 
 
 #lib gpu
@@ -79,17 +79,17 @@ set(RELEASE_gpu ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/gpu.dll)
 add_custom_command(TARGET lib_ui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_gpu}>$<$<CONFIG:release>:${RELEASE_gpu}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy gpu")
 
 
-# exe GPUTest
-add_executable(exe_GPUTest gpu/vulkan.h gpu/vulkan.cpp gpu/graphics.h gpu/graphics.cpp gpu/main.cpp)
+# exe testGPU
+add_executable(exe_testGPU gpu/vulkan.h gpu/vulkan.cpp gpu/graphics.h gpu/graphics.cpp gpu/main.cpp)
 
-set_target_properties(exe_GPUTest PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
-set_target_properties(exe_GPUTest PROPERTIES OUTPUT_NAME_DEBUG GPUTest_debug)
-set_target_properties(exe_GPUTest PROPERTIES OUTPUT_NAME_RELEASE GPUTest)
-set_target_properties(exe_GPUTest PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+set_target_properties(exe_testGPU PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+set_target_properties(exe_testGPU PROPERTIES OUTPUT_NAME_DEBUG testGPU_debug)
+set_target_properties(exe_testGPU PROPERTIES OUTPUT_NAME_RELEASE testGPU)
+set_target_properties(exe_testGPU PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
 
-target_include_directories(exe_GPUTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_GPUTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exe_GPUTest PUBLIC debug common_debug optimized common)
+target_include_directories(exe_testGPU PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_testGPU PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_testGPU PUBLIC debug common_debug optimized common)
 
 
 # exe CodeGenerator

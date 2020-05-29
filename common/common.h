@@ -12,7 +12,7 @@
 #include <iostream>
 
 #define CASE_STR(r) \
-    case r:    \
+    case r:         \
         return #r
 
 #define SINGLETON_CLASS(class_name) \
@@ -20,6 +20,7 @@
     class_name();                   \
                                     \
    public:                          \
+    ~class_name();                  \
     static class_name &getInstance()
 
 #define SINGLETON_INSTANCE(class_name)      \
@@ -27,6 +28,22 @@
         static class_name instance;         \
         return instance;                    \
     }
+
+#define MANAGER_KEY_CLASS(class_name)            \
+    class DllExport Ae##class_name##ManagerKey { \
+        friend class Ae##class_name##Manager;    \
+                                                 \
+       private:                                  \
+        Ae##class_name##ManagerKey() {}          \
+    }
+
+#define MANAGER_KEY_INSTANCE(class_name) \
+   private:                              \
+    Ae##class_name##ManagerKey key
+
+#define REQUIRED_MANAGER_KEY(class_name, manager) \
+   public:                                        \
+    Ae##class_name(const Ae##manager##ManagerKey &key)
 
 // template class DllExport std::vector<std::string>;
 // template class DllExport std::basic_string<char>;
@@ -331,9 +348,6 @@ class DllExport QeBinaryTree {
 class DllExport AeMath {
     SINGLETON_CLASS(AeMath);
 
-   public:
-    ~AeMath();
-
     const float PI = 3.1415927f;
     const float RADIANS_TO_DEGREES = 180.0f / PI;
     const float DEGREES_TO_RADIANS = PI / 180;
@@ -357,7 +371,7 @@ class DllExport AeMath {
     QeMatrix4x4f perspective(float _fov, float _aspect, float _near, float _far);
     QeMatrix4x4f translate(AeArray<float, 3> &_pos);
     AeArray<float, 3> move(AeArray<float, 3> &_position, AeArray<float, 3> &_addMove, AeArray<float, 3> &_face,
-                            AeArray<float, 3> &_up);
+                           AeArray<float, 3> &_up);
     QeMatrix4x4f rotate_quaternion(AeArray<float, 3> &_eulerAngles);
     QeMatrix4x4f rotate_quaternion(AeArray<float, 4> &quaternion);
     QeMatrix4x4f rotate_quaternion(float _angle, AeArray<float, 3> &_axis);
@@ -386,10 +400,9 @@ class DllExport AeMath {
     AeArray<float, 3> interpolatePos(AeArray<float, 3> &start, AeArray<float, 3> &end, float progression);
     float getAnglefromVectors(AeArray<float, 3> &v1, AeArray<float, 3> &v2);
     AeArray<float, 3> revolute_axis(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
-                                     AeArray<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
-                                     bool bFixZ = false);
+                                    AeArray<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false, bool bFixZ = false);
     AeArray<float, 3> revolute_eularAngles(AeArray<float, 3> &_position, AeArray<float, 3> &_addRevolute,
-                                            AeArray<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ);
+                                           AeArray<float, 3> &_centerPosition, bool bFixX, bool bFixY, bool bFixZ);
 
     // void getAnglefromVector(QeVector3f& inV, float & outPolarAngle, float & outAzimuthalAngle);
     // void rotatefromCenter(QeVector3f& center, QeVector3f& pos, float polarAngle, float azimuthalAngle);
@@ -403,6 +416,22 @@ enum DllExport QeAssetType {
     eAssetXML = 0,
     eAssetJSON = 1,
 };
+
+struct AeJSONNode;
+struct AeXMLNode;
+
+MANAGER_KEY_CLASS(Common);
+class DllExport AeCommonManager {
+    MANAGER_KEY_INSTANCE(Common);
+    SINGLETON_CLASS(AeCommonManager);
+
+    AeJSONNode *getJSON(const char *_filePath);
+    AeXMLNode *getXML(const char *_filePath);
+    void removeXML(std::string path);
+
+    std::vector<char> loadFile(const char *_filePath);
+};
+#define COM_MGR AeCommonManager::getInstance()
 
 struct AeNode {
     std::string key;
@@ -453,59 +482,42 @@ struct DllExport AeXMLNode {
     void outputXML(const char *path, int level = 0, std::string *content = nullptr);
 };
 
-struct QeAssetJSON;
-struct QeJSON {
+struct AeJSONNode;
+struct AeJSON {
     std::vector<std::string> eKeysforValues;
     std::vector<std::string> eValues;
     std::vector<std::string> eKeysforNodes;
-    std::vector<QeAssetJSON *> eNodes;
+    std::vector<AeJSONNode *> eNodes;
     std::vector<std::string> eKeysforArrayValues;
     std::vector<std::vector<std::string>> eArrayValues;
     std::vector<std::string> eKeysforArrayNodes;
-    std::vector<std::vector<QeAssetJSON *>> eArrayNodes;
+    std::vector<std::vector<AeJSONNode *>> eArrayNodes;
 };
 
-struct DllExport QeAssetJSON {
-    QeJSON *data;
+struct DllExport AeJSONNode {
+    AeJSON *data;
 
-    QeAssetJSON();
-    ~QeAssetJSON();
+    AeJSONNode();
+    ~AeJSONNode();
 
     const char *getJSONValue(int length, ...);
     const char *getJSONValue(const char *keys[], int length);
-    QeAssetJSON *getJSONNode(int length, ...);
-    QeAssetJSON *getJSONNode(const char *keys[], int length);
+    AeJSONNode *getJSONNode(int length, ...);
+    AeJSONNode *getJSONNode(const char *keys[], int length);
     std::vector<std::string> *getJSONArrayValues(int length, ...);
     std::vector<std::string> *getJSONArrayValues(const char *keys[], int length);
-    std::vector<QeAssetJSON *> *getJSONArrayNodes(int length, ...);
-    std::vector<QeAssetJSON *> *getJSONArrayNodes(const char *keys[], int length);
+    std::vector<AeJSONNode *> *getJSONArrayNodes(int length, ...);
+    std::vector<AeJSONNode *> *getJSONArrayNodes(const char *keys[], int length);
     bool getJSONbValue(bool *output, int length, ...);
     bool getJSONiValue(int *output, int length, ...);
     bool getJSONfValue(float *output, int length, ...);
 };
 
-class DllExport AeCommonManager {
-    SINGLETON_CLASS(AeCommonManager);
-
-   public:
-    ~AeCommonManager();
-
-    QeAssetJSON *getJSON(const char *_filePath);
-    AeXMLNode *getXML(const char *_filePath);
-    void removeXML(std::string path);
-
-    std::vector<char> loadFile(const char *_filePath);
-};
-#define CM_MGR AeCommonManager::getInstance()
-
-class DllExport QeEncode {
-    SINGLETON_CLASS(QeEncode);
-
-   public:
-    ~QeEncode() {}
+class DllExport AeCommonEncode {
+    SINGLETON_CLASS(AeCommonEncode);
 
     AeXMLNode *decodeXML(const char *buffer, int &index, AeXMLNode *parent = nullptr);
-    QeAssetJSON *decodeJSON(const char *buffer, int &index);
+    AeJSONNode *decodeJSON(const char *buffer, int &index);
     // QeAssetModel* decodeOBJ(char* buffer);
     // QeAssetModel* decodeGLB(char* buffer);
     // QeAssetMaterial* decodeMTL(char* buffer);
@@ -518,13 +530,13 @@ class DllExport QeEncode {
     std::string trim(std::string s);
 
     template <class T>
-    T ConvertTo(const std::string &str);
-
-    template <>
-    const char *ConvertTo<const char *>(const std::string &str);
-
-    template <>
-    std::string ConvertTo<std::string>(const std::string &str);
+    typename std::enable_if<std::is_arithmetic<T>::value, T>::type ConvertTo(const std::string &str);
+    template <class T>
+    typename std::enable_if<std::is_enum<T>::value, T>::type ConvertTo(const std::string &str);
+    template <class T>
+    typename std::enable_if<std::is_same<T, const char*>::value, T>::type ConvertTo(const std::string &str);
+    template <class T>
+    typename std::enable_if<std::is_same<T, std::string>::value, T>::type ConvertTo(const std::string &str);
 
     template <class T>
     std::vector<T> split(std::string s, std::string delim);
@@ -532,8 +544,7 @@ class DllExport QeEncode {
     template <class T>
     std::string combine(std::vector<T> &ss, std::string delim);
 };
-
-#define ENCODE QeEncode::getInstance()
+#define COM_ENCODE AeCommonEncode::getInstance()
 
 class DllExport QeTimer {
    public:
@@ -569,9 +580,6 @@ class DllExport AeLogListener {
 
 class DllExport AeLog {
     SINGLETON_CLASS(AeLog);
-
-   public:
-    ~AeLog();
 
     AeFile *file;
     std::vector<AeLogListener *> *listeners;

@@ -37,4 +37,4 @@ class AeGlobal {
 #define CMD(msg) GLB.command->inputCommand(msg)
 
 const char CONFIG_PATH[] = "data\\config.xml";
-#define CONFIG CM_MGR.getXML(CONFIG_PATH)
+#define CONFIG COM_MGR.getXML(CONFIG_PATH)

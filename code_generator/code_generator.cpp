@@ -6,8 +6,8 @@
 //#include "src/generated_config_struct_enum.h"
 
 const std::string indent = "    ";
-const std::string gameobject_struct_name = "AeGameObjectData";
 AeXMLNode* config = nullptr;
+AeXMLNode* enum_define = nullptr;
 
 struct enum_data {
     std::string key;
@@ -30,20 +30,19 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     // struct
     file.addNewLine("");
     std::string s = "struct ";
-    s += (gameobject_struct_name + "Component" + node.data->key + " {");
+    s += ("AeGameObjectDataComponent" + node.data->key + " {");
     file.addNewLine(s.c_str());
     auto* define_node = node.getXMLNode("define");
     std::vector<std::string> load_codes;
 
     for (auto& element : define_node->data->elements) {
         s = indent;
-        std::vector<std::string> types = ENCODE.split<std::string>(element.value, " ");
+        std::vector<std::string> types = COM_ENCODE.split<std::string>(element.value, " ");
         if (types[0].compare("enum") == 0) {
-            std::string key = "enum_define." + element.key + ".name";
-            std::string enum_name = config->getXMLValue<std::string>(key.c_str());
+            std::string key = element.key + ".name";
+            std::string enum_name = enum_define->getXMLValue<std::string>(key.c_str());
             s += (enum_name + " " + element.key + ";");
-            load_codes.push_back(element.key + " = static_cast<" + enum_name + ">(property_->getXMLValue<int>(\"" +
-                                    element.key + "\"));");
+            load_codes.push_back(element.key + " = property_->getXMLValue<" + enum_name + ">(\"" + element.key + "\");");
         } else {
             s += AddElementCode(element.key, types, load_codes);
         }
@@ -74,10 +73,15 @@ int main(int argc, char* argv[]) {
     file.addNewLine("#include \"common/common.h\"");
     // file.addNewLine("#include <cstring>");
 
-    config = CM_MGR.getXML("..\\..\\output\\data\\config.xml");
+    config = COM_MGR.getXML("..\\..\\output\\data\\config.xml");
+    enum_define = config->getXMLNode("code_define.enum");
+
+    std::string id_type = config->getXMLValue<std::string>("code_define.id.type");
+    std::string s = "using ID = ";
+    s += (id_type + ";");
+    file.addNewLine(s.c_str());
 
     // enum
-    auto* enum_define = config->getXMLNode("enum_define");
     std::vector<enum_data> enum_datas;
     for (auto node : enum_define->data->nexts) {
         enum_data e_data;
@@ -140,21 +144,21 @@ int main(int argc, char* argv[]) {
     file.addNewLine("");
     std::string type_name = enum_define->getXMLValue<std::string>("type.name");
     file.addNewLine("");
-    std::string s = "struct ";
-    s += (gameobject_struct_name + " {");
+    s = "struct ";
+    s += ("AeBaseData {");
     file.addNewLine(s.c_str());
     file.addNewLine((indent + "std::string name;").c_str());
     file.addNewLine((indent + type_name + " type;").c_str());
-    file.addNewLine((indent + "int oid;").c_str());
-    file.addNewLine((indent + "int eid;").c_str());
+    file.addNewLine((indent + "ID oid;").c_str());
+    file.addNewLine((indent + "ID eid;").c_str());
     file.addNewLine("");
     file.addNewLine((indent + "AeXMLNode* property_;").c_str());
     file.addNewLine((indent + "void read(AeXMLNode& node) {").c_str());
     file.addNewLine((indent + indent + "property_ = &node;").c_str());
     file.addNewLine((indent + indent + "name = property_->data->key;").c_str());
-    file.addNewLine((indent + indent + "type = static_cast<" + type_name + ">(property_->getXMLValue<int>(\"type\"));").c_str());
-    file.addNewLine((indent + indent + "oid = property_->getXMLValue<int>(\"oid\");").c_str());
-    file.addNewLine((indent + indent + "eid = property_->getXMLValue<int>(\"eid\");").c_str());
+    file.addNewLine((indent + indent + "type = property_->getXMLValue<" + type_name + ">(\"type\");").c_str());
+    file.addNewLine((indent + indent + "oid = property_->getXMLValue<ID>(\"oid\");").c_str());
+    file.addNewLine((indent + indent + "eid = property_->getXMLValue<ID>(\"eid\");").c_str());
     file.addNewLine((indent + "}").c_str());
     file.addNewLine((indent + "void reset() { read(*property_); }").c_str());
     file.addNewLine("};");
