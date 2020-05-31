@@ -246,28 +246,22 @@ bool AeLib::eraseElementFromVector(std::vector<T> &vec, T element) {
 }
 
 template <class T>
-typename std::enable_if<std::is_arithmetic<T>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
-    if (str.empty()) return 0;
-    std::stringstream ss(str);
-    T num;
-    ss >> num;
-    return num;
-}
-
-template <class T>
-typename std::enable_if<std::is_enum<T>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
-    int i = ConvertTo<int>(str);
-    return static_cast<T>(i);
-}
-
-template <class T>
-typename std::enable_if<std::is_same<T, const char *>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
-    return str.c_str();
-}
-
-template <class T>
-typename std::enable_if<std::is_same<T, std::string>::value, T>::type AeCommonEncode::ConvertTo(const std::string &str) {
-    return str;
+T AeCommonEncode::ConvertTo(const std::string &str) {
+    if constexpr (std::is_arithmetic<T>::value) {
+        if (str.empty()) return 0;
+        std::stringstream ss(str);
+        T num;
+        ss >> num;
+        return num;
+    } else if constexpr (std::is_enum<T>::value) {
+        int i = ConvertTo<int>(str);
+        return static_cast<T>(i);
+    } else if constexpr (std::is_same<T, const char *>::value) {
+        return str.c_str();
+    } else if constexpr (std::is_same<T, std::string>::value) {
+        return str;
+    }
+    ASSERT(0, "ConvertTo T NOT supported");
 }
 
 template <class T>
@@ -352,41 +346,21 @@ AeXMLNode *AeXMLNode::getXMLValues(AeArray<T, N> &value, const char *key) {
     }
     return ret;
 }
-/*
-template <>
-int AeMath::random<int>(int start, int range) {
-    if (!range) return start;
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_real_distribution<int> dis(start, start + range);
-    return dis(gen);
-}
-template <>
-float AeMath::random<float>(float start, float range) {
-    if (!range) return start;
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_real_distribution<float> dis(start, start + range);
-    return dis(gen);
-}
-*/
 
 template <class T>
-typename std::enable_if<std::is_floating_point<T>::value, T>::type AeMath::random(T start, T range) {
+T AeMath::random(T start, T range) {
     if (!range) return start;
     std::random_device rd;
     std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_real_distribution<T> dis(start, start + range);
-    return dis(gen);
-}
 
-template <class T>
-typename std::enable_if<std::is_integral<T>::value, T>::type AeMath::random(T start, T range) {
-    if (!range) return start;
-    std::random_device rd;
-    std::default_random_engine gen = std::default_random_engine(rd());
-    std::uniform_int_distribution<T> dis(start, start + range);
-    return dis(gen);
+    if constexpr (std::is_floating_point<T>::value) {
+        std::uniform_real_distribution<T> dis(start, start + range);
+        return dis(gen);
+    } else if constexpr (std::is_integral<T>::value) {
+        std::uniform_int_distribution<T> dis(start, start + range);
+        return dis(gen);
+    }
+    ASSERT(0, "random T NOT supported");
 }
 
 template <class T, int N>
@@ -398,11 +372,18 @@ AeArray<T, N> AeMath::randoms(T start, T range) {
     }
     std::random_device rd;
     std::default_random_engine gen = std::default_random_engine(rd());
-    // std::uniform_int_distribution<int> dis(start, start + range);
-    std::uniform_real_distribution<T> dis(start, start + range);
 
-    for (int i = 0; i < size; ++i) ret[i] = dis(gen);
-    return ret;
+    if constexpr (std::is_floating_point<T>::value) {
+        std::uniform_real_distribution<T> dis(start, start + range);
+        for (int i = 0; i < size; ++i) ret[i] = dis(gen);
+        return ret;
+    }
+    else if constexpr (std::is_integral<T>::value) {
+        std::uniform_int_distribution<T> dis(start, start + range);
+        for (int i = 0; i < size; ++i) ret[i] = dis(gen);
+        return ret;
+    }
+    ASSERT(0, "random T NOT supported");
 }
 
 template <int N>

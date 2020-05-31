@@ -242,7 +242,7 @@ AeJSONNode *AeJSONNode::getJSONNode(int length, ...) {
     const char **keys1 = new const char *[length];
     for (int i = 0; i < length; ++i) keys1[i] = va_arg(keys, const char *);
 
-    AeJSONNode* source = getJSONNode(keys1, length);
+    AeJSONNode *source = getJSONNode(keys1, length);
     va_end(keys);
     delete[] keys1;
     return source;
@@ -448,7 +448,7 @@ std::vector<char> AeCommonManager::loadFile(const char *_filePath) {
     std::vector<char> ret;
     std::ifstream file(_filePath, std::ios::ate | std::ios::binary);
     ASSERT(file.is_open(), _filePath)
-    //if (!file.is_open()) return ret;
+    // if (!file.is_open()) return ret;
 
     file.seekg(0, file.end);
     int length = int(file.tellg());

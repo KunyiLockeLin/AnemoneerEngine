@@ -11,7 +11,7 @@ class AeObjectManager {
     AeObjectManager(AeGlobalKey &_key) {}
     ~AeObjectManager();
 
-    void loadScene(int _eid);
+    void loadScene(ID _eid);
 
     std::map<AE_GAMEOBJECT_TYPE, std::vector<QeComponent *>> active_components;
     std::map<AE_GAMEOBJECT_TYPE, std::vector<QeComponent *>> idle_components;

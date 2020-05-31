@@ -90,7 +90,7 @@ bool QeVertex::operator==(const QeVertex &other) const {
     return pos == other.pos && normal == other.normal && uv == other.uv && color == other.color;
 }
 
-AeXMLNode *QeGameAsset::getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid) {
+AeXMLNode *QeGameAsset::getXMLEditNode(AE_GAMEOBJECT_TYPE _type, ID eid) {
     std::string s = "";
     int type2 = 0;
 
@@ -127,7 +127,7 @@ AeXMLNode *QeGameAsset::getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid) {
             if (node->data->nexts[index]->data->key.compare("define") == 0) {
                 continue;
             }
-            int _eid = node->data->nexts[index]->getXMLValue<int>("eid");
+            int _eid = node->data->nexts[index]->getXMLValue<ID>("eid");
             if (_eid == eid) return node->data->nexts[index];
         }
     }

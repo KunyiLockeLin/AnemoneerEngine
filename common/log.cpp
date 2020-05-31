@@ -115,6 +115,15 @@ AeLog::~AeLog() {
 // bool QeLog::isOutput() { return CONFIG->getXMLValuei("setting.environment.outputLog"); }
 bool AeLog::isOutput() { return (file && file->isOpen()) ? true : false; }
 
+void AeLog::setOutput(AeXMLNode &node, const char *output_name, const char *turn_on_xml_setting_path,
+                      const char *output_path_xml_setting_path) {
+    if (node.getXMLValue<bool>(turn_on_xml_setting_path)) {
+        std::string outputPath = node.getXMLValue<std::string>(output_path_xml_setting_path);
+        outputPath += output_name;
+        switchOutput(true, outputPath.c_str());
+    }
+}
+
 void AeLog::switchOutput(bool turn_on, const char *output_path) {
     if (turn_on) {
         if (!file) {

@@ -4,6 +4,8 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 project (AngryEngine)
 
+set(cpp_version "cxx_std_17")
+
 # bat build
 add_custom_target(bat_build SOURCES build.bat output/data/config.xml COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/build.bat COMMENT "run build.bat")
 
@@ -14,7 +16,7 @@ file(GLOB_RECURSE  SHADER_HEADER shader/header*)
 list(REMOVE_ITEM SHADER ${SHADER_HEADER})
 source_group(shader FILES ${SHADER})
 source_group(shader_header FILES ${SHADER_HEADER})
-add_custom_target(bat_shader_compiler SOURCES shader_compiler.bat ${SHADER} ${SHADER_HEADER} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compiler.bat COMMENT "run shader_compiler.bat")
+add_custom_target(bat_shader_compiler SOURCES shader/shader_compiler.bat ${SHADER} ${SHADER_HEADER} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader/shader_compiler.bat COMMENT "run shader_compiler.bat")
 
 
 # lib common
@@ -23,8 +25,7 @@ add_library(lib_common SHARED common/common.h common/template_define.h common/en
 set_target_properties(lib_common PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(lib_common PROPERTIES OUTPUT_NAME_DEBUG common_debug)
 set_target_properties(lib_common PROPERTIES OUTPUT_NAME_RELEASE common)
-
-#target_compile_features(lib_common PUBLIC cxx_std_14)
+target_compile_features(lib_common PRIVATE ${cpp_version})
 
 target_link_libraries(lib_common Dbghelp)
 set(DEBUG_common ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/common_debug.dll)
@@ -39,10 +40,11 @@ set_target_properties(lib_ui PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(lib_ui PROPERTIES OUTPUT_NAME_DEBUG ui_debug)
 set_target_properties(lib_ui PROPERTIES OUTPUT_NAME_RELEASE ui)
 set_target_properties(lib_ui PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+target_compile_features(lib_ui PRIVATE ${cpp_version})
 
-target_include_directories(lib_ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(lib_ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(lib_ui PUBLIC debug common_debug optimized common)
+target_include_directories(lib_ui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(lib_ui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(lib_ui PRIVATE debug common_debug optimized common)
 
 set(DEBUG_ui ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/ui_debug.dll)
 set(RELEASE_ui ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/ui.dll)
@@ -56,10 +58,11 @@ set_target_properties(exe_testUI PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(exe_testUI PROPERTIES OUTPUT_NAME_DEBUG testUI_debug)
 set_target_properties(exe_testUI PROPERTIES OUTPUT_NAME_RELEASE testUI)
 set_target_properties(exe_testUI PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+target_compile_features(exe_testUI PRIVATE ${cpp_version})
 
-target_include_directories(exe_testUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_testUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exe_testUI PUBLIC debug common_debug optimized common)
+target_include_directories(exe_testUI PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_testUI PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_testUI PRIVATE debug common_debug optimized common)
 
 
 #lib gpu
@@ -69,10 +72,11 @@ set_target_properties(lib_gpu PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
 set_target_properties(lib_gpu PROPERTIES OUTPUT_NAME_DEBUG gpu_debug)
 set_target_properties(lib_gpu PROPERTIES OUTPUT_NAME_RELEASE gpu)
 set_target_properties(lib_gpu PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+target_compile_features(lib_gpu PRIVATE ${cpp_version})
 
-target_include_directories(lib_gpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(lib_gpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(lib_gpu PUBLIC debug common_debug optimized common)
+target_include_directories(lib_gpu PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(lib_gpu PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(lib_gpu PRIVATE debug common_debug optimized common)
 
 set(DEBUG_gpu ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/gpu_debug.dll)
 set(RELEASE_gpu ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/gpu.dll)
@@ -86,10 +90,11 @@ set_target_properties(exe_testGPU PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(exe_testGPU PROPERTIES OUTPUT_NAME_DEBUG testGPU_debug)
 set_target_properties(exe_testGPU PROPERTIES OUTPUT_NAME_RELEASE testGPU)
 set_target_properties(exe_testGPU PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+target_compile_features(exe_testGPU PRIVATE ${cpp_version})
 
-target_include_directories(exe_testGPU PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_testGPU PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exe_testGPU PUBLIC debug common_debug optimized common)
+target_include_directories(exe_testGPU PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_testGPU PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_testGPU PRIVATE debug common_debug optimized common)
 
 
 # exe CodeGenerator
@@ -99,16 +104,17 @@ set_target_properties(exe_CodeGenerator PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE
 set_target_properties(exe_CodeGenerator PROPERTIES OUTPUT_NAME_DEBUG CodeGenerator_debug)
 set_target_properties(exe_CodeGenerator PROPERTIES OUTPUT_NAME_RELEASE CodeGenerator)
 set_target_properties(exe_CodeGenerator PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY $(SolutionDir)$(Configuration))
+target_compile_features(exe_CodeGenerator PRIVATE ${cpp_version})
 
-target_include_directories(exe_CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exe_CodeGenerator PUBLIC debug common_debug optimized common)
+target_include_directories(exe_CodeGenerator PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_CodeGenerator PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_CodeGenerator PRIVATE debug common_debug optimized common)
 #add_custom_command(TARGET exe_CodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
 #add_custom_target(exe_CodeGenerator COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
 
 
 # bat code_generator
-add_custom_target(bat_code_generator SOURCES code_generator.bat COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
+add_custom_target(bat_code_generator SOURCES code_generator/code_generator.bat COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator/code_generator.bat COMMENT "run code_generator.bat")
 
 
 # exe AngryEngine
@@ -162,9 +168,10 @@ set_target_properties(exe_AngryEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(exe_AngryEngine PROPERTIES OUTPUT_NAME_DEBUG AngryEngine_debug)
 set_target_properties(exe_AngryEngine PROPERTIES OUTPUT_NAME_RELEASE AngryEngine)
 set_target_properties(exe_AngryEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+target_compile_features(exe_AngryEngine PRIVATE ${cpp_version})
 
-target_include_directories(exe_AngryEngine PUBLIC $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_AngryEngine PUBLIC $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_include_directories(exe_AngryEngine PRIVATE $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_AngryEngine PRIVATE $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
 target_link_libraries(exe_AngryEngine vulkan-1 debug common_debug optimized common)
 
 set(DEBUG_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/AngryEngine_debug.exe)

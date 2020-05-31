@@ -3,12 +3,9 @@
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     try {
-        if (CONFIG->getXMLValue<bool>("setting.environment.outputLog")) {
-            std::string outputPath = CONFIG->getXMLValue<std::string>("setting.path.log");
-            outputPath += "testUI";
-            LOGOBJ.switchOutput(true, outputPath.c_str());
-        }
+        LOGOBJ.setOutput(*CONFIG, "testUI_");
         UI_MGR.initialize();
+        UI_MGR->loadUISet(CONFIG->getXMLValue<ID>("setting.environment.currentUISetEID"));
         while (1) {
             UI_MGR.update1();
             UI_MGR.update2();

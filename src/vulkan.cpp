@@ -109,7 +109,7 @@ void QeVulkan::DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportC
 }
 
 void QeVulkan::createInstance() {
-    AeXMLNode *node = CONFIG->getXMLNode("setting.Vulkan_Validation_Layers");
+    AeXMLNode *node = CONFIG->getXMLNode("code_define.Vulkan_Validation_Layers");
     validationLayers.clear();
     for (const auto &it : node->data->elements) {
         if (!it.value.compare("1")) {

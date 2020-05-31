@@ -1,4 +1,4 @@
-@echo | call shader_compiler.bat
+@echo | call shader/shader_compiler.bat
 timeout 3
 
 rmdir build /s/q
@@ -14,7 +14,7 @@ cmake --build . --target exe_CodeGenerator --config Debug
 timeout 3
 
 cd ..
-@echo | call code_generator.bat
+@echo | call code_generator/code_generator.bat
 timeout 3
 
 cd build

@@ -1,5 +1,5 @@
 # Angry Engine
-- Run "build.bat" to generate the Visual Studio 2017 x64 project, compile shader and test program.
+- Run "build.bat" to generate the Visual Studio 2017, x64, C++17 project, compile shader, build and run program. CMake at least version 3.8 is required.
 
 - Introduction video:
 

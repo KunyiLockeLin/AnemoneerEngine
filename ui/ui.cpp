@@ -1,5 +1,397 @@
 #include "ui.h"
 
+/*
+void AeUIFont::initialize(QeAssetXML *_property, QeObject *_parent) {
+    QeComponent::initialize(_property, _parent);
+
+    fontSize = initProperty->getXMLValuei("size");
+    fontStyle = initProperty->getXMLValue("style");
+    std::wstring ws = UI->chartowchar(fontStyle);
+
+    win32Font = CreateFont(fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+                           CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, ws.c_str());
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    if (UI) UI->handleMessages(hWnd, uMsg, wParam, lParam);
+    return (DefWindowProc(hWnd, uMsg, wParam, lParam));
+}
+
+void AeUIBase::initialize(QeAssetXML *_property, QeObject *_parent) {
+    win32Instance = GetModuleHandle(nullptr);
+    position = _property->getXMLValueiXY("position");
+    size = _property->getXMLValueiXY("size");
+    align = (AeUIAlignType)_property->getXMLValuei("align");
+    fontOID = _property->getXMLValuei("font_oid");
+
+    bUpdate = false;
+}
+
+void AeUIBase::clear() { DestroyWindow(win32Handle); }
+
+void AeUIBase::update1() {
+    if (bUpdate) return;
+    bUpdate = true;
+
+    QeVector2i parent_size = {};
+    AeUIWindow *p = (AeUIWindow *)owner->parent;
+    while (p) {
+        if (!p->parent) {
+            if (parent_size.x == 0) {
+                parent_size.x = UI->screenSize.x;
+            }
+            if (parent_size.y == 0) {
+                parent_size.y = UI->screenSize.y;
+            }
+            break;
+        } else {
+            if (p->size.x != 0 && parent_size.x == 0) {
+                parent_size.x = p->size.x;
+            }
+            if (p->size.y != 0 && parent_size.y == 0) {
+                parent_size.y = p->size.y;
+            }
+            if (parent_size.x != 0 && parent_size.y != 0) {
+                break;
+            }
+        }
+        p = (AeUIWindow *)p->parent;
+    }
+    RECT rect;
+    rect.left = position.x;
+    rect.top = position.y;
+    rect.right = size.x + position.x;
+    rect.bottom = size.y + position.y;
+    if (rect.right == 0) rect.right = parent_size.x;
+    if (rect.bottom == 0) rect.bottom = parent_size.y;
+    if (owner->parent == owner->root) {
+        DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+        DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+        AdjustWindowRectEx(&rect, dwStyle, false, dwExStyle);
+    }
+    switch (align) {
+        case eUIAlign_top_right:
+        case eUIAlign_middle_right:
+        case eUIAlign_bottom_right:
+            rect.left += (parent_size.x - size.x);
+            rect.right += (parent_size.x - size.x);
+            break;
+        case eUIAlign_top_middle:
+        case eUIAlign_middle:
+        case eUIAlign_bottom_middle:
+            rect.left += (parent_size.x - size.x) / 2;
+            rect.right += (parent_size.x - size.x) / 2;
+            break;
+        default:
+            break;
+    }
+    switch (align) {
+        case eUIAlign_bottom_left:
+        case eUIAlign_bottom_middle:
+        case eUIAlign_bottom_right:
+            rect.top += (parent_size.y - size.y);
+            rect.bottom += (parent_size.y - size.y);
+            break;
+        case eUIAlign_middle_left:
+        case eUIAlign_middle:
+        case eUIAlign_middle_right:
+            rect.top += (parent_size.y - size.y) / 2;
+            rect.bottom += (parent_size.y - size.y) / 2;
+            break;
+        default:
+            break;
+    }
+
+    SetWindowPos(win32Handle, 0, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER);
+
+    if (fontOID) {
+        AeUIFont *font = (AeUIFont *)OBJMGR->findComponent(eUIComponent_font, fontOID);
+        SendMessage(win32Handle, WM_SETFONT, WPARAM(font->win32Font), TRUE);
+        SelectObject(win32DeviceContext, font->win32Font);
+    }
+}
+
+void AeUIListBox::initialize(QeAssetXML *_property, QeObject *_parent) {
+    AeUIComponent::initialize(_property, _parent);
+
+    bSelected = initProperty->getXMLValueb("selected");
+    bWordWrap = initProperty->getXMLValueb("word_wrap");
+    std::wstring title = UI->chartowchar(name);
+
+    AeUIWindow *p = (AeUIWindow *)parent;
+    win32Handle = CreateWindow(WC_LISTBOX, title.c_str(), WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, 0, 0,
+                               p->win32Handle, NULL, win32Instance, NULL);
+    SetWindowText(win32Handle, title.c_str());
+    win32DeviceContext = GetDC(win32Handle);
+
+    AeUI *ui_root = (AeUI *)root;
+    ui_root->listboxs.emplace_back(this);
+    msgMaxWidth = 0;
+}
+
+void AeUIComponent::initialize(QeAssetXML *_property, QeObject *_parent) {
+    AeUIBase::initialize(_property, _parent);
+    QeComponent::initialize(_property, _parent);
+}
+
+void AeUIRedner::initialize(QeAssetXML *_property, QeObject *_parent) {
+    AeUIComponent::initialize(_property, _parent);
+
+    sceneEID = initProperty->getXMLValuei("sceneEID");
+    cameraOID = initProperty->getXMLValuei("cameraOID");
+}
+
+void AeUIXMLEditor::initialize(QeAssetXML *_property, QeObject *_parent) {
+    AeUIComponent::initialize(_property, _parent);
+
+    path = initProperty->getXMLValue("path");
+    xml = AST->getXML(path.c_str());
+    std::wstring title = UI->chartowchar(name);
+
+    AeUIWindow *p = (AeUIWindow *)parent;
+    win32Handle = CreateWindow(WC_LISTBOX, title.c_str(), WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 0, 0, 0,
+                               p->win32Handle, NULL, win32Instance, NULL);
+    SetWindowText(win32Handle, title.c_str());
+    win32DeviceContext = GetDC(win32Handle);
+
+    tabControlCategory = CreateWindow(WC_TABCONTROL, L"", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, 0, 0, width + 10, height + 10,
+                                      win32Handle, NULL, windowInstance, NULL);
+    TCITEM tie;
+    tie.mask = TCIF_TEXT;
+    treeViewLists.clear();
+    int i = 0;
+    for (const auto &it : CONFIG->nexts) {
+        std::wstring ws = chartowchar(it->key);
+        tie.pszText = const_cast<LPWSTR>(ws.c_str());
+        TabCtrl_InsertItem(tabControlCategory, i, &tie);
+        treeViewLists.emplace_back(CreateWindow(WC_TREEVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL, 0, 25,
+                                                width / 2 - 200, height - 30, editPanel, NULL, windowInstance, NULL));
+        SendMessage(treeViewLists[i], WM_SETFONT, WPARAM(hFont), TRUE);
+        ++i;
+    }
+    currentTabIndex = 0;
+
+    listViewDetail = CreateWindow(
+        WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LVS_REPORT | LVS_NOCOLUMNHEADER | LVS_EDITLABELS,
+        width / 2 - 200, 25, width / 2 + 100, height - 30, editPanel, NULL, windowInstance, NULL);
+    SendMessage(listViewDetail, WM_SETFONT, WPARAM(hFont), TRUE);
+
+    LVCOLUMN lvc;
+    lvc.mask = LVCF_WIDTH | LVCF_SUBITEM;
+    lvc.cx = 200;
+    lvc.iSubItem = 0;
+    ListView_InsertColumn(listViewDetail, 0, &lvc);
+
+    lvc.cx = 395;
+    lvc.iSubItem = 1;
+    ListView_InsertColumn(listViewDetail, 1, &lvc);
+
+    setAllTreeView();
+}
+}
+
+void AeUIComponent::clear() {
+    AeUIBase::clear();
+    QeComponent::clear();
+}
+
+void AeUIComponent::update1() {
+    AeUIBase::update1();
+    QeComponent::update1();
+}
+
+void AeUIComponent::update2() {
+    AeUIBase::update2();
+    QeComponent::update2();
+}
+
+void AeUIListBox::msg(std::string &s) {
+    std::wstring ws = UI->chartowchar(s);
+    SendMessage(win32Handle, LB_INSERTSTRING, 0, (LPARAM)ws.c_str());
+    SIZE textWidth;
+    GetTextExtentPoint32(win32DeviceContext, ws.c_str(), int(ws.length()), &textWidth);
+    if (textWidth.cx > msgMaxWidth) {
+        msgMaxWidth = textWidth.cx;
+        SendMessage(win32Handle, LB_SETHORIZONTALEXTENT, msgMaxWidth + 30, 0);
+    }
+}
+
+void AeUIWindow::initialize(QeAssetXML *_property, QeObject *_parent) {
+    AeUIBase::initialize(_property, _parent);
+    QeComponent::initialize(_property, _parent);
+
+    std::wstring title = UI->chartowchar(name);
+    WNDCLASSEX wndClass;
+    wndClass.cbSize = sizeof(WNDCLASSEX);
+    wndClass.style = CS_HREDRAW | CS_VREDRAW;
+    wndClass.lpfnWndProc = WndProc;
+    wndClass.cbClsExtra = 0;
+    wndClass.cbWndExtra = 0;
+    wndClass.hInstance = win32Instance;
+    wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    wndClass.lpszMenuName = NULL;
+    wndClass.lpszClassName = title.c_str();
+    wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
+
+    RegisterClassEx(&wndClass);
+
+    HWND parentHandle = NULL;
+    if (parent && parent->componentType == eWindow) {
+        parentHandle = ((AeUIWindow *)parent)->win32Handle;
+    }
+    win32Handle = CreateWindowEx(0, title.c_str(), 0, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, 0, 0,
+                                 parentHandle, NULL, win32Instance, NULL);
+    SetWindowText(win32Handle, title.c_str());
+    ShowWindow(win32Handle, SW_SHOW);
+
+    QeObject::initialize(_property, _parent);
+}
+
+void AeUIWindow::clear() {
+    AeUIBase::clear();
+    QeObject::clear();
+}
+
+void AeUIWindow::update1() {
+    AeUIBase::update1();
+    QeObject::update1();
+}
+
+void AeUIWindow::update2() {
+    AeUIBase::update2();
+    QeObject::update2();
+}
+
+void AeUIWindow::resize(HWND targetHandle) {
+    if (targetHandle == NULL || targetHandle == win32Handle) {
+        if (targetHandle == NULL) bUpdate = false;
+        RECT rect;
+        GetClientRect(win32Handle, &rect);
+        if (size.x != 0) size.x = rect.right - rect.left;
+        if (size.y != 0) size.y = rect.bottom - rect.top;
+        for (const auto component : components) {
+            ((AeUIComponent *)component)->bUpdate = false;
+        }
+        for (const auto child : children) {
+            ((AeUIWindow *)child)->resize(NULL);
+        }
+    }
+}
+
+void AeUI::initialize(QeAssetXML *_property, QeObject *_parent) {
+    QeComponent::initialize(_property, _parent);
+    for (const auto node : initProperty->nexts) {
+        children.push_back(OBJMGR->spwanComponent(node, this));
+    }
+    screenSize.x = GetSystemMetrics(SM_CXSCREEN);
+    screenSize.y = GetSystemMetrics(SM_CYSCREEN);
+}
+
+void AeUI::clear() {
+    QeObject::clear();
+    inputControls.clear();
+    listboxs.clear();
+}
+
+void AeUI::update1() {
+    QeObject::update1();
+
+    MSG msg;
+    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+}
+
+void AeUI::resize(HWND targetHandle) {
+    screenSize.x = GetSystemMetrics(SM_CXSCREEN);
+    screenSize.y = GetSystemMetrics(SM_CYSCREEN);
+
+    for (const auto node : children) {
+        ((AeUIWindow *)node)->resize(targetHandle);
+    }
+}
+
+void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    inputData.inputType = uMsg;
+    inputData.inputKey = int(wParam);
+    inputData.mousePos.x = LOWORD(lParam);
+    inputData.mousePos.y = HIWORD(lParam);
+
+    switch (uMsg) {
+        case WM_CLOSE:
+            ENGINE->bClosed = true;
+            break;
+        case WM_SIZE:
+            if (bResize) {
+                bResize = false;
+                GRAP->bRecreateRender = true;
+                resize(hWnd);
+            } else {
+                bResize = true;
+            }
+            break;
+        case WM_SYSCOMMAND: {
+                int sc_wparam = GET_SC_WPARAM(wParam);
+                if (sc_wparam == SC_MAXIMIZE || sc_wparam == SC_RESTORE) {
+                    bResize = true;
+                }
+            }
+            break;
+        //case WM_WINDOWPOSCHANGED:
+        //    if (bResize) {
+        //        bResize = false;
+        //        LOG("WM_WINDOWPOSCHANGED ttttttttttttttttt");
+        //        //resize(hWnd);
+        //    }
+        //    break;
+        
+case WM_EXITSIZEMOVE:
+    if (bResize) {
+        bResize = false;
+        GRAP->bRecreateRender = true;
+        resize(hWnd);
+    }
+    break;
+default:
+
+    switch (wParam) {
+        case VK_ESCAPE:
+            if (uMsg != WM_IME_COMPOSITION) ENGINE->bClosed = true;
+            break;
+        default:
+            for (const auto input : inputControls) {
+                input->updateInput();
+            }
+            break;
+    }
+    break;
+    }
+    }
+
+    void AeUI::Log(std::string &s) {
+        for (const auto list : listboxs) {
+            list->msg(s);
+        }
+    }
+
+    std::wstring AeUI::chartowchar(std::string s) {
+        wchar_t rtn[4096];
+        size_t outSize;
+        mbstowcs_s(&outSize, rtn, 4096, s.c_str(), s.length());
+        return rtn;
+    }
+
+    std::string AeUI::wchartochar(std::wstring s) {
+        char rtn[4096];
+        size_t outSize;
+        wcstombs_s(&outSize, rtn, 4096, s.c_str(), s.length());
+        return rtn;
+    }
+*/
+
 SINGLETON_INSTANCE(AeUIMgr)
 
 LRESULT EditProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -89,7 +481,7 @@ void AeUIMgr::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                         if (currentTreeViewNode) {
                             int type = currentTreeViewNode->getXMLValue<int>("type");
                             if (type == eGAMEOBJECT_Scene) {
-                                int eid = currentTreeViewNode->getXMLValue<ID>("eid");
+                                ID eid = currentTreeViewNode->getXMLValue<ID>("eid");
                                 // OBJMGR->loadScene(eid);
                             }
                         }
@@ -97,7 +489,7 @@ void AeUIMgr::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     case eUIType_btnSaveEID:
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
-                            int _eid = currentTreeViewNode->getXMLValue<ID>("eid");
+                            ID _eid = currentTreeViewNode->getXMLValue<ID>("eid");
                             if (_type != 0 && _eid != 0) {
                                 /*AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node)
@@ -113,7 +505,7 @@ void AeUIMgr::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     case eUIType_btnLoadEID:
                         if (currentTreeViewNode) {
                             int _type = currentTreeViewNode->getXMLValue<int>("type");
-                            int _eid = currentTreeViewNode->getXMLValue<ID>("eid");
+                            ID _eid = currentTreeViewNode->getXMLValue<ID>("eid");
                             if (_type != 0) {
                                 /*AeXMLNode *node = G_AST.getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node) {

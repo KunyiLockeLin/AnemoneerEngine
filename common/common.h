@@ -355,9 +355,7 @@ class DllExport AeMath {
     // template <class T>
     // T random(T start, T range);
     template <class T>
-    typename std::enable_if<std::is_integral<T>::value, T>::type random(T start, T range);
-    template <class T>
-    typename std::enable_if<std::is_floating_point<T>::value, T>::type random(T start, T range);
+    T random(T start, T range);
     template <class T, int N>
     AeArray<T, N> randoms(T start, T range);
     template <int N>
@@ -530,13 +528,7 @@ class DllExport AeCommonEncode {
     std::string trim(std::string s);
 
     template <class T>
-    typename std::enable_if<std::is_arithmetic<T>::value, T>::type ConvertTo(const std::string &str);
-    template <class T>
-    typename std::enable_if<std::is_enum<T>::value, T>::type ConvertTo(const std::string &str);
-    template <class T>
-    typename std::enable_if<std::is_same<T, const char*>::value, T>::type ConvertTo(const std::string &str);
-    template <class T>
-    typename std::enable_if<std::is_same<T, std::string>::value, T>::type ConvertTo(const std::string &str);
+    T ConvertTo(const std::string &str);
 
     template <class T>
     std::vector<T> split(std::string s, std::string delim);
@@ -586,6 +578,9 @@ class DllExport AeLog {
 
     void addListener(AeLogListener &listener);
     void removeListener(AeLogListener &listener);
+    void setOutput(AeXMLNode &node, const char *output_name = "",
+                   const char *turn_on_xml_setting_path = "setting.environment.outputLog",
+                   const char *output_path_xml_setting_path = "setting.path.log");
     void switchOutput(bool turn_on, const char *output_path = nullptr);
     std::string stack(int from, int to);
     void print(std::string &msg, bool bShowStack = false, int stackLevel = 5);

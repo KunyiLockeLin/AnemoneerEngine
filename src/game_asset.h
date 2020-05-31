@@ -116,7 +116,7 @@ class QeGameAsset {
     std::map<std::string, QeVKImage *> astTextures;
     //std::map<int, QeAssetParticleRule *> astParticles;
 
-    AeXMLNode *getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid);
+    AeXMLNode *getXMLEditNode(AE_GAMEOBJECT_TYPE _type, ID eid);
 
     QeAssetModel *getModel(const char *_filename, bool bCubeMap = false, float *param = nullptr);
     // QeAssetMaterial* getMaterial(const char* _filename);

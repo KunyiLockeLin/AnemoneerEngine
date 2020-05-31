@@ -1,6 +1,6 @@
 #include "header.h"
 
-void AeObjectManager::loadScene(int _eid) {
+void AeObjectManager::loadScene(ID _eid) {
     AeXMLNode *node = G_AST.getXMLEditNode(eGAMEOBJECT_Scene, _eid);
 
     if (SCENE)

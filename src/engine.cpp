@@ -3,11 +3,7 @@
 void AngryEngine::run() {
     bClosed = false;
 
-    if (CONFIG->getXMLValue<bool>("setting.environment.outputLog")) {
-        std::string outputPath = CONFIG->getXMLValue<std::string>("setting.path.log");
-        outputPath += "Ae";
-        LOGOBJ.switchOutput(true, outputPath.c_str());
-    }
+    LOGOBJ.setOutput(*CONFIG, "AngeryEngine_");
     UI->initialize();
     VK->initialize();
     initialize();
@@ -16,7 +12,7 @@ void AngryEngine::run() {
 
 void AngryEngine::initialize() {
     UI->resizeAll();
-    OBJMGR->loadScene(CONFIG->getXMLValue<int>("setting.environment.currentSceneEID"));
+    OBJMGR->loadScene(CONFIG->getXMLValue<ID>("setting.environment.currentSceneEID"));
 }
 
 void AngryEngine::mainLoop() {
