@@ -43,7 +43,39 @@
 
 #define REQUIRED_MANAGER_KEY(class_name, manager) \
    public:                                        \
-    Ae##class_name(const Ae##manager##ManagerKey &key)
+    AeUIComponent##class_name(const Ae##manager##ManagerKey &key)
+
+#define COMPONENT_CLASS_DECLARE(component_type, manager)                         \
+    AeUIComponent##component_type(Ae##manager##ManagerKey &_key) : AeUIComponentBase(_key) {} \
+    ~AeUIComponent##component_type() {}                                            \
+    AeUIObjectDataComponent##component_type component_data;           \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
+
+#define COMPONENT_CLASS_DECLARE_PARENT(component_type, parent_component_type)         \
+    Ae##component_type(AeObjectManagerKey &_key) : Qe##parent_component_type(_key) {} \
+    ~Qe##component_type() {}                                                          \
+    AeGameObjectDataComponent##component_type component_data;                         \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
+
+#define COMPONENT_CLASS_DECLARE_INITIALIZE(component_type, ...)                      \
+    Qe##component_type(AeObjectManagerKey &_key) : QeComponent(_key), __VA_ARGS__ {} \
+    ~Qe##component_type() {}                                                         \
+    AeGameObjectDataComponent##component_type component_data;                        \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
+
+#define COMPONENT_CLASS_DECLARE_PARENT_INITIALIZE(component_type, parent_component_type, ...)      \
+    Qe##component_type(AeObjectManagerKey &_key) : Qe##parent_component_type(_key), __VA_ARGS__ {} \
+    ~Qe##component_type() {}                                                                       \
+    AeGameObjectDataComponent##component_type component_data;                                      \
+    virtual void initialize(AeXMLNode *_property, QeObject *_owner);
+
+#define COMPONENT_INITIALIZE                    \
+    QeComponent::initialize(_property, _owner); \
+    component_data.read(*_property);
+
+#define COMPONENT_INITIALIZE_PARENT(parent_component_type)    \
+    Qe##parent_component_type::initialize(_property, _owner); \
+    component_data.read(*_property); \
 
 // template class DllExport std::vector<std::string>;
 // template class DllExport std::basic_string<char>;

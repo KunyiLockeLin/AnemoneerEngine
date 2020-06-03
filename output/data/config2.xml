@@ -973,27 +973,27 @@
         <ui_components>
            <!--size: 0: follow the parent size-->
           <UI_Render>
-		    <define position="int 2" size="int 2" alignType="enum" sceneEID="ID" cameraOID="ID" />
+		    <define sceneEID="ID" cameraOID="ID" />
             <default type="3001" oid="0" eid="0" position="0 0" size="0 0" alignType="0" sceneEID="0" cameraOID="1" />
           </UI_Render>
           <UI_EditControl>
-		  	   <define position="int 2" size="int 2" alignType="enum" font_oid="ID" label="std::string" label_visible ="bool" label_edit ="bool" label_selected ="bool" value="" value_visible ="bool" value_edit ="bool" value_selected ="bool" />
+		  	   <define label="std::string" label_visible ="bool" label_edit ="bool" label_selected ="bool" value="" value_visible ="bool" value_edit ="bool" value_selected ="bool" />
 		       <default type="3002" oid="0" eid="0" position="0 0" size="0 0" alignType="0" font_oid="" label="" label_visible ="1" label_edit ="0" label_selected ="1" value="" value_visible ="1" value_edit ="1" value_selected ="1" />
 	        </UI_EditControl>
           <UI_Button>
-	  		       <define position="int 2" size="int 2" alignType="enum" font_oid="ID" label="std::string" />
+	  		       <define label="std::string" />
 	  		       <default type="3003" oid="0" eid="0" position="0 0" size="0 0" alignType="0" font_oid="" label="btn" />
 	      </UI_Button>
           <UI_ListBox>
-		  	  	   <define position="int 2" size="int 2" alignType="enum" font_oid="ID" selected="bool" word_wrap="1" />
+		  	  	   <define selected="bool" word_wrap="1" />
 	  		       <default type="3004" oid="0" eid="0" position="0 0" size="0 0" alignType="0" font_oid="" selected="1" word_wrap="1" />
 	      </UI_ListBox>
           <UI_TreeView>
-		  	  	   <define position="int 2" size="int 2" alignType="enum" font_oid="ID" />
+		  	  	   <define />
 	  		       <default type="3005" oid="0" eid="0" position="0 0" size="0 0" alignType="0" font_oid="" />
 	      </UI_TreeView>
           <UI_PropertyGrid>
-		  	  	   <define position="int 2" size="int 2" alignType="enum" font_oid="ID" column = "int" row= "int" />
+		  	  	   <define column = "int" row= "int" />
 	  		       <default type="3006" oid="0" eid="0" position="0 0" size="0 0" alignType="0" font_oid="" column = "1" row= "1" />
 	      </UI_PropertyGrid>
 	      <UI_Font>
@@ -1005,12 +1005,14 @@
 	  		       <default type="3008" oid="0" eid="0" configOID="" logOID="" renderOID=""/>
 	      </UI_InputControl>
           <UI_XMLEditor>
-            <define position="int 2" size="int 2" alignType="enum" font_oid="ID" path="std::string" />
+            <define path="std::string" />
             <default type="3009" oid="0" eid="0" position="0 0" size="0 0" alignType="0" font_oid="" path="data\config.xml" />
           </UI_XMLEditor>
         </ui_components>
   <code_define>
     <id type="int" />
+	<define_base_struct type="enum" oid="ID" eid="ID" />
+    <define_ui_base_struct position="int 2" size="int 2" alignType="enum" font_oid="ID"/>
     <enum>
     <type name="AE_GAMEOBJECT_TYPE"  prefix="eGAMEOBJECT_"/>
     <renderType name="AE_RENDER_TYPE" prefix="eRENDER_" KHR="0" UI="1" Main="2" Color="3" MAX="4" />

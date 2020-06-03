@@ -5,127 +5,6 @@
 #include "common/common.h"
 #include <functional>
 #include "code_generator/generated_config_struct_enum.h"
-/*
-class AeUIFont : public QeComponent {
-   public:
-    AeUIFont(AeObjectManagerKey &_key) : QeComponent(_key) {}
-    ~AeUIFont() {}
-
-    HFONT win32Font;
-
-    int fontSize;
-    std::string fontStyle;
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
-};
-
-class AeUIBase {
-   public:
-    AeUIBase(AeObjectManagerKey &_key, QeComponent *_owner) : owner(_owner) {}
-    ~AeUIBase() {}
-
-    QeComponent *owner = nullptr;
-    HINSTANCE win32Instance;
-    HWND win32Handle;
-    HDC win32DeviceContext;
-
-    QeVector2i position, size;
-    AeUIAlignType align;
-    int fontOID;
-    bool bUpdate;
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
-    virtual void clear();
-    virtual void update1();
-    virtual void update2() {}
-};
-
-class AeUIComponent : public AeUIBase, public QeComponent {
-   public:
-    AeUIComponent(AeObjectManagerKey &_key) : AeUIBase(_key, this), QeComponent(_key) {}
-    ~AeUIComponent() {}
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
-    virtual void clear();
-    virtual void update1();
-    virtual void update2();
-};
-
-class AeUIRedner : public AeUIComponent {
-   public:
-    AeUIRedner(AeObjectManagerKey &_key) : AeUIComponent(_key) {}
-    ~AeUIRedner() {}
-
-    uint32_t sceneEID;
-    uint32_t cameraOID;
-    VkSurfaceKHR surface = VK_NULL_HANDLE;
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_owner);
-};
-
-class AeUIListBox : public AeUIComponent {
-   public:
-    AeUIListBox(AeObjectManagerKey &_key) : AeUIComponent(_key) {}
-    ~AeUIListBox() {}
-
-    bool bSelected, bWordWrap;
-    LONG msgMaxWidth;
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
-
-    void msg(std::string &s);
-};
-
-class AeUIXMLEditor : public AeUIComponent {
-   public:
-    AeUIXMLEditor(AeObjectManagerKey &_key) : AeUIComponent(_key) {}
-    ~AeUIXMLEditor() {}
-
-    std::string path;
-    QeAssetXML *xml;
-
-    HWND tabControlCategory, listViewDetail, currentEditListView;
-    std::vector<HWND> treeViewLists;
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
-};
-
-class AeUIWindow : public AeUIBase, public QeObject {
-   public:
-    AeUIWindow(AeObjectManagerKey &_key) : AeUIBase(_key, this), QeObject(_key) {}
-    ~AeUIWindow() {}
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
-    virtual void clear();
-    virtual void update1();
-    virtual void update2();
-
-    void resize(HWND targetHandle);
-};
-
-class AeUI : public QeObject {
-   public:
-    AeUI(AeObjectManagerKey &_key) : QeObject(_key) {}
-    ~AeUI() {}
-
-    AeInputData inputData;
-    std::vector<QeInputControl *> inputControls;
-    std::vector<AeUIListBox *> listboxs;
-    QeVector2i screenSize;
-    bool bResize = false;
-
-    virtual void initialize(QeAssetXML *_property, QeObject *_parent);
-    virtual void clear();
-    virtual void update1();
-
-    void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    void resize(HWND targetHandle);
-
-    void Log(std::string &s);
-    std::wstring chartowchar(std::string s);
-    std::string wchartochar(std::wstring s);
-};
-*/
 
 #define KEY_FSLASH 0x2F
 #define KEY_A 0x41
@@ -180,22 +59,138 @@ using UIEventRegisterFunction = std::function<void()>;
 
 MANAGER_KEY_CLASS(UI);
 
-class AeUIItemWin32 {};
+class AeUISet : public AeUIComponentBase {
+   public:
+    AeUISet(AeUIManagerKey &_key) : AeUIComponentBase(_key) {}
+    ~AeUISet() {}
 
-class AeUISet {};
+    AeUIInputData inputData;
+    std::vector<AeUIInputListener *> inputControls;
+    std::vector<AeUIComponentListBox *> listboxs;
+    AeArray<int, 2> screenSize;
+    bool bResize = false;
 
-class AeUIWindow {
+    virtual void initialize(AeXMLNode *_property, AeUIWindow *_owner);
+    virtual void clear();
+    virtual void updatePreRender();
+
+    void handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    void resize(HWND targetHandle);
+
+    void Log(std::string &s);
+    std::wstring chartowchar(std::string s);
+    std::string wchartochar(std::wstring s);
 };
 
-class AeUIComponent {
+class AeUIWindow : public AeUIComponentBase {
    public:
+    AeUIWindow(AeUIManagerKey &_key) : AeUIComponentBase(_key) {}
+    ~AeUIWindow() {}
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
+    virtual void clear();
+    virtual void updatePreRender();
+    virtual void updatePostRedner();
+
+    void resize(HWND targetHandle);
+};
+
+class AeUIComponentBase;
+class AeUIItemBase {
+   public:
+    AeUIItemBase(AeUIManagerKey &_key, AeUIComponentBase *_owner) : owner(_owner) {}
+    ~AeUIItemBase() {}
+
+    AeUIComponentBase *owner = nullptr;
+    HINSTANCE win32Instance;
+    HWND win32Handle;
+    HDC win32DeviceContext;
+
+    AeArray<int, 2> position, size;
+    AE_ALIGN_TYPE align_type;
+    int fontOID;
+    bool bUpdate;
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
+    virtual void clear();
+    virtual void updatePreRender();
+    virtual void updatePostRedner() {}
+};
+
+class AeUIComponentBase {
+    REQUIRED_MANAGER_KEY(Base, UI);
+
+   public:
+    ~AeUIComponentBase() {}
+
     AeBaseData data;
-    AeUIItemWin32 item;
-    void AddEvent(AeUIEventType type, UIEventRegisterFunction function) {}
+    AeUIItemBase *item;
+    void AddEvent(AeUIEventType type, UIEventRegisterFunction function);
     void RemoveEvent(AeUIEventType type);
+
+    AeUIComponentBase *owner = nullptr;
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
+    virtual void clear() {}
+
+    virtual void updatePreRender() {}
+    virtual void updatePostRedner() {}
+};
+
+class AeUIComponentFont : public AeUIComponentBase {
+   public:
+    AeUIComponentFont(AeUIManagerKey &_key) : AeUIComponentBase(_key) {}
+    ~AeUIComponentFont() {}
+
+    HFONT win32Font;
+
+    int fontSize;
+    std::string fontStyle;
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
+};
+
+class AeUIComponentRedner : public AeUIComponentBase {
+   public:
+    AeUIComponentRedner(AeUIManagerKey &_key) : AeUIComponentBase(_key) {}
+    ~AeUIComponentRedner() {}
+
+    uint32_t sceneEID;
+    uint32_t cameraOID;
+    //VkSurfaceKHR surface = VK_NULL_HANDLE;
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
+};
+
+class AeUIComponentListBox : public AeUIComponentBase {
+   public:
+    AeUIComponentListBox(AeUIManagerKey &_key) : AeUIComponentBase(_key) {}
+    ~AeUIComponentListBox() {}
+
+    bool bSelected, bWordWrap;
+    LONG msgMaxWidth;
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
+
+    void msg(std::string &s);
+};
+
+class AeUIIComponentXMLEditor : public AeUIComponentBase {
+   public:
+    AeUIIComponentXMLEditor(AeUIManagerKey &_key) : AeUIComponentBase(_key) {}
+    ~AeUIIComponentXMLEditor() {}
+
+    std::string path;
+    AeXMLNode *xml;
+
+    HWND tabControlCategory, listViewDetail, currentEditListView;
+    std::vector<HWND> treeViewLists;
+
+    virtual void initialize(AeXMLNode *_property, AeUIComponentBase *_owner);
 };
 
 class AeUIMgr : public AeLogListener {
+    MANAGER_KEY_INSTANCE(UI);
     SINGLETON_CLASS(AeUIMgr);
 
     HINSTANCE windowInstance;

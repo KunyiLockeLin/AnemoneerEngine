@@ -5,7 +5,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
     try {
         LOGOBJ.setOutput(*CONFIG, "testUI_");
         UI_MGR.initialize();
-        UI_MGR->loadUISet(CONFIG->getXMLValue<ID>("setting.environment.currentUISetEID"));
+        UI_MGR.loadUISet(CONFIG->getXMLValue<ID>("setting.environment.currentUISetEID"));
         while (1) {
             UI_MGR.update1();
             UI_MGR.update2();
