@@ -1010,9 +1010,13 @@
           </UI_XMLEditor>
         </ui_components>
   <code_define>
-    <id type="int" />
-	<define_base_struct type="enum" oid="ID" eid="ID" />
-    <define_ui_base_struct position="int 2" size="int 2" alignType="enum" font_oid="ID"/>
+    <using>
+		<ID type="int" />
+	</using>
+	<struct>
+		<base type="enum" oid="ID" eid="ID" />
+		<ui_base position="int 2" size="int 2" alignType="enum" font_oid="ID"/>
+	</struct>
     <enum>
     <type name="AE_GAMEOBJECT_TYPE"  prefix="eGAMEOBJECT_"/>
     <renderType name="AE_RENDER_TYPE" prefix="eRENDER_" KHR="0" UI="1" Main="2" Color="3" MAX="4" />
