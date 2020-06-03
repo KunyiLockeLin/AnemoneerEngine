@@ -1014,8 +1014,8 @@
 		<ID type="int" />
 	</using>
 	<struct>
-		<base type="enum" oid="ID" eid="ID" />
-		<ui_base position="int 2" size="int 2" alignType="enum" font_oid="ID"/>
+		<AeBaseData type="enum" oid="ID" eid="ID" />
+		<AeUIBaseData position="int 2" size="int 2" alignType="enum" font_oid="ID" />
 	</struct>
     <enum>
     <type name="AE_GAMEOBJECT_TYPE"  prefix="eGAMEOBJECT_"/>
