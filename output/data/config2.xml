@@ -1027,7 +1027,7 @@
 	<alignType name="AE_ALIGN_TYPE" prefix="eALIGN_" Top_Left="0" Top_Middle="1" Top_Right="2" Middle_Left="3" Middle_Middle="4" Middle_Right="5" Bottom_Left="6" Bottom_Middle="7" Bottom_Right="8" />
   </enum>
 <Vulkan_Validation_Layers VK_LAYER_KHRONOS_validation="1" VK_LAYER_LUNARG_standard_validation="1" VK_LAYER_RENDERDOC_Capture="0"/>
-<VkDescriptorSetLayouts />
+<VkDescriptorSetLayout />
     </code_define>
     <setting>
         <application applicationName="Demo" applicationVersion="0.2.0" engineName="Angry Engine" engineVersion="0.2.0" VulkanAPIVersion="1.2.131" />
