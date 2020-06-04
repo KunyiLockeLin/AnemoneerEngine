@@ -44,7 +44,7 @@
 #define REQUIRED_MANAGER_KEY(class_name, manager) \
    public:                                        \
     AeUIComponent##class_name(const Ae##manager##ManagerKey &key)
-
+/*
 #define COMPONENT_CLASS_DECLARE(component_type, manager)                         \
     AeUIComponent##component_type(Ae##manager##ManagerKey &_key) : AeUIComponentBase(_key) {} \
     ~AeUIComponent##component_type() {}                                            \
@@ -76,7 +76,7 @@
 #define COMPONENT_INITIALIZE_PARENT(parent_component_type)    \
     Qe##parent_component_type::initialize(_property, _owner); \
     component_data.read(*_property); \
-
+*/
 // template class DllExport std::vector<std::string>;
 // template class DllExport std::basic_string<char>;
 
