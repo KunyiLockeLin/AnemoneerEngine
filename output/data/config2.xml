@@ -1011,7 +1011,7 @@
         </ui_components>
   <code_define>
     <using>
-		<ID type="int" />
+		<ID>int</ID>
 	</using>
 	<struct>
 		<AeBaseData type="enum" oid="ID" eid="ID" />
