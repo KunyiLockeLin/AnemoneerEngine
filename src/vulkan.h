@@ -112,7 +112,7 @@ struct QeDataDescriptorSetPostprocessing {
 };
 
 struct QeDataGraphicsPipeline {
-    QeComponentType componentType;
+    AE_GAMEOBJECT_TYPE componentType;
     QeGraphicsPipelineOtherType minorType;
     VkPipeline pipeline;
     QeAssetGraphicsShader *shader;
@@ -195,7 +195,7 @@ class QeVulkan {
     void createLogicalDevice();
     int getSwapchainSize();
     void createSwapchain(QeDataSwapchain *swapchain);
-    VkRenderPass createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat> &formats);
+    VkRenderPass createRenderPass(AE_RENDER_TYPE renderType, int subpassNum, std::vector<VkFormat> &formats);
     VkFramebuffer createFramebuffer(VkRenderPass renderPass, VkExtent2D size, std::vector<VkImageView> &views);
     VkCommandBuffer createCommandBuffer();
     VkSemaphore createSyncObjectSemaphore();
@@ -236,7 +236,7 @@ class QeVulkan {
 
     void createDescriptorPool();
     void createDescriptorSet(QeDataDescriptorSet &descriptorSet);
-    void updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing &descriptor, QeDataDescriptorSet &descriptorSet);
+    //void updateDescriptorSetRayTracing(QeDataDescriptorSetRaytracing &descriptor, QeDataDescriptorSet &descriptorSet);
     void updateDescriptorSet(void *data, QeDataDescriptorSet &descriptorSet);
     VkPipeline createGraphicsPipeline(QeDataGraphicsPipeline *data);
     VkPipeline createComputePipeline(QeDataComputePipeline *data);

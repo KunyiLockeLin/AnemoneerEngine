@@ -616,8 +616,8 @@
             </box>
             <postprocessing type="1000" oid="1200" eid="1200">
                 <components>
-                    <grayscale type="3" oid="1200" eid="1" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param0="0" param1="0" param2="0" param3="0" />
-                    <bloom type="3" oid="1201" eid="2" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param0="3" param1="0.01" param2="3" param3="0" />
+                    <grayscale type="3" oid="1200" eid="1" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param="0 0 0 0" />
+                    <bloom type="3" oid="1201" eid="2" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param="3 0.01 3 0" />
                 </components>
                 <children />
             </postprocessing>
@@ -827,10 +827,10 @@
 			<default type="2" oid="0" eid="0" renderType="2" size="0 0" lookAtTransformOID="0" up="0 0 1" fov="45" fnear="0.1" ffar="1000" aperture="2.0" speed="0.5" cullingDistance="1000" raytracingDepth="0" postProcessingOID="0" />
         </Camera>
         <PostProcessing>
-            <define type="3" oid="int" eid="int" vert="std::string" tesc="std::string" tese="std::string" geom="std::string" frag="std::string" param0="float" param1="float" param2="float" param3="float" />
-            <default type="3" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" param0="0" param1="0" param2="0" param3="0" />
-            <grayscale type="3" oid="0" eid="1" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param0="0" param1="0" param2="0" param3="0" />
-            <bloom type="3" oid="0" eid="2" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param0="2" param1="0.003" param2="1.0" param3="0" />
+            <define type="3" oid="int" eid="int" vert="std::string" tesc="std::string" tese="std::string" geom="std::string" frag="std::string" param="float 4" />
+            <default type="3" oid="0" eid="0" vert="" tesc="" tese="" geom="" frag="" param="0 0 0 0" />
+            <grayscale type="3" oid="0" eid="1" vert="" tesc="" tese="" geom="" frag="grayscale.frag.spv" param="0 0 0 0" />
+            <bloom type="3" oid="0" eid="2" vert="" tesc="" tese="" geom="" frag="bloom.frag.spv" param="2 0.003 1.0 0" />
         </PostProcessing>
         <Light>
           <!--enum lightType AE_LIGHT_TYPE eLIGHT_Point 0 eACTION_Direction 1 eACTION_Spot 2-->

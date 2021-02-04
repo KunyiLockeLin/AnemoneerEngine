@@ -6,6 +6,7 @@ class QePostProcessing : public QeComponent {
     QePostProcessing(AeObjectManagerKey &_key) : QeComponent(_key) {}
     //~QePostProcessing();
 
-    QeVector4f param1;
+    AeGameObjectComponentPostProcessingData component_data;
+
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
 };

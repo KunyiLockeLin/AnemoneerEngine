@@ -57,10 +57,10 @@ void QeGraphics::clear() {
 void QeGraphics::initialize() {
     clear();
 
-    renders.resize(eRender_MAX);
+    renders.resize(eRENDER_MAX);
     renderSetting = nullptr;
     bRecreateRender = true;
-    createRender(eRender_KHR, 0, {0, 0});
+    createRender(eRENDER_KHR, 0, {0, 0});
 }
 
 void QeGraphics::updateViewport() {
@@ -75,7 +75,7 @@ void QeGraphics::updateViewport() {
         size_t size1 = render->viewports.size();
 
         if (size1 == 0) {
-            addNewViewport(QeRenderType(i));
+            addNewViewport(AE_RENDER_TYPE(i));
             ++size1;
         }
 
@@ -119,7 +119,7 @@ void QeGraphics::updateViewport() {
             viewport->scissor.extent.height = int(viewport->viewport.height);
             viewport->scissor.offset.x = int(viewport->viewport.x);
             viewport->scissor.offset.y = int(viewport->viewport.y);
-            viewport->computePipelineRayTracing.shader = G_AST->getShader(CONFIG->getXMLValue("shaders.compute.raytracing.comp"));
+            viewport->computePipelineRayTracing.shader = G_AST->getShader(CONFIG->getXMLValue<const char*>("shaders.compute.raytracing.comp"));
             VK->createDescriptorSet(viewport->descriptorSetComputeRayTracing);
             viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             // viewport->descriptorSetComputeRayTracing.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -152,7 +152,7 @@ void QeGraphics::add2DModel(QeModel *model) {
     models2D.push_back(model);
 }
 
-void QeGraphics::popViewport(QeRenderType type) {
+void QeGraphics::popViewport(AE_RENDER_TYPE type) {
     if (!renders[type]) return;
 
     size_t size = renders[type]->viewports.size();
@@ -165,7 +165,7 @@ void QeGraphics::popViewport(QeRenderType type) {
     bRecreateRender = true;
 }
 
-void QeGraphics::addNewViewport(QeRenderType type) {
+void QeGraphics::addNewViewport(AE_RENDER_TYPE type) {
     if (!renders[type]) return;
 
     size_t size = renders[type]->viewports.size();
@@ -174,11 +174,11 @@ void QeGraphics::addNewViewport(QeRenderType type) {
     renders[type]->viewports.push_back(vp);
     bRecreateRender = true;
 
-    if (type == eRender_KHR) return;
+    if (type == eRENDER_KHR) return;
 
     QeDataDescriptorSetCommon data;
 
-    vp->camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, renders[type]->cameraOID);
+    vp->camera = (QeCamera *)OBJMGR->findComponent(eGAMEOBJECT_Component_Camera, renders[type]->cameraOID);
 
     VK->createBuffer(vp->environmentBuffer, sizeof(vp->environmentData), nullptr);
     data.environmentBuffer = vp->environmentBuffer.buffer;
@@ -192,7 +192,7 @@ void QeGraphics::setTargetCamera(int cameraOID) {
     // currentTargetViewport ) { 	currentTargetViewport = index;
     // getTargetCamera()->updateAxis();
     //}
-    currentCamera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, cameraOID);
+    currentCamera = (QeCamera *)OBJMGR->findComponent(eGAMEOBJECT_Component_Camera, cameraOID);
 }
 
 QeCamera *QeGraphics::getTargetCamera() {
@@ -388,7 +388,7 @@ void QeGraphics::drawFrame() {
         else
             submitInfo.pWaitSemaphores = &_renders[i + 1]->semaphore;
 
-        if (i == eRender_KHR)
+        if (i == eRENDER_KHR)
             submitInfo.pCommandBuffers = &render->commandBuffers[imageIndex];
         else
             submitInfo.pCommandBuffers = &render->commandBuffers[0];
@@ -433,7 +433,7 @@ void QeGraphics::refreshRender() {
         VkFormat format = VK_FORMAT_R16G16B16A16_SFLOAT;  // VK_FORMAT_R16G16B16A16_SFLOAT
                                                           // VK_FORMAT_R32G32B32A32_SFLOAT;
 
-        if (i == eRender_main || i == eRender_KHR || i == eRender_ui) {
+        if (i == eRENDER_Main || i == eRENDER_KHR || i == eRENDER_UI) {
             render->scissor.extent = swapchain.extent;
             if (render->viewports[0]->camera) {
                 render->viewports[0]->camera->renderSize = render->scissor.extent;
@@ -441,7 +441,7 @@ void QeGraphics::refreshRender() {
         }
         size_t size1 = render->subpass.size();
 
-        if (i == eRender_KHR) {
+        if (i == eRENDER_KHR) {
             views.push_back(swapchain.images[0].view);
             formats.push_back(swapchain.format);
 
@@ -458,7 +458,7 @@ void QeGraphics::refreshRender() {
 
             VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
             render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
-        } else if (i == eRender_ui) {
+        } else if (i == eRENDER_UI) {
             render->colorImage.~QeVKImage();
             VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
@@ -467,13 +467,13 @@ void QeGraphics::refreshRender() {
 
             QeDataDescriptorSetPostprocessing data;
             data.buffer = render->subpass[0]->buffer.buffer;
-            data.inputAttachImageView = renders[eRender_main]->colorImage.view;
-            data.inputAttachSampler = renders[eRender_main]->colorImage.sampler;
+            data.inputAttachImageView = renders[eRENDER_Main]->colorImage.view;
+            data.inputAttachSampler = renders[eRENDER_Main]->colorImage.sampler;
 
             VK->updateDescriptorSet(&data, render->subpass[0]->descriptorSet);
             render->subpass[0]->graphicsPipeline.sampleCount = VK_SAMPLE_COUNT_1_BIT;
-        } else if (i == eRender_color || i == eRender_main || i == eRender_ui) {
-            QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eComponent_camera, render->cameraOID);
+        } else if (i == eRENDER_Color || i == eRENDER_Main || i == eRENDER_UI) {
+            QeCamera *camera = (QeCamera *)OBJMGR->findComponent(eGAMEOBJECT_Component_Camera, render->cameraOID);
             if (camera->isRaytracing()) {
                 render->colorImage.~QeVKImage();
                 VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
@@ -482,8 +482,8 @@ void QeGraphics::refreshRender() {
                 render->colorImage2.memory = render->colorImage.memory;
                 VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
             } else {
-                if (i != eRender_ui) {
-                    if (i == eRender_main) render->depthStencilImage.~QeVKImage();
+                if (i != eRENDER_UI) {
+                    if (i == eRENDER_Main) render->depthStencilImage.~QeVKImage();
                     if (!render->depthStencilImage.view)
                         VK->createImage(render->depthStencilImage, 0, 1, render->scissor.extent, VK->findDepthStencilFormat(),
                                         nullptr, renderSetting->sampleCount);
@@ -491,7 +491,7 @@ void QeGraphics::refreshRender() {
                     views.push_back(render->depthStencilImage.view);
 
                     if (renderSetting->sampleCount != VK_SAMPLE_COUNT_1_BIT) {
-                        if (i == eRender_main) render->multiSampleColorImage.~QeVKImage();
+                        if (i == eRENDER_Main) render->multiSampleColorImage.~QeVKImage();
                         if (!render->multiSampleColorImage.view)
                             VK->createImage(render->multiSampleColorImage, 0, 1, render->scissor.extent, format, nullptr,
                                             renderSetting->sampleCount);
@@ -500,14 +500,14 @@ void QeGraphics::refreshRender() {
                     }
                 }
 
-                if (i == eRender_main) render->colorImage.~QeVKImage();
+                if (i == eRENDER_Main) render->colorImage.~QeVKImage();
                 if (!render->colorImage.view) VK->createImage(render->colorImage, 0, 1, render->scissor.extent, format, nullptr);
 
                 if (size1 == 0) {
                     views.push_back(render->colorImage.view);
                     formats.push_back(format);
                 } else {
-                    if (i == eRender_main) render->colorImage2.~QeVKImage();
+                    if (i == eRENDER_Main) render->colorImage2.~QeVKImage();
                     if (!render->colorImage2.view)
                         VK->createImage(render->colorImage2, 0, 1, render->scissor.extent, format, nullptr);
 
@@ -542,7 +542,7 @@ void QeGraphics::refreshRender() {
 
         if (render->renderPass) vkDestroyRenderPass(VK->device, render->renderPass, nullptr);
         if (formats.size()) {
-            render->renderPass = VK->createRenderPass(QeRenderType(i), int(size1), formats);
+            render->renderPass = VK->createRenderPass(AE_RENDER_TYPE(i), int(size1), formats);
             for (size_t j = 0; j < size1; ++j) {
                 render->subpass[j]->graphicsPipeline.renderPass = render->renderPass;
             }
@@ -557,7 +557,7 @@ void QeGraphics::refreshRender() {
 
         size_t size2 = render->frameBuffers.size();
         for (size_t j = 0; j < size2; ++j) {
-            if (i == eRender_KHR) {
+            if (i == eRENDER_KHR) {
                 views[0] = swapchain.images[j].view;
             }
             if (render->frameBuffers[j]) vkDestroyFramebuffer(VK->device, render->frameBuffers[j], nullptr);
@@ -567,9 +567,10 @@ void QeGraphics::refreshRender() {
     }
 }
 
-bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int postprocessingOID) {
+bool QeGraphics::addPostProcssing(AE_RENDER_TYPE renderType, int cameraOID, int postprocessingOID) {
     if (renders[renderType]->cameraOID != cameraOID) return false;
-    QePostProcessing *postprocessing = (QePostProcessing *)OBJMGR->findComponent(eComponent_postprocessing, postprocessingOID);
+    QePostProcessing *postprocessing =
+        (QePostProcessing *)OBJMGR->findComponent(eGAMEOBJECT_Component_PostProcessing, postprocessingOID);
     if (!postprocessing) return false;
 
     bRecreateRender = true;
@@ -577,8 +578,8 @@ bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int po
     int count = 1;
     int type = 0;  // 1: bloom
 
-    if (strcmp(postprocessing->initProperty->getXMLValue("frag"), "bloomf.spv") == 0) {
-        if (postprocessing->param1.x > 1.f) count = int(postprocessing->param1.x);
+    if (strcmp(postprocessing->component_data.property_->getXMLValue<const char *>("frag"), "bloomf.spv") == 0) {
+        if (postprocessing->component_data.param[0] > 1.f) count = int(postprocessing->component_data.param[0]);
         type = 1;
     }
 
@@ -586,24 +587,24 @@ bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int po
         QeDataSubpass *data = new QeDataSubpass();
 
         data->graphicsPipeline.bAlpha = false;
-        data->graphicsPipeline.componentType = eComponent_postprocessing;
+        data->graphicsPipeline.componentType = eGAMEOBJECT_Component_PostProcessing;
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = i + 1;
 
-        G_AST->setGraphicsShader(data->graphicsShader, postprocessing->initProperty, "postprocessing");
+        G_AST->setGraphicsShader(data->graphicsShader, postprocessing->component_data.property_, "postprocessing");
         data->graphicsPipeline.shader = &data->graphicsShader;
         VK->createDescriptorSet(data->descriptorSet);
 
         // if(renderType==eRender_color)	data->descriptorSet.imageLayout =
         // VK_IMAGE_LAYOUT_UNDEFINED;
 
-        data->bufferData.param1 = postprocessing->param1;
+        data->bufferData.param = postprocessing->component_data.param;
 
         if (type == 1) {
-            if (postprocessing->param1.x < 2)
-                data->bufferData.param1.x = postprocessing->param1.x;
+            if (postprocessing->component_data.param[0] < 2)
+                data->bufferData.param[0] = postprocessing->component_data.param[0];
             else
-                data->bufferData.param1.x = float(i);
+                data->bufferData.param[0] = float(i);
         }
 
         VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
@@ -612,24 +613,24 @@ bool QeGraphics::addPostProcssing(QeRenderType renderType, int cameraOID, int po
     return true;
 }
 
-QeDataRender *QeGraphics::createRender(QeRenderType type, int cameraOID, VkExtent2D renderSize) {
+QeDataRender *QeGraphics::createRender(AE_RENDER_TYPE type, int cameraOID, VkExtent2D renderSize) {
     QeDataRender *render = new QeDataRender();
     renders[type] = render;
 
     render->cameraOID = cameraOID;
     render->scissor.extent = renderSize;
 
-    if (type == eRender_main) {
+    if (type == eRENDER_Main) {
         setTargetCamera(cameraOID);
     }
 
     size_t size1 = 1;
-    if (type == eRender_KHR) {
+    if (type == eRENDER_KHR) {
         size1 = VK->getSwapchainSize();
         QeDataSubpass *data = new QeDataSubpass();
 
         data->graphicsPipeline.bAlpha = false;
-        data->graphicsPipeline.componentType = eComponent_postprocessing;
+        data->graphicsPipeline.componentType = eGAMEOBJECT_Component_PostProcessing;
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = 0;
 
@@ -640,12 +641,12 @@ QeDataRender *QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
 
         VK->createBuffer(data->buffer, sizeof(data->bufferData), &data->bufferData);
         render->subpass.push_back(data);
-    } else if (type == eRender_ui) {
+    } else if (type == eRENDER_UI) {
         size1 = VK->getSwapchainSize();
         QeDataSubpass *data = new QeDataSubpass();
 
         data->graphicsPipeline.bAlpha = false;
-        data->graphicsPipeline.componentType = eComponent_postprocessing;
+        data->graphicsPipeline.componentType = eGAMEOBJECT_Component_PostProcessing;
         data->graphicsPipeline.minorType = eGraphicsPipeLine_none;
         data->graphicsPipeline.subpass = 0;
 
@@ -666,14 +667,14 @@ QeDataRender *QeGraphics::createRender(QeRenderType type, int cameraOID, VkExten
     return render;
 }
 
-QeDataRender *QeGraphics::getRender(QeRenderType type, int cameraOID) {
+QeDataRender *QeGraphics::getRender(AE_RENDER_TYPE type, int cameraOID) {
     size_t size = renders.size();
 
     for (size_t i = 1; i < size; ++i) {
         QeDataRender *render = renders[i];
         if (!render) continue;
 
-        if (render->viewports[0]->camera->oid == cameraOID) return render;
+        if (render->viewports[0]->camera->data.oid == cameraOID) return render;
     }
     // return createRender(type, cameraOID, renderSize);
     return nullptr;
@@ -752,7 +753,7 @@ void QeGraphics::updateDrawCommandBuffers() {
         // graphics shader
         std::vector<VkClearValue> clearValues;
 
-        if (i == eRender_KHR) {
+        if (i == eRENDER_KHR) {
             clearValues.resize(1);
             clearValues[0].color = {renderSetting->clearColor.x, renderSetting->clearColor.y, renderSetting->clearColor.z,
                                     renderSetting->clearColor.w};
@@ -777,7 +778,7 @@ void QeGraphics::updateDrawCommandBuffers() {
 
         for (size_t j = 0; j < size1; ++j) {
             vkBeginCommandBuffer(render->commandBuffers[j], &beginInfo);
-            if (i == eRender_main) {
+            if (i == eRENDER_Main) {
                 // pushConstants
                 VK->updatePushConstnats(render->commandBuffers[j]);
                 // compute shader
@@ -858,7 +859,7 @@ void QeGraphics::updateDrawCommandBuffers() {
                 renderPassInfo.framebuffer = render->frameBuffers[j];
                 vkCmdBeginRenderPass(render->commandBuffers[j], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-                if (i == eRender_KHR || i == eRender_ui) {
+                if (i == eRENDER_KHR || i == eRENDER_UI) {
                     vkCmdSetViewport(render->commandBuffers[j], 0, 1, &render->viewport);
                     vkCmdSetScissor(render->commandBuffers[j], 0, 1, &render->scissor);
                     vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout,
@@ -868,13 +869,13 @@ void QeGraphics::updateDrawCommandBuffers() {
                                       VK->createGraphicsPipeline(&render->subpass[0]->graphicsPipeline));
                     vkCmdDraw(render->commandBuffers[j], 1, 1, 0, 0);
 
-                    if (i == eRender_ui) {
+                    if (i == eRENDER_UI) {
                         QeDataDrawCommand command;
                         command.camera = render->viewports[0]->camera;
                         command.commandBuffer = render->commandBuffers[j];
                         command.commonDescriptorSet = &render->viewports[0]->commonDescriptorSet;
                         command.renderPass = render->renderPass;
-                        command.type = QeRenderType(i);
+                        command.type = AE_RENDER_TYPE(i);
 
                         vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout,
                                                 eDescriptorSetLayout_Common, 1, &render->viewports[0]->commonDescriptorSet.set, 0,
@@ -900,7 +901,7 @@ void QeGraphics::updateDrawCommandBuffers() {
                             command.commandBuffer = render->commandBuffers[j];
                             command.commonDescriptorSet = &render->viewports[k]->commonDescriptorSet;
                             command.renderPass = render->renderPass;
-                            command.type = QeRenderType(i);
+                            command.type = AE_RENDER_TYPE(i);
 
                             vkCmdBindDescriptorSets(render->commandBuffers[j], VK_PIPELINE_BIND_POINT_GRAPHICS, VK->pipelineLayout,
                                                     eDescriptorSetLayout_Common, 1, &render->viewports[k]->commonDescriptorSet.set,

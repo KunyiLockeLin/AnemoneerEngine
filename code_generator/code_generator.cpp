@@ -41,15 +41,12 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     file.addNewLine("");
     std::string s = "struct AeGameObjectComponent" + node.data->key + "Data {";
     file.addNewLine(s.c_str());
-    file.addNewLine((indent + "std::string name;").c_str());
     auto* define_node = node.getXMLNode("define");
     std::vector<std::string> load_codes;
 
     for (auto& element : define_node->data->elements) {
         s = indent;
-        if (!element.key.compare("type")) {
-            s += "AE_GAMEOBJECT_TYPE type;";
-            load_codes.push_back("type = static_cast<AE_GAMEOBJECT_TYPE>(property_->getXMLValue<int>(\"type\"));");
+        if (!element.key.compare("type") || !element.key.compare("oid") || !element.key.compare("eid")) {
         } else {
             std::vector<std::string> types = ENCODE->split<std::string>(element.value, " ");
             if (types[0].compare("enum") == 0) {
@@ -65,8 +62,8 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
             } else {
                 s += AddElementCode(element.key, types, load_codes);
             }
+            file.addNewLine(s.c_str());
         }
-        file.addNewLine(s.c_str());
     }
 
     // read xml
@@ -74,7 +71,6 @@ void AddGameObjectComponentStrcut(AeXMLNode& node, AeFile& file) {
     file.addNewLine((indent + "AeXMLNode* property_;").c_str());
     file.addNewLine((indent + "void read(AeXMLNode& node) {").c_str());
     file.addNewLine((indent + indent + "property_ = &node;").c_str());
-    file.addNewLine((indent + indent + "name = property_->data->key;").c_str());
     for (auto& load_code : load_codes) {
         file.addNewLine((indent + indent + load_code).c_str());
     }
@@ -120,6 +116,24 @@ int main(int argc, char* argv[]) {
     AddCommentEnum(*config, file);
 
     // struct
+    file.addNewLine("");
+    file.addNewLine("struct AeGameObjectData {");
+    file.addNewLine((indent + "std::string name;").c_str());
+    file.addNewLine((indent + "AE_GAMEOBJECT_TYPE type;").c_str());
+    file.addNewLine((indent + "int oid;").c_str());
+    file.addNewLine((indent + "int eid;").c_str());
+    file.addNewLine("");
+    file.addNewLine((indent + "AeXMLNode* property_;").c_str());
+    file.addNewLine((indent + "void read(AeXMLNode& node) {").c_str());
+    file.addNewLine((indent + indent + "property_ = &node;").c_str());
+    file.addNewLine((indent + indent + "name = property_->data->key;").c_str());
+    file.addNewLine((indent + indent + "type = static_cast<AE_GAMEOBJECT_TYPE>(property_->getXMLValue<int>(\"type\"));").c_str());
+    file.addNewLine((indent + indent + "oid = property_->getXMLValue<int>(\"oid\");").c_str());
+    file.addNewLine((indent + indent + "eid = property_->getXMLValue<int>(\"eid\");").c_str());
+    file.addNewLine((indent + "}").c_str());
+    file.addNewLine((indent + "void reset() { read(*property_); }").c_str());
+    file.addNewLine("};");
+
     node = config->getXMLNode("components");
     for (auto comp : node->data->nexts) {
         AddGameObjectComponentStrcut(*comp, file);

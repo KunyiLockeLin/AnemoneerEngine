@@ -123,16 +123,16 @@ void QeVulkan::createInstance() {
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
     node = CONFIG->getXMLNode("setting.application");
-    appInfo.pApplicationName = node->getXMLValue("applicationName");
+    appInfo.pApplicationName = node->getXMLValue<const char*>("applicationName");
 
-    std::vector<std::string> vs = ENCODE->split(node->getXMLValue("applicationVersion"), ".");
+    std::vector<std::string> vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("applicationVersion"), ".");
     appInfo.applicationVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    appInfo.pEngineName = node->getXMLValue("engineName");
-    vs = ENCODE->split(node->getXMLValue("engineVersion"), ".");
+    appInfo.pEngineName = node->getXMLValue<const char *>("engineName");
+    vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("engineVersion"), ".");
     appInfo.engineVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
-    vs = ENCODE->split(node->getXMLValue("VulkanAPIVersion"), ".");
+    vs = ENCODE->split<std::string>(node->getXMLValue<std::string>("VulkanAPIVersion"), ".");
     appInfo.apiVersion = VK_MAKE_VERSION(atoi(vs[0].c_str()), atoi(vs[1].c_str()), atoi(vs[2].c_str()));
 
     VkInstanceCreateInfo createInfo = {};
@@ -315,7 +315,7 @@ void QeVulkan::createSwapchain(QeDataSwapchain *swapchain) {
     }
 }
 
-VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum, std::vector<VkFormat> &formats) {
+VkRenderPass QeVulkan::createRenderPass(AE_RENDER_TYPE renderType, int subpassNum, std::vector<VkFormat> &formats) {
     std::vector<VkAttachmentDescription> attachments;
     std::vector<VkSubpassDescription> subpasses;
     std::vector<VkSubpassDependency> dependencies;
@@ -324,7 +324,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
     VkAttachmentReference depthAttachmentRef = {};
     VkAttachmentReference resolveReference = {};
 
-    if (renderType == eRender_KHR || renderType == eRender_ui) {
+    if (renderType == eRENDER_KHR || renderType == eRENDER_UI) {
         subpasses.resize(1);
         dependencies.resize(2);
         attachments.resize(1);
@@ -337,7 +337,7 @@ VkRenderPass QeVulkan::createRenderPass(QeRenderType renderType, int subpassNum,
         attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-        if (renderType == eRender_KHR) {
+        if (renderType == eRENDER_KHR) {
             attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
         } else
             attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -1158,30 +1158,30 @@ VkPipeline QeVulkan::createGraphicsPipeline(QeDataGraphicsPipeline *data) {
     bool bDepthTest = true;
 
     switch (data->componentType) {
-        case eComponent_postprocessing:
+        case eGAMEOBJECT_Component_PostProcessing:
             bDepthTest = false;
             bVertex = false;
             polygonMode = VK_POLYGON_MODE_FILL;
             topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
             break;
-        case eComponent_line:
-        case eComponent_axis:
-        case eComponent_grid:
+        case eGAMEOBJECT_Component_Line:
+        case eGAMEOBJECT_Component_Axis:
+        case eGAMEOBJECT_Component_Grid:
             topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
             break;
-        case eComponent_plane:
+        case eGAMEOBJECT_Component_Plane:
             topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
             bVertex = false;
             break;
-        case eComponent_cubemap:
+        case eGAMEOBJECT_Component_Cubemap:
             topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
             cullMode = VK_CULL_MODE_FRONT_BIT;
             break;
-        case eComponent_partical:
+        case eGAMEOBJECT_Component_Partical:
             topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
             break;
-        case eComponent_model:
-        case eComponent_animation:
+        case eGAMEOBJECT_Component_Model:
+        case eGAMEOBJECT_Component_Animation:
             topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
             break;
     }

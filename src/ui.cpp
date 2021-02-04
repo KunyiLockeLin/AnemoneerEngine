@@ -82,23 +82,23 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                     } break;
                     case eUIType_btnLoadScene:
                         if (currentTreeViewNode) {
-                            int type = currentTreeViewNode->getXMLValuei("type");
-                            if (type == eScene) {
-                                int eid = currentTreeViewNode->getXMLValuei("eid");
+                            int type = currentTreeViewNode->getXMLValue<int>("type");
+                            if (type == eGAMEOBJECT_Scene) {
+                                int eid = currentTreeViewNode->getXMLValue<int>("eid");
                                 OBJMGR->loadScene(eid);
                             }
                         }
                         break;
                     case eUIType_btnSaveEID:
                         if (currentTreeViewNode) {
-                            int _type = currentTreeViewNode->getXMLValuei("type");
-                            int _eid = currentTreeViewNode->getXMLValuei("eid");
+                            int _type = currentTreeViewNode->getXMLValue<int>("type");
+                            int _eid = currentTreeViewNode->getXMLValue<int>("eid");
                             if (_type != 0 && _eid != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, _eid);
+                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node)
                                     currentTreeViewNode->copyXMLNode(node);
                                 else {
-                                    AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+                                    AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                     AeXMLNode *newNode = currentTreeViewNode->copyXMLNode();
                                     node->data->parent->addXMLNode(newNode);
                                 }
@@ -107,10 +107,10 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         break;
                     case eUIType_btnLoadEID:
                         if (currentTreeViewNode) {
-                            int _type = currentTreeViewNode->getXMLValuei("type");
-                            int _eid = currentTreeViewNode->getXMLValuei("eid");
+                            int _type = currentTreeViewNode->getXMLValue<int>("type");
+                            int _eid = currentTreeViewNode->getXMLValue<int>("eid");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, _eid);
+                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, _eid);
                                 if (node) {
                                     HTREEITEM hSelectedItem = TreeView_GetSelection(treeViewLists[currentTabIndex]);
 
@@ -133,27 +133,27 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                         break;
                     case eUIType_btnCameraFocus:
                         if (currentTreeViewNode) {
-                            int type = currentTreeViewNode->getXMLValuei("type");
-                            if (type == eComponent_transform) {
-                                int oid = currentTreeViewNode->getXMLValuei("oid");
+                            int type = currentTreeViewNode->getXMLValue<int>("type");
+                            if (type == eGAMEOBJECT_Component_Transform) {
+                                int oid = currentTreeViewNode->getXMLValue<int>("oid");
                                 GRAP->getTargetCamera()->setLookAtTransformOID(oid);
                             }
                         }
                         break;
                     case eUIType_btnCameraControl:
                         if (currentTreeViewNode) {
-                            int type = currentTreeViewNode->getXMLValuei("type");
-                            if (type == eComponent_camera) {
-                                int oid = currentTreeViewNode->getXMLValuei("oid");
+                            int type = currentTreeViewNode->getXMLValue<int>("type");
+                            if (type == eGAMEOBJECT_Component_Camera) {
+                                int oid = currentTreeViewNode->getXMLValue<int>("oid");
                                 GRAP->setTargetCamera(oid);
                             }
                         }
                         break;
                     case eUIType_btnNewItem:
                         if (currentTreeViewNode) {
-                            int _type = currentTreeViewNode->getXMLValuei("type");
+                            int _type = currentTreeViewNode->getXMLValue<int>("type");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                 AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 if (currentTreeViewNode != node->data->parent) {
@@ -175,9 +175,9 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             } else {
                                 AeXMLNode *node = nullptr;
                                 if (currentTreeViewNode->data->key.compare("children") == 0) {
-                                    node = G_AST->getXMLEditNode(eObject, 0);
+                                    node = G_AST->getXMLEditNode(eGAMEOBJECT_Object, 0);
                                 } else if (currentTreeViewNode->data->key.compare("components") == 0) {
-                                    node = G_AST->getXMLEditNode(eComponent_transform, 0);
+                                    node = G_AST->getXMLEditNode(eGAMEOBJECT_Component_Transform, 0);
                                 }
                                 if (node) {
                                     AeXMLNode *newNode = node->copyXMLNode();
@@ -192,9 +192,9 @@ void AeUI::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
                             }
                         } else {
                             AeXMLNode *node1 = CONFIG->data->nexts[currentTabIndex];
-                            int _type = node1->getXMLValuei("type");
+                            int _type = node1->getXMLValue<int>("type");
                             if (_type != 0) {
-                                AeXMLNode *node = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+                                AeXMLNode *node = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
                                 AeXMLNode *newNode = node->copyXMLNode();
                                 newNode->data->key = "new";
                                 node1->addXMLNode(newNode);
@@ -271,9 +271,9 @@ void AeUI::setTreeViewText(HTREEITEM hItem, AeXMLNode *node) {
 }
 
 void AeUI::adjustComponetData(AeXMLNode *node) {
-    int _type = node->getXMLValuei("type");
+    int _type = node->getXMLValue<int>("type");
     if (_type) {
-        AeXMLNode *source = G_AST->getXMLEditNode((QeComponentType)_type, 0);
+        AeXMLNode *source = G_AST->getXMLEditNode((AE_GAMEOBJECT_TYPE)_type, 0);
         if (source->data->parent != node) {
             auto elements = source->data->elements;
             for (auto &e : elements) {
@@ -313,20 +313,20 @@ void AeUI::resize(HWND &window) {
     AeXMLNode *node = CONFIG->getXMLNode("setting.environment");
     std::string type = "";
     if (window == mainWindow) {
-        windowRect.right = node->getXMLValuei("mainWidth");
-        windowRect.bottom = node->getXMLValuei("mainHeight");
-        offsetX = node->getXMLValuei("mainOffsetX");
-        offsetY = node->getXMLValuei("mainOffsetY");
+        windowRect.right = node->getXMLValue<int>("mainWidth");
+        windowRect.bottom = node->getXMLValue<int>("mainHeight");
+        offsetX = node->getXMLValue<int>("mainOffsetX");
+        offsetY = node->getXMLValue<int>("mainOffsetY");
     } else if (window == editPanel) {
-        windowRect.right = node->getXMLValuei("editWidth");
-        windowRect.bottom = node->getXMLValuei("editHeight");
-        offsetX = node->getXMLValuei("editOffsetX");
-        offsetY = node->getXMLValuei("editOffsetY");
+        windowRect.right = node->getXMLValue<int>("editWidth");
+        windowRect.bottom = node->getXMLValue<int>("editHeight");
+        offsetX = node->getXMLValue<int>("editOffsetX");
+        offsetY = node->getXMLValue<int>("editOffsetY");
     } else if (window == logPanel) {
-        windowRect.right = node->getXMLValuei("logWidth");
-        windowRect.bottom = node->getXMLValuei("logHeight");
-        offsetX = node->getXMLValuei("logOffsetX");
-        offsetY = node->getXMLValuei("logOffsetY");
+        windowRect.right = node->getXMLValue<int>("logWidth");
+        windowRect.bottom = node->getXMLValue<int>("logHeight");
+        offsetX = node->getXMLValue<int>("logOffsetX");
+        offsetY = node->getXMLValue<int>("logOffsetY");
     }
 
     DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
@@ -405,7 +405,7 @@ void AeUI::openEditPanel() {
     int width;
     int height;
     getWindowSize(editPanel, width, height);
-    int fontSize = CONFIG->getXMLValuei("setting.environment.editFontSize");
+    int fontSize = CONFIG->getXMLValue<int>("setting.environment.editFontSize");
     HFONT hFont = CreateFont(fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
                              CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
 
@@ -682,15 +682,15 @@ std::string AeUI::getWindowTitle() {
     std::string device(VK->deviceProperties.deviceName);
     std::string windowTitle;
     AeXMLNode *node = CONFIG->getXMLNode("setting.application");
-    windowTitle = node->getXMLValue("applicationName");
+    windowTitle = node->getXMLValue<std::string>("applicationName");
     windowTitle.append(" ");
-    windowTitle.append(node->getXMLValue("applicationVersion"));
+    windowTitle.append(node->getXMLValue<std::string>("applicationVersion"));
     windowTitle.append(" - ");
-    windowTitle.append(node->getXMLValue("engineName"));
+    windowTitle.append(node->getXMLValue<std::string>("engineName"));
     windowTitle.append(" ");
-    windowTitle.append(node->getXMLValue("engineVersion"));
+    windowTitle.append(node->getXMLValue<std::string>("engineVersion"));
     windowTitle.append(" - VulkanAPI ");
-    windowTitle.append(node->getXMLValue("VulkanAPIVersion"));
+    windowTitle.append(node->getXMLValue<std::string>("VulkanAPIVersion"));
     windowTitle.append(" - ");
     windowTitle.append(device);
     windowTitle.append(" - ");
@@ -698,9 +698,9 @@ std::string AeUI::getWindowTitle() {
     windowTitle.append("/");
     windowTitle.append(std::to_string(ENGINE->FPS));
     windowTitle.append(" FPS - ");
-    windowTitle.append(SCENE->name);
+    windowTitle.append(SCENE->data.name);
     windowTitle.append(" ");
-    windowTitle.append(std::to_string(SCENE->eid));
+    windowTitle.append(std::to_string(SCENE->data.eid));
     return windowTitle;
 }
 

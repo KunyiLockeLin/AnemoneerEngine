@@ -7,14 +7,14 @@ void QeComponent::initialize(AeXMLNode *_property, QeObject *_owner) {
 void QeObject::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 
-    AeXMLNode *node = initProperty->getXMLNode("components");
+    AeXMLNode *node = data.property_->getXMLNode("components");
     if (node != nullptr && node->data->nexts.size() > 0) {
         for (int index = 0; index < node->data->nexts.size(); ++index) {
             components.push_back(OBJMGR->spwanComponent(node->data->nexts[index], this));
         }
     }
 
-    node = initProperty->getXMLNode("children");
+    node = data.property_->getXMLNode("children");
     if (node != nullptr && node->data->nexts.size() > 0) {
         for (int index = 0; index < node->data->nexts.size(); ++index) {
             children.push_back(OBJMGR->spwanComponent(node->data->nexts[index], this));
@@ -43,28 +43,28 @@ void QeObject::clear() {
     }*/
 }
 
-void QeObject::update1() {
+void QeObject::updatePreRender() {
     std::vector<QeComponent *>::iterator it = components.begin();
     while (it != components.end()) {
-        (*it)->update1();
+        (*it)->updatePreRender();
         ++it;
     }
     std::vector<QeComponent *>::iterator it1 = children.begin();
     while (it1 != children.end()) {
-        (*it1)->update1();
+        (*it1)->updatePreRender();
         ++it1;
     }
 }
 
-void QeObject::update2() {
+void QeObject::updatePostRedner() {
     std::vector<QeComponent *>::iterator it = components.begin();
     while (it != components.end()) {
-        (*it)->update2();
+        (*it)->updatePostRedner();
         ++it;
     }
     std::vector<QeComponent *>::iterator it1 = children.begin();
     while (it1 != children.end()) {
-        (*it1)->update2();
+        (*it1)->updatePostRedner();
         ++it1;
     }
 }

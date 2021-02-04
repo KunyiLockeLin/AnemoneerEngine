@@ -7,31 +7,32 @@ void QeTransform::initialize(AeXMLNode *_property, QeObject *_owner) {
 }
 
 void QeTransform::updatePreRender() {
-    if (data.rotateSpeed.x != 0.f || data.rotateSpeed.y != 0.f || data.rotateSpeed.z != 0.f) {
-        data.faceEular += (data.rotateSpeed * ENGINE->deltaTime * 30.f);
+    if (component_data.rotateSpeed.x != 0.f || component_data.rotateSpeed.y != 0.f || component_data.rotateSpeed.z != 0.f) {
+        component_data.faceEular += (component_data.rotateSpeed * ENGINE->deltaTime * 30.f);
     }
 
     if ((owner && owner->owner && owner->owner->transform) &&
-        (data.revoluteSpeed.x != 0.f || data.revoluteSpeed.y != 0.f || data.revoluteSpeed.z != 0.f)) {
-        revolute((data.revoluteSpeed * ENGINE->deltaTime * 30.f), owner->owner->transform->worldPosition(), data.revoluteFixAxis.x,
-                 data.revoluteFixAxis.y, data.revoluteFixAxis.y);
+        (component_data.revoluteSpeed.x != 0.f || component_data.revoluteSpeed.y != 0.f || component_data.revoluteSpeed.z != 0.f)) {
+        revolute((component_data.revoluteSpeed * ENGINE->deltaTime * 30.f), owner->owner->transform->worldPosition(),
+                 component_data.revoluteFixAxis.x, component_data.revoluteFixAxis.y, component_data.revoluteFixAxis.y);
     }
 }
 
 AeVector<float, 3> QeTransform::worldPosition() {
-    if (data.targetAnimationOID) {
-        QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, data.targetAnimationOID);
+    if (component_data.targetAnimationOID) {
+        QeAnimation *animation =
+            (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, component_data.targetAnimationOID);
         if (animation) {
-            AeVector<float, 4> vec = {data.position, 1};
-            return animation->getBoneTransfrom(data.targetBoneName.c_str()) * vec;
+            AeVector<float, 4> vec = {component_data.position, 1};
+            return animation->getBoneTransfrom(component_data.targetBoneName.c_str()) * vec;
         }
     }
 
-    AeVector<float, 3> _ret = data.position;
+    AeVector<float, 3> _ret = component_data.position;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
-        if (_parent->transform) _ret += _parent->transform->data.position;
+        if (_parent->transform) _ret += _parent->transform->component_data.position;
         _parent = _parent->owner;
     }
     return _ret;
@@ -46,11 +47,11 @@ AeVector<float, 3> QeTransform::worldScale() {
             }
     }*/
 
-    AeVector<float, 3> _ret = data.scale;
+    AeVector<float, 3> _ret = component_data.scale;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
-        if (_parent->transform) _ret *= _parent->transform->data.scale;
+        if (_parent->transform) _ret *= _parent->transform->component_data.scale;
         _parent = _parent->owner;
     }
     return _ret;
@@ -66,11 +67,11 @@ AeVector<float, 3> QeTransform::worldFaceEular() {
             }
     }*/
 
-     AeVector<float, 3> _ret = data.faceEular;
+     AeVector<float, 3> _ret = component_data.faceEular;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
-        if (_parent->transform) _ret += _parent->transform->data.faceEular;
+        if (_parent->transform) _ret += _parent->transform->component_data.faceEular;
         _parent = _parent->owner;
     }
     return _ret;
@@ -78,34 +79,34 @@ AeVector<float, 3> QeTransform::worldFaceEular() {
 
 AeVector<float, 3> QeTransform::worldFaceVector() { return MATH->eulerAnglesToVector(worldFaceEular()); }
 
-AeVector<float, 3> QeTransform::localFaceVector() { return MATH->eulerAnglesToVector(data.faceEular); }
+AeVector<float, 3> QeTransform::localFaceVector() { return MATH->eulerAnglesToVector(component_data.faceEular); }
 
 void QeTransform::setWorldPosition(AeVector<float, 3> &_worldPosition) {
-    data.position = _worldPosition;
+    component_data.position = _worldPosition;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
-        if (_parent->transform) data.position -= _parent->transform->data.position;
+        if (_parent->transform) component_data.position -= _parent->transform->component_data.position;
         _parent = _parent->owner;
     }
 }
 
 void QeTransform::setWorldScale(AeVector<float, 3> &_worldScale) {
-    data.scale = _worldScale;
+    component_data.scale = _worldScale;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
-        if (_parent->transform) data.scale /= _parent->transform->data.scale;
+        if (_parent->transform) component_data.scale /= _parent->transform->component_data.scale;
         _parent = _parent->owner;
     }
 }
 
 void QeTransform::setWorldFaceByEular(AeVector<float, 3> &_worldFace) {
-    data.faceEular = _worldFace;
+    component_data.faceEular = _worldFace;
     QeObject *_parent = owner->owner;
 
     while (_parent) {
-        if (_parent->transform) data.faceEular -= _parent->transform->data.faceEular;
+        if (_parent->transform) component_data.faceEular -= _parent->transform->component_data.faceEular;
         _parent = _parent->owner;
     }
 }
@@ -115,7 +116,7 @@ void QeTransform::setWorldFaceByVector(AeVector<float, 3> &_worldFaceVector) {
 }
 
 void QeTransform::move(AeVector<float, 3> &_addMove, AeVector<float, 3> &_face, AeVector<float, 3> &_up) {
-    data.position = MATH->move(data.position, _addMove, _face, _up);
+    component_data.position = MATH->move(component_data.position, _addMove, _face, _up);
 }
 
 void QeTransform::revolute(AeVector<float, 3> &_addRevolute, AeVector<float, 3> &_centerPosition, bool bFixX, bool bFixY,
@@ -124,11 +125,12 @@ void QeTransform::revolute(AeVector<float, 3> &_addRevolute, AeVector<float, 3> 
 }
 
 QeMatrix4x4f QeTransform::worldTransformMatrix(bool bRotate, bool bFixSize) {
-    if (data.targetAnimationOID) {
-        QeAnimation *animation = (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, data.targetAnimationOID);
+    if (component_data.targetAnimationOID) {
+        QeAnimation *animation =
+            (QeAnimation *)OBJMGR->findComponent(eGAMEOBJECT_Component_Animation, component_data.targetAnimationOID);
         if (animation) {
-            return animation->getBoneTransfrom(data.targetBoneName.c_str()) *
-                   MATH->getTransformMatrix(data.position, data.faceEular, data.scale,
+            return animation->getBoneTransfrom(component_data.targetBoneName.c_str()) *
+                   MATH->getTransformMatrix(component_data.position, component_data.faceEular, component_data.scale,
                                             GRAP->getTargetCamera()->owner->transform->worldPosition(), bRotate, bFixSize);
         }
     }

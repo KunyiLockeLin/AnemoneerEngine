@@ -5,7 +5,7 @@
 struct AeInputData {
     int inputType;
     int inputKey;
-    QeVector2i mousePos;
+    AeVector<int, 2> mousePos;
     std::string consoleCommandInput;
 };
 

@@ -4,7 +4,7 @@
 
 struct QeDataEnvironment {
     QeDataCamera camera;
-    QeVector4f param;  // 0: gamma, 1: exposure
+    AeVector<float,4> param;  // 0: gamma, 1: exposure
 };
 
 struct QeDataViewport {
@@ -29,7 +29,7 @@ struct QeDataViewport {
 };
 
 struct QeBufferSubpass {
-    QeVector4f param1;  // 0: blurHorizontal, 1: blurScale, 2: blurStrength
+    AeVector<float, 4> param;  // 0: blurHorizontal, 1: blurScale, 2: blurStrength
 };
 
 struct QeDataSubpass {
@@ -82,7 +82,7 @@ struct QeDataDrawCommand {
     QeCamera *camera;
     QeDataDescriptorSet *commonDescriptorSet;
     VkRenderPass renderPass;
-    QeRenderType type;
+    AE_RENDER_TYPE type;
 };
 
 class QeGraphics {
@@ -109,9 +109,9 @@ class QeGraphics {
 
     void initialize();
     void clear();
-    bool addPostProcssing(QeRenderType renderType, int cameraOID, int postprocessingOID);
-    void addNewViewport(QeRenderType type);
-    void popViewport(QeRenderType type);
+    bool addPostProcssing(AE_RENDER_TYPE renderType, int cameraOID, int postprocessingOID);
+    void addNewViewport(AE_RENDER_TYPE type);
+    void popViewport(AE_RENDER_TYPE type);
     void updateViewport();
     void updateBuffer();
     void add2DModel(QeModel *model);
@@ -121,7 +121,7 @@ class QeGraphics {
     void update2();
     void setTargetCamera(int cameraOID);
     QeCamera *getTargetCamera();
-    QeDataRender *getRender(QeRenderType type, int cameraOID);
+    QeDataRender *getRender(AE_RENDER_TYPE type, int cameraOID);
     // bool bUpdateComputeCommandBuffers = false;
     // bool bUpdateDrawCommandBuffers = false;
     bool bRecreateRender = false;
@@ -131,7 +131,7 @@ class QeGraphics {
 
     // VkSemaphore textOverlayComplete;
 
-    QeDataRender *createRender(QeRenderType type, int cameraOID, VkExtent2D renderSize);
+    QeDataRender *createRender(AE_RENDER_TYPE type, int cameraOID, VkExtent2D renderSize);
     void refreshRender();
     void cleanupRender();
     void drawFrame();
