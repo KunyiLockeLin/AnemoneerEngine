@@ -484,7 +484,7 @@ QeAssetModel *QeGameEncode::decodeGLTF(QeAssetJSON *json, bool bCubeMap) {
 }
 
 // QeAssetModel* QeEncode::decodeGLB(char* buffer) { return nullptr; }
-QeAssetParticleRule *QeGameEncode::decodeParticle(AeXMLNode *node) {
+/*QeAssetParticleRule *QeGameEncode::decodeParticle(AeXMLNode *node) {
     QeAssetParticleRule *particle = new QeAssetParticleRule();
 
     // const char* c = AST->getXMLValue(node, 1, "image");
@@ -518,4 +518,4 @@ QeAssetParticleRule *QeGameEncode::decodeParticle(AeXMLNode *node) {
     particle->size_range = node->getXMLValuefXY("size.range");
 
     return particle;
-}
+}*/

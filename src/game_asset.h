@@ -3,13 +3,13 @@
 #include "header.h"
 
 struct QeVertex {
-    QeVector4f pos = {0.0f, 0.0f, 0.0f, 1.0f};
-    QeVector4f color = {0.0f, 0.0f, 0.0f, 1.0f};
-    QeVector4f uv;
-    QeVector4f normal = {0.0f, 0.0f, 0.0f, 1.0f};
-    QeVector4f tangent;
-    QeVector4f joint;
-    QeVector4f weight;
+    AeVector<float, 4> pos = {0.0f, 0.0f, 0.0f, 1.0f};
+    AeVector<float, 4> color = {0.0f, 0.0f, 0.0f, 1.0f};
+    AeVector<float, 4> uv;
+    AeVector<float, 4> normal = {0.0f, 0.0f, 0.0f, 1.0f};
+    AeVector<float, 4> tangent;
+    AeVector<float, 4> joint;
+    AeVector<float, 4> weight;
 
     static VkVertexInputBindingDescription getBindingDescription();
     static std::array<VkVertexInputAttributeDescription, 7> getAttributeDescriptions();
@@ -26,9 +26,9 @@ struct QeDataJoint {
     // QeMatrix4x4f transform;
     QeMatrix4x4f inverseBindMatrix;
     std::vector<float> translationInput;
-    std::vector<QeVector3f> translationOutput;
+    std::vector<AeVector<float, 3>> translationOutput;
     std::vector<float> rotationInput;
-    std::vector<QeVector4f> rotationOutput;
+    std::vector<AeVector<float, 4>> rotationOutput;
     // std::vector<float> scaleInput;
     // std::vector<QeVector3f> scaleOutput;
 };
@@ -40,7 +40,7 @@ struct QeAssetModel {
 
     QeVKBuffer vertex;
     QeVKBuffer index;
-    QeVector3f scale;
+    AeVector<float, 3> scale;
 
     QeAssetMaterial *pMaterial = nullptr;
     QeDataJoint *rootJoint = nullptr;
@@ -78,8 +78,8 @@ struct QeDataMaterial {
             QeDataMaterialPhong phong;
             QeDataMaterialPBR pbr;
     };*/
-    QeVector4f baseColor;
-    QeVector4f metallicRoughnessEmissive;
+    AeVector<float, 4> baseColor;
+    AeVector<float, 4> metallicRoughnessEmissive;
     QeDataMaterial() {}
 };
 
@@ -107,25 +107,6 @@ struct QeAssetMaterial {
     QeAssetMaterial() {}
 };
 
-struct QeAssetParticleRule {
-    const char *image = nullptr;
-    bool bAlpha, bReborn;
-    int count_once, count_period, count_total, count_range;
-    int life_scend, life_range;
-    QeVector3f init_pos_square;        // length, width, height
-    QeVector3f init_pos_square_range;  // length, width, height
-    QeVector2f init_pos_cycle;         // radius, degree
-    QeVector2f init_pos_cycle_range;   // radius, degree
-    QeVector3f init_speed;
-    QeVector3f init_speed_range;
-    QeVector3f force;
-    QeVector3f force_range;
-    QeVector2f size;
-    QeVector2f size_range;
-    QeVector3f color;
-    QeVector3f color_range;
-};
-
 class QeGameAsset {
     SINGLETON_CLASS(QeGameAsset)
 
@@ -134,18 +115,18 @@ class QeGameAsset {
     std::map<std::string, QeAssetMaterial *> astMaterials;
     std::map<std::string, VkShaderModule> astShaders;
     std::map<std::string, QeVKImage *> astTextures;
-    std::map<int, QeAssetParticleRule *> astParticles;
+    //std::map<int, QeAssetParticleRule *> astParticles;
 
     ~QeGameAsset();
 
-    AeXMLNode *getXMLEditNode(QeComponentType _type, int eid);
+    AeXMLNode *getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid);
 
     QeAssetModel *getModel(const char *_filename, bool bCubeMap = false, float *param = nullptr);
     // QeAssetMaterial* getMaterial(const char* _filename);
     QeAssetMaterial *getMaterialImage(const char *_filename, bool bCubeMap = false);
     QeVKImage *getImage(const char *_filename, bool bCubeMap = false, bool bGamma = false);
     VkShaderModule getShader(const char *_filename);
-    QeAssetParticleRule *getParticle(int eid);
+    //QeAssetParticleRule *getParticle(int eid);
 
     void imageFillto32bits(std::vector<unsigned char> *data, int bytes);
     std::string combinePath(const char *_filename, QeGameAssetType dataType);

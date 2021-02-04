@@ -16,42 +16,42 @@ source_group(shader_header FILES ${SHADER_HEADER})
 add_custom_target(bat_shader_compiler SOURCES shader_compiler.bat ${SHADER} ${SHADER_HEADER} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/shader_compiler.bat COMMENT "run shader_compiler.bat")
 
 
-# lib Common
-add_library(libCommon SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
+# lib common
+add_library(lib_common SHARED common/common.h common/template_define.h common/encode.cpp common/math.cpp common/asset.cpp common/log.cpp common/timer.cpp)
 
-set_target_properties(libCommon PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
-set_target_properties(libCommon PROPERTIES OUTPUT_NAME_DEBUG ae_common_debug)
-set_target_properties(libCommon PROPERTIES OUTPUT_NAME_RELEASE ae_common)
+set_target_properties(lib_common PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+set_target_properties(lib_common PROPERTIES OUTPUT_NAME_DEBUG common_debug)
+set_target_properties(lib_common PROPERTIES OUTPUT_NAME_RELEASE common)
 
-#target_compile_features(libCommon PUBLIC cxx_std_14)
+#target_compile_features(lib_common PUBLIC cxx_std_14)
 
-target_link_libraries(libCommon Dbghelp)
-set(DEBUG_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/ae_common_debug.dll)
-set(RELEASE_libCommon ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/ae_common.dll)
-add_custom_command(TARGET libCommon POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_libCommon}>$<$<CONFIG:release>:${RELEASE_libCommon}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy libCommon")
+target_link_libraries(lib_common Dbghelp)
+set(DEBUG_common ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/common_debug.dll)
+set(RELEASE_common ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/common.dll)
+add_custom_command(TARGET lib_common POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_common}>$<$<CONFIG:release>:${RELEASE_common}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy common")
 
 
 #lib ui
-#add_library(libUI SHARED)
+#add_library(lib_ui SHARED)
 
 
-#lib GPU
-#add_library(libGPU SHARED)
+#lib gpu
+#add_library(lib_gpu SHARED)
 
 
 # exe CodeGenerator
-add_executable(exeCodeGenerator code_generator/code_generator.cpp)
+add_executable(exe_CodeGenerator code_generator/code_generator.cpp)
 
-set_target_properties(exeCodeGenerator PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
-set_target_properties(exeCodeGenerator PROPERTIES OUTPUT_NAME_DEBUG CodeGenerator_debug)
-set_target_properties(exeCodeGenerator PROPERTIES OUTPUT_NAME_RELEASE CodeGenerator)
-set_target_properties(exeCodeGenerator PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY $(SolutionDir)$(Configuration))
+set_target_properties(exe_CodeGenerator PROPERTIES LINK_FLAGS /SUBSYSTEM:CONSOLE)
+set_target_properties(exe_CodeGenerator PROPERTIES OUTPUT_NAME_DEBUG CodeGenerator_debug)
+set_target_properties(exe_CodeGenerator PROPERTIES OUTPUT_NAME_RELEASE CodeGenerator)
+set_target_properties(exe_CodeGenerator PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY $(SolutionDir)$(Configuration))
 
-target_include_directories(exeCodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exeCodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exeCodeGenerator PUBLIC debug ae_common_debug optimized ae_common)
-#add_custom_command(TARGET exeCodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
-#add_custom_target(exeCodeGenerator COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
+target_include_directories(exe_CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_CodeGenerator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_CodeGenerator PUBLIC debug common_debug optimized common)
+#add_custom_command(TARGET exe_CodeGenerator POST_BUILD COMMAND cmd //C code_generator.bat COMMENT "run code_generator.bat")
+#add_custom_target(exe_CodeGenerator COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator.bat COMMENT "run code_generator.bat")
 
 
 # bat code_generator
@@ -101,21 +101,21 @@ source_group(vulkan FILES ${SRC_VULKAN})
 source_group(vulkan\\header FILES ${SRC_VULKAN_HEADER})
 source_group(model FILES ${SRC_MODEL})
 
-add_executable(exeAngryEngine  ${SRC_ALGORITHM} ${SRC_ALGORITHM_HEADER} ${SRC_GAMEOBJECT} ${SRC_GAMEOBJECT_HEADER}
-                       ${SRC_MANAGER} ${SRC_MANAGER_HEADER} ${SRC_UI} ${SRC_UI_HEADER} ${SRC_VULKAN}
-                       ${SRC_VULKAN_HEADER} ${SRC_MODEL})
+add_executable(exe_AngryEngine  ${SRC_ALGORITHM} ${SRC_ALGORITHM_HEADER} ${SRC_GAMEOBJECT} ${SRC_GAMEOBJECT_HEADER}
+                                 ${SRC_MANAGER} ${SRC_MANAGER_HEADER} ${SRC_UI} ${SRC_UI_HEADER} ${SRC_VULKAN}
+                                 ${SRC_VULKAN_HEADER} ${SRC_MODEL})
 
-set_target_properties(exeAngryEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
-set_target_properties(exeAngryEngine PROPERTIES OUTPUT_NAME_DEBUG AngryEngine_debug)
-set_target_properties(exeAngryEngine PROPERTIES OUTPUT_NAME_RELEASE AngryEngine)
-set_target_properties(exeAngryEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+set_target_properties(exe_AngryEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+set_target_properties(exe_AngryEngine PROPERTIES OUTPUT_NAME_DEBUG AngryEngine_debug)
+set_target_properties(exe_AngryEngine PROPERTIES OUTPUT_NAME_RELEASE AngryEngine)
+set_target_properties(exe_AngryEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
 
-target_include_directories(exeAngryEngine PUBLIC $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exeAngryEngine PUBLIC $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exeAngryEngine vulkan-1 debug ae_common_debug optimized ae_common)
+target_include_directories(exe_AngryEngine PUBLIC $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_AngryEngine PUBLIC $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_AngryEngine vulkan-1 debug common_debug optimized common)
 
 set(DEBUG_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/AngryEngine_debug.exe)
 set(RELEASE_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/AngryEngine.exe)
-add_custom_command(TARGET exeAngryEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_AngryEngine}>$<$<CONFIG:release>:${RELEASE_AngryEngine}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy AngryEngine")
+add_custom_command(TARGET exe_AngryEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_AngryEngine}>$<$<CONFIG:release>:${RELEASE_AngryEngine}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy AngryEngine")
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exeAngryEngine)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exe_AngryEngine)

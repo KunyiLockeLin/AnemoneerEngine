@@ -9,7 +9,7 @@ class QeGameEncode {
 
     // QeAssetModel* decodeOBJ(char* buffer);
     QeAssetModel *decodeGLTF(QeAssetJSON *json, bool bCubeMap = false);
-    QeAssetParticleRule *decodeParticle(AeXMLNode *node);
+    //QeAssetParticleRule *decodeParticle(AeXMLNode *node);
     // QeAssetModel* decodeGLB(char* buffer);
     // QeAssetMaterial* decodeMTL(char* buffer);
 };

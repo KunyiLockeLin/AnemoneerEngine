@@ -155,12 +155,11 @@ enum QeUIType {
 };
 
 #include "common/common.h"
-#include "generated_config_struct_enum.h"
+#include "generated/generated_config_struct_enum.h"
 #include "vulkan.h"
 #include "game_encode.h"
 #include "game_asset.h"
 #include "objectmanager.h"
-#include "component.h"
 #include "object.h"
 #include "scene.h"
 #include "transform.h"

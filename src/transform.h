@@ -7,28 +7,24 @@ class QeTransform : public QeComponent {
     ~QeTransform() {}
 
     // Face is Euler angles, (roll, pitch, yaw) or (bank, attitude, heading).
-    QeVector3f position, scale, faceEular;
-    QeVector3f rotateSpeed, revoluteSpeed;
-    bool revoluteFixAxisX = false, revoluteFixAxisY = false, revoluteFixAxisZ = false;
-    int targetAnimationOID;
-    const char *targetBoneName = nullptr;
+    AeGameObjectComponentTransformData data;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
-    virtual void update1();
+    virtual void updatePreRender();
 
-    QeVector3f worldPosition();
-    QeVector3f worldScale();
-    QeVector3f worldFaceEular();
-    QeVector3f worldFaceVector();
-    QeVector3f localFaceVector();
+    AeVector<float, 3> worldPosition();
+    AeVector<float, 3> worldScale();
+    AeVector<float, 3> worldFaceEular();
+    AeVector<float, 3> worldFaceVector();
+    AeVector<float, 3> localFaceVector();
 
-    void setWorldPosition(QeVector3f &_worldPosition);
-    void setWorldScale(QeVector3f &_worldScale);
-    void setWorldFaceByEular(QeVector3f &_worldFaceEular);
-    void setWorldFaceByVector(QeVector3f &_worldFaceVector);
+    void setWorldPosition(AeVector<float, 3> &_worldPosition);
+    void setWorldScale(AeVector<float, 3> &_worldScale);
+    void setWorldFaceByEular(AeVector<float, 3> &_worldFaceEular);
+    void setWorldFaceByVector(AeVector<float, 3> &_worldFaceVector);
 
-    void move(QeVector3f &_addMove, QeVector3f &_face, QeVector3f &_up);
-    void revolute(QeVector3f &_addRevolute, QeVector3f &_centerPosition, bool bFixX = false, bool bFixY = false,
+    void move(AeVector<float, 3> &_addMove, AeVector<float, 3> &_face, AeVector<float, 3> &_up);
+    void revolute(AeVector<float, 3> &_addRevolute, AeVector<float, 3> &_centerPosition, bool bFixX = false, bool bFixY = false,
                   bool bFixZ = false);
 
     QeMatrix4x4f worldTransformMatrix(bool bRotate = true, bool bFixSize = false);

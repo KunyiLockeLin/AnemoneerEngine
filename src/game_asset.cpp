@@ -88,15 +88,15 @@ bool QeVertex::operator==(const QeVertex &other) const {
     return pos == other.pos && normal == other.normal && uv == other.uv && color == other.color;
 }
 
-AeXMLNode *QeGameAsset::getXMLEditNode(QeComponentType _type, int eid) {
+AeXMLNode *QeGameAsset::getXMLEditNode(AE_GAMEOBJECT_TYPE _type, int eid) {
     std::string s = "";
     int type2 = 0;
 
     switch (_type) {
-        case eScene:
+        case eGAMEOBJECT_Scene:
             s = "scenes";
             break;
-        case eObject:
+        case eGAMEOBJECT_Object:
             s = "objects";
             break;
         default:
@@ -111,7 +111,7 @@ AeXMLNode *QeGameAsset::getXMLEditNode(QeComponentType _type, int eid) {
         if (type2 != 0) {
             bool b = false;
             for (int index = 0; index < node->data->nexts.size(); ++index) {
-                int _type = node->data->nexts[index]->getXMLValuei("type");
+                int _type = node->data->nexts[index]->getXMLValue<int>("type");
                 if (_type == type2) {
                     b = true;
                     node = node->data->nexts[index];
@@ -122,7 +122,7 @@ AeXMLNode *QeGameAsset::getXMLEditNode(QeComponentType _type, int eid) {
         }
 
         for (int index = 0; index < node->data->nexts.size(); ++index) {
-            int _eid = node->data->nexts[index]->getXMLValuei("eid");
+            int _eid = node->data->nexts[index]->getXMLValue<int>("eid");
             if (_eid == eid) return node->data->nexts[index];
         }
     }
@@ -161,7 +161,7 @@ QeAssetModel *QeGameAsset::getModel(const char *_filename, bool bCubeMap, float 
     QeAssetJSON *json = nullptr;
     std::vector<char> buffer;
     QeVertex vertex;
-    int index = 0;
+    float index = 0.f;
 
     switch (type) {
         // case 0:
@@ -169,7 +169,7 @@ QeAssetModel *QeGameAsset::getModel(const char *_filename, bool bCubeMap, float 
         // model = ENCODE->decodeOBJ(buffer.data());
         //	break;
         case eModelData_gltf:
-            json = AST->getJSON(_filePath.c_str());
+            json = CM_MGR->getJSON(_filePath.c_str());
             model = G_ENCODE->decodeGLTF(json, bCubeMap);
             break;
             // case 2:
@@ -380,14 +380,14 @@ QeAssetModel *QeGameAsset::getModel(const char *_filename, bool bCubeMap, float 
             model->scale = {1, 1, 1};
             vertex.color = {param[0], param[1], param[2], 1.f};
 
-            for (index = (int)-param[3]; index <= (int)param[3]; ++index) {
-                vertex.pos = {index, (int)-param[4], 0, 1};
-                vertex.normal = {0, (int)param[4] * 2, 0, 1};
+            for (index = -param[3]; index <= param[3]; ++index) {
+                vertex.pos = {index, -param[4], 0, 1};
+                vertex.normal = {0, param[4] * 2, 0, 1};
                 model->vertices.push_back(vertex);
             }
             for (index = (int)-param[4]; index <= (int)param[4]; ++index) {
-                vertex.pos = {(int)-param[3], index, 0, 1};
-                vertex.normal = {(int)param[3] * 2, 0, 0, 1};
+                vertex.pos = {-param[3], index, 0, 1};
+                vertex.normal = {param[3] * 2, 0, 0, 1};
                 model->vertices.push_back(vertex);
             }
             break;
@@ -581,7 +581,7 @@ QeVKImage *QeGameAsset::getImage(const char *_filename, bool bCubeMap, bool bGam
     for (int i = 0; i < size; ++i) {
         std::string path(_filePath);
         path.insert(cIndex, imageList[i]);
-        std::vector<char> buffer = AST->loadFile(path.c_str());
+        std::vector<char> buffer = CM_MGR->loadFile(path.c_str());
 
         switch (type) {
             case 0:
@@ -639,13 +639,14 @@ VkShaderModule QeGameAsset::getShader(const char *_filename) {
     std::map<std::string, VkShaderModule>::iterator it = astShaders.find(_filePath);
     if (it != astShaders.end()) return it->second;
 
-    std::vector<char> buffer = AST->loadFile(_filePath.c_str());
+    std::vector<char> buffer = CM_MGR->loadFile(_filePath.c_str());
 
     VkShaderModule shader = VK->createShaderModel((void *)buffer.data(), int(buffer.size()));
     astShaders[_filePath] = shader;
     return shader;
 }
 
+/*
 QeAssetParticleRule *QeGameAsset::getParticle(int _eid) {
     std::map<int, QeAssetParticleRule *>::iterator it = astParticles.find(_eid);
     if (it != astParticles.end()) return it->second;
@@ -655,6 +656,7 @@ QeAssetParticleRule *QeGameAsset::getParticle(int _eid) {
     astParticles[_eid] = particle;
     return particle;
 }
+*/
 
 std::string QeGameAsset::combinePath(const char *_filename, QeGameAssetType dataType) {
     if (strlen(_filename) > 3 && _filename[1] == ':' && _filename[2] == '\\') return _filename;
@@ -662,19 +664,19 @@ std::string QeGameAsset::combinePath(const char *_filename, QeGameAssetType data
     std::string rtn;
     switch (dataType) {
         case eAssetModel:
-            rtn = CONFIG->getXMLValue("setting.path.model");
+            rtn = CONFIG->getXMLValue<std::string>("setting.path.model");
             break;
         case eAssetMaterial:
-            rtn = CONFIG->getXMLValue("setting.path.material");
+            rtn = CONFIG->getXMLValue<std::string>("setting.path.material");
             break;
         case eAssetBin:
-            rtn = CONFIG->getXMLValue("setting.path.bin");
+            rtn = CONFIG->getXMLValue<std::string>("setting.path.bin");
             break;
         case eAssetShader:
-            rtn = CONFIG->getXMLValue("setting.path.sharder");
+            rtn = CONFIG->getXMLValue<std::string>("setting.path.sharder");
             break;
         case eAssetTexture:
-            rtn = CONFIG->getXMLValue("setting.path.texture");
+            rtn = CONFIG->getXMLValue<std::string>("setting.path.texture");
             break;
     }
     return rtn.append(_filename);
@@ -684,15 +686,15 @@ void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, AeXMLNode *sh
     const char *c = nullptr;
 
     if (shaderData) {
-        c = shaderData->getXMLValue("vert");
+        c = shaderData->getXMLValue<const char*>("vert");
         if (c != nullptr && strlen(c)) shader.vert = getShader(c);
-        c = shaderData->getXMLValue("tesc");
+        c = shaderData->getXMLValue<const char *>("tesc");
         if (c != nullptr && strlen(c)) shader.tesc = getShader(c);
-        c = shaderData->getXMLValue("tese");
+        c = shaderData->getXMLValue<const char *>("tese");
         if (c != nullptr && strlen(c)) shader.tese = getShader(c);
-        c = shaderData->getXMLValue("geom");
+        c = shaderData->getXMLValue<const char *>("geom");
         if (c != nullptr && strlen(c)) shader.geom = getShader(c);
-        c = shaderData->getXMLValue("frag");
+        c = shaderData->getXMLValue<const char *>("frag");
         if (c != nullptr && strlen(c)) shader.frag = getShader(c);
     }
 
@@ -701,23 +703,23 @@ void QeGameAsset::setGraphicsShader(QeAssetGraphicsShader &shader, AeXMLNode *sh
         keys += defaultShaderType;
         AeXMLNode *node = CONFIG->getXMLNode(keys.c_str());
         if (shader.vert == nullptr) {
-            c = node->getXMLValue("vert");
+            c = node->getXMLValue<const char *>("vert");
             if (c != nullptr && strlen(c)) shader.vert = getShader(c);
         }
         if (shader.tesc == nullptr) {
-            c = node->getXMLValue("tesc");
+            c = node->getXMLValue<const char *>("tesc");
             if (c != nullptr && strlen(c)) shader.tesc = getShader(c);
         }
         if (shader.tese == nullptr) {
-            c = node->getXMLValue("tese");
+            c = node->getXMLValue<const char *>("tese");
             if (c != nullptr && strlen(c)) shader.tese = getShader(c);
         }
         if (shader.geom == nullptr) {
-            c = node->getXMLValue("geom");
+            c = node->getXMLValue<const char *>("geom");
             if (c != nullptr && strlen(c)) shader.geom = getShader(c);
         }
         if (shader.frag == nullptr) {
-            c = node->getXMLValue("frag");
+            c = node->getXMLValue<const char *>("frag");
             if (c != nullptr && strlen(c)) shader.frag = getShader(c);
         }
     }

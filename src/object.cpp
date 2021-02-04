@@ -1,5 +1,9 @@
 #include "header.h"
 
+void QeComponent::initialize(AeXMLNode *_property, QeObject *_owner) {
+    owner = _owner;
+}
+
 void QeObject::initialize(AeXMLNode *_property, QeObject *_owner) {
     QeComponent::initialize(_property, _owner);
 

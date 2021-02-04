@@ -2,11 +2,10 @@
 
 #include "header.h"
 
-class QeComponent {
+class QeComponent{
    public:
     QeComponent(AeObjectManagerKey &_key) {}
     ~QeComponent() {}
-
     QeObject *owner = nullptr;
 
     virtual void initialize(AeXMLNode *_property, QeObject *_owner) {}
@@ -29,5 +28,5 @@ class QeObject : public QeComponent {
     virtual void initialize(AeXMLNode *_property, QeObject *_owner);
     virtual void clear();
     virtual void updatePreRender();
-    virtual void updatePreRender();
+    virtual void updatePostRedner();
 };
