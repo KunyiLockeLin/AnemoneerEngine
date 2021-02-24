@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.8)
 add_definitions(-D_UNICODE)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
 project (AngryEngine)
 
 set(cpp_version "cxx_std_17")
