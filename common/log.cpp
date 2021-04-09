@@ -15,6 +15,11 @@ std::string toString(const int &i) {
     oss << i;
     return oss.str();
 }
+std::string operator+(std::string const &a, const uint32_t &b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
 std::string operator+(std::string const &a, const int &b) {
     std::ostringstream oss;
     oss << a << b;
@@ -41,6 +46,11 @@ std::string operator+(std::string const &a, const char *b) {
     return oss.str();
 }
 std::string operator+=(std::string const &a, const char *b) {
+    std::ostringstream oss;
+    oss << a << b;
+    return oss.str();
+}
+std::string operator+=(std::string const &a, const uint32_t &b) {
     std::ostringstream oss;
     oss << a << b;
     return oss.str();
@@ -85,7 +95,7 @@ bool AeFile::open(const char *output_path_) {
         _mkdir(output_dir.c_str());
     }
     ofile->open(output_path_);
-    ASSERT(!ofile->fail(), output_path_)
+    ASSERT(!ofile->fail(), output_path_);
     return true;
 }
 

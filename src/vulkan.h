@@ -48,7 +48,7 @@ static inline const char *string_VkResult(VkResult err) {
     if (resolved_err != VK_SUCCESS) {                                                                                        \
         std::ostringstream osss; \
         osss << string_VkResult(resolved_err) << "(" << resolved_err << ")"; \
-        ASSERT_PRINT(condition, osss.str())\
+        ASSERT_PRINT(condition, osss.str());\
     }
 #else
 #define ASSERT_VK_SUCCESS(condition)

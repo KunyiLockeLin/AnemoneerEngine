@@ -78,32 +78,6 @@
     component_data.read(*_property); \
 */
 
-#define BEGIN_NAMESPACE(x) namespace x {
-#define END_NAMESPACE(x) }
-
-#define SINGLETON_OBJECT(class_name)    \
-   private:                             \
-    class_name();                       \
-                                        \
-   public:                              \
-    static class_name &get_instance() { \
-        static class_name instance;     \
-        return instance;                \
-    }
-
-#define OBJECT_KEY(class_name, friend_name) \
-    class DllExport class_name {            \
-        friend class friend_name;           \
-                                            \
-       private:                             \
-        class_name() {}                     \
-    };
-
-#define MANAGED_OBJECT(class_name, key_name) \
-   public:                                   \
-    class_name(const key_name &key);         \
-    static std::shared_ptr<class_name> create(const key_name &key) { return std::make_shared<class_name>(key); }
-
 // template class DllExport std::vector<std::string>;
 // template class DllExport std::basic_string<char>;
 
@@ -642,7 +616,7 @@ class DllExport AeLog {
                    const char *output_path_xml_setting_path = "setting.path.log");
     void switchOutput(bool turn_on, const char *output_path = nullptr);
     std::string stack(int from, int to);
-    void print(std::string &msg, bool bShowStack = false, int stackLevel = 5);
+    void print(std::string &msg, bool bShowStack = false, int stackLevel = 9);
 
     bool isOutput();
 };
@@ -651,6 +625,7 @@ class DllExport AeLog {
 #define STACK(msg) LOGOBJ.print(std::string("") + msg, true)
 // std::terminate();
 
+// TODO: renew assert to exception
 #ifndef NDEBUG
 /*
 static void setterminate() {
@@ -659,6 +634,8 @@ static void setterminate() {
 }
 std::set_terminate(setterminate);
 */
+
+// TODO: Modify to simple one.
 #define ASSERT_PRINT(condition, message)                                                                   \
     std::ostringstream oss;                                                                                \
     oss << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message; \
@@ -666,26 +643,49 @@ std::set_terminate(setterminate);
         oss << ": " << strerror(errno);                                                                    \
         errno = 0;                                                                                         \
     }                                                                                                      \
-    STACK(oss.str());                                                                                      \
-    std::terminate();
+    throw std::runtime_error(oss.str())
+    
+    //if (!(EXP)) {
+    //    LOG("Assertion failed: '%s' (%s:%d)", #EXP, __FILE__, __LINE__);
+    //}
+    //assert(EXP);
 
-#define ASSERT(condition, message)       \
-    if (!(condition)) {                  \
-        ASSERT_PRINT(condition, message) \
-    }
+#define ASSERT(condition, message)           \
+    do {                                     \
+        if (!(condition)) {                  \
+            ASSERT_PRINT(condition, message);\
+        }                                    \
+    } while (false)
+
 #define ASSERT_NULL(condition) ASSERT(condition, "NULL")
+
+#define ASSERT_RESULT(condition, result, pass)                                     \
+    do {                                                                           \
+        const result resolved_err = condition;                                     \
+        if (resolved_err != pass) {                                                \
+            std::ostringstream osss;                                               \
+            osss << string_##result##(resolved_err) << "(" << resolved_err << ")"; \
+            ASSERT_PRINT(condition, osss.str());                                   \
+        }                                                                          \
+    } while (false);
+
+#define ASSERT_SUCCESS(condition) ASSERT_RESULT(condition, AeResult, AE_SUCCESS)
 #else
-#define ASSERT(condition, message)
-#define ASSERT_NULL(condition)
+#define ASSERT(condition, message) condition;
+#define ASSERT_NULL(condition) condition;
+#define ASSERT_SUCCESS(condition) condition;
 #endif
 
 namespace AeLib {
+// TODO: use template
 std::string DllExport toString(const int &i);
+std::string DllExport operator+(std::string const &a, const uint32_t &b);
 std::string DllExport operator+(std::string const &a, const int &b);
 std::string DllExport operator+(std::string const &a, const size_t &b);
 std::string DllExport operator+(std::string const &a, const float &b);
 std::string DllExport operator+(std::string const &a, const double &b);
 std::string DllExport operator+(std::string const &a, const char *b);
+std::string DllExport operator+=(std::string const &a, const uint32_t &b);
 std::string DllExport operator+=(std::string const &a, const int &b);
 std::string DllExport operator+=(std::string const &a, const size_t &b);
 std::string DllExport operator+=(std::string const &a, const float &b);
@@ -699,5 +699,8 @@ template <class T>
 bool DllExport eraseElementFromVector(std::vector<T> &vec, T element);
 };  // namespace AeLib
 using namespace AeLib;
+
+#define BEGIN_NAMESPACE(x) namespace x {
+#define END_NAMESPACE(x) }
 
 #include "template_define.h"
