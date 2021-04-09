@@ -53,7 +53,7 @@ add_custom_command(TARGET lib_ui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_
 
 
 # exe testUI
-add_executable(exe_testUI ui/ui.h ui/ui.cpp ui/main.cpp)
+add_executable(exe_testUI ui/ui.h ui/ui.cpp ui/test_main.cpp)
 
 set_target_properties(exe_testUI PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(exe_testUI PROPERTIES OUTPUT_NAME_DEBUG testUI_debug)
@@ -85,7 +85,7 @@ add_custom_command(TARGET lib_ui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_
 
 
 # exe testGPU
-add_executable(exe_testGPU gpu/vulkan.h gpu/vulkan.cpp gpu/graphics.h gpu/graphics.cpp gpu/main.cpp)
+add_executable(exe_testGPU gpu/vulkan.h gpu/vulkan.cpp gpu/graphics.h gpu/graphics.cpp gpu/test_main.cpp)
 
 set_target_properties(exe_testGPU PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
 set_target_properties(exe_testGPU PROPERTIES OUTPUT_NAME_DEBUG testGPU_debug)

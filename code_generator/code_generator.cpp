@@ -6,7 +6,7 @@
 //#include "src/generated_config_struct_enum.h"
 
 const std::string indent = "    ";
-const char config_path[] = "..\\..\\output\\data\\config2.xml";
+const char config_path[] = "..\\..\\output\\data\\config.xml";
 AeXMLNode* config = nullptr;
 AeXMLNode* code_define = nullptr;
 AeXMLNode* enum_define = nullptr;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
     config_struct_enum += "\n";
     auto nodes = code_define->getXMLNode("using");
     for (auto* node: nodes->data->nexts) {
-        config_struct_enum += ("using " + node->data->key + " = " + node->data->value + ";\n");
+        config_struct_enum += ("using " + node->data->key + " = " + node->getXMLValue<const char*>("type") + ";\n");
     }
 
     // enum
