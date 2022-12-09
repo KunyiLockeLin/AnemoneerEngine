@@ -147,13 +147,20 @@ class Rendering : public IGPUObject {
     struct Present {
         VkSurfaceKHR surface_{VK_NULL_HANDLE};
         VkSwapchainKHR swapchain_{VK_NULL_HANDLE};
+        VkSwapchainKHR old_swapchain_{VK_NULL_HANDLE};
         uint32_t present_index_{0};
         std::vector<VkImage> swapchain_images_;
     } present_;
 
+    VkSurfaceCapabilities2KHR surface_capabilities_{};
     PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR fpGetPhysicalDeviceSurfaceCapabilities2KHR;
+
+    std::vector<VkSurfaceFormat2KHR> surface_formats_;
     PFN_vkGetPhysicalDeviceSurfaceFormats2KHR fpGetPhysicalDeviceSurfaceFormats2KHR;
-    PFN_vkGetPhysicalDeviceSurfacePresentModesKHR fpGetPhysicalDeviceSurfacePresentModesKHR;
+
+    std::vector<VkPresentModeKHR> present_modes_;
+    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT fpGetPhysicalDeviceSurfacePresentModes2EXT;
+
     PFN_vkCreateSwapchainKHR fpCreateSwapchainKHR;
     PFN_vkDestroySwapchainKHR fpDestroySwapchainKHR;
     PFN_vkGetSwapchainImagesKHR fpGetSwapchainImagesKHR;
@@ -161,6 +168,7 @@ class Rendering : public IGPUObject {
     PFN_vkQueuePresentKHR fpQueuePresentKHR;
 
     AeResult create_surface();
+    AeResult get_surface_property();
     AeResult create_swapchain();
 
     struct RenderingLayer {

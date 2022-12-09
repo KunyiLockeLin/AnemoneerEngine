@@ -5,12 +5,12 @@ BEGIN_NAMESPACE(ae)
 BEGIN_NAMESPACE(gpu)
 BEGIN_NAMESPACE(object)
 
-#define GET_INSTANCE_PROC_ADDR(inst, entrypoint)                                            \
-    {                                                                                       \
-        fp##entrypoint = (PFN_vk##entrypoint)vkGetInstanceProcAddr(inst, "vk" #entrypoint); \
-        if (fp##entrypoint == nullptr) {                                                    \
-            LOG("vkGetInstanceProcAddr failed to find vk" #entrypoint);                     \
-        }                                                                                   \
+#define GET_INSTANCE_PROC_ADDR(dev, entrypoint)                                                              \
+    {                                                                                                        \
+        fp##entrypoint = (PFN_vk##entrypoint)vkGetInstanceProcAddr(dev->get_VkInstance(), "vk" #entrypoint); \
+        if (fp##entrypoint == nullptr) {                                                                     \
+            LOG("vkGetInstanceProcAddr failed to find vk" #entrypoint);                                      \
+        }                                                                                                    \
     }
 
 PFN_vkGetDeviceProcAddr get_device_proc_addr = nullptr;
@@ -157,7 +157,7 @@ AeResult Device::create_instance() {
             }
         }
     }
-
+    extensions.emplace_back(VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME);
     extensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     extensions.emplace_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
@@ -191,7 +191,7 @@ AeResult Device::create_debug_messenger_callback() {
                            VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
     debug_ci.pfnUserCallback = debug_messenger_callback;
 
-    GET_INSTANCE_PROC_ADDR(instance_, CreateDebugUtilsMessengerEXT);
+    GET_INSTANCE_PROC_ADDR(this, CreateDebugUtilsMessengerEXT);
     ASSERT_VK_SUCCESS(fpCreateDebugUtilsMessengerEXT(instance_, &debug_ci, nullptr, &debug_messenger_));
     return AE_SUCCESS;
 }
@@ -323,7 +323,7 @@ AeResult Device::create_device() {
     features2.features.shaderStorageImageArrayDynamicIndexing = VK_TRUE;
 
     std::vector<const char*> extensions;
-
+    extensions.emplace_back(VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME);
     extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
     if (!extensions.empty()) {
@@ -388,6 +388,8 @@ AeResult Queues::initialize(const std::shared_ptr<Device>& device) {
 }
 
 AeResult Queues::get_device_queue_create_infos(std::vector<VkDeviceQueueCreateInfo>& queue_cis) {
+    GET_INSTANCE_PROC_ADDR(device_, GetPhysicalDeviceSurfaceSupportKHR);
+
     const auto physical_device = device_->get_VkPhysicalDevice();
 
     uint32_t count = 0;
@@ -409,7 +411,6 @@ AeResult Queues::get_device_queue_create_infos(std::vector<VkDeviceQueueCreateIn
         queue_priorities[i] = 1.f - 0.01f * i;
     }
 
-    GET_INSTANCE_PROC_ADDR(device_->get_VkInstance(), GetPhysicalDeviceSurfaceSupportKHR);
     queue_family_support_surfaces_.resize(count);
 
     std::shared_ptr<Rendering> rendering = nullptr;
@@ -530,11 +531,6 @@ AeResult Rendering::initialize_for_VkInstance() {
     return AE_SUCCESS;
 }
 
-AeResult Rendering::initialize_for_VkDevice() {
-    ASSERT_SUCCESS(create_swapchain());
-    return AE_SUCCESS;
-}
-
 AeResult Rendering::create_surface() {
 #ifdef _WIN32
     VkWin32SurfaceCreateInfoKHR surface_ci = {};
@@ -551,7 +547,60 @@ AeResult Rendering::create_surface() {
     return AE_SUCCESS;
 }
 
-AeResult Rendering::create_swapchain() { return AE_SUCCESS; }
+AeResult Rendering::initialize_for_VkDevice() {
+    GET_INSTANCE_PROC_ADDR(device_, GetPhysicalDeviceSurfaceCapabilities2KHR);
+    GET_INSTANCE_PROC_ADDR(device_, GetPhysicalDeviceSurfaceFormats2KHR);
+    GET_INSTANCE_PROC_ADDR(device_, GetPhysicalDeviceSurfacePresentModes2EXT);
+    GET_DEVICE_PROC_ADDR(device_, CreateSwapchainKHR);
+    GET_DEVICE_PROC_ADDR(device_, DestroySwapchainKHR);
+    GET_DEVICE_PROC_ADDR(device_, GetSwapchainImagesKHR);
+    GET_DEVICE_PROC_ADDR(device_, AcquireNextImage2KHR);
+    GET_DEVICE_PROC_ADDR(device_, QueuePresentKHR);
+
+    ASSERT_SUCCESS(get_surface_property());
+    ASSERT_SUCCESS(create_swapchain());
+    return AE_SUCCESS;
+}
+
+AeResult Rendering::get_surface_property() {
+    const auto physical_device = device_->get_VkPhysicalDevice();
+
+    VkPhysicalDeviceSurfaceInfo2KHR surface_info = {};
+    surface_info.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SURFACE_INFO_2_KHR;
+    surface_info.surface = present_.surface_;
+    surface_capabilities_.sType = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_2_KHR;
+    ASSERT_VK_SUCCESS(fpGetPhysicalDeviceSurfaceCapabilities2KHR(physical_device, &surface_info, &surface_capabilities_));
+
+    uint32_t format_count = 0;
+    ASSERT_VK_SUCCESS(fpGetPhysicalDeviceSurfaceFormats2KHR(physical_device, &surface_info, &format_count, nullptr));
+    surface_formats_.resize(format_count);
+    for (auto& format : surface_formats_) {
+        format.sType = VK_STRUCTURE_TYPE_SURFACE_FORMAT_2_KHR;
+    }
+    ASSERT_VK_SUCCESS(
+        fpGetPhysicalDeviceSurfaceFormats2KHR(physical_device, &surface_info, &format_count, surface_formats_.data()));
+
+    uint32_t mode_count = 0;
+    ASSERT_VK_SUCCESS(fpGetPhysicalDeviceSurfacePresentModes2EXT(physical_device, &surface_info, &mode_count, nullptr));
+    present_modes_.resize(mode_count);
+    ASSERT_VK_SUCCESS(
+        fpGetPhysicalDeviceSurfacePresentModes2EXT(physical_device, &surface_info, &mode_count, present_modes_.data()));
+
+    return AE_SUCCESS;
+}
+
+AeResult Rendering::create_swapchain() {
+    const auto device = device_->get_VkDevice();
+    present_.old_swapchain_ = present_.swapchain_;
+
+    VkSwapchainCreateInfoKHR swapchain_ci = {};
+    swapchain_ci.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    swapchain_ci.surface = present_.surface_;
+    swapchain_ci.oldSwapchain = present_.old_swapchain_;
+
+    ASSERT_VK_SUCCESS(fpCreateSwapchainKHR(device, &swapchain_ci, nullptr, &present_.swapchain_));
+    return AE_SUCCESS;
+}
 
 VkSurfaceKHR Rendering::get_VkSurfaceKHR() { return present_.surface_; }
 
