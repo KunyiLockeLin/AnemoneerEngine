@@ -55,6 +55,8 @@ class Device : public IGPUObject {
     std::shared_ptr<Rendering> rendering_{nullptr};
     AeResult initialize_rendering(const RenderingInfo &rendering_info);
 
+    AeResult initialize_command_pools();
+
     uint32_t instance_api_version_{0};
     VkInstance instance_{VK_NULL_HANDLE};
     AeResult create_instance();
@@ -86,6 +88,18 @@ class Device : public IGPUObject {
                                              const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData, void *pUserData);
 };
 
+enum QueueType {
+    QUEUE_MAIN,
+    QUEUE_PRESENT,
+    QUEUE_SUB,
+};
+
+struct Queue {
+    uint32_t family_index_{(std::numeric_limits<uint32_t>::max)()};
+    uint32_t queue_index_{0};
+    VkQueue queue_{VK_NULL_HANDLE};
+};
+
 class Queues : public IGPUObject {
     MANAGED_SINGLETON_GPU_OBJECT(Queues)
 
@@ -97,18 +111,6 @@ class Queues : public IGPUObject {
 
     VkQueueFlags queue_flags_{0};  // VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT.
 
-    struct Queue {
-        uint32_t family_index_{(std::numeric_limits<uint32_t>::max)()};
-        uint32_t queue_index_{0};
-        VkQueue queue_{VK_NULL_HANDLE};
-    };
-
-    enum QueueType {
-        QUEUE_MAIN,
-        QUEUE_PRESENT,
-        QUEUE_SUB,
-    };
-
     Queue main_queue_;
     Queue present_queue_;  // It could be the same with main_queue_ based on the GPU.
     Queue sub_queue_;      // If the process could work individually without main_queue_;
@@ -119,6 +121,18 @@ class Queues : public IGPUObject {
     AeResult initialize(const std::shared_ptr<Device> &device);
     AeResult get_device_queue_create_infos(std::vector<VkDeviceQueueCreateInfo> &queue_cis);
     AeResult set_queues();
+    const Queue *get_queue(QueueType type);
+};
+
+enum CommandType {
+    COMMAND_MAIN,
+    COMMAND_PRESENT,
+    COMMAND_SUB,
+};
+
+struct CommandGroup {
+    VkCommandPool command_pool_{VK_NULL_HANDLE};
+    VkCommandBuffer command_buffer_{VK_NULL_HANDLE};
 };
 
 class CommandPools : public IGPUObject {
@@ -127,63 +141,13 @@ class CommandPools : public IGPUObject {
    private:
     std::shared_ptr<Device> device_;
 
-    // AeResult create_command_pools();
-    // AeResult allocate_command_buffers(CommandPoolType target_commamd_pool, uint32_t cmd_buf_count, VkCommandBuffer *cmd_bufs);
+    CommandGroup main_cmd_{};
+    CommandGroup present_cmd_{};
+    CommandGroup sub_cmd_{};
 
    public:
     AeResult initialize(const std::shared_ptr<Device> &device);
-};
-
-class Framebuffer;
-class RenderPass;
-class GraphicsPipeline;
-class Rendering : public IGPUObject {
-    MANAGED_SINGLETON_GPU_OBJECT(Rendering)
-
-   private:
-    std::shared_ptr<Device> device_;
-    RenderingInfo rendering_info_;
-
-    struct Present {
-        VkSurfaceKHR surface_{VK_NULL_HANDLE};
-        VkSwapchainKHR swapchain_{VK_NULL_HANDLE};
-        VkSwapchainKHR old_swapchain_{VK_NULL_HANDLE};
-        uint32_t present_index_{0};
-        std::vector<VkImage> swapchain_images_;
-    } present_;
-
-    VkSurfaceCapabilities2KHR surface_capabilities_{};
-    PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR fpGetPhysicalDeviceSurfaceCapabilities2KHR;
-
-    std::vector<VkSurfaceFormat2KHR> surface_formats_;
-    PFN_vkGetPhysicalDeviceSurfaceFormats2KHR fpGetPhysicalDeviceSurfaceFormats2KHR;
-
-    std::vector<VkPresentModeKHR> present_modes_;
-    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT fpGetPhysicalDeviceSurfacePresentModes2EXT;
-
-    PFN_vkCreateSwapchainKHR fpCreateSwapchainKHR;
-    PFN_vkDestroySwapchainKHR fpDestroySwapchainKHR;
-    PFN_vkGetSwapchainImagesKHR fpGetSwapchainImagesKHR;
-    PFN_vkAcquireNextImage2KHR fpAcquireNextImage2KHR;
-    PFN_vkQueuePresentKHR fpQueuePresentKHR;
-
-    AeResult create_surface();
-    AeResult get_surface_property();
-    AeResult create_swapchain();
-
-    struct RenderingLayer {
-        AE_RENDER_TYPE render_Type;
-        std::shared_ptr<Framebuffer> frambuffer_;
-        std::vector<std::shared_ptr<RenderPass>> render_passes_;
-        std::vector<std::shared_ptr<GraphicsPipeline>> graphics_pipelines_;
-    };
-    std::vector<RenderingLayer> rendering_layers_;
-
-   public:
-    AeResult initialize(const std::shared_ptr<Device> &device, const RenderingInfo &rendering_info);
-    AeResult initialize_for_VkInstance();
-    AeResult initialize_for_VkDevice();
-    VkSurfaceKHR get_VkSurfaceKHR();
+    const VkCommandBuffer get_command_buffer(CommandType type);
 };
 
 class Framebuffer : public IGPUObject {
@@ -209,21 +173,71 @@ class IPipeline : public IGPUObject {
     // std::vector<ShaderBindingSlot> shader_data_slots_;
 };
 
+class ComputePipeline : public IPipeline {
+    MANAGED_GPU_OBJECT(ComputePipeline)
+
+   private:
+};
+
 class GraphicsPipeline : public IPipeline {
     MANAGED_GPU_OBJECT(GraphicsPipeline)
 
    private:
 };
+
+class Rendering : public IGPUObject {
+    MANAGED_SINGLETON_GPU_OBJECT(Rendering)
+
+   private:
+    std::shared_ptr<Device> device_;
+    RenderingInfo rendering_info_;
+
+    struct Present {
+        VkSurfaceKHR surface_{VK_NULL_HANDLE};
+        VkSwapchainKHR swapchain_{VK_NULL_HANDLE};
+        VkSwapchainKHR old_swapchain_{VK_NULL_HANDLE};
+        std::vector<VkImage> swapchain_images_;
+        uint32_t present_index_{0};
+    } present_;
+
+    VkSurfaceCapabilities2KHR surface_capabilities_{};
+    PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR fpGetPhysicalDeviceSurfaceCapabilities2KHR;
+
+    std::vector<VkSurfaceFormat2KHR> surface_formats_;
+    PFN_vkGetPhysicalDeviceSurfaceFormats2KHR fpGetPhysicalDeviceSurfaceFormats2KHR;
+
+    std::vector<VkPresentModeKHR> present_modes_;
+    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT fpGetPhysicalDeviceSurfacePresentModes2EXT;
+
+    PFN_vkCreateSwapchainKHR fpCreateSwapchainKHR;
+    PFN_vkDestroySwapchainKHR fpDestroySwapchainKHR;
+    PFN_vkGetSwapchainImagesKHR fpGetSwapchainImagesKHR;
+    PFN_vkAcquireNextImage2KHR fpAcquireNextImage2KHR;
+    PFN_vkQueuePresentKHR fpQueuePresentKHR;
+
+    AeResult create_surface();
+    AeResult get_surface_property();
+    AeResult create_swapchain();
+
+    std::shared_ptr<GraphicsPipeline> pipeline_{};
+
+    struct RenderingLayer {
+        AE_RENDER_TYPE render_Type;
+        std::shared_ptr<Framebuffer> frambuffer_;
+        std::vector<std::shared_ptr<RenderPass>> render_passes_;
+        std::vector<std::shared_ptr<GraphicsPipeline>> graphics_pipelines_;
+    };
+    std::vector<RenderingLayer> rendering_layers_;
+
+   public:
+    AeResult initialize_for_VkInstance(const std::shared_ptr<Device> &device, const RenderingInfo &rendering_info);
+    AeResult initialize_for_VkDevice();
+    VkSurfaceKHR get_VkSurfaceKHR();
+};
+
+class Resources : public IGPUObject {};
+
 /*
-class Command : public IGPUObject {
-   protected:
-    VkCommandBuffer command_buffer_;
-};
-
-class DrawCommand : public Command {
-    MANAGED_GPU_OBJECT(DrawCommand )
-};
-
 class Thread : public IGPUObject {};
 
 class Memory : public IGPUObject {

@@ -19,7 +19,6 @@ struct PresentInfo {
     HINSTANCE hinstance_ = NULL;
     HWND hwnd_ = NULL;
 #endif  // _WIN32
-    uint32_t swapchain_count_{3};
 };
 
 struct RenderingInfo {

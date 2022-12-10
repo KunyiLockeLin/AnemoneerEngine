@@ -922,7 +922,7 @@
 		</struct>
 		<enum>
 			<result name="AeResult" prefix="AE_" SUCCESS="0" ERROR_UNKNOWN="1"/>
-			<result name="AeGPUType" prefix="AE_GPU_" DEVICE="0" QUEUE="1"  RENDERING="2" MODEL="3"/>
+			<result name="AeGPUType" prefix="AE_GPU_" DEVICE="0" QUEUES="1" COMMAND_POOLS="2" RENDERING="3" MODEL="4"/>
 			<type name="AE_GAMEOBJECT_TYPE" prefix="eGAMEOBJECT_"/>
 			<renderType name="AE_RENDER_TYPE" prefix="eRENDER_" KHR="0" UI="1" Main="2" Color="3" MAX="4" />
 			<lightType name="AE_LIGHT_TYPE" prefix="eLIGHT_" Point="0" Direction="1" Spot="2" />

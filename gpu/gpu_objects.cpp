@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "gpu_objects.h"
+#include "ui.h"
 
 BEGIN_NAMESPACE(ae)
 BEGIN_NAMESPACE(gpu)
@@ -82,14 +83,14 @@ const VkDevice Device::get_VkDevice() { return device_; }
 
 AeResult Device::initialize(const InitializeInfo& initialize_info) {
     device_info_ = initialize_info.device_info_;
-    ASSERT_SUCCESS(initialize_queues());
-    ASSERT_SUCCESS(initialize_rendering(initialize_info.rendering_info_));
 
     ASSERT_SUCCESS(create_instance());
-    ASSERT_SUCCESS(rendering_->initialize_for_VkInstance());
+    ASSERT_SUCCESS(initialize_queues());
+    ASSERT_SUCCESS(initialize_rendering(initialize_info.rendering_info_));
     ASSERT_SUCCESS(pick_physical_device());
     ASSERT_SUCCESS(create_device());
     ASSERT_SUCCESS(queues_->set_queues());
+    ASSERT_SUCCESS(initialize_command_pools());
     ASSERT_SUCCESS(rendering_->initialize_for_VkDevice());
 
     return AE_SUCCESS;
@@ -107,7 +108,7 @@ AeResult Device::initialize_rendering(const RenderingInfo& rendering_info) {
     std::shared_ptr<Device> device;
     ASSERT_SUCCESS(GPU_MGR.get<Device>(device));
     ASSERT_SUCCESS(GPU_MGR.get<Rendering>(rendering_));
-    ASSERT_SUCCESS(rendering_->initialize(device, rendering_info));
+    ASSERT_SUCCESS(rendering_->initialize_for_VkInstance(device, rendering_info));
     return AE_SUCCESS;
 }
 
@@ -379,7 +380,16 @@ AeResult Device::check_support_device_extensions(std::vector<const char*>& exten
     return AE_SUCCESS;
 }
 
-Queues::Queues(const GPUObjectKey& key) : IGPUObject(AE_GPU_QUEUE) {}
+AeResult Device::initialize_command_pools() {
+    std::shared_ptr<Device> device;
+    std::shared_ptr<CommandPools> command_pools;
+    ASSERT_SUCCESS(GPU_MGR.get<Device>(device));
+    ASSERT_SUCCESS(GPU_MGR.get<CommandPools>(command_pools));
+    ASSERT_SUCCESS(command_pools->initialize(device));
+    return AE_SUCCESS;
+}
+
+Queues::Queues(const GPUObjectKey& key) : IGPUObject(AE_GPU_QUEUES) {}
 
 AeResult Queues::initialize(const std::shared_ptr<Device>& device) {
     device_ = device;
@@ -518,15 +528,85 @@ AeResult Queues::set_queues() {
     return AE_SUCCESS;
 }
 
-Rendering::Rendering(const GPUObjectKey& key) : IGPUObject(AE_GPU_RENDERING) {}
+const Queue* Queues::get_queue(QueueType type) {
+    switch (type) {
+        case QUEUE_MAIN:
+            return &main_queue_;
+        case QUEUE_PRESENT:
+            return &present_queue_;
+        case QUEUE_SUB:
+            return &sub_queue_;
+        default:
+            return nullptr;
+    }
+    return nullptr;
+}
 
-AeResult Rendering::initialize(const std::shared_ptr<Device>& device, const RenderingInfo& rendering_info) {
+CommandPools::CommandPools(const GPUObjectKey& key) : IGPUObject(AE_GPU_COMMAND_POOLS) {}
+
+AeResult CommandPools::initialize(const std::shared_ptr<Device>& device) {
     device_ = device;
-    rendering_info_ = rendering_info;
+    VkDevice vk_device = device_->get_VkDevice();
+
+    std::shared_ptr<Queues> queues;
+    ASSERT_SUCCESS(GPU_MGR.get<Queues>(queues));
+    const auto* main_queue = queues->get_queue(QUEUE_MAIN);
+    ASSERT_NULL(main_queue);
+    const auto* present_queue = queues->get_queue(QUEUE_PRESENT);
+    ASSERT_NULL(present_queue);
+    const auto* sub_queue = queues->get_queue(QUEUE_SUB);
+    ASSERT_NULL(sub_queue);
+
+    VkCommandPoolCreateInfo cmd_pool_ci = {};
+    cmd_pool_ci.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    cmd_pool_ci.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    cmd_pool_ci.queueFamilyIndex = main_queue->family_index_;
+    ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &main_cmd_.command_pool_));
+
+    VkCommandBufferAllocateInfo cmd_ai = {};
+    cmd_ai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    cmd_ai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    cmd_ai.commandBufferCount = 1;
+    cmd_ai.commandPool = main_cmd_.command_pool_;
+    ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, &main_cmd_.command_buffer_));
+
+    if (present_queue->family_index_ == main_queue->family_index_) {
+        present_cmd_.command_pool_ = main_cmd_.command_pool_;
+    } else {
+        cmd_pool_ci.queueFamilyIndex = present_queue->family_index_;
+        ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &present_cmd_.command_pool_));
+    }
+    cmd_ai.commandPool = present_cmd_.command_pool_;
+    ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, &present_cmd_.command_buffer_));
+
+    cmd_pool_ci.queueFamilyIndex = sub_queue->family_index_;
+    ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &sub_cmd_.command_pool_));
+
+    cmd_ai.commandPool = sub_cmd_.command_pool_;
+    ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, &sub_cmd_.command_buffer_));
+
     return AE_SUCCESS;
 }
 
-AeResult Rendering::initialize_for_VkInstance() {
+const VkCommandBuffer CommandPools::get_command_buffer(CommandType type) {
+    switch (type) {
+        case COMMAND_MAIN:
+            return main_cmd_.command_buffer_;
+        case COMMAND_PRESENT:
+            return present_cmd_.command_buffer_;
+        case COMMAND_SUB:
+            return sub_cmd_.command_buffer_;
+        default:
+            return nullptr;
+    }
+    return VK_NULL_HANDLE;
+}
+
+Rendering::Rendering(const GPUObjectKey& key) : IGPUObject(AE_GPU_RENDERING) {}
+
+AeResult Rendering::initialize_for_VkInstance(const std::shared_ptr<Device>& device, const RenderingInfo& rendering_info) {
+    device_ = device;
+    rendering_info_ = rendering_info;
     ASSERT_SUCCESS(create_surface());
     return AE_SUCCESS;
 }
@@ -597,8 +677,82 @@ AeResult Rendering::create_swapchain() {
     swapchain_ci.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     swapchain_ci.surface = present_.surface_;
     swapchain_ci.oldSwapchain = present_.old_swapchain_;
+    swapchain_ci.imageFormat = surface_formats_[0].surfaceFormat.format;
+    swapchain_ci.imageColorSpace = surface_formats_[0].surfaceFormat.colorSpace;
+    swapchain_ci.imageArrayLayers = 1;
+    swapchain_ci.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+    swapchain_ci.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    swapchain_ci.clipped = VK_TRUE;
+    swapchain_ci.queueFamilyIndexCount = 0;
+    swapchain_ci.pQueueFamilyIndices = nullptr;
 
+    auto& present_mode = swapchain_ci.presentMode;
+    present_mode = present_modes_[0];
+    if (present_mode != VK_PRESENT_MODE_FIFO_KHR) {
+        for (const auto& mode : present_modes_) {
+            if (mode == VK_PRESENT_MODE_FIFO_KHR) {
+                present_mode = VK_PRESENT_MODE_FIFO_KHR;
+                break;
+            }
+        }
+    }
+
+    auto& min_image_count = swapchain_ci.minImageCount;
+    min_image_count = 3;
+    if (min_image_count < surface_capabilities_.surfaceCapabilities.minImageCount) {
+        min_image_count = surface_capabilities_.surfaceCapabilities.minImageCount;
+    }
+    if ((surface_capabilities_.surfaceCapabilities.maxImageCount > 0) &&
+        (min_image_count > surface_capabilities_.surfaceCapabilities.maxImageCount)) {
+        min_image_count = surface_capabilities_.surfaceCapabilities.maxImageCount;
+    }
+
+    auto& image_extent = swapchain_ci.imageExtent;
+    if (surface_capabilities_.surfaceCapabilities.currentExtent.width == 0xFFFFFFFF) {
+        AeXMLNode* node = CONFIG->getXMLNode("setting.environment");
+        image_extent.width = node->getXMLValue<int>("mainWidth");
+        image_extent.height = node->getXMLValue<int>("mainHeight");
+
+        if (image_extent.width < surface_capabilities_.surfaceCapabilities.minImageExtent.width) {
+            image_extent.width = surface_capabilities_.surfaceCapabilities.minImageExtent.width;
+        } else if (image_extent.width > surface_capabilities_.surfaceCapabilities.maxImageExtent.width) {
+            image_extent.width = surface_capabilities_.surfaceCapabilities.maxImageExtent.width;
+        }
+        if (image_extent.height < surface_capabilities_.surfaceCapabilities.minImageExtent.height) {
+            image_extent.height = surface_capabilities_.surfaceCapabilities.minImageExtent.height;
+        } else if (image_extent.height > surface_capabilities_.surfaceCapabilities.maxImageExtent.height) {
+            image_extent.height = surface_capabilities_.surfaceCapabilities.maxImageExtent.height;
+        }
+    } else {
+        image_extent = surface_capabilities_.surfaceCapabilities.currentExtent;
+    }
+
+    auto& pre_transform = swapchain_ci.preTransform;
+    if (surface_capabilities_.surfaceCapabilities.currentTransform > 0) {
+        pre_transform = surface_capabilities_.surfaceCapabilities.currentTransform;
+    } else {
+        for (uint32_t i = 0; i < 9; ++i) {
+            if ((surface_capabilities_.surfaceCapabilities.supportedTransforms >> i) & 1) {
+                pre_transform = static_cast<VkSurfaceTransformFlagBitsKHR>(1 << i);
+                break;
+            }
+        }
+    }
+
+    auto& composite_alpha = swapchain_ci.compositeAlpha;
+    for (uint32_t i = 0; i < 4; ++i) {
+        if ((surface_capabilities_.surfaceCapabilities.supportedCompositeAlpha >> i) & 1) {
+            composite_alpha = static_cast<VkCompositeAlphaFlagBitsKHR>(1 << i);
+            break;
+        }
+    }
     ASSERT_VK_SUCCESS(fpCreateSwapchainKHR(device, &swapchain_ci, nullptr, &present_.swapchain_));
+
+    uint32_t count = 0;
+    ASSERT_VK_SUCCESS(fpGetSwapchainImagesKHR(device, present_.swapchain_, &count, nullptr));
+    present_.swapchain_images_.resize(count);
+    ASSERT_VK_SUCCESS(fpGetSwapchainImagesKHR(device, present_.swapchain_, &count, present_.swapchain_images_.data()));
+
     return AE_SUCCESS;
 }
 

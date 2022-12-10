@@ -20,15 +20,17 @@ static inline const char* string_AeResult(AeResult type) {
 
 enum AeGPUType {
     AE_GPU_DEVICE = 0,
-    AE_GPU_QUEUE = 1,
-    AE_GPU_RENDERING = 2,
-    AE_GPU_MODEL = 3,
+    AE_GPU_QUEUES = 1,
+    AE_GPU_COMMAND_POOLS = 2,
+    AE_GPU_RENDERING = 3,
+    AE_GPU_MODEL = 4,
 };
 
 static inline const char* string_AeGPUType(AeGPUType type) {
     switch (type) {
         CASE_STR(AE_GPU_DEVICE);
-        CASE_STR(AE_GPU_QUEUE);
+        CASE_STR(AE_GPU_QUEUES);
+        CASE_STR(AE_GPU_COMMAND_POOLS);
         CASE_STR(AE_GPU_RENDERING);
         CASE_STR(AE_GPU_MODEL);
         default:
