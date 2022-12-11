@@ -25,6 +25,28 @@ struct RenderingInfo {
     PresentInfo present_info_{};
 };
 
+// Setting graphics pipeline. Every model needs one.
+struct DrawingInfo {
+    std::string vertex_shader_path_{""};
+    std::string tessellation_control_shader_path_{""};
+    std::string tessellation_evaluation_shader_path_{""};
+    std::string geometry_shader_path_{""};
+    std::string fragment_shader_path_{""};
+};
+
+struct TriangleInfo {
+    DrawingInfo drawing_info_;
+};
+
+struct CubeInfo {
+    DrawingInfo drawing_info_;
+};
+
+struct ModelInfo {
+    DrawingInfo drawing_info_;
+    std::string model_path_{""};
+};
+
 class IRendering {
    public:
 };

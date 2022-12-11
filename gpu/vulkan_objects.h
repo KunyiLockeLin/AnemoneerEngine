@@ -191,8 +191,17 @@ class GraphicsPipeline : public IPipeline {
     MANAGED_VK_OBJECT(GraphicsPipeline)
 
    private:
-};
+    DrawingInfo drawing_info_;
 
+    VkShaderModule vertex_{VK_NULL_HANDLE};
+    VkShaderModule tessellation_control_{VK_NULL_HANDLE};
+    VkShaderModule tessellation_evaluation_{VK_NULL_HANDLE};
+    VkShaderModule geometry_{VK_NULL_HANDLE};
+    VkShaderModule fragment_{VK_NULL_HANDLE};
+
+   public:
+    bool compare_drawing_info();
+};
 
 enum RenderingLayerList {
     RENDERING_LAYER_PRESENT = 0,
@@ -203,6 +212,19 @@ enum RenderingLayerList {
     RENDERING_LAYER_MAX = 5,
 };
 
+struct RenderingLayer {
+    RenderingLayerList rendering_layer_;
+    // depth stencil
+    std::shared_ptr<Framebuffer> frambuffer_;
+    std::vector<std::shared_ptr<RenderPass>> render_passes_;
+    // std::vector<Model> models_; // Every model has a GraphicsPipeline.
+    // std::vector<std::shared_ptr<GraphicsPipeline>> graphics_pipelines_;
+};
+
+// When it's rendering, it runs every RenderingLayer, every RenderingLayer has models. Every model has a GraphicsPipeline. But Some
+// models could use the same GraphicsPipeline. When it addes a model, it checkes if or not it needs to create a new
+// GraphicsPipeline, and then when it's rendering, it will check if or not a model uses a different GraphicsPipeline to bind another
+// GraphicsPipeline.
 class Rendering : public IVkObject {
     MANAGED_SINGLETON_VK_OBJECT(Rendering)
 
@@ -237,12 +259,6 @@ class Rendering : public IVkObject {
     AeResult get_surface_property();
     AeResult create_swapchain();
 
-    struct RenderingLayer {
-        AE_RENDER_TYPE render_Type;
-        std::shared_ptr<Framebuffer> frambuffer_;
-        std::vector<std::shared_ptr<RenderPass>> render_passes_;
-        std::vector<std::shared_ptr<GraphicsPipeline>> graphics_pipelines_;
-    };
     std::vector<RenderingLayer> rendering_layers_;
 
    public:
