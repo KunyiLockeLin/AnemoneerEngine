@@ -34,16 +34,29 @@ struct DrawingInfo {
     std::string fragment_shader_path_{""};
 };
 
+struct TransformInfo {
+    AeArray<float, 3> position;
+    AeArray<float, 3> scale;
+    AeArray<float, 3> faceEular;
+    AeArray<float, 3> rotateSpeed;
+    AeArray<float, 3> revoluteSpeed;
+    AeArray<bool, 3> revoluteFixAxis;
+};
+
 struct TriangleInfo {
     DrawingInfo drawing_info_;
+    TransformInfo transformInfo_;
 };
 
 struct CubeInfo {
     DrawingInfo drawing_info_;
+    TransformInfo transformInfo_;
 };
 
 struct ModelInfo {
     DrawingInfo drawing_info_;
+    TransformInfo transformInfo_;
+
     std::string model_path_{""};
 };
 
