@@ -1,14 +1,18 @@
-#ifndef AE_GPU_VULKAN_OBJECTS_H
-#define AE_GPU_VULKAN_OBJECTS_H
+#ifndef AE_GPU_VK_OBJECTS_H
+#define AE_GPU_VK_OBJECTS_H
 
-#if defined(_WIN32)
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-
+#include <unordered_map>
 #include <memory>
+#include <list>
+
+#ifdef _WIN32
+#include <windows.h>
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif  // _WIN32
+
 #include <vulkan/vulkan.hpp>
 
-#include "common/common.h"
+#include "gpu.h"  // TODO: Maybe here shouldn't use gpu.h. gpu.h is interface of here.
 
 BEGIN_NAMESPACE(ae)
 BEGIN_NAMESPACE(gpu)
@@ -19,337 +23,290 @@ OBJECT_KEY(VkObjectKey, Manager)
 #define MANAGED_SINGLETON_VK_OBJECT(class_name) MANAGED_SINGLETON_OBJECT(class_name, VkObjectKey)
 #define MANAGED_VK_OBJECT(class_name) MANAGED_OBJECT(class_name, VkObjectKey)
 
-template <typename H, typename I>
+enum VkObjectType {
+    VK_OBJECT_DEVICE = 0,
+    VK_OBJECT_QUEUES = 1,
+    VK_OBJECT_COMMAND_POOLS = 2,
+    VK_OBJECT_RENDERING = 3,
+};
+
 class IVkObject : public common::IObject {
    private:
-    const VkObjectType vk_type_;  // Maybe not necessary?
+    const VkObjectType type_;
 
    protected:
-    H vk_handle_;  // VkHandle
-    I vk_info_;    // create_info, allocate_info or so on
-
-    IVkObject(const VkObjectType vk_type) : common::IObject(), vk_type_(vk_type), vk_handle_(VK_NULL_HANDLE) {}
+    IVkObject(const VkObjectType type) : common::IObject(), type_(type) {}
 
    public:
     IVkObject(const IVkObject &) = delete;
     IVkObject &operator=(const IVkObject &) = delete;
 
-    H get_vk_handle() { return vk_handle_; }
-    VkObjectType get_vk_type() { return vk_type_; }
+    VkObjectType get_type() { return type_; }
+
+    virtual AeResult pre_update() { return AE_SUCCESS; }
+    virtual AeResult update() { return AE_SUCCESS; }
+    virtual AeResult post_update() { return AE_SUCCESS; }
 };
 
-class Instance : public IVkObject<VkInstance, VkInstanceCreateInfo> {
-    MANAGED_SINGLETON_VK_OBJECT(Instance)
-
-   public:
-    VkResult initialize_vk(VkInstanceCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class PhysicalDevice : public IVkObject<VkPhysicalDevice, VkPhysicalDeviceProperties2> {
-    MANAGED_SINGLETON_VK_OBJECT(PhysicalDevice)
-
-   private:
-    VkPhysicalDeviceFeatures2 physical_device_features2_;
-    std::shared_ptr<Instance> instance_;
-
-   public:
-    VkResult initialize_vk() { return VK_SUCCESS; }
-};
-
-class Device : public IVkObject<VkDevice, VkDeviceCreateInfo> {
+class Queues;
+class Rendering;
+class Device : public IVkObject {
     MANAGED_SINGLETON_VK_OBJECT(Device)
 
    private:
-    std::shared_ptr<PhysicalDevice> physical_device_;
+    DeviceInfo device_info_{};
+
+    std::shared_ptr<Queues> queues_{nullptr};
+    AeResult initialize_queues();
+
+    std::shared_ptr<Rendering> rendering_{nullptr};
+    AeResult initialize_rendering(const RenderingInfo &rendering_info);
+
+    AeResult initialize_command_pools();
+
+    uint32_t instance_api_version_{0};
+    VkInstance instance_{VK_NULL_HANDLE};
+    AeResult create_instance();
+    AeResult check_support_instance_layers(std::vector<const char *> &layers);
+    AeResult check_support_instance_extensions(std::vector<const char *> &extensions);
+
+    VkDebugUtilsMessengerEXT debug_messenger_{VK_NULL_HANDLE};
+    PFN_vkCreateDebugUtilsMessengerEXT fpCreateDebugUtilsMessengerEXT;
+    PFN_vkDestroyDebugUtilsMessengerEXT fpDestroyDebugUtilsMessengerEXT;
+    AeResult create_debug_messenger_callback();
+
+    VkPhysicalDevice physical_device_{VK_NULL_HANDLE};
+    VkPhysicalDeviceProperties2 phy_dev_props2_{};
+    VkPhysicalDeviceFeatures2 phy_dev_feats2_{};
+    AeResult pick_physical_device();
+
+    VkDevice device_{VK_NULL_HANDLE};
+    AeResult create_device();
+    AeResult check_support_device_extensions(std::vector<const char *> &extensions);
 
    public:
-    VkResult initialize_vk() { return VK_SUCCESS; }
+    AeResult initialize(const InitializeInfo &initialize_info);
+    const VkInstance get_VkInstance();
+    const VkPhysicalDevice get_VkPhysicalDevice();
+    const VkDevice get_VkDevice();
+
+    static VkBool32 debug_messenger_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                                             VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+                                             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData, void *pUserData);
 };
 
-template <typename H, typename I>
-class IDviceObject : public IVkObject<H, I> {
-   protected:
+enum QueueType {
+    QUEUE_MAIN,
+    QUEUE_PRESENT,
+    QUEUE_SUB,
+};
+
+struct Queue {
+    uint32_t family_index_{(std::numeric_limits<uint32_t>::max)()};
+    uint32_t queue_index_{0};
+    VkQueue queue_{VK_NULL_HANDLE};
+};
+
+class Queues : public IVkObject {
+    MANAGED_SINGLETON_VK_OBJECT(Queues)
+
+   private:
+    std::shared_ptr<Device> device_{nullptr};
+
+    std::vector<VkQueueFamilyProperties2> queue_family_props_;
+    std::vector<VkBool32> queue_family_support_surfaces_;
+
+    const VkQueueFlags queue_flags_{VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT};
+
+    Queue main_queue_;
+    Queue present_queue_;  // It could be the same with main_queue_ based on the GPU.
+    Queue sub_queue_;      // If the process could work individually without main_queue_;
+
+    PFN_vkGetPhysicalDeviceSurfaceSupportKHR fpGetPhysicalDeviceSurfaceSupportKHR;
+
+   public:
+    AeResult initialize(const std::shared_ptr<Device> &device);
+    AeResult get_device_queue_create_infos(std::vector<VkDeviceQueueCreateInfo> &queue_cis);
+    AeResult set_queues();
+    const Queue *get_queue(QueueType type);
+};
+
+enum CommandType {
+    COMMAND_MAIN,
+    COMMAND_PRESENT,
+    COMMAND_SUB,
+};
+
+struct CommandGroup {
+    uint32_t family_index_{0};
+    VkCommandPool command_pool_{VK_NULL_HANDLE};
+    VkCommandBuffer command_buffer_{VK_NULL_HANDLE};
+};
+
+class CommandPools : public IVkObject {
+    MANAGED_SINGLETON_VK_OBJECT(CommandPools)
+
+   private:
     std::shared_ptr<Device> device_;
 
-    IDviceObject(const VkObjectType type) : IVkObject(type) {}
-};
-
-class Queue : public IDviceObject<VkQueue, VkDeviceQueueCreateInfo> {
-    MANAGED_VK_OBJECT(Queue)
+    CommandGroup main_cmd_{};
+    CommandGroup present_cmd_{};
+    CommandGroup sub_cmd_{};
 
    public:
-    VkResult initialize_vk(VkDeviceQueueCreateInfo &vk_info) { return VK_SUCCESS; }
+    AeResult initialize(const std::shared_ptr<Device> &device);
+    const VkCommandBuffer get_command_buffer(CommandType type);
 };
 
-class Semaphore : public IDviceObject<VkSemaphore, VkSemaphoreCreateInfo> {
+class Framebuffer : public IVkObject {
+    MANAGED_VK_OBJECT(Framebuffer)
+
    private:
-    Semaphore() : IDviceObject(VK_OBJECT_TYPE_SEMAPHORE) {}
-
-   public:
-    VkResult initialize_vk(VkSemaphoreCreateInfo &vk_info) { return VK_SUCCESS; }
+    VkFramebuffer frambuffer_;
+    // swapchain, depth, stencil;
 };
 
-class CommandBuffer : public IDviceObject<VkCommandBuffer, VkCommandBufferAllocateInfo> {
-   public:
-    CommandBuffer() : IDviceObject(VK_OBJECT_TYPE_COMMAND_BUFFER) {}
+class RenderPass : public IVkObject {
+    MANAGED_VK_OBJECT(RenderPass)
 
-    VkResult initialize_vk(VkCommandBufferAllocateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class Fence : public IDviceObject<VkFence, VkFenceCreateInfo> {
-   public:
-    Fence() : IDviceObject(VK_OBJECT_TYPE_FENCE) {}
-
-    VkResult initialize_vk(VkFenceCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class DeviceMemory : public IDviceObject<VkDeviceMemory, VkMemoryAllocateInfo> {
-   public:
-    DeviceMemory() : IDviceObject(VK_OBJECT_TYPE_DEVICE_MEMORY) {}
-
-    VkResult initialize_vk(VkMemoryAllocateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class Buffer : public IDviceObject<VkBuffer, VkBufferCreateInfo> {
-    MANAGED_VK_OBJECT(Buffer)
-
-   public:
-    VkResult initialize_vk(VkBufferCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class Image : public IDviceObject<VkImage, VkImageCreateInfo> {
-   public:
-    Image() : IDviceObject(VK_OBJECT_TYPE_IMAGE) {}
-
-    VkResult initialize_vk(VkImageCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class Event : public IDviceObject<VkEvent, VkEventCreateInfo> {
-   public:
-    Event() : IDviceObject(VK_OBJECT_TYPE_EVENT) {}
-
-    VkResult initialize_vk(VkEventCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class QueryPool : public IDviceObject<VkQueryPool, VkQueryPoolCreateInfo> {
    private:
-    std::vector<std::shared_ptr<Queue>> queue_list_;
-
-   public:
-    QueryPool() : IDviceObject(VK_OBJECT_TYPE_QUERY_POOL) {}
-
-    VkResult initialize_vk(VkEventCreateInfo &vk_info) { return VK_SUCCESS; }
+    VkRenderPass render_pass_;
+    // DrawCommand draw_command_;
 };
 
-class BufferView : public IDviceObject<VkBufferView, VkBufferViewCreateInfo> {
-   public:
-    BufferView() : IDviceObject(VK_OBJECT_TYPE_BUFFER_VIEW) {}
-
-    VkResult initialize_vk(VkBufferViewCreateInfo &vk_info) { return VK_SUCCESS; }
+class IPipeline : public IVkObject {
+   protected:
+    VkPipeline pipeline_;
+    std::vector<VkShaderModule> shader_modules_;
+    // std::vector<ShaderBindingSlot> shader_data_slots_;
 };
 
-class ImageView : public IDviceObject<VkImageView, VkImageViewCreateInfo> {
-   public:
-    ImageView() : IDviceObject(VK_OBJECT_TYPE_IMAGE_VIEW) {}
+class ComputePipeline : public IPipeline {
+    MANAGED_VK_OBJECT(ComputePipeline)
 
-    VkResult initialize_vk(VkImageViewCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class ShaderModule : public IDviceObject<VkShaderModule, VkShaderModuleCreateInfo> {
-   public:
-    ShaderModule() : IDviceObject(VK_OBJECT_TYPE_SHADER_MODULE) {}
-
-    VkResult initialize_vk(VkShaderModuleCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class PipelineCache : public IDviceObject<VkPipelineCache, VkPipelineCacheCreateInfo> {
-   public:
-    PipelineCache() : IDviceObject(VK_OBJECT_TYPE_PIPELINE_CACHE) {}
-
-    VkResult initialize_vk(VkPipelineCacheCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class PipelineLayout : public IDviceObject<VkPipelineLayout, VkPipelineLayoutCreateInfo> {
-   public:
-    PipelineLayout() : IDviceObject(VK_OBJECT_TYPE_PIPELINE_LAYOUT) {}
-
-    VkResult initialize_vk(VkPipelineLayoutCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class RenderPass : public IDviceObject<VkRenderPass, VkRenderPassCreateInfo> {
-   public:
-    RenderPass() : IDviceObject(VK_OBJECT_TYPE_RENDER_PASS) {}
-
-    VkResult initialize_vk(VkRenderPassCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class ComputePipeline : public IDviceObject<VkPipeline, VkComputePipelineCreateInfo> {
-   public:
-    ComputePipeline() : IDviceObject(VK_OBJECT_TYPE_PIPELINE) {}
-
-    VkResult initialize_vk(VkComputePipelineCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class GraphicsPipeline : public IDviceObject<VkPipeline, VkGraphicsPipelineCreateInfo> {
-   public:
-    GraphicsPipeline() : IDviceObject(VK_OBJECT_TYPE_PIPELINE) {}
-
-    VkResult initialize_vk(VkGraphicsPipelineCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class RayTracingPipeline : public IDviceObject<VkPipeline, VkRayTracingPipelineCreateInfoKHR> {
-   public:
-    RayTracingPipeline() : IDviceObject(VK_OBJECT_TYPE_PIPELINE) {}
-
-    VkResult initialize_vk(VkRayTracingPipelineCreateInfoKHR &vk_info) { return VK_SUCCESS; }
-};
-
-class DescriptorSetLayout : public IDviceObject<VkDescriptorSetLayout, VkDescriptorSetLayoutCreateInfo> {
-   public:
-    DescriptorSetLayout() : IDviceObject(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT) {}
-
-    VkResult initialize_vk(VkDescriptorSetLayoutCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class Sampler : public IDviceObject<VkSampler, VkSamplerCreateInfo> {
-   public:
-    Sampler() : IDviceObject(VK_OBJECT_TYPE_SAMPLER) {}
-
-    VkResult initialize_vk(VkSamplerCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class DescriptorSet;
-class DescriptorPool : public IDviceObject<VkDescriptorPool, VkDescriptorPoolCreateInfo> {
    private:
-    std::vector<std::shared_ptr<DescriptorSet>> descriptor_set_list_;
-
-   public:
-    DescriptorPool() : IDviceObject(VK_OBJECT_TYPE_DESCRIPTOR_POOL) {}
-
-    VkResult initialize_vk(VkDescriptorPoolCreateInfo &vk_info) { return VK_SUCCESS; }
 };
 
-class DescriptorSet : public IDviceObject<VkDescriptorSet, VkDescriptorSetAllocateInfo> {
-   public:
-    DescriptorSet() : IDviceObject(VK_OBJECT_TYPE_DESCRIPTOR_SET) {}
+class GraphicsPipeline : public IPipeline {
+    MANAGED_VK_OBJECT(GraphicsPipeline)
 
-    VkResult initialize_vk(VkDescriptorSetAllocateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class Framebuffer : public IDviceObject<VkFramebuffer, VkFramebufferCreateInfo> {
-   public:
-    Framebuffer() : IDviceObject(VK_OBJECT_TYPE_FRAMEBUFFER) {}
-
-    VkResult initialize_vk(VkFramebufferCreateInfo &vk_info) { return VK_SUCCESS; }
-};
-
-class CommandPool : public IDviceObject<VkCommandPool, VkCommandPoolCreateInfo> {
    private:
-    std::vector<std::shared_ptr<CommandBuffer>> command_buffer_list_;
-
-   public:
-    CommandPool() : IDviceObject(VK_OBJECT_TYPE_COMMAND_POOL) {}
-
-    VkResult initialize_vk(VkCommandPoolCreateInfo &vk_info) { return VK_SUCCESS; }
 };
 
-class SamplerYcbcrConversion : public IDviceObject<VkSamplerYcbcrConversion, VkSamplerYcbcrConversionCreateInfo> {
-   public:
-    SamplerYcbcrConversion() : IDviceObject(VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION) {}
 
-    VkResult initialize_vk(VkSamplerYcbcrConversionCreateInfo &vk_info) { return VK_SUCCESS; }
+enum RenderingLayerList {
+    RENDERING_LAYER_PRESENT = 0,
+    RENDERING_LAYER_UI = 1,
+    RENDERING_LAYER_POSTPROCESSING = 2,
+    RENDERING_LAYER_MAIN = 3,
+    RENDERING_LAYER_OBJECTS = 4,
+    RENDERING_LAYER_MAX = 5,
 };
 
-class DescriptorUpdateTemplate : public IDviceObject<VkDescriptorUpdateTemplate, VkDescriptorUpdateTemplateCreateInfo> {
-   public:
-    DescriptorUpdateTemplate() : IDviceObject(VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE) {}
+class Rendering : public IVkObject {
+    MANAGED_SINGLETON_VK_OBJECT(Rendering)
 
-    VkResult initialize_vk(VkDescriptorUpdateTemplateCreateInfo &vk_info) { return VK_SUCCESS; }
+   private:
+    std::shared_ptr<Device> device_;
+    RenderingInfo rendering_info_;
+
+    // present
+    VkSurfaceKHR surface_{VK_NULL_HANDLE};
+    VkSwapchainKHR swapchain_{VK_NULL_HANDLE};
+    VkSwapchainKHR old_swapchain_{VK_NULL_HANDLE};
+    const uint32_t desired_swapchain_image_count_{3};
+    std::vector<VkImage> swapchain_images_;
+    uint32_t present_index_{0};
+
+    VkSurfaceCapabilities2KHR surface_capabilities_{};
+    PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR fpGetPhysicalDeviceSurfaceCapabilities2KHR;
+
+    std::vector<VkSurfaceFormat2KHR> surface_formats_;
+    PFN_vkGetPhysicalDeviceSurfaceFormats2KHR fpGetPhysicalDeviceSurfaceFormats2KHR;
+
+    std::vector<VkPresentModeKHR> present_modes_;
+    PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT fpGetPhysicalDeviceSurfacePresentModes2EXT;
+
+    PFN_vkCreateSwapchainKHR fpCreateSwapchainKHR;
+    PFN_vkDestroySwapchainKHR fpDestroySwapchainKHR;
+    PFN_vkGetSwapchainImagesKHR fpGetSwapchainImagesKHR;
+    PFN_vkAcquireNextImage2KHR fpAcquireNextImage2KHR;
+    PFN_vkQueuePresentKHR fpQueuePresentKHR;
+
+    AeResult create_surface();
+    AeResult get_surface_property();
+    AeResult create_swapchain();
+
+    struct RenderingLayer {
+        AE_RENDER_TYPE render_Type;
+        std::shared_ptr<Framebuffer> frambuffer_;
+        std::vector<std::shared_ptr<RenderPass>> render_passes_;
+        std::vector<std::shared_ptr<GraphicsPipeline>> graphics_pipelines_;
+    };
+    std::vector<RenderingLayer> rendering_layers_;
+
+   public:
+    AeResult initialize_for_VkInstance(const std::shared_ptr<Device> &device, const RenderingInfo &rendering_info);
+    AeResult initialize_for_VkDevice();
+    VkSurfaceKHR get_VkSurfaceKHR();
 };
 
-#ifdef VK_USE_PLATFORM_WIN32_KHR
-class Surface : public IDviceObject<VkSurfaceKHR, VkWin32SurfaceCreateInfoKHR> {
-    MANAGED_SINGLETON_OBJECT(Surface, VkObjectKey)
+class Resources : public IVkObject {};
 
-   public:
-    VkResult initialize_vk(VkWin32SurfaceCreateInfoKHR &vk_info) { return VK_SUCCESS; }
-};
-#endif  // VK_USE_PLATFORM_WIN32_KHR
+/*
+class Thread : public IGPUObject {};
 
-class Swapchain : public IDviceObject<VkSwapchainKHR, VkSwapchainCreateInfoKHR> {
-   public:
-    Swapchain() : IDviceObject(VK_OBJECT_TYPE_SWAPCHAIN_KHR) {}
-
-    VkResult initialize_vk(VkSwapchainCreateInfoKHR &vk_info) { return VK_SUCCESS; }
+class Memory : public IGPUObject {
+   protected:
 };
 
-class Display : public IDviceObject<VkDisplayKHR, VkDisplayEventInfoEXT> {
-   public:
-    Display() : IDviceObject(VK_OBJECT_TYPE_DISPLAY_KHR) {}
+class Model : public Memory {
+    MANAGED_GPU_OBJECT(Model)
 
-    VkResult initialize_vk(VkDisplayEventInfoEXT &vk_info) { return VK_SUCCESS; }
-};
-
-class DisplayMode : public IDviceObject<VkDisplayModeKHR, VkDisplayModePropertiesKHR> {
-   public:
-    DisplayMode() : IDviceObject(VK_OBJECT_TYPE_DISPLAY_MODE_KHR) {}
-
-    VkResult initialize_vk(VkDisplayModePropertiesKHR &vk_info) { return VK_SUCCESS; }
-};
-
-class DebugReportCallback : public IDviceObject<VkDebugReportCallbackEXT, VkDebugReportCallbackCreateInfoEXT> {
-    MANAGED_SINGLETON_OBJECT(DebugReportCallback, VkObjectKey)
+   private:
+    VkBuffer buffer_;
+    ModelInfo model_info_;
 
    public:
-    VkResult initialize_vk(VkDebugReportCallbackCreateInfoEXT &vk_info) { return VK_SUCCESS; }
+    virtual AeResult initialize(ModelInfo &model_info);
+    virtual AeResult pre_update() { return AE_SUCCESS; }
+    virtual AeResult post_update() { return AE_SUCCESS; }
 };
 
-class DebugUtilsMessenger : public IDviceObject<VkDebugUtilsMessengerEXT, VkDebugUtilsMessengerCreateInfoEXT> {
-   public:
-    DebugUtilsMessenger() : IDviceObject(VK_OBJECT_TYPE_DEBUG_UTILS_MESSENGER_EXT) {}
 
-    VkResult initialize_vk(VkDebugUtilsMessengerCreateInfoEXT &vk_info) { return VK_SUCCESS; }
+class Texture : public Memory {
+   private:
+    VkImage image_;
+    VkImageView image_view_;
 };
 
-class AccelerationStructure : public IDviceObject<VkAccelerationStructureKHR, VkAccelerationStructureCreateInfoKHR> {
-   public:
-    AccelerationStructure() : IDviceObject(VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR) {}
 
-    VkResult initialize_vk(VkAccelerationStructureCreateInfoKHR &vk_info) { return VK_SUCCESS; }
+class Computer : public IPipeline {
+   private:
+    // computer pipeline
 };
+*/
+#define MANAGE_GPU_OBJECT(class_name) MANAGE_OBJECT(Manager, ID, class_name)
 
-class ValidationCache : public IDviceObject<VkValidationCacheEXT, VkValidationCacheCreateInfoEXT> {
-   public:
-    ValidationCache() : IDviceObject(VK_OBJECT_TYPE_VALIDATION_CACHE_EXT) {}
-
-    VkResult initialize_vk(VkValidationCacheCreateInfoEXT &vk_info) { return VK_SUCCESS; }
-};
-
-class DeferredOperation : public IDviceObject<VkDeferredOperationKHR, VkDeferredOperationKHR> {
-   public:
-    DeferredOperation() : IDviceObject(VK_OBJECT_TYPE_DEFERRED_OPERATION_KHR) {}
-
-    VkResult initialize_vk(VkDeferredOperationKHR &vk_info) { return VK_SUCCESS; }
-};
-
-class PrivateDataSlot : public IDviceObject<VkPrivateDataSlotEXT, VkPrivateDataSlotCreateInfoEXT> {
-   public:
-    PrivateDataSlot() : IDviceObject(VK_OBJECT_TYPE_PRIVATE_DATA_SLOT_EXT) {}
-
-    VkResult initialize_vk(VkPrivateDataSlotCreateInfoEXT &vk_info) { return VK_SUCCESS; }
-};
-
-#define MANAGE_VK_OBJECT(class_name) MANAGE_OBJECT(Manager, ID, class_name)
-
-
+// TODO: It should have a memory allocator.The memory allocator will create a block empty memory.
+//       When a manager needs a new object, it will require a size memory from the memory allocator,
+//       and then convert it to the target class. When a object is released, This block memory will
+//       be set unused in the memory allocator. This unused memory could be used again.
 class Manager {
     INITIALIZE_MANAGER(Manager, VkObjectKey)
-    MANAGE_VK_OBJECT(Buffer)
+    MANAGE_GPU_OBJECT(Framebuffer)
+    MANAGE_GPU_OBJECT(RenderPass)
+    MANAGE_GPU_OBJECT(GraphicsPipeline)
+
+   public:
+    AeResult pre_update();
+    AeResult update();
+    AeResult post_update();
 };
-#define VK_MGR vk::Manager::get_instance()
+#define MGR Manager::get_instance()
 
 END_NAMESPACE(vk)
 END_NAMESPACE(gpu)
 END_NAMESPACE(ae)
 
-#endif  // AE_GPU_VULKAN_OBJECTS_H
+#endif  // AE_GPU_VK_OBJECTS_H
