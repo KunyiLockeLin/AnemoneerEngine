@@ -1,5 +1,5 @@
-#ifndef AE_GPU_VK_OBJECTS_H
-#define AE_GPU_VK_OBJECTS_H
+#ifndef AE_GPU_VULKAN_H
+#define AE_GPU_VULKAN_H
 
 #include <unordered_map>
 #include <memory>
@@ -96,9 +96,10 @@ class Device : public IVkObject {
 };
 
 enum QueueType {
-    QUEUE_MAIN,
-    QUEUE_PRESENT,
-    QUEUE_SUB,
+    QUEUE_MAIN = 0,
+    QUEUE_PRESENT = 1,  // It could be the same with main_queue_ based on the GPU.
+    QUEUE_SUB = 2,      // If the process could work individually without main_queue_.
+    QUEUE_COUNT = 3,
 };
 
 struct Queue {
@@ -115,12 +116,9 @@ class Queues : public IVkObject {
 
     std::vector<VkQueueFamilyProperties2> queue_family_props_;
     std::vector<VkBool32> queue_family_support_surfaces_;
-
     const VkQueueFlags queue_flags_{VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT};
 
-    Queue main_queue_;
-    Queue present_queue_;  // It could be the same with main_queue_ based on the GPU.
-    Queue sub_queue_;      // If the process could work individually without main_queue_;
+    std::array<Queue, QUEUE_COUNT> queues_;
 
     PFN_vkGetPhysicalDeviceSurfaceSupportKHR fpGetPhysicalDeviceSurfaceSupportKHR;
 
@@ -132,15 +130,33 @@ class Queues : public IVkObject {
 };
 
 enum CommandType {
-    COMMAND_MAIN,
-    COMMAND_PRESENT,
-    COMMAND_SUB,
+    COMMAND_MAIN = 0,
+    COMMAND_PRESENT = 1,
+    COMMAND_SUB = 2,
+    COMMAND_COUNT = 3,
 };
 
-struct CommandGroup {
+enum MainCommandType {
+    MAIN_COMMAND_RENDERING = 0,
+    MAIN_COMMAND_UPDATE = 1,
+    MAIN_COMMAND_SUB = 2,
+    MAIN_COMMAND_COUNT = 3,
+};
+
+enum PresentCommandType {
+    PRESENT_COMMAND_MAIN = 0,
+    PRESENT_COMMAND_COUNT = 1,
+};
+
+enum SubCommandType {
+    SUB_COMMAND_MAIN = 0,
+    SUB_COMMAND_COUNT = 1,
+};
+
+struct Command {
     uint32_t family_index_{0};
-    VkCommandPool command_pool_{VK_NULL_HANDLE};
-    VkCommandBuffer command_buffer_{VK_NULL_HANDLE};
+    VkCommandPool cmd_pool_{VK_NULL_HANDLE};
+    std::vector<VkCommandBuffer> cmd_bufs_;
 };
 
 class CommandPools : public IVkObject {
@@ -149,29 +165,12 @@ class CommandPools : public IVkObject {
    private:
     std::shared_ptr<Device> device_;
 
-    CommandGroup main_cmd_{};
-    CommandGroup present_cmd_{};
-    CommandGroup sub_cmd_{};
+    std::array<Command, COMMAND_COUNT> cmds_;
+    std::array<uint32_t, COMMAND_COUNT> cmd_buf_counts_{MAIN_COMMAND_COUNT, PRESENT_COMMAND_COUNT, SUB_COMMAND_COUNT};
 
    public:
     AeResult initialize(const std::shared_ptr<Device> &device);
-    const VkCommandBuffer get_command_buffer(CommandType type);
-};
-
-class Framebuffer : public IVkObject {
-    MANAGED_VK_OBJECT(Framebuffer)
-
-   private:
-    VkFramebuffer frambuffer_;
-    // swapchain, depth, stencil;
-};
-
-class RenderPass : public IVkObject {
-    MANAGED_VK_OBJECT(RenderPass)
-
-   private:
-    VkRenderPass render_pass_;
-    // DrawCommand draw_command_;
+    const VkCommandBuffer get_command_buffer(CommandType type, uint32_t index);
 };
 
 class IPipeline : public IVkObject {
@@ -200,7 +199,7 @@ class GraphicsPipeline : public IPipeline {
     VkShaderModule fragment_{VK_NULL_HANDLE};
 
    public:
-    bool compare_drawing_info();
+    bool compare_drawing_info(const DrawingInfo &drawing_info);
 };
 
 enum RenderingLayerList {
@@ -210,6 +209,22 @@ enum RenderingLayerList {
     RENDERING_LAYER_MAIN = 3,
     RENDERING_LAYER_OBJECTS = 4,
     RENDERING_LAYER_MAX = 5,
+};
+
+class Framebuffer : public IVkObject {
+    MANAGED_VK_OBJECT(Framebuffer)
+
+   private:
+    VkFramebuffer frambuffer_;
+    // swapchain, depth, stencil;
+};
+
+class RenderPass : public IVkObject {
+    MANAGED_VK_OBJECT(RenderPass)
+
+   private:
+    VkRenderPass render_pass_;
+    // DrawCommand draw_command_;
 };
 
 struct RenderingLayer {
@@ -325,4 +340,4 @@ END_NAMESPACE(vk)
 END_NAMESPACE(gpu)
 END_NAMESPACE(ae)
 
-#endif  // AE_GPU_VK_OBJECTS_H
+#endif  // AE_GPU_VULKAN_H

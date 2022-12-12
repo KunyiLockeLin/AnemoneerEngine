@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "vulkan_objects.h"
+#include "vulkan.h"
 #include "ui.h"
 
 BEGIN_NAMESPACE(ae)
@@ -429,76 +429,80 @@ AeResult Queues::get_device_queue_create_infos(std::vector<VkDeviceQueueCreateIn
         ASSERT_VK_SUCCESS(fpGetPhysicalDeviceSurfaceSupportKHR(physical_device, i, surface, &queue_family_support_surfaces_[i]));
     }
 
+    auto& main_queue = queues_[QUEUE_MAIN];
+    auto& present_queue = queues_[QUEUE_PRESENT];
+    auto& sub_queue = queues_[QUEUE_SUB];
+
     for (uint32_t i = 0; i < count; ++i) {
         if ((queue_family_props_[i].queueFamilyProperties.queueFlags & queue_flags_) == queue_flags_) {
             uint32_t queue_index = 0;
 
-            if (present_queue_.family_index_ == (std::numeric_limits<uint32_t>::max)() && queue_family_support_surfaces_[i]) {
-                present_queue_.family_index_ = i;
-                present_queue_.queue_index_ = queue_index;
+            if (present_queue.family_index_ == (std::numeric_limits<uint32_t>::max)() && queue_family_support_surfaces_[i]) {
+                present_queue.family_index_ = i;
+                present_queue.queue_index_ = queue_index;
 
-                main_queue_.family_index_ = i;
-                main_queue_.queue_index_ = queue_index;
+                main_queue.family_index_ = i;
+                main_queue.queue_index_ = queue_index;
                 ++queue_index;
 
-                sub_queue_.family_index_ = i;
-                sub_queue_.queue_index_ = queue_index;
+                sub_queue.family_index_ = i;
+                sub_queue.queue_index_ = queue_index;
                 ++queue_index;
                 break;
             }
 
-            if (main_queue_.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
-                main_queue_.family_index_ = i;
-                main_queue_.queue_index_ = queue_index;
+            if (main_queue.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
+                main_queue.family_index_ = i;
+                main_queue.queue_index_ = queue_index;
                 ++queue_index;
 
-                sub_queue_.family_index_ = i;
-                sub_queue_.queue_index_ = queue_index;
+                sub_queue.family_index_ = i;
+                sub_queue.queue_index_ = queue_index;
                 ++queue_index;
             }
         }
     }
 
-    if (present_queue_.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
+    if (present_queue.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
         for (uint32_t i = 0; i < count; ++i) {
             if (queue_family_support_surfaces_[i]) {
-                present_queue_.family_index_ = i;
-                present_queue_.queue_index_ = 0;
+                present_queue.family_index_ = i;
+                present_queue.queue_index_ = 0;
                 break;
             }
         }
     }
 
-    if (main_queue_.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
+    if (main_queue.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
         LOG("VkPhysicalDevice doesn't support main_queue_.");
         return AE_ERROR_UNKNOWN;
     }
-    if (present_queue_.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
+    if (present_queue.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
         LOG("VkPhysicalDevice doesn't support present_queue_.");
         return AE_ERROR_UNKNOWN;
     }
-    if (sub_queue_.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
+    if (sub_queue.family_index_ == (std::numeric_limits<uint32_t>::max)()) {
         LOG("VkPhysicalDevice doesn't support sub_queue_.");
         return AE_ERROR_UNKNOWN;
     }
 
     VkDeviceQueueCreateInfo queue_ci = {};
     queue_ci.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queue_ci.queueFamilyIndex = sub_queue_.family_index_;
-    queue_ci.queueCount = sub_queue_.queue_index_ + 1;
+    queue_ci.queueFamilyIndex = sub_queue.family_index_;
+    queue_ci.queueCount = sub_queue.queue_index_ + 1;
     queue_ci.pQueuePriorities = queue_priorities.data();
     queue_cis.emplace_back(queue_ci);
 
-    if (present_queue_.family_index_ != queue_ci.queueFamilyIndex) {
-        queue_ci.queueFamilyIndex = present_queue_.family_index_;
-        queue_ci.queueCount = present_queue_.queue_index_ + 1;
+    if (present_queue.family_index_ != queue_ci.queueFamilyIndex) {
+        queue_ci.queueFamilyIndex = present_queue.family_index_;
+        queue_ci.queueCount = present_queue.queue_index_ + 1;
         queue_cis.emplace_back(queue_ci);
-    } else if (present_queue_.queue_index_ >= queue_cis[0].queueCount) {
-        queue_cis[0].queueCount = present_queue_.queue_index_ + 1;
+    } else if (present_queue.queue_index_ >= queue_cis[0].queueCount) {
+        queue_cis[0].queueCount = present_queue.queue_index_ + 1;
     }
 
-    if (sub_queue_.queue_index_ >= queue_cis[0].queueCount) {
-        queue_cis[0].queueCount = sub_queue_.queue_index_ + 1;
+    if (sub_queue.queue_index_ >= queue_cis[0].queueCount) {
+        queue_cis[0].queueCount = sub_queue.queue_index_ + 1;
     }
     return AE_SUCCESS;
 }
@@ -509,36 +513,20 @@ AeResult Queues::set_queues() {
 
     VkDeviceQueueInfo2 queue_info = {};
     queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2;
-    queue_info.queueFamilyIndex = main_queue_.family_index_;
-    queue_info.queueIndex = main_queue_.queue_index_;
-    vkGetDeviceQueue2(device, &queue_info, &main_queue_.queue_);
-    ASSERT_VK_NULL_HANDLE(main_queue_.queue_);
 
-    queue_info.queueFamilyIndex = present_queue_.family_index_;
-    queue_info.queueIndex = present_queue_.queue_index_;
-    vkGetDeviceQueue2(device, &queue_info, &present_queue_.queue_);
-    ASSERT_VK_NULL_HANDLE(present_queue_.queue_);
-
-    queue_info.queueFamilyIndex = sub_queue_.family_index_;
-    queue_info.queueIndex = sub_queue_.queue_index_;
-    vkGetDeviceQueue2(device, &queue_info, &sub_queue_.queue_);
-    ASSERT_VK_NULL_HANDLE(sub_queue_.queue_);
+    for (auto& queue : queues_) {
+        queue_info.queueFamilyIndex = queue.family_index_;
+        queue_info.queueIndex = queue.queue_index_;
+        vkGetDeviceQueue2(device, &queue_info, &queue.queue_);
+        ASSERT_VK_NULL_HANDLE(queue.queue_);
+    }
 
     return AE_SUCCESS;
 }
 
 const Queue* Queues::get_queue(QueueType type) {
-    switch (type) {
-        case QUEUE_MAIN:
-            return &main_queue_;
-        case QUEUE_PRESENT:
-            return &present_queue_;
-        case QUEUE_SUB:
-            return &sub_queue_;
-        default:
-            return nullptr;
-    }
-    return nullptr;
+    if (type >= QUEUE_COUNT) return nullptr;
+    return &queues_[type];
 }
 
 CommandPools::CommandPools(const VkObjectKey& key) : IVkObject(VK_OBJECT_COMMAND_POOLS) {}
@@ -547,61 +535,53 @@ AeResult CommandPools::initialize(const std::shared_ptr<Device>& device) {
     device_ = device;
     VkDevice vk_device = device_->get_VkDevice();
 
+    ASSERT(QUEUE_COUNT == COMMAND_COUNT, "");
+
     std::shared_ptr<Queues> queues;
     ASSERT_SUCCESS(MGR.get<Queues>(queues));
-    const auto* main_queue = queues->get_queue(QUEUE_MAIN);
-    ASSERT_NULL(main_queue);
-    main_cmd_.family_index_ = main_queue->family_index_;
-    const auto* present_queue = queues->get_queue(QUEUE_PRESENT);
-    ASSERT_NULL(present_queue);
-    present_cmd_.family_index_ = present_queue->family_index_;
-    const auto* sub_queue = queues->get_queue(QUEUE_SUB);
-    ASSERT_NULL(sub_queue);
-    sub_cmd_.family_index_ = sub_queue->family_index_;
 
     VkCommandPoolCreateInfo cmd_pool_ci = {};
     cmd_pool_ci.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     cmd_pool_ci.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    cmd_pool_ci.queueFamilyIndex = main_cmd_.family_index_;
-    ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &main_cmd_.command_pool_));
 
     VkCommandBufferAllocateInfo cmd_ai = {};
     cmd_ai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     cmd_ai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    cmd_ai.commandBufferCount = 1;
-    cmd_ai.commandPool = main_cmd_.command_pool_;
-    ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, &main_cmd_.command_buffer_));
 
-    if (present_queue->family_index_ == main_queue->family_index_) {
-        present_cmd_.command_pool_ = main_cmd_.command_pool_;
-    } else {
-        cmd_pool_ci.queueFamilyIndex = present_cmd_.family_index_;
-        ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &present_cmd_.command_pool_));
+    uint32_t main_queue_family_index = 0;
+    VkCommandPool main_cmd_pool = VK_NULL_HANDLE;
+
+    for (uint32_t i = 0; i < COMMAND_COUNT; ++i) {
+        const auto* queue = queues->get_queue(static_cast<QueueType>(i));
+        ASSERT_NULL(queue);
+
+        auto& cmd = cmds_[i];
+        cmd.family_index_ = queue->family_index_;
+
+        cmd_pool_ci.queueFamilyIndex = cmd.family_index_;
+        if (i == QUEUE_PRESENT && queue->family_index_ == main_queue_family_index) {
+            cmd.cmd_pool_ = main_cmd_pool;
+        } else {
+            ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &cmd.cmd_pool_));
+        }
+
+        if (i == QUEUE_MAIN) {
+            main_queue_family_index = queue->family_index_;
+            main_cmd_pool = cmd.cmd_pool_;
+        }
+
+        cmd.cmd_bufs_.resize(cmd_buf_counts_[i]);
+        cmd_ai.commandBufferCount = cmd_buf_counts_[i];
+        cmd_ai.commandPool = cmd.cmd_pool_;
+        ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, cmd.cmd_bufs_.data()));
     }
-    cmd_ai.commandPool = present_cmd_.command_pool_;
-    ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, &present_cmd_.command_buffer_));
-
-    cmd_pool_ci.queueFamilyIndex = sub_cmd_.family_index_;
-    ASSERT_VK_SUCCESS(vkCreateCommandPool(vk_device, &cmd_pool_ci, NULL, &sub_cmd_.command_pool_));
-
-    cmd_ai.commandPool = sub_cmd_.command_pool_;
-    ASSERT_VK_SUCCESS(vkAllocateCommandBuffers(vk_device, &cmd_ai, &sub_cmd_.command_buffer_));
-
     return AE_SUCCESS;
 }
 
-const VkCommandBuffer CommandPools::get_command_buffer(CommandType type) {
-    switch (type) {
-        case COMMAND_MAIN:
-            return main_cmd_.command_buffer_;
-        case COMMAND_PRESENT:
-            return present_cmd_.command_buffer_;
-        case COMMAND_SUB:
-            return sub_cmd_.command_buffer_;
-        default:
-            return nullptr;
-    }
-    return VK_NULL_HANDLE;
+const VkCommandBuffer CommandPools::get_command_buffer(CommandType type, uint32_t index) {
+    if (type >= COMMAND_COUNT) return VK_NULL_HANDLE;
+    if (index >= cmd_buf_counts_[type]) return VK_NULL_HANDLE;
+    return cmds_[type].cmd_bufs_[index];
 }
 
 Rendering::Rendering(const VkObjectKey& key) : IVkObject(VK_OBJECT_RENDERING) {}
