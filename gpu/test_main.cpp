@@ -46,7 +46,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
                 break;
         }
     } catch (const std::runtime_error& e) {
-        STACK(e.what());
+        LOG(e.what());
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

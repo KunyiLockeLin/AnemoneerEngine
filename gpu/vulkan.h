@@ -28,6 +28,7 @@ enum VkObjectType {
     VK_OBJECT_QUEUES = 1,
     VK_OBJECT_COMMAND_POOLS = 2,
     VK_OBJECT_RENDERING = 3,
+    VK_OBJECT_IMAGE = 4,
 };
 
 class IVkObject : public common::IObject {
@@ -173,33 +174,59 @@ class CommandPools : public IVkObject {
     const VkCommandBuffer get_command_buffer(CommandType type, uint32_t index);
 };
 
+class Shader : public IVkObject {
+    MANAGED_VK_OBJECT(Shader)
+
+   private:
+    VkShaderModule shader_{VK_NULL_HANDLE};
+    // std::vector<ShaderBindingSlot> shader_data_slots_;
+};
+
 class IPipeline : public IVkObject {
    protected:
-    VkPipeline pipeline_;
-    std::vector<VkShaderModule> shader_modules_;
-    // std::vector<ShaderBindingSlot> shader_data_slots_;
+    VkPipeline pipeline_{VK_NULL_HANDLE};
 };
 
 class ComputePipeline : public IPipeline {
     MANAGED_VK_OBJECT(ComputePipeline)
 
    private:
+    std::shared_ptr<Shader> compute_{nullptr};
 };
 
 class GraphicsPipeline : public IPipeline {
     MANAGED_VK_OBJECT(GraphicsPipeline)
 
    private:
-    DrawingInfo drawing_info_;
+    DrawingInfo drawing_info_{};
 
-    VkShaderModule vertex_{VK_NULL_HANDLE};
-    VkShaderModule tessellation_control_{VK_NULL_HANDLE};
-    VkShaderModule tessellation_evaluation_{VK_NULL_HANDLE};
-    VkShaderModule geometry_{VK_NULL_HANDLE};
-    VkShaderModule fragment_{VK_NULL_HANDLE};
+    std::shared_ptr<Shader> vertex_{nullptr};
+    std::shared_ptr<Shader> tessellation_control_{nullptr};
+    std::shared_ptr<Shader> tessellation_evaluation_{nullptr};
+    std::shared_ptr<Shader> geometry_{nullptr};
+    std::shared_ptr<Shader> fragment_{nullptr};
 
    public:
     bool compare_drawing_info(const DrawingInfo &drawing_info);
+};
+
+enum ImageType {
+    IMAGE_SWAPCHAIN,
+};
+
+struct Image : public IVkObject {
+    MANAGED_VK_OBJECT(Image)
+
+   private:
+    std::shared_ptr<Device> device_;
+
+    VkImage image_{VK_NULL_HANDLE};
+    VkDeviceMemory memory_{VK_NULL_HANDLE};
+    VkImageView view_{VK_NULL_HANDLE};
+    ImageType image_type_{static_cast<ImageType>(0)};
+
+   public:
+    AeResult initialize_for_swapchain(const std::shared_ptr<Device> &device, const VkImage image, const VkFormat format);
 };
 
 enum RenderingLayerList {
@@ -208,7 +235,7 @@ enum RenderingLayerList {
     RENDERING_LAYER_POSTPROCESSING = 2,
     RENDERING_LAYER_MAIN = 3,
     RENDERING_LAYER_OBJECTS = 4,
-    RENDERING_LAYER_MAX = 5,
+    RENDERING_LAYER_COUNT = 5,
 };
 
 class Framebuffer : public IVkObject {
@@ -227,19 +254,20 @@ class RenderPass : public IVkObject {
     // DrawCommand draw_command_;
 };
 
+// TODO: 1. Renderpass, 2: framebuffer, 3: rendering command, 4. present command, 5. sync,
+//  6. graphics pipeline, 7. shader, 8. models, 9 descriptor.
+//  When it's rendering, it runs every RenderingLayer, every RenderingLayer has models. Every model has a GraphicsPipeline. But Some
+//  models could use the same GraphicsPipeline. When it addes a model, it checkes if or not it needs to create a new
+//  GraphicsPipeline, and then when it's rendering, it will check if or not a model uses a different GraphicsPipeline to bind
+//  another GraphicsPipeline. Complete one RenderingLayer first.
 struct RenderingLayer {
-    RenderingLayerList rendering_layer_;
-    // depth stencil
-    std::shared_ptr<Framebuffer> frambuffer_;
+    std::shared_ptr<Image> depth_stenci_{nullptr};
+    std::shared_ptr<Framebuffer> frambuffer_{nullptr};
     std::vector<std::shared_ptr<RenderPass>> render_passes_;
     // std::vector<Model> models_; // Every model has a GraphicsPipeline.
     // std::vector<std::shared_ptr<GraphicsPipeline>> graphics_pipelines_;
 };
 
-// When it's rendering, it runs every RenderingLayer, every RenderingLayer has models. Every model has a GraphicsPipeline. But Some
-// models could use the same GraphicsPipeline. When it addes a model, it checkes if or not it needs to create a new
-// GraphicsPipeline, and then when it's rendering, it will check if or not a model uses a different GraphicsPipeline to bind another
-// GraphicsPipeline.
 class Rendering : public IVkObject {
     MANAGED_SINGLETON_VK_OBJECT(Rendering)
 
@@ -252,7 +280,7 @@ class Rendering : public IVkObject {
     VkSwapchainKHR swapchain_{VK_NULL_HANDLE};
     VkSwapchainKHR old_swapchain_{VK_NULL_HANDLE};
     const uint32_t desired_swapchain_image_count_{3};
-    std::vector<VkImage> swapchain_images_;
+    std::vector<std::shared_ptr<Image>> swapchain_images_;
     uint32_t present_index_{0};
 
     VkSurfaceCapabilities2KHR surface_capabilities_{};
@@ -274,7 +302,9 @@ class Rendering : public IVkObject {
     AeResult get_surface_property();
     AeResult create_swapchain();
 
-    std::vector<RenderingLayer> rendering_layers_;
+    std::array<RenderingLayer, RENDERING_LAYER_COUNT> rendering_layers_;
+
+    AeResult create_renderpass();
 
    public:
     AeResult initialize_for_VkInstance(const std::shared_ptr<Device> &device, const RenderingInfo &rendering_info);
@@ -328,6 +358,7 @@ class Manager {
     MANAGE_GPU_OBJECT(Framebuffer)
     MANAGE_GPU_OBJECT(RenderPass)
     MANAGE_GPU_OBJECT(GraphicsPipeline)
+    MANAGE_GPU_OBJECT(Image)
 
    public:
     AeResult pre_update();

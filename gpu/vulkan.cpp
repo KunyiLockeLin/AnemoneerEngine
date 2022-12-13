@@ -584,6 +584,33 @@ const VkCommandBuffer CommandPools::get_command_buffer(CommandType type, uint32_
     return cmds_[type].cmd_bufs_[index];
 }
 
+Image::Image(const VkObjectKey& key) : IVkObject(VK_OBJECT_IMAGE) {}
+
+AeResult Image::initialize_for_swapchain(const std::shared_ptr<Device>& device, const VkImage image, const VkFormat format) {
+    device_ = device;
+    VkDevice vk_device = device_->get_VkDevice();
+    image_ = image;
+    image_type_ = IMAGE_SWAPCHAIN;
+
+    VkImageViewCreateInfo view_ci = {};
+    view_ci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    view_ci.format = format;
+    view_ci.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+    view_ci.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+    view_ci.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+    view_ci.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+    view_ci.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    view_ci.subresourceRange.baseMipLevel = 0;
+    view_ci.subresourceRange.levelCount = 1;
+    view_ci.subresourceRange.baseArrayLayer = 0;
+    view_ci.subresourceRange.layerCount = 1;
+    view_ci.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    view_ci.image = image;
+
+    ASSERT_VK_SUCCESS(vkCreateImageView(vk_device, &view_ci, nullptr, &view_));
+    return AE_SUCCESS;
+}
+
 Rendering::Rendering(const VkObjectKey& key) : IVkObject(VK_OBJECT_RENDERING) {}
 
 AeResult Rendering::initialize_for_VkInstance(const std::shared_ptr<Device>& device, const RenderingInfo& rendering_info) {
@@ -621,6 +648,7 @@ AeResult Rendering::initialize_for_VkDevice() {
 
     ASSERT_SUCCESS(get_surface_property());
     ASSERT_SUCCESS(create_swapchain());
+    ASSERT_SUCCESS(create_renderpass());
     return AE_SUCCESS;
 }
 
@@ -730,27 +758,108 @@ AeResult Rendering::create_swapchain() {
     }
     ASSERT_VK_SUCCESS(fpCreateSwapchainKHR(device, &swapchain_ci, nullptr, &swapchain_));
 
+    std::vector<VkImage> swapchain_images;
     uint32_t count = 0;
     ASSERT_VK_SUCCESS(fpGetSwapchainImagesKHR(device, swapchain_, &count, nullptr));
-    swapchain_images_.resize(count);
-    ASSERT_VK_SUCCESS(fpGetSwapchainImagesKHR(device, swapchain_, &count, swapchain_images_.data()));
+    swapchain_images.resize(count);
+    ASSERT_VK_SUCCESS(fpGetSwapchainImagesKHR(device, swapchain_, &count, swapchain_images.data()));
 
+    for (auto swapchain_image : swapchain_images) {
+        std::shared_ptr<Image> image;
+        ASSERT_SUCCESS(MGR.create<Image>(image));
+        swapchain_images_.emplace_back(image);
+        ASSERT_SUCCESS(image->initialize_for_swapchain(device_, swapchain_image, surface_formats_[0].surfaceFormat.format));
+    }
     return AE_SUCCESS;
 }
 
 VkSurfaceKHR Rendering::get_VkSurfaceKHR() { return surface_; }
 
+// TODO: Main first
+AeResult Rendering::create_renderpass() {
+    auto& main_layer = rendering_layers_[RENDERING_LAYER_MAIN];
+    return AE_SUCCESS;
+}
+
 Manager::Manager() {}
 
 AeResult Manager::initialize() { return AE_SUCCESS; }
 
-AeResult Manager::cleanup() { return AE_SUCCESS; }
+AeResult Manager::cleanup() {
+    std::shared_ptr<Device> device;
+    ASSERT_SUCCESS(get<Device>(device));
+    ASSERT_SUCCESS(device->cleanup());
 
-AeResult Manager::pre_update() { return AE_SUCCESS; }
+    std::shared_ptr<Queues> queues;
+    ASSERT_SUCCESS(get<Queues>(queues));
+    ASSERT_SUCCESS(queues->cleanup());
 
-AeResult Manager::update() { return AE_SUCCESS; }
+    std::shared_ptr<CommandPools> cmd_pools;
+    ASSERT_SUCCESS(get<CommandPools>(cmd_pools));
+    ASSERT_SUCCESS(cmd_pools->cleanup());
 
-AeResult Manager::post_update() { return AE_SUCCESS; }
+    std::shared_ptr<Rendering> rendering;
+    ASSERT_SUCCESS(get<Rendering>(rendering));
+    ASSERT_SUCCESS(rendering->cleanup());
+    return AE_SUCCESS;
+}
+
+AeResult Manager::pre_update() {
+    std::shared_ptr<Device> device;
+    ASSERT_SUCCESS(get<Device>(device));
+    ASSERT_SUCCESS(device->pre_update());
+
+    std::shared_ptr<Queues> queues;
+    ASSERT_SUCCESS(get<Queues>(queues));
+    ASSERT_SUCCESS(queues->pre_update());
+
+    std::shared_ptr<CommandPools> cmd_pools;
+    ASSERT_SUCCESS(get<CommandPools>(cmd_pools));
+    ASSERT_SUCCESS(cmd_pools->pre_update());
+
+    std::shared_ptr<Rendering> rendering;
+    ASSERT_SUCCESS(get<Rendering>(rendering));
+    ASSERT_SUCCESS(rendering->pre_update());
+    return AE_SUCCESS;
+}
+
+AeResult Manager::update() {
+    std::shared_ptr<Device> device;
+    ASSERT_SUCCESS(get<Device>(device));
+    ASSERT_SUCCESS(device->update());
+
+    std::shared_ptr<Queues> queues;
+    ASSERT_SUCCESS(get<Queues>(queues));
+    ASSERT_SUCCESS(queues->update());
+
+    std::shared_ptr<CommandPools> cmd_pools;
+    ASSERT_SUCCESS(get<CommandPools>(cmd_pools));
+    ASSERT_SUCCESS(cmd_pools->update());
+
+    std::shared_ptr<Rendering> rendering;
+    ASSERT_SUCCESS(get<Rendering>(rendering));
+    ASSERT_SUCCESS(rendering->update());
+    return AE_SUCCESS;
+}
+
+AeResult Manager::post_update() {
+    std::shared_ptr<Device> device;
+    ASSERT_SUCCESS(get<Device>(device));
+    ASSERT_SUCCESS(device->post_update());
+
+    std::shared_ptr<Queues> queues;
+    ASSERT_SUCCESS(get<Queues>(queues));
+    ASSERT_SUCCESS(queues->post_update());
+
+    std::shared_ptr<CommandPools> cmd_pools;
+    ASSERT_SUCCESS(get<CommandPools>(cmd_pools));
+    ASSERT_SUCCESS(cmd_pools->post_update());
+
+    std::shared_ptr<Rendering> rendering;
+    ASSERT_SUCCESS(get<Rendering>(rendering));
+    ASSERT_SUCCESS(rendering->post_update());
+    return AE_SUCCESS;
+}
 
 END_NAMESPACE(vk)
 END_NAMESPACE(gpu)
