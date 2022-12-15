@@ -283,21 +283,21 @@ AeResult Device::pick_physical_device() {
     uint32_t gpu_index = (device_info_.gpu_index_ < count) ? device_info_.gpu_index_ : (count - 1);
     physical_device_ = phy[gpu_index];
 
-    phy_dev_props2_ = {};
-    phy_dev_props2_.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-    vkGetPhysicalDeviceProperties2(physical_device_, &phy_dev_props2_);
+    phy_dev_props_ = {};
+    phy_dev_props_.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+    vkGetPhysicalDeviceProperties2(physical_device_, &phy_dev_props_);
 
-    LOG("Physical device: " + phy_dev_props2_.properties.deviceName +
-        ", driver: " + (phy_dev_props2_.properties.driverVersion >> 22) + "." +
-        ((phy_dev_props2_.properties.driverVersion >> 12) & 0x3ff) + "." + (phy_dev_props2_.properties.driverVersion & 0xfff) +
-        ", API Version: " + VK_API_VERSION_VARIANT(phy_dev_props2_.properties.apiVersion) + "." +
-        VK_API_VERSION_MAJOR(phy_dev_props2_.properties.apiVersion) + "." +
-        VK_API_VERSION_MINOR(phy_dev_props2_.properties.apiVersion) + "." +
-        VK_API_VERSION_PATCH(phy_dev_props2_.properties.apiVersion));
+    LOG("Physical device: " + phy_dev_props_.properties.deviceName +
+        ", driver: " + (phy_dev_props_.properties.driverVersion >> 22) + "." +
+        ((phy_dev_props_.properties.driverVersion >> 12) & 0x3ff) + "." + (phy_dev_props_.properties.driverVersion & 0xfff) +
+        ", API Version: " + VK_API_VERSION_VARIANT(phy_dev_props_.properties.apiVersion) + "." +
+        VK_API_VERSION_MAJOR(phy_dev_props_.properties.apiVersion) + "." +
+        VK_API_VERSION_MINOR(phy_dev_props_.properties.apiVersion) + "." +
+        VK_API_VERSION_PATCH(phy_dev_props_.properties.apiVersion));
 
-    phy_dev_feats2_ = {};
-    phy_dev_feats2_.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    vkGetPhysicalDeviceFeatures2(physical_device_, &phy_dev_feats2_);
+    phy_dev_feats_ = {};
+    phy_dev_feats_.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+    vkGetPhysicalDeviceFeatures2(physical_device_, &phy_dev_feats_);
     return AE_SUCCESS;
 }
 
@@ -387,6 +387,22 @@ AeResult Device::initialize_command_pools() {
     ASSERT_SUCCESS(MGR.get<CommandPools>(command_pools));
     ASSERT_SUCCESS(command_pools->initialize(device));
     return AE_SUCCESS;
+}
+
+AeResult Device::check_support_format(const VkFormat format, const VkImageTiling tiling, const VkFormatFeatureFlags features) {
+    auto it = format_props_.find(format);
+    if (it == format_props_.end()) {
+        VkFormatProperties2 props;
+        vkGetPhysicalDeviceFormatProperties2(physical_device_, format, &props);
+        auto ret = format_props_.insert({format, props});
+        it = ret.first;
+    }
+    if (tiling == VK_IMAGE_TILING_LINEAR && (it->second.formatProperties.linearTilingFeatures & features) == features) {
+        return AE_SUCCESS;
+    } else if (tiling == VK_IMAGE_TILING_OPTIMAL && (it->second.formatProperties.optimalTilingFeatures & features) == features) {
+        return AE_SUCCESS;
+    }
+    return AE_ERROR_UNKNOWN;
 }
 
 Queues::Queues(const VkObjectKey& key) : IVkObject(VK_OBJECT_QUEUES) {}
@@ -586,11 +602,55 @@ const VkCommandBuffer CommandPools::get_command_buffer(CommandType type, uint32_
 
 Image::Image(const VkObjectKey& key) : IVkObject(VK_OBJECT_IMAGE) {}
 
+AeResult Image::initialize(const std::shared_ptr<Device>& device, const ImageInfo& image_info) {
+    device_ = device;
+    image_info_ = image_info;
+    const auto vk_device = device_->get_VkDevice();
+
+    VkImageCreateInfo image_ci = {};
+    image_ci.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    image_ci.imageType = VK_IMAGE_TYPE_2D;
+    image_ci.format = get_format(image_info_.type_);
+    image_ci.extent.width = image_info_.size_.width;
+    image_ci.extent.height = image_info_.size_.height;
+    image_ci.mipLevels = 1;
+    image_ci.arrayLayers = 1;
+    image_ci.samples = VK_SAMPLE_COUNT_1_BIT;
+    image_ci.tiling = VK_IMAGE_TILING_OPTIMAL;
+    image_ci.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+    ASSERT_VK_SUCCESS(vkCreateImage(vk_device, &image_ci, nullptr, &image_));
+
+    VkImageViewCreateInfo view_ci = {};
+    view_ci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    ASSERT_VK_SUCCESS(vkCreateImageView(vk_device, &view_ci, nullptr, &view_));
+    return AE_SUCCESS;
+}
+
+VkFormat Image::get_format(const ImageType type) {
+    switch (type) {
+        case IMAGE_SWAPCHAIN:
+            return VK_FORMAT_UNDEFINED;
+        case IMAGE_DEPTH_STENCIL: {
+            std::array<VkFormat, 3> formats = {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT};
+            for (auto format : formats) {
+                if (VK_SUCCESS == device_->check_support_format(format, VK_IMAGE_TILING_OPTIMAL,
+                                                                VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)) {
+                    return format;
+                }
+            }
+            return VK_FORMAT_UNDEFINED;
+        }
+        default:
+            return VK_FORMAT_UNDEFINED;
+    }
+    return VK_FORMAT_UNDEFINED;
+}
+
 AeResult Image::initialize_for_swapchain(const std::shared_ptr<Device>& device, const VkImage image, const VkFormat format) {
     device_ = device;
     VkDevice vk_device = device_->get_VkDevice();
     image_ = image;
-    image_type_ = IMAGE_SWAPCHAIN;
+    image_info_.type_ = IMAGE_SWAPCHAIN;
 
     VkImageViewCreateInfo view_ci = {};
     view_ci.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -736,6 +796,7 @@ AeResult Rendering::create_swapchain() {
     } else {
         image_extent = surface_capabilities_.surfaceCapabilities.currentExtent;
     }
+    present_size_ = image_extent;
 
     auto& pre_transform = swapchain_ci.preTransform;
     if (surface_capabilities_.surfaceCapabilities.currentTransform > 0) {
@@ -775,11 +836,32 @@ AeResult Rendering::create_swapchain() {
 
 VkSurfaceKHR Rendering::get_VkSurfaceKHR() { return surface_; }
 
-// TODO: Main first
-AeResult Rendering::create_renderpass() {
-    auto& main_layer = rendering_layers_[RENDERING_LAYER_MAIN];
+AeResult Rendering::create_depth_stencil_image(std::shared_ptr<Image>& depth_stencil_image) {
+    std::shared_ptr<Image> depth_stenci_image;
+    ASSERT_SUCCESS(MGR.create<Image>(depth_stenci_image));
+
+    ImageInfo image_info = {};
+    image_info.type_ = IMAGE_DEPTH_STENCIL;
+    image_info.size_.width = present_size_.width;
+    image_info.size_.height = present_size_.height;
+
+    depth_stencil_image->initialize(device_, image_info);
     return AE_SUCCESS;
 }
+
+// TODO: Main first
+AeResult Rendering::create_renderpass() {
+    auto& layer = rendering_layers_[RENDERING_LAYER_MAIN];
+    ASSERT_SUCCESS(create_depth_stencil_image(layer.depth_stenci_image_));
+
+    std::shared_ptr<RenderPass> render_pass;
+    ASSERT_SUCCESS(MGR.create<RenderPass>(render_pass));
+
+    layer.render_passes_.emplace_back(render_pass);
+    return AE_SUCCESS;
+}
+
+RenderPass::RenderPass(const VkObjectKey& key) : IVkObject(VK_OBJECT_RENDER_PASS) {}
 
 Manager::Manager() {}
 

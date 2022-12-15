@@ -29,6 +29,8 @@ enum VkObjectType {
     VK_OBJECT_COMMAND_POOLS = 2,
     VK_OBJECT_RENDERING = 3,
     VK_OBJECT_IMAGE = 4,
+    VK_OBJECT_RENDER_PASS = 5,
+
 };
 
 class IVkObject : public common::IObject {
@@ -77,16 +79,20 @@ class Device : public IVkObject {
     AeResult create_debug_messenger_callback();
 
     VkPhysicalDevice physical_device_{VK_NULL_HANDLE};
-    VkPhysicalDeviceProperties2 phy_dev_props2_{};
-    VkPhysicalDeviceFeatures2 phy_dev_feats2_{};
+    VkPhysicalDeviceProperties2 phy_dev_props_{};
+    VkPhysicalDeviceFeatures2 phy_dev_feats_{};
     AeResult pick_physical_device();
 
     VkDevice device_{VK_NULL_HANDLE};
     AeResult create_device();
     AeResult check_support_device_extensions(std::vector<const char *> &extensions);
 
+    std::unordered_map<VkFormat, VkFormatProperties2> format_props_;
+
    public:
     AeResult initialize(const InitializeInfo &initialize_info);
+    AeResult check_support_format(const VkFormat format, const VkImageTiling tiling, const VkFormatFeatureFlags features);
+
     const VkInstance get_VkInstance();
     const VkPhysicalDevice get_VkPhysicalDevice();
     const VkDevice get_VkDevice();
@@ -212,6 +218,12 @@ class GraphicsPipeline : public IPipeline {
 
 enum ImageType {
     IMAGE_SWAPCHAIN,
+    IMAGE_DEPTH_STENCIL,
+};
+
+struct ImageInfo {
+    ImageType type_{static_cast<ImageType>(0)};
+    AeArray<uint32_t, 2> size_{0, 0}; // width, height
 };
 
 struct Image : public IVkObject {
@@ -219,13 +231,16 @@ struct Image : public IVkObject {
 
    private:
     std::shared_ptr<Device> device_;
+    ImageInfo image_info_{};
 
     VkImage image_{VK_NULL_HANDLE};
     VkDeviceMemory memory_{VK_NULL_HANDLE};
     VkImageView view_{VK_NULL_HANDLE};
-    ImageType image_type_{static_cast<ImageType>(0)};
+
+    VkFormat get_format(const ImageType type);
 
    public:
+    AeResult initialize(const std::shared_ptr<Device> &device, const ImageInfo &image_info);
     AeResult initialize_for_swapchain(const std::shared_ptr<Device> &device, const VkImage image, const VkFormat format);
 };
 
@@ -261,7 +276,8 @@ class RenderPass : public IVkObject {
 //  GraphicsPipeline, and then when it's rendering, it will check if or not a model uses a different GraphicsPipeline to bind
 //  another GraphicsPipeline. Complete one RenderingLayer first.
 struct RenderingLayer {
-    std::shared_ptr<Image> depth_stenci_{nullptr};
+    std::shared_ptr<Image> rendering_image_{nullptr};     // If it's present layer, this's swpachain image.
+    std::shared_ptr<Image> depth_stenci_image_{nullptr};  // It's probably only for main layer.
     std::shared_ptr<Framebuffer> frambuffer_{nullptr};
     std::vector<std::shared_ptr<RenderPass>> render_passes_;
     // std::vector<Model> models_; // Every model has a GraphicsPipeline.
@@ -280,6 +296,7 @@ class Rendering : public IVkObject {
     VkSwapchainKHR swapchain_{VK_NULL_HANDLE};
     VkSwapchainKHR old_swapchain_{VK_NULL_HANDLE};
     const uint32_t desired_swapchain_image_count_{3};
+    VkExtent2D present_size_{0, 0};
     std::vector<std::shared_ptr<Image>> swapchain_images_;
     uint32_t present_index_{0};
 
@@ -304,6 +321,7 @@ class Rendering : public IVkObject {
 
     std::array<RenderingLayer, RENDERING_LAYER_COUNT> rendering_layers_;
 
+    AeResult create_depth_stencil_image(std::shared_ptr<Image> &image);
     AeResult create_renderpass();
 
    public:

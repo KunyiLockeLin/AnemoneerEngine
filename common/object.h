@@ -68,7 +68,6 @@ BEGIN_NAMESPACE(common)
         } else {                                                        \
             obj = T::create(key_);                                      \
         }                                                               \
-        obj->initialize();                                              \
         active_map[obj->get_id()] = obj;                                \
         return AE_SUCCESS;                                              \
     }                                                                   \
