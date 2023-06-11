@@ -2,10 +2,10 @@
 
 #include "header.h"
 
-class AngryEngine {
+class AnemoneerEngine {
    public:
-    AngryEngine(AeGlobalKey &_key) {}
-    //~AngryEngine() {}
+    AnemoneerEngine(AeGlobalKey &_key) {}
+    //~AnemoneerEngine() {}
     void initialize();
     void run();
 

@@ -18,7 +18,7 @@ class AeGlobal {
     ~AeGlobal();
 
     static AeGlobal &getInstance();
-    AngryEngine *engine = nullptr;
+    AnemoneerEngine *engine = nullptr;
     QeVulkan *vulkan = nullptr;
     AeUI *ui = nullptr;
     QeGraphics *graphics = nullptr;

@@ -1,7 +1,7 @@
 #include "header.h"
 
 AeGlobal::AeGlobal() {
-    if (engine == nullptr) engine = new AngryEngine(key);
+    if (engine == nullptr) engine = new AnemoneerEngine(key);
     if (ui == nullptr) ui = new AeUI(key);
     if (objectmanager == nullptr) objectmanager = new AeObjectManager(key);
     if (graphics == nullptr) graphics = new QeGraphics(key);

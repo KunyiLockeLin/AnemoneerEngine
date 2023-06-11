@@ -1,6 +1,6 @@
 #include "header.h"
 
-void AngryEngine::run() {
+void AnemoneerEngine::run() {
     bClosed = false;
 
     LOGOBJ.setOutput(*CONFIG, "AngeryEngine_");
@@ -10,12 +10,12 @@ void AngryEngine::run() {
     mainLoop();
 }
 
-void AngryEngine::initialize() {
+void AnemoneerEngine::initialize() {
     UI->resizeAll();
     OBJMGR->loadScene(CONFIG->getXMLValue<ID>("setting.environment.currentSceneEID"));
 }
 
-void AngryEngine::mainLoop() {
+void AnemoneerEngine::mainLoop() {
     while (!bClosed) {
         int passMilliSecond;
         if (FPSTimer.checkTimer(passMilliSecond)) {

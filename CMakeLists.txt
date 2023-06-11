@@ -3,7 +3,7 @@ add_definitions(-D_UNICODE)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
-project (AngryEngine)
+project (AnemoneerEngine)
 
 set(cpp_version "cxx_std_17")
 
@@ -118,7 +118,7 @@ target_link_libraries(exe_CodeGenerator PRIVATE debug common_debug optimized com
 add_custom_target(bat_code_generator SOURCES code_generator/code_generator.bat COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/code_generator/code_generator.bat COMMENT "run code_generator.bat")
 
 
-# exe AngryEngine
+# exe AnemoneerEngine
 set(SRC_ALGORITHM src/game_encode.cpp)
 set(SRC_ALGORITHM_HEADER src/game_encode.h)
 set(SRC_UI src/ui.cpp)
@@ -161,22 +161,22 @@ source_group(vulkan FILES ${SRC_VULKAN})
 source_group(vulkan\\header FILES ${SRC_VULKAN_HEADER})
 source_group(model FILES ${SRC_MODEL})
 
-add_executable(exe_AngryEngine  ${SRC_ALGORITHM} ${SRC_ALGORITHM_HEADER} ${SRC_GAMEOBJECT} ${SRC_GAMEOBJECT_HEADER}
-                                 ${SRC_MANAGER} ${SRC_MANAGER_HEADER} ${SRC_UI} ${SRC_UI_HEADER} ${SRC_VULKAN}
-                                 ${SRC_VULKAN_HEADER} ${SRC_MODEL})
+add_executable(exe_AnemoneerEngine  ${SRC_ALGORITHM} ${SRC_ALGORITHM_HEADER} ${SRC_GAMEOBJECT} ${SRC_GAMEOBJECT_HEADER}
+                                    ${SRC_MANAGER} ${SRC_MANAGER_HEADER} ${SRC_UI} ${SRC_UI_HEADER} ${SRC_VULKAN}
+                                    ${SRC_VULKAN_HEADER} ${SRC_MODEL})
 
-set_target_properties(exe_AngryEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
-set_target_properties(exe_AngryEngine PROPERTIES OUTPUT_NAME_DEBUG AngryEngine_debug)
-set_target_properties(exe_AngryEngine PROPERTIES OUTPUT_NAME_RELEASE AngryEngine)
-set_target_properties(exe_AngryEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
-target_compile_features(exe_AngryEngine PRIVATE ${cpp_version})
+set_target_properties(exe_AnemoneerEngine PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+set_target_properties(exe_AnemoneerEngine PROPERTIES OUTPUT_NAME_DEBUG AnemoneerEngine_debug)
+set_target_properties(exe_AnemoneerEngine PROPERTIES OUTPUT_NAME_RELEASE AnemoneerEngine)
+set_target_properties(exe_AnemoneerEngine PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/output)
+target_compile_features(exe_AnemoneerEngine PRIVATE ${cpp_version})
 
-target_include_directories(exe_AngryEngine PRIVATE $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_directories(exe_AngryEngine PRIVATE $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
-target_link_libraries(exe_AngryEngine vulkan-1 debug common_debug optimized common)
+target_include_directories(exe_AnemoneerEngine PRIVATE $ENV{VULKAN_SDK}/Include ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_directories(exe_AnemoneerEngine PRIVATE $ENV{VULKAN_SDK}/Lib  ${CMAKE_CURRENT_SOURCE_DIR}/build)
+target_link_libraries(exe_AnemoneerEngine vulkan-1 debug common_debug optimized common)
 
-set(DEBUG_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/AngryEngine_debug.exe)
-set(RELEASE_AngryEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/AngryEngine.exe)
-add_custom_command(TARGET exe_AngryEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_AngryEngine}>$<$<CONFIG:release>:${RELEASE_AngryEngine}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy AngryEngine")
+set(DEBUG_AnemoneerEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/AnemoneerEngine_debug.exe)
+set(RELEASE_AnemoneerEngine ${CMAKE_CURRENT_SOURCE_DIR}/build/Release/AnemoneerEngine.exe)
+add_custom_command(TARGET exe_AnemoneerEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<CONFIG:debug>:${DEBUG_AnemoneerEngine}>$<$<CONFIG:release>:${RELEASE_AnemoneerEngine}>" ${CMAKE_CURRENT_SOURCE_DIR}/output COMMENT "copy AnemoneerEngine")
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exe_AngryEngine)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exe_AnemoneerEngine)

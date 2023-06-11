@@ -4,7 +4,7 @@ timeout 3
 rmdir build /s/q
 mkdir build
 cd build
-cmake -G "Visual Studio 16" -A x64 ..
+cmake -G "Visual Studio 17" -A x64 ..
 timeout 3
 
 cmake --build . --target lib_common --config Debug
@@ -18,16 +18,16 @@ cd ..
 timeout 3
 
 cd build
-cmake --build . --target exe_AngryEngine --config Debug
+cmake --build . --target exe_AnemoneerEngine --config Debug
 timeout 3
 
 cd ..
 cd build
-start AngryEngine.sln
+start AnemoneerEngine.sln
 cd ..
 cd output
-start AngryEngine_debug.exe
+start AnemoneerEngine_debug.exe
 ::timeout 10
-::taskkill /F /im AngryEngine_debug.exe
+::taskkill /F /im AnemoneerEngine_debug.exe
 
 pause

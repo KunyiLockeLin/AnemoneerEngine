@@ -146,14 +146,14 @@ void QeVulkan::createInstance() {
     createInfo.ppEnabledExtensionNames = extensions.data();
     createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
-//#include <cassert>
-//assert(stage == 0);
-//#define ASSERT_VK_SUCCESS(err)                                                 \
+    // #include <cassert>
+    // assert(stage == 0);
+    // #def ine  ASSERT_VK_SUCCESS(err)                                                 \
 //    {                                                                          \
 //        const VkResult resolved_err = err;                                     \
 //        ASSERT_EQ(VK_SUCCESS, resolved_err) << vk_result_string(resolved_err); \
 //    }
-//assert(condition && "message");
+    // assert(condition && "message");
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) LOG("failed to create instance!");
 }
 
@@ -819,7 +819,7 @@ uint32_t QeVulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags pro
     }
 
     LOG("failed to find suitable memory type!");
-    return VK_NULL_HANDLE;
+    return 0;
 }
 
 VkSemaphore QeVulkan::createSyncObjectSemaphore() {
